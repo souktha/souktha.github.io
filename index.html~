@@ -29,29 +29,6 @@ article: http://ogp.me/ns/article#
 
         </ul></section><section class="page-content"><div class="content" rel="main">
         <div class="post">
-            <h1 class="title"><a href="posts/how-i-did-it-demo.html">How I did it (demo)</a></h1>
-            <div class="meta">
-                <div class="authordate">
-                    <time class="timeago" datetime="2016-03-04T01:03:57+00:00">2016-03-04 01:03</time>
-</div>
-                <div class="stats">
-                                <a href="posts/how-i-did-it-demo.html#disqus_thread" data-disqus-identifier="cache/posts/how-i-did-it-demo.html">Comments</a>
-
-
-                </div>
-                
-            </div>
-            <div class="body">
-                <ol class="arabic simple">
-<li>create demo site with 'nikola init --demo demo'.</li>
-<li>edit conf.py to change theme and add the extra config needed for the theme.</li>
-<li>nikola build, to generate the output</li>
-<li>mv output/* souktha.github.io</li>
-<li>perform git add, push to master</li>
-</ol>
-</div>
-        </div>
-        <div class="post">
             <h1 class="title"><a href="posts/welcome-to-nikola.html">Welcome to Nikola</a></h1>
             <div class="meta">
                 <div class="authordate">

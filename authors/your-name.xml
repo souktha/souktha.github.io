@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/"><channel><title>Demo Site (Your Name)</title><link>https://example.com/</link><description></description><atom:link type="application/rss+xml" href="https://example.com/authors/your-name.xml" rel="self"></atom:link><language>en</language><lastBuildDate>Fri, 04 Mar 2016 22:14:30 GMT</lastBuildDate><generator>https://getnikola.com/</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>How I did it (demo)</title><link>https://example.com/posts/how-i-did-it-demo.html</link><dc:creator>Your Name</dc:creator><description>&lt;ol class="arabic simple"&gt;
+&lt;li&gt;create demo site with 'nikola init --demo demo'.&lt;/li&gt;
+&lt;li&gt;edit conf.py to change theme and add the extra config needed for the theme.&lt;/li&gt;
+&lt;li&gt;nikola build, to generate the output&lt;/li&gt;
+&lt;li&gt;mv output/* souktha.github.io&lt;/li&gt;
+&lt;li&gt;perform git add, push to master&lt;/li&gt;
+&lt;/ol&gt;</description><guid>https://example.com/posts/how-i-did-it-demo.html</guid><pubDate>Fri, 04 Mar 2016 01:03:57 GMT</pubDate></item></channel></rss>
