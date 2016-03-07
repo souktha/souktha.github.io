@@ -6,51 +6,19 @@
     xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <sitemap>
-  <loc>http://souktha.github.io/authors/roberto-alsina.xml</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </sitemap>
- <sitemap>
-  <loc>http://souktha.github.io/authors/soukthavy-sopha.xml</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </sitemap>
- <sitemap>
-  <loc>http://souktha.github.io/categories/blog.xml</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </sitemap>
- <sitemap>
-  <loc>http://souktha.github.io/categories/cat_nikola.xml</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </sitemap>
- <sitemap>
-  <loc>http://souktha.github.io/categories/cat_post.xml</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </sitemap>
- <sitemap>
-  <loc>http://souktha.github.io/categories/demo.xml</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </sitemap>
- <sitemap>
-  <loc>http://souktha.github.io/categories/nikola.xml</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </sitemap>
- <sitemap>
-  <loc>http://souktha.github.io/categories/python.xml</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </sitemap>
- <sitemap>
-  <loc>http://souktha.github.io/galleries/demo/rss.xml</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
+  <loc>http://souktha.github.io/categories/mathjax.xml</loc>
+  <lastmod>2016-03-06T21:58:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/galleries/rss.xml</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
+  <lastmod>2016-03-07T00:14:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/rss.xml</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
+  <lastmod>2016-03-06T22:01:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/sitemap.xml</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
+  <lastmod>2016-03-07T00:14:00Z</lastmod>
  </sitemap>
 </sitemapindex>

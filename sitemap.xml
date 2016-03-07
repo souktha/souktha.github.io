@@ -6,151 +6,43 @@
     xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <url>
-  <loc>http://souktha.github.io/2012/index.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
+  <loc>http://souktha.github.io/</loc>
+  <lastmod>2016-03-06T21:52:00Z</lastmod>
  </url>
  <url>
-  <loc>http://souktha.github.io/2016/index.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
+  <loc>http://souktha.github.io/2016/</loc>
+  <lastmod>2016-03-06T17:26:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/archive.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
+  <lastmod>2016-03-07T00:14:00Z</lastmod>
  </url>
  <url>
-  <loc>http://souktha.github.io/authors/index.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
+  <loc>http://souktha.github.io/blog/</loc>
+  <lastmod>2016-03-06T21:47:00Z</lastmod>
  </url>
  <url>
-  <loc>http://souktha.github.io/authors/roberto-alsina.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
+  <loc>http://souktha.github.io/blog/first-sample-blog-post/</loc>
+  <lastmod>2016-03-06T17:26:00Z</lastmod>
  </url>
  <url>
-  <loc>http://souktha.github.io/authors/soukthavy-sopha.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
+  <loc>http://souktha.github.io/blog/restructuredtext-demo-import-from-demotxt/</loc>
+  <lastmod>2016-03-06T21:47:00Z</lastmod>
  </url>
  <url>
-  <loc>http://souktha.github.io/categories/blog.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
+  <loc>http://souktha.github.io/categories/</loc>
+  <lastmod>2016-03-06T21:47:00Z</lastmod>
  </url>
  <url>
-  <loc>http://souktha.github.io/categories/cat_nikola.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
+  <loc>http://souktha.github.io/categories/mathjax/</loc>
+  <lastmod>2016-03-06T21:47:00Z</lastmod>
  </url>
  <url>
-  <loc>http://souktha.github.io/categories/cat_post.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
+  <loc>http://souktha.github.io/galleries/</loc>
+  <lastmod>2016-03-06T17:26:00Z</lastmod>
  </url>
  <url>
-  <loc>http://souktha.github.io/categories/demo.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </url>
- <url>
-  <loc>http://souktha.github.io/categories/index.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </url>
- <url>
-  <loc>http://souktha.github.io/categories/nikola.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </url>
- <url>
-  <loc>http://souktha.github.io/categories/python.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </url>
- <url>
-  <loc>http://souktha.github.io/galleries/demo/index.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </url>
- <url>
-  <loc>http://souktha.github.io/galleries/index.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </url>
- <url>
-  <loc>http://souktha.github.io/index.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </url>
- <url>
-  <loc>http://souktha.github.io/listings/__pycache__/index.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </url>
- <url>
-  <loc>http://souktha.github.io/listings/hello.py.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </url>
- <url>
-  <loc>http://souktha.github.io/listings/index.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </url>
- <url>
-  <loc>http://souktha.github.io/posts/2nd-post-experiment-with-the-settings.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </url>
- <url>
-  <loc>http://souktha.github.io/posts/how-i-did-it-demo.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </url>
- <url>
-  <loc>http://souktha.github.io/posts/welcome-to-nikola.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </url>
- <url>
-  <loc>http://souktha.github.io/stories/about-nikola.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </url>
- <url>
-  <loc>http://souktha.github.io/stories/bootstrap-demo.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </url>
- <url>
-  <loc>http://souktha.github.io/stories/charts.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </url>
- <url>
-  <loc>http://souktha.github.io/stories/creating-a-theme.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </url>
- <url>
-  <loc>http://souktha.github.io/stories/dr-nikolas-vendetta.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </url>
- <url>
-  <loc>http://souktha.github.io/stories/extending.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </url>
- <url>
-  <loc>http://souktha.github.io/stories/handbook.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </url>
- <url>
-  <loc>http://souktha.github.io/stories/internals.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </url>
- <url>
-  <loc>http://souktha.github.io/stories/listings-demo.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </url>
- <url>
-  <loc>http://souktha.github.io/stories/path-handlers.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </url>
- <url>
-  <loc>http://souktha.github.io/stories/quickref.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </url>
- <url>
-  <loc>http://souktha.github.io/stories/quickstart.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </url>
- <url>
-  <loc>http://souktha.github.io/stories/slides-demo.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </url>
- <url>
-  <loc>http://souktha.github.io/stories/social_buttons.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
- </url>
- <url>
-  <loc>http://souktha.github.io/stories/theming.html</loc>
-  <lastmod>2016-03-04T22:36:00Z</lastmod>
+  <loc>http://souktha.github.io/listings/</loc>
+  <lastmod>2016-03-06T17:26:00Z</lastmod>
  </url>
 </urlset>
