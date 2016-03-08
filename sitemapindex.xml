@@ -6,19 +6,31 @@
     xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <sitemap>
+  <loc>http://souktha.github.io/categories/hardware.xml</loc>
+  <lastmod>2016-03-08T05:38:00Z</lastmod>
+ </sitemap>
+ <sitemap>
   <loc>http://souktha.github.io/categories/mathjax.xml</loc>
-  <lastmod>2016-03-06T21:58:00Z</lastmod>
+  <lastmod>2016-03-08T05:38:00Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>http://souktha.github.io/categories/misc.xml</loc>
+  <lastmod>2016-03-08T05:38:00Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>http://souktha.github.io/categories/software.xml</loc>
+  <lastmod>2016-03-08T05:38:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/galleries/rss.xml</loc>
-  <lastmod>2016-03-07T00:14:00Z</lastmod>
+  <lastmod>2016-03-08T05:38:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/rss.xml</loc>
-  <lastmod>2016-03-06T22:01:00Z</lastmod>
+  <lastmod>2016-03-08T05:38:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/sitemap.xml</loc>
-  <lastmod>2016-03-07T00:14:00Z</lastmod>
+  <lastmod>2016-03-08T05:38:00Z</lastmod>
  </sitemap>
 </sitemapindex>
