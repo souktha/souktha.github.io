@@ -23,6 +23,7 @@
 
 .. bibliographic fields (which also require a transform):
 .. TEASER_END
+
 :Author: David Goodger
 :Address: 123 Example Street
           Example, EX  Canada
