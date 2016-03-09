@@ -15,7 +15,7 @@
 :copyright: None
             
 :abstract:
-        The Arimoto-Blahut algorithm is the algorithm used to solve the convext optimization problem
+        The Arimoto-Blahut algorithm is the algorithm used to solve the convex optimization problem
         for the maximum capacity of a discrete memoryless channel. We will implement their algorithm with
         MATLAB script to solve the given problem.
 
