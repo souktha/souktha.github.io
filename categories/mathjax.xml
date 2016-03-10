@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Soukthavy Sopha (mathjax)</title><link>http://souktha.github.io/</link><description></description><atom:link href="http://souktha.github.io/categories/mathjax.xml" type="application/rss+xml" rel="self"></atom:link><language>en</language><lastBuildDate>Wed, 09 Mar 2016 03:34:08 GMT</lastBuildDate><generator>https://getnikola.com/</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Information Channel Capacity</title><link>http://souktha.github.io/misc/class_report_503/</link><dc:creator>Soukthavy</dc:creator><description>&lt;div&gt;&lt;table class="docinfo" frame="void" rules="none"&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0"><channel><title>Soukthavy Sopha (mathjax)</title><link>http://souktha.github.io/</link><description></description><atom:link href="http://souktha.github.io/categories/mathjax.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><lastBuildDate>Thu, 10 Mar 2016 00:48:39 GMT</lastBuildDate><generator>https://getnikola.com/</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>LaTeX conversion</title><link>http://souktha.github.io/misc/class_report_503/</link><dc:creator>Soukthavy</dc:creator><description>&lt;div&gt;&lt;table class="docinfo" frame="void" rules="none"&gt;
 &lt;col class="docinfo-name"&gt;
 &lt;col class="docinfo-content"&gt;
 &lt;tbody valign="top"&gt;
@@ -11,6 +11,8 @@
 &lt;td&gt;self&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;th class="docinfo-name"&gt;Status:&lt;/th&gt;
 &lt;td&gt;Lean to convert the LaTex of IEEE format to reST using my old class homework.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th class="docinfo-name"&gt;Revision:&lt;/th&gt;
+&lt;td&gt;0.1&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;th class="docinfo-name"&gt;Copyright:&lt;/th&gt;
 &lt;td&gt;None&lt;/td&gt;&lt;/tr&gt;
 &lt;/tbody&gt;
@@ -21,6 +23,17 @@
 for the maximum capacity of a discrete memoryless channel. We will implement their algorithm with
 MATLAB script to solve the given problem.&lt;/p&gt;
 &lt;/div&gt;
+&lt;!-- Converting my old LaTeX file to reST format requires a bit of editing. Unless I did something wrong, cut-n-paste mode is not working, for example, I cannot get this to work, --&gt;
+&lt;!-- .. code-block:: --&gt;
+&lt;!-- .. raw: latex --&gt;
+&lt;!-- \begin{equation} --&gt;
+&lt;!-- \phi(y_j,x_i)  = \frac{p(x_i|y_j)p(y_j)}{\sum_{k=1}^{n}p(x_i|y_k)p(y_k)} --&gt;
+&lt;!-- \end{equation} --&gt;
+&lt;!-- instead, --&gt;
+&lt;!-- .. code-block:: --&gt;
+&lt;!-- .. math:: --&gt;
+&lt;!-- \phi(y_j,x_i)  = \frac{p(x_i|y_j)p(y_j)}{\sum_{k=1}^{n}p(x_i|y_k)p(y_k)} --&gt;
+&lt;!-- works. Most of editing involves deleting and indenting. Later I will figure out how to do multi columns in IEEE format. --&gt;
 &lt;p&gt;&lt;a href="http://souktha.github.io/misc/class_report_503/"&gt;Read more…&lt;/a&gt; (3 min remaining to read)&lt;/p&gt;&lt;/div&gt;</description><category>latex</category><category>mathjax</category><category>misc</category><guid>http://souktha.github.io/misc/class_report_503/</guid><pubDate>Tue, 08 Mar 2016 15:56:21 GMT</pubDate></item><item><title>ReStructuredText Demo (import from demo.txt)</title><link>http://souktha.github.io/misc/restructuredtext-demo-import-from-demotxt/</link><dc:creator>Soukthavy</dc:creator><description>&lt;div&gt;&lt;table class="docinfo" frame="void" rules="none"&gt;
 &lt;col class="docinfo-name"&gt;
 &lt;col class="docinfo-content"&gt;

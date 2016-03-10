@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <base href="http://souktha.github.io/misc/class_report_503/">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Information Channel Capacity | Soukthavy Sopha</title>
+<title>LaTeX conversion | Soukthavy Sopha</title>
 <link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
 <meta content="#5670d4" name="theme-color">
 <link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
@@ -12,7 +12,7 @@
 <!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Soukthavy">
 <link rel="prev" href="../../hardware/hw_sample/" title="H/W sample post" type="text/html">
 <meta property="og:site_name" content="Soukthavy Sopha">
-<meta property="og:title" content="Information Channel Capacity">
+<meta property="og:title" content="LaTeX conversion">
 <meta property="og:url" content="http://souktha.github.io/misc/class_report_503/">
 <meta property="og:description" content="Author:
 Soukthavy Sopha
@@ -22,13 +22,15 @@ Organization:
 self
 Status:
 Lean to convert the LaTex of IEEE format to reST using my old class homework.
+Revision:
+0.1
 Copyright:
 None
 
 
 
 Abstract
-The Arimoto-Bl">
+">
 <meta property="og:type" content="article">
 <meta property="article:published_time" content="2016-03-08T15:56:21Z">
 <meta property="article:tag" content="latex">
@@ -97,7 +99,7 @@ The Arimoto-Bl">
         <div class="row">
             
             
-<article class="storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Information Channel Capacity</a></h1>
+<article class="storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">LaTeX conversion</a></h1>
 
         
 
@@ -124,6 +126,10 @@ The Arimoto-Bl">
 <td>Lean to convert the LaTex of IEEE format to reST using my old class homework.</td>
 </tr>
 <tr>
+<th class="docinfo-name">Revision:</th>
+<td>0.1</td>
+</tr>
+<tr>
 <th class="docinfo-name">Copyright:</th>
 <td>None</td>
 </tr>
@@ -135,6 +141,17 @@ The Arimoto-Bl">
 for the maximum capacity of a discrete memoryless channel. We will implement their algorithm with
 MATLAB script to solve the given problem.</p>
 </div>
+<!-- Converting my old LaTeX file to reST format requires a bit of editing. Unless I did something wrong, cut-n-paste mode is not working, for example, I cannot get this to work, -->
+<!-- .. code-block:: -->
+<!-- .. raw: latex -->
+<!-- \begin{equation} -->
+<!-- \phi(y_j,x_i)  = \frac{p(x_i|y_j)p(y_j)}{\sum_{k=1}^{n}p(x_i|y_k)p(y_k)} -->
+<!-- \end{equation} -->
+<!-- instead, -->
+<!-- .. code-block:: -->
+<!-- .. math:: -->
+<!-- \phi(y_j,x_i)  = \frac{p(x_i|y_j)p(y_j)}{\sum_{k=1}^{n}p(x_i|y_k)p(y_k)} -->
+<!-- works. Most of editing involves deleting and indenting. Later I will figure out how to do multi columns in IEEE format. -->
 <!-- TEASER_END -->
 <div class="section" id="introduction">
 <h2>1   Introduction</h2>

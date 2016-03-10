@@ -1,4 +1,4 @@
-.. title: Information Channel Capacity
+.. title: LaTeX conversion
 .. slug: class_report_503
 .. date: 2016-03-08 15:56:21 UTC
 .. tags: misc, mathjax, latex
@@ -8,19 +8,47 @@
 .. type: text
 .. author: Soukthavy
 
+======================================================
+Convert a small LaTeX file to mathjax supported format
+======================================================
+
+.. Converting my old LaTeX file to reST format requires a bit of editing. Unless I did something wrong, cut-n-paste mode is not working, for example, I cannot get this to work,
+
+.. .. code-block::
+
+..         .. raw: latex
+
+..                 \begin{equation}
+..                 \phi(y_j,x_i)  = \frac{p(x_i|y_j)p(y_j)}{\sum_{k=1}^{n}p(x_i|y_k)p(y_k)}
+..                \end{equation}
+
+.. instead,
+
+.. .. code-block::
+
+..         .. math::
+
+..                 \phi(y_j,x_i)  = \frac{p(x_i|y_j)p(y_j)}{\sum_{k=1}^{n}p(x_i|y_k)p(y_k)}
+
+                 
+.. works. Most of editing involves deleting and indenting. Later I will figure out how to do multi columns in IEEE format.
+
+
 :Author: Soukthavy Sopha
 :Contact: soukthavy@yahoo.com
 :organization: self
 :status: Lean to convert the LaTex of IEEE format to reST using my old class homework.
+:revision: 0.1
 :copyright: None
             
 :abstract:
+
         The Arimoto-Blahut algorithm is the algorithm used to solve the convex optimization problem
         for the maximum capacity of a discrete memoryless channel. We will implement their algorithm with
         MATLAB script to solve the given problem.
 
-.. TEASER_END
 
+.. TEASER_END
 
 .. meta::
         :keywords: arimoto-balhut, arimoto, channel
