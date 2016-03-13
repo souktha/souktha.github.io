@@ -7,90 +7,94 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <url>
   <loc>http://souktha.github.io/</loc>
-  <lastmod>2016-03-08T21:59:00Z</lastmod>
+  <lastmod>2016-03-13T01:58:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/2016/</loc>
-  <lastmod>2016-03-08T21:59:00Z</lastmod>
+  <lastmod>2016-03-13T01:58:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/archive.html</loc>
-  <lastmod>2016-03-08T21:59:00Z</lastmod>
+  <lastmod>2016-03-13T01:58:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/blog/</loc>
-  <lastmod>2016-03-08T21:59:00Z</lastmod>
+  <lastmod>2016-03-13T01:58:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/blog/first-sample-blog-post/</loc>
-  <lastmod>2016-03-06T17:26:00Z</lastmod>
+  <lastmod>2016-03-13T01:57:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/blog/restructuredtext-demo-import-from-demotxt/</loc>
-  <lastmod>2016-03-06T21:47:00Z</lastmod>
+  <lastmod>2016-03-13T01:57:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/categories/</loc>
-  <lastmod>2016-03-08T21:59:00Z</lastmod>
+  <lastmod>2016-03-13T01:58:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/categories/hardware/</loc>
-  <lastmod>2016-03-08T21:59:00Z</lastmod>
+  <lastmod>2016-03-13T01:58:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/categories/latex/</loc>
-  <lastmod>2016-03-08T21:59:00Z</lastmod>
+  <lastmod>2016-03-13T01:58:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/categories/mathjax/</loc>
-  <lastmod>2016-03-08T21:59:00Z</lastmod>
+  <lastmod>2016-03-13T01:58:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/categories/misc/</loc>
-  <lastmod>2016-03-08T21:59:00Z</lastmod>
+  <lastmod>2016-03-13T01:58:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/categories/software/</loc>
-  <lastmod>2016-03-08T21:59:00Z</lastmod>
+  <lastmod>2016-03-13T01:58:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/galleries/</loc>
-  <lastmod>2016-03-08T21:59:00Z</lastmod>
+  <lastmod>2016-03-13T01:58:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/hardware/</loc>
-  <lastmod>2016-03-08T21:59:00Z</lastmod>
+  <lastmod>2016-03-13T01:58:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/hardware/hw_sample/</loc>
-  <lastmod>2016-03-08T21:59:00Z</lastmod>
+  <lastmod>2016-03-13T01:58:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/hardware/myhw_firstpost/</loc>
-  <lastmod>2016-03-08T05:08:00Z</lastmod>
+  <lastmod>2016-03-13T01:57:00Z</lastmod>
+ </url>
+ <url>
+  <loc>http://souktha.github.io/hardware/servo/</loc>
+  <lastmod>2016-03-13T01:58:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/listings/</loc>
-  <lastmod>2016-03-08T21:59:00Z</lastmod>
+  <lastmod>2016-03-13T01:58:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/misc/</loc>
-  <lastmod>2016-03-08T21:59:00Z</lastmod>
+  <lastmod>2016-03-13T01:58:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/misc/class_report_503/</loc>
-  <lastmod>2016-03-08T21:59:00Z</lastmod>
+  <lastmod>2016-03-13T01:58:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/misc/restructuredtext-demo-import-from-demotxt/</loc>
-  <lastmod>2016-03-08T21:59:00Z</lastmod>
+  <lastmod>2016-03-13T01:58:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/software/</loc>
-  <lastmod>2016-03-08T21:59:00Z</lastmod>
+  <lastmod>2016-03-13T01:58:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/software/sw_sample_post/</loc>
-  <lastmod>2016-03-08T21:59:00Z</lastmod>
+  <lastmod>2016-03-13T01:58:00Z</lastmod>
  </url>
 </urlset>
