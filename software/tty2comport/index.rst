@@ -1,12 +1,12 @@
 .. title: Redirect tty login from ssh to UART port
 .. slug: tty2comport
 .. date: 2016-03-18 03:15:48 UTC
-.. tags: 
+.. tags: software
 .. category: 
 .. link: 
 .. description: 
 .. type: text
-.. $Rev: 38 $
+.. $Rev: 39 $
 .. $HeadURL: file:///home/ssop/usb3/svn/repos/mysite/posts/software/tty2comport.rst $
 .. $LastChangeDate$
 
