@@ -15,7 +15,7 @@
  </url>
  <url>
   <loc>http://souktha.github.io/archive.html</loc>
-  <lastmod>2016-03-13T01:58:00Z</lastmod>
+  <lastmod>2016-03-19T14:37:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/blog/</loc>
@@ -91,10 +91,14 @@
  </url>
  <url>
   <loc>http://souktha.github.io/software/</loc>
-  <lastmod>2016-03-13T01:58:00Z</lastmod>
+  <lastmod>2016-03-19T14:06:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/software/sw_sample_post/</loc>
   <lastmod>2016-03-13T01:58:00Z</lastmod>
+ </url>
+ <url>
+  <loc>http://souktha.github.io/software/tty2comport/</loc>
+  <lastmod>2016-03-19T14:06:00Z</lastmod>
  </url>
 </urlset>

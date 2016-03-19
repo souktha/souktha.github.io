@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<head>
+<meta charset="utf-8">
+<base href="http://souktha.github.io/software/tty2comport/">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Redirect tty login from ssh to UART port | Soukthavy Sopha</title>
+<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<meta content="#5670d4" name="theme-color">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
+<link rel="canonical" href="http://souktha.github.io/software/tty2comport/">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Soukthavy">
+<link rel="prev" href="../../hardware/servo/" title="servo driver" type="text/html">
+<meta property="og:site_name" content="Soukthavy Sopha">
+<meta property="og:title" content="Redirect tty login from ssh to UART port">
+<meta property="og:url" content="http://souktha.github.io/software/tty2comport/">
+<meta property="og:description" content="Objective
+When I ssh from remote host machine to my local machine, say from outside place to host machine at home, I would
+like to directly access a device that is connected by serial console to my lo">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2016-03-18T03:15:48Z">
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-inverse navbar-static-top"><div class="container">
+<!-- This keeps the margins nice -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://souktha.github.io/">
+
+                <span id="blog-title">Soukthavy Sopha</span>
+            </a>
+        </div>
+<!-- /.navbar-header -->
+        <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
+            <ul class="nav navbar-nav">
+<li>
+<a href="../../archive.html">Archive</a>
+                </li>
+<li>
+<a href="../../categories/">Tags</a>
+                </li>
+<li>
+<a href="../../rss.xml">RSS feed</a>
+            </li>
+<li class="dropdown">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Blog <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+<li>
+<a href="../../software">Sofware</a>
+                    </li>
+<li>
+<a href="../../hardware">Hardware</a>
+                    </li>
+<li>
+<a href="../../misc">Misc</a>
+            </li>
+</ul>
+</li>
+<li>
+<a href="https://github.com/souktha">My Github</a>
+
+                
+            </li>
+</ul>
+<ul class="nav navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        <div class="row">
+            
+            
+<article class="storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Redirect tty login from ssh to UART port</a></h1>
+
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<div class="section" id="objective">
+<h2>Objective</h2>
+<p>When I ssh from remote host machine to my local machine, say from outside place to host machine at home, I would
+like to directly access a device that is connected by serial console to my local machine, for example, a beaglebone black
+board that is connected to my home PC serial console ttyUSB0. I implemented a simple console server for this purpose.</p>
+<!-- TEASER_END -->
+</div>
+<div class="section" id="scenario">
+<h2>Scenario</h2>
+<p>Outside remote host (ssh client)-------&gt; local home machine(ssh server) ----ttyUSBx/ttySx------ beagleboneblack.</p>
+<p>I want to do that without the need to call up a terminal access application such as minicom. While the application
+of this type is very versatile, I some time have to fiddle with the settings. If I know exactly what my setting
+is, for example, connect as 115200n8, I could just to go straight with this simple application, tty2comport.</p>
+</div>
+<div class="section" id="how-it-works">
+<h2>How it works</h2>
+<p>Normally when I ssh from remote place, the ssh server will go through login process to authorize the access to my
+local machine as set by user and password. Once logged in, I open up minicom and goes about accessing the
+connected device. Now with this, I just ssh in to the local machine, once connected, it goes directly to
+the serial console port where I can go about accessing the attached device. No need for me to open up minicom
+application. This happens because every I login, the shell profile will be launched. In my case it is bash
+shell. 'ssh' deals only with secured transmission of data between two hosts between my chosen shell; therefore,
+once ssh session is established,  bash will launch this application if it detects the passing parameter. The
+application then open up the ttyUSB0 and exchange data with STDIN_FILENO which is shell. Data transmitted during
+my session between the two hosts remain secured by ssh.
+It is tranparent for the entire session. Once I want to quit, I hit 'esc q', then logout from ssh session.
+The program is not complicate and use only Unix standard library and does not require any library package outside
+of what is readily available to Unix <a class="footnote-reference" href="#id2" id="id1">[1]</a>. Only one source file with less than 300 lines of code to do this !
+<a class="reference external" href="http://github.com/souktha/tty2comport">http://github.com/souktha/tty2comport</a></p>
+</div>
+<div class="section" id="setup">
+<h2>Setup</h2>
+<div class="section" id="local-host">
+<h3>Local host</h3>
+<p>This is the home PC. For my use, I need to make sure to have the following settings:</p>
+<p>1) "AcceptEnv DIRECTPORT" is added to /etc/ssh/sshd_config. Restart sshd as needed provided I just enable this
+feature. This is where my home PC with beaglebone black connected to its ttyUSB0. I may need to restart sshd
+service for the new feature to take effect.</p>
+<p>2) Having this environment ready to be picked up in by login profile. For my case it is ".bash_profile", so I
+edit to add</p>
+<pre class="code bash"><a name="rest_code_198beb1084b2495292a61b038a5bf105-1"></a><span class="k">case</span> <span class="nv">$D</span>IRECTPORT in
+<a name="rest_code_198beb1084b2495292a61b038a5bf105-2"></a>        <span class="s2">"USB0"</span><span class="o">)</span> /usr/bin/tty2comport <span class="nv">$D</span>IRECTPORT<span class="p">;;</span>
+<a name="rest_code_198beb1084b2495292a61b038a5bf105-3"></a><span class="k">esac</span>
+</pre>
+<p>I could add more option such as "S0" for ttyS0. This time I use ttyUSB0 for my serial console connection. Once
+the ssh session is established, the DIRECTPORT enviroment will be passed to the bash profile. With this information,
+the tty2comport is launched.</p>
+</div>
+<div class="section" id="remote-host">
+<h3>Remote host</h3>
+<p>On the remote host, I need to make sure I have the DIRECTPORT environment variable set. If not yet set, I
+would do,</p>
+<pre class="code bash"><a name="rest_code_21224380a06f43f7a102ffe506f03cee-1"></a>$<span class="nb">set</span> <span class="nv">DIRECTPORT</span><span class="o">=</span>USB0
+</pre>
+<p>Once this is set, I can do ssh to my remote</p>
+</div>
+<div class="section" id="connecting-via-ssh">
+<h3>Connecting via ssh</h3>
+<p>After the above settings is done, I should be able to connect,</p>
+<pre class="code bash"><a name="rest_code_fb0ab257f709467cb09abe426a049079-1"></a>$ssh -o <span class="nv">SendEnv</span><span class="o">=</span>DIRECTPORT myusername@myhost
+</pre>
+<div class="figure">
+<img alt="../../images/misc/snapshot-tty2.png" src="../../images/misc/snapshot-tty2.png"><p class="caption">Accessing ttyUSB0 connected device (bblk's u-boot shell)</p>
+</div>
+</div>
+<div class="section" id="citations">
+<h3>Citations</h3>
+<table class="docutils footnote" frame="void" id="id2" rules="none">
+<colgroup>
+<col class="label">
+<col>
+</colgroup>
+<tbody valign="top"><tr>
+<td class="label"><a class="fn-backref" href="#id1">[1]</a></td>
+<td>Advanced Programming in the UNIX Environment, W. Richard Stevens, 1992, Addison Wesley.</td>
+</tr></tbody>
+</table>
+</div>
+</div>
+</div>
+    </div>
+    
+
+</article>
+</div>
+        <!--End of body content-->
+
+        <footer id="footer">
+            Contents © 2016         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+        </footer>
+</div>
+</div>
+
+
+            <script src="../../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+    moment.locale("en");
+    fancydates(0, "YYYY-MM-DD HH:mm");
+    </script><!-- end fancy dates -->
+</body>
+</html>

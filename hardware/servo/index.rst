@@ -39,7 +39,7 @@ Interface
 H/W Synthesis
 -------------
 
-- cd to my loca directory where the verilog source files reside (Code available in my respoitory  https://github.com/souktha/servo)
+- cd to my local directory where the verilog source files reside (Code available in my respoitory  https://github.com/souktha/servo)
 - start vivado, 
 
 ..  .. image:: ../../images/servo/tcltool.png 

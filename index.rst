@@ -7,19 +7,19 @@
 .. description: Welcome page
 .. type: text
 
-Welcome to my site ! I am a Software Engineer working for a consumer electronic company at the west coast of the U.S.
-Since my page is being constructed, changes will take place occasionally. I will be adding files to my repository, 
-files that you might find to be useful for whatever you are interested in whether you are an experienced developer or a novice like me. 
-Most of the code in my repository is considered open source and most of them are from my own development from my hobby, and 
-they do not reflect on the opinion of my employers, past or present in any way. 
-The code are not proprietary so you may do anything with them as you wish. My blog page will list the categories 
-and where they can be found in the github. 
-I hope that you will find it a bit interesting and useful.
-I will have some boot code, kernel code, verilog code to share later.
+.. $LastChangeDate$
+.. $HeadURL$
+.. $Rev$
+
+Hi ! I am Soukthavy Sopha and this is my blog page. The summary of my CV should be viewable in linkedin.
+
+Since my page is underconstruction, changes will take place occasionally. I will be adding files to my repository off and on.
+All of the source codes in my repository are considered open source and most of them are from my own development from my hobby.
+If you find something interesting you may use them for educational purpose. My blog page will list the categories 
+and where the corresponding source files can be found in my github repository. 
 
 Thank you for visiting !
 
-.. Note::        Page is under construction
 
 .. image:: ../images/under-construction-icon-47228.png
         :width: 100
