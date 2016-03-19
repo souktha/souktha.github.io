@@ -129,9 +129,9 @@ feature. This is where my home PC with beaglebone black connected to its ttyUSB0
 service for the new feature to take effect.</p>
 <p>2) Having this environment ready to be picked up in by login profile. For my case it is ".bash_profile", so I
 edit to add</p>
-<pre class="code bash"><a name="rest_code_c6be8dbfcd4c4433869b25af848aeaf9-1"></a><span class="k">case</span> <span class="nv">$D</span>IRECTPORT in
-<a name="rest_code_c6be8dbfcd4c4433869b25af848aeaf9-2"></a>        <span class="s2">"USB0"</span><span class="o">)</span> /usr/bin/tty2comport <span class="nv">$D</span>IRECTPORT<span class="p">;;</span>
-<a name="rest_code_c6be8dbfcd4c4433869b25af848aeaf9-3"></a><span class="k">esac</span>
+<pre class="code bash"><a name="rest_code_54472dabde6d44358d57d9d5b3d6a06c-1"></a><span class="k">case</span> <span class="nv">$D</span>IRECTPORT in
+<a name="rest_code_54472dabde6d44358d57d9d5b3d6a06c-2"></a>        <span class="s2">"USB0"</span><span class="o">)</span> /usr/bin/tty2comport <span class="nv">$D</span>IRECTPORT<span class="p">;;</span>
+<a name="rest_code_54472dabde6d44358d57d9d5b3d6a06c-3"></a><span class="k">esac</span>
 </pre>
 <p>I could add more option such as "S0" for ttyS0. This time I use ttyUSB0 for my serial console connection. Once
 the ssh session is established, the DIRECTPORT enviroment will be passed to the bash profile. With this information,
@@ -141,14 +141,14 @@ the tty2comport is launched.</p>
 <h3>Remote host</h3>
 <p>On the remote host, I need to make sure I have the DIRECTPORT environment variable set. If not yet set, I
 would do,</p>
-<pre class="code bash"><a name="rest_code_97729e2f5eb24188bb09a7e65f6fc7dc-1"></a>$<span class="nb">set</span> <span class="nv">DIRECTPORT</span><span class="o">=</span>USB0
+<pre class="code bash"><a name="rest_code_b25f74fcece64ca7988ea8ca487935fc-1"></a>$<span class="nb">set</span> <span class="nv">DIRECTPORT</span><span class="o">=</span>USB0
 </pre>
 <p>Once this is set, I can do ssh to my remote</p>
 </div>
 <div class="section" id="connecting-via-ssh">
 <h3>Connecting via ssh</h3>
 <p>After the above settings is done, I should be able to connect,</p>
-<pre class="code bash"><a name="rest_code_6e83dd67eadb423197fff8339f25c3ca-1"></a>$ssh -o <span class="nv">SendEnv</span><span class="o">=</span>DIRECTPORT myusername@myhost
+<pre class="code bash"><a name="rest_code_3ab0750e2c9b41bc9ef227cc05c99d5b-1"></a>$ssh -o <span class="nv">SendEnv</span><span class="o">=</span>DIRECTPORT myusername@myhost
 </pre>
 <div class="figure">
 <img alt="../../images/misc/snapshot-tty2.png" src="../../images/misc/snapshot-tty2.png"><p class="caption">Accessing ttyUSB0 connected device (bblk's u-boot shell)</p>
