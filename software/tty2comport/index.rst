@@ -6,7 +6,7 @@
 .. link: 
 .. description: 
 .. type: text
-.. $Rev: 39 $
+.. $Rev: 40 $
 .. $HeadURL: file:///home/ssop/usb3/svn/repos/mysite/posts/software/tty2comport.rst $
 .. $LastChangeDate$
 
