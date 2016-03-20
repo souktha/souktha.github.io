@@ -232,7 +232,7 @@ accordingly. This is suppposedly the simplest form of 'its' file I need to creat
         $mkimage -f kernel.its zImage.itb
 
 
-The output zImage.itb (I can name it anything) is my FIT file ready to be loaded. I need to do one more thing to complet this process.
+The output zImage.itb (I can name it anything) is my FIT file ready to be loaded. I need to do one more thing to complete this process.
 
 Create boot.scr
 ----------------
@@ -317,7 +317,7 @@ Here is what happens after all these things,
         [    0.000000] Initializing cgroup subsys cpuset 
         [    0.000000] Initializing cgroup subsys cpu
 
-As I can see, it detects the presence of boot.scr, follows the instruction given such as set the bootargs and 'fatload' the zImage.itb then
+As I can see, u-boot detects the presence of boot.scr, follows the instruction given such as set the bootargs and 'fatload' the zImage.itb then
 boot Linux kernel. The part dealing with creating partitions and booting the image is done.
 
 Todo
