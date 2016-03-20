@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<head>
+<meta charset="utf-8">
+<base href="http://souktha.github.io/misc/repartition-boneblk/">
+<meta name="description" content="Document about repartitioning my beaglebone black">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Repartitioning 4GB Beaglebone Black eMMC flash | Soukthavy Sopha</title>
+<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<meta content="#5670d4" name="theme-color">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
+<link rel="canonical" href="http://souktha.github.io/misc/repartition-boneblk/">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="description" itemprop="description" content="Document about repartitioning my beaglebone black">
+<meta name="author" content="Soukthavy">
+<link rel="prev" href="../../hardware/vga_draw_graph/" title="Drawing bargraph on VGA with Nexys4DDR" type="text/html">
+<meta property="og:site_name" content="Soukthavy Sopha">
+<meta property="og:title" content="Repartitioning 4GB Beaglebone Black eMMC flash">
+<meta property="og:url" content="http://souktha.github.io/misc/repartition-boneblk/">
+<meta property="og:description" content="Document about repartitioning my beaglebone black">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2016-03-20T01:26:53Z">
+<meta property="article:tag" content="misc">
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-inverse navbar-static-top"><div class="container">
+<!-- This keeps the margins nice -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://souktha.github.io/">
+
+                <span id="blog-title">Soukthavy Sopha</span>
+            </a>
+        </div>
+<!-- /.navbar-header -->
+        <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
+            <ul class="nav navbar-nav">
+<li>
+<a href="../../archive.html">Archive</a>
+                </li>
+<li>
+<a href="../../categories/">Tags</a>
+                </li>
+<li>
+<a href="../../rss.xml">RSS feed</a>
+            </li>
+<li class="dropdown">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Blog <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+<li>
+<a href="../../software">Sofware</a>
+                    </li>
+<li>
+<a href="../../hardware">Hardware</a>
+                    </li>
+<li>
+<a href="../../misc">Misc</a>
+            </li>
+</ul>
+</li>
+<li>
+<a href="https://github.com/souktha">My Github</a>
+
+                
+            </li>
+</ul>
+<ul class="nav navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        <div class="row">
+            
+            
+<article class="storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Repartitioning 4GB Beaglebone Black eMMC flash</a></h1>
+
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<!-- $LastChangeDate$ -->
+<!-- $Rev$ -->
+<!-- $Author$ -->
+<p>I bought the Beaglebone Black Rev C nearly two years ago. When I received it, I powered it up and
+saw that everything appeared to be functional, put it back in the box and never had the change
+to work with it again until now. It looks like it was preloaded with Debian (I am not sure). There
+must have been a lot of updates ever since.</p>
+<!-- TEASER_END -->
+<p>This is what shows up on serial port console on boot up,</p>
+<pre class="code text"><a name="rest_code_bbaabc2a04644e2ab17aed2563c22525-1"></a>U-Boot 2014.04-00015-gb4422bd (Apr 22 2014 - 13:24:29)
+<a name="rest_code_bbaabc2a04644e2ab17aed2563c22525-2"></a>
+<a name="rest_code_bbaabc2a04644e2ab17aed2563c22525-3"></a>I2C:   ready
+<a name="rest_code_bbaabc2a04644e2ab17aed2563c22525-4"></a>DRAM:  512 MiB
+<a name="rest_code_bbaabc2a04644e2ab17aed2563c22525-5"></a>NAND:  0 MiB
+<a name="rest_code_bbaabc2a04644e2ab17aed2563c22525-6"></a>MMC:   OMAP SD/MMC: 0, OMAP SD/MMC: 1
+</pre>
+<p>I examine its on-board MMC1 (4GB) for the partition information and find two factory created partitions,</p>
+<pre class="code text"><a name="rest_code_e795f7a140944b64a9a2759c3298cf96-1"></a>=&gt; mmc dev 1
+<a name="rest_code_e795f7a140944b64a9a2759c3298cf96-2"></a>switch to partitions #0, OK
+<a name="rest_code_e795f7a140944b64a9a2759c3298cf96-3"></a>mmc1(part 0) is current device
+<a name="rest_code_e795f7a140944b64a9a2759c3298cf96-4"></a>=&gt; mmc part
+<a name="rest_code_e795f7a140944b64a9a2759c3298cf96-5"></a>
+<a name="rest_code_e795f7a140944b64a9a2759c3298cf96-6"></a>Partition Map for MMC device 1  --   Partition Type: DOS
+<a name="rest_code_e795f7a140944b64a9a2759c3298cf96-7"></a>
+<a name="rest_code_e795f7a140944b64a9a2759c3298cf96-8"></a>Part    Start Sector    Num Sectors     UUID            Type
+<a name="rest_code_e795f7a140944b64a9a2759c3298cf96-9"></a>  1     2048            196608          00000000-01     0e Boot
+<a name="rest_code_e795f7a140944b64a9a2759c3298cf96-10"></a>  2     198656          7354368         00000000-02     83
+</pre>
+<p>It is obvious that I cannot repartition this MMC1 if I boot from the on-board eMMC flash because it becomes
+a root partition itself. Maybe I could by pivoting root, but I am not sure I want to mount and edit the script of ramdisk
+image to do that. I might as well end up spending the same amount of time doing what I plan to do. My plan is to rebuild
+from ground up so I need to boot from SD first. For that I need to prepare a bootable SD card,
+which according to the BBLK document, it is regarded to be MMC0 device with respect to u-boot.
+I begin to search for the cross toolchains. While there are readily available from TI website as well as
+some others, they tend to come in large package, toolchain and rootfs. I decide to build it on my own using
+buildroot[<a class="reference internal" href="#id1">1</a>]. I also notice that the preloaded kernel is also quite old,</p>
+<pre class="code text"><a name="rest_code_6f342422fd1d467e98034e2fb3ca1902-1"></a>root@beaglebone:~# uname -ra
+<a name="rest_code_6f342422fd1d467e98034e2fb3ca1902-2"></a>Linux beaglebone 3.8.13-bone47 #1 SMP Fri Apr 11 01:36:09 UTC 2014 armv7l GNU/Linux
+</pre>
+<p>This gives me more excuse to totally upgrade it.
+Once my cross toolchain and basic rootfs built is completed, I am ready to repartition MMC1. First I boot from
+SD card. My SD card has the necessary tools, fdisk, mkfs installed so I am ready to repartition.</p>
+<p>'fdisk /dev/mmcblk1' and then 'p' command to print partition. This is what is on my board,</p>
+<pre class="code text"><a name="rest_code_4e838df224a74de88fe0c854d3954e02-1"></a>Disk /dev/mmcblk1: 3867 MB, 3867148288 bytes
+<a name="rest_code_4e838df224a74de88fe0c854d3954e02-2"></a>4 heads, 16 sectors/track, 118016 cylinders
+<a name="rest_code_4e838df224a74de88fe0c854d3954e02-3"></a>Units = cylinders of 64 * 512 = 32768 bytes
+<a name="rest_code_4e838df224a74de88fe0c854d3954e02-4"></a>
+<a name="rest_code_4e838df224a74de88fe0c854d3954e02-5"></a>Device Boot      Start         End      Blocks  Id System
+<a name="rest_code_4e838df224a74de88fe0c854d3954e02-6"></a>/dev/mmcblk1p1   *          33        3104       98304   e Win95 FAT16 (LBA)
+<a name="rest_code_4e838df224a74de88fe0c854d3954e02-7"></a>/dev/mmcblk1p2            3105      118016     3677184  83 Linux
+</pre>
+<p>Firt thing to do is to delete these two partitions and recreate three new partitions. One for FAT to please AM335X ROM boot, and
+two rootfs partitions. One rootfs partition is for the rootfs I built on my own, the second one I plan to use TI rootfs to see
+what they have. For u-boot, I built after I clone from the git repos, and for the kernel I used TI' source of Linux 4.1.3 git. These
+two items are on my SD card that I boot while the rootfs is from buildroot. Put it simply, they are all new.</p>
+<pre class="code text"><a name="rest_code_de124fc05a3243119ed496548314fac3-1"></a> U-Boot 2016.03 (Mar 17 2016 - 07:36:31 -0700)
+<a name="rest_code_de124fc05a3243119ed496548314fac3-2"></a>
+<a name="rest_code_de124fc05a3243119ed496548314fac3-3"></a>Watchdog enabled
+<a name="rest_code_de124fc05a3243119ed496548314fac3-4"></a> I2C:   ready
+<a name="rest_code_de124fc05a3243119ed496548314fac3-5"></a> DRAM:  512 MiB
+<a name="rest_code_de124fc05a3243119ed496548314fac3-6"></a> MMC:   OMAP SD/MMC: 0, OMAP SD/MMC: 1
+<a name="rest_code_de124fc05a3243119ed496548314fac3-7"></a> ....
+<a name="rest_code_de124fc05a3243119ed496548314fac3-8"></a> Linux version 4.1.13-g8dc6617 (xxxx@xxxx) (gcc version 5.3.0 (Buildroot 2016.02) ) #2 PREEMPT Tue Mar 15 13:35:14 PDT 2016
+<a name="rest_code_de124fc05a3243119ed496548314fac3-9"></a>
+<a name="rest_code_de124fc05a3243119ed496548314fac3-10"></a> ...
+<a name="rest_code_de124fc05a3243119ed496548314fac3-11"></a>
+<a name="rest_code_de124fc05a3243119ed496548314fac3-12"></a> Welcome to Buildroot
+<a name="rest_code_de124fc05a3243119ed496548314fac3-13"></a> beaglebone login: root
+<a name="rest_code_de124fc05a3243119ed496548314fac3-14"></a> #
+</pre>
+<p>Continue with fdisk, I delete both partition with 'd' command. After that I use 'x' command to get to expert mode. In this page of
+command menu, I change heads and sectors to 255 and 63 respectively. Commit the change, exit fdisk to reenter again so I can
+verify what I did earlier is still good just to be sure.</p>
+<pre class="code text"><a name="rest_code_d7215a544c1b4465ab6f224ef49219b0-1"></a>Disk /dev/mmcblk1: 3867 MB, 3867148288 bytes
+<a name="rest_code_d7215a544c1b4465ab6f224ef49219b0-2"></a>255 heads, 63 sectors/track, 118016 cylinders
+<a name="rest_code_d7215a544c1b4465ab6f224ef49219b0-3"></a>Units = cylinders of 16065 * 512 = 8225280 bytes
+<a name="rest_code_d7215a544c1b4465ab6f224ef49219b0-4"></a>
+<a name="rest_code_d7215a544c1b4465ab6f224ef49219b0-5"></a>Device Boot      Start         End      Blocks  Id System
+<a name="rest_code_d7215a544c1b4465ab6f224ef49219b0-6"></a>
+<a name="rest_code_d7215a544c1b4465ab6f224ef49219b0-7"></a>Command (m for help): n
+<a name="rest_code_d7215a544c1b4465ab6f224ef49219b0-8"></a>Command action
+<a name="rest_code_d7215a544c1b4465ab6f224ef49219b0-9"></a>   e   extended
+<a name="rest_code_d7215a544c1b4465ab6f224ef49219b0-10"></a>   p   primary partition (1-4)
+</pre>
+<p>so far so good. The heads and sectors are what I set so I proceed to to the rest of the steps on creating new partitions. These
+are my new partitions after I recreated.</p>
+<pre class="code text"><a name="rest_code_4359b2b438194e768f719b1c0f6c8ac7-1"></a>Disk /dev/mmcblk0: 3867 MB, 3867148288 bytes
+<a name="rest_code_4359b2b438194e768f719b1c0f6c8ac7-2"></a>255 heads, 63 sectors/track, 470 cylinders
+<a name="rest_code_4359b2b438194e768f719b1c0f6c8ac7-3"></a>Units = cylinders of 16065 * 512 = 8225280 bytes
+<a name="rest_code_4359b2b438194e768f719b1c0f6c8ac7-4"></a>
+<a name="rest_code_4359b2b438194e768f719b1c0f6c8ac7-5"></a>Device Boot      Start         End      Blocks  Id System
+<a name="rest_code_4359b2b438194e768f719b1c0f6c8ac7-6"></a>/dev/mmcblk0p1   *           1          13      104391   e Win95 FAT16 (LBA)
+<a name="rest_code_4359b2b438194e768f719b1c0f6c8ac7-7"></a>/dev/mmcblk0p2              14         196     1469947+ 83 Linux
+<a name="rest_code_4359b2b438194e768f719b1c0f6c8ac7-8"></a>/dev/mmcblk0p3             197         470     2200905  83 Linux
+</pre>
+<p>I will have two sets of rootfs partition, p2 and p3 of roughly equal size with the variety of zImage will be in p1 partition (FAT). The next
+step is to populate the rootfs and the FAT partition. For root partition, I could do it live after mounting /dev/mmcblk0p2 to /mnt, for example,</p>
+<pre class="code text"><a name="rest_code_e8b6b845f6004d1c8967b0deaae50c40-1"></a>wget ftp://myhost/rootfs.tar.gz -O - | tar xz -C /mnt
+</pre>
+<p>There is nothing magical about it. Of course, the filesystem must first be created on all partitions ie..mkfs them first.
+Once this is done, FAT partition can be mounted and copy the u-boot and the zImage and the boot script.
+Before my OS boot, I stop at u-boot prompt to confirm my new partitions as I would expect them to be,</p>
+<pre class="code text"><a name="rest_code_25da0e15ab3b4d9ab08e24b247d27fbd-1"></a>mmc dev 1
+<a name="rest_code_25da0e15ab3b4d9ab08e24b247d27fbd-2"></a>switch to partitions #0, OK
+<a name="rest_code_25da0e15ab3b4d9ab08e24b247d27fbd-3"></a>mmc1(part 0) is current device
+<a name="rest_code_25da0e15ab3b4d9ab08e24b247d27fbd-4"></a>=&gt; mmc part
+<a name="rest_code_25da0e15ab3b4d9ab08e24b247d27fbd-5"></a>
+<a name="rest_code_25da0e15ab3b4d9ab08e24b247d27fbd-6"></a>Partition Map for MMC device 1  --   Partition Type: DOS
+<a name="rest_code_25da0e15ab3b4d9ab08e24b247d27fbd-7"></a>
+<a name="rest_code_25da0e15ab3b4d9ab08e24b247d27fbd-8"></a>Part    Start Sector    Num Sectors     UUID            Type
+<a name="rest_code_25da0e15ab3b4d9ab08e24b247d27fbd-9"></a>  1     63              208782          00000000-01     0e Boot
+<a name="rest_code_25da0e15ab3b4d9ab08e24b247d27fbd-10"></a>  2     208845          2939895         00000000-02     83
+<a name="rest_code_25da0e15ab3b4d9ab08e24b247d27fbd-11"></a>  3     3148740         4401810         00000000-03     83
+</pre>
+<p>So far so good.</p>
+<div class="section" id="create-zimage-with-fdt">
+<h2>Create zImage with FDT</h2>
+<p>I do not like the complicated uEnv.txt that came with the board and its elaborated boot script. I think it was made to provide the maximum
+accommodation to the variants of Am335x based platforms. Since I know for sure that my board is BBLK, so I will keep it as simple as possible by
+putting the FDT onto zImage. The how-to is well documented in u-bood/doc/uImage.FIT [<a class="reference internal" href="#id2">2</a>]. This is the RTFM part of the process.</p>
+<div class="section" id="creating-kernel-its-file">
+<h3>Creating kernel.its file</h3>
+<p>Just use the sample 'kernel_fdt.its', edit and use it. Here is my 'kernel.its' file ,</p>
+<pre class="code text"><a name="rest_code_4bc1735395944c1c926974a7adb39ecb-1"></a>/dts-v1/;
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-2"></a>
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-3"></a>/ {
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-4"></a>        description = "ARM BBLK FIT (Flattened Image Tree)";
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-5"></a>        #address-cells = &lt;1&gt;;
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-6"></a>
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-7"></a>        images {
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-8"></a>                kernel@1 {
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-9"></a>                        description = "ARM BeagleboneBlack Linux-4.1.13";
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-10"></a>                        data = /incbin/("zImage");
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-11"></a>                        type = "kernel";
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-12"></a>                        arch = "arm";
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-13"></a>                        os = "linux";
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-14"></a>                        compression = "none";
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-15"></a>                        load = &lt;0x80008000&gt;;
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-16"></a>                        entry = &lt;0x80008000&gt;;
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-17"></a>                        hash@1 {
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-18"></a>                        algo = "crc32";
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-19"></a>                        };
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-20"></a>                        hash@2 {
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-21"></a>                                algo = "sha1";
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-22"></a>                        };
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-23"></a>                };
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-24"></a>
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-25"></a>                fdt@1 {
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-26"></a>                        description = "ARM Boneblack device tree blob";
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-27"></a>                        data = /incbin/("am335x-boneblack.dtb");
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-28"></a>                        type = "flat_dt";
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-29"></a>                        arch = "arm";
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-30"></a>                        compression = "none";
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-31"></a>
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-32"></a>                        hash@1 {
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-33"></a>                                algo = "crc32";
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-34"></a>                        };
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-35"></a>                        hash@2 {
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-36"></a>                                algo = "sha1";
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-37"></a>                        };
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-38"></a>                };
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-39"></a>
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-40"></a>        };
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-41"></a>
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-42"></a>        configurations {
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-43"></a>                default = "config@1";
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-44"></a>
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-45"></a>                config@1 {
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-46"></a>                        description = "BeagleboneBlack";
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-47"></a>                        kernel = "kernel@1";
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-48"></a>                        fdt = "fdt@1";
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-49"></a>                };
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-50"></a>
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-51"></a>        };
+<a name="rest_code_4bc1735395944c1c926974a7adb39ecb-52"></a>};
+</pre>
+<p>Pay attention to 'data' field. If your data file is not in the current directory wkere the kernel.its file resides you need to adjust their paths
+accordingly. This is suppposedly the simplest form of 'its' file I need to create FDT image. Next I do,</p>
+<pre class="code text"><a name="rest_code_d4cd01f91c944bedb7beffb22acc3de2-1"></a>$mkimage -f kernel.its zImage.itb
+</pre>
+<p>The output zImage.itb (I can name it anything) is my FIT file ready to be loaded. I need to do one more thing to complet this process.</p>
+</div>
+<div class="section" id="create-boot-scr">
+<h3>Create boot.scr</h3>
+<p>I notice that every time I boot, I see this message on the console port,</p>
+<pre class="code text"><a name="rest_code_eb4d79e11e31465388cb06ce788bec81-1"></a>SD/MMC found on device 1
+<a name="rest_code_eb4d79e11e31465388cb06ce788bec81-2"></a>reading boot.scr
+<a name="rest_code_eb4d79e11e31465388cb06ce788bec81-3"></a>** Unable to read file boot.scr **
+<a name="rest_code_eb4d79e11e31465388cb06ce788bec81-4"></a>reading uEnv.txt
+</pre>
+<p>This is because there was no boot.scr so u-boot falls back to reading uEnv.txt instead. 'boot.scr' is not text file, but an image file. This is the
+source file for my boot.scr. Basically I can convert uEnv.txt to boot.scr, but I want a much simpler one. This is my 'boot.scr.src',</p>
+<pre class="code text"><a name="rest_code_87efc0dd49ed476ea7d472030e992746-1"></a>set loadaddr 82000000
+<a name="rest_code_87efc0dd49ed476ea7d472030e992746-2"></a>set bootargs 'console=ttyS0,115200n8 rootfstype=ext4 root=/dev/mmcblk0p2 earlyprintk'
+<a name="rest_code_87efc0dd49ed476ea7d472030e992746-3"></a>fatload mmc 1:1 $loadaddr zImage.itb
+<a name="rest_code_87efc0dd49ed476ea7d472030e992746-4"></a>bootm $loadaddr
+</pre>
+<p>This is it for now. It is the minimalist approach. Next I create 'boot.scr',</p>
+<pre class="code text"><a name="rest_code_841a3fc51d0d45e7bc06495d4aa3ca6b-1"></a>$mkimage  -C none -A arm -T script -a 80000000 -e 80000000 -d boot.scr.src boot.scr
+</pre>
+<p>This is my default boot.scr that is copied to the boot partition (FAT) of the flash MMC1 where u-boot will read from at boot time.
+Here is what happens after all these things,</p>
+<pre class="code text"><a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-1"></a>Scanning mmc 1:1...
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-2"></a>Found U-Boot script /boot.scr
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-3"></a>reading /boot.scr
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-4"></a>234 bytes read in 3 ms (76.2 KiB/s)
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-5"></a>## Executing script at 80000000
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-6"></a>reading zImage.itb
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-7"></a>3360080 bytes read in 187 ms (17.1 MiB/s)
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-8"></a>## Loading kernel from FIT Image at 82000000 ...
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-9"></a>   Using 'config@1' configuration
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-10"></a>   Trying 'kernel@1' kernel subimage
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-11"></a>     Description:  ARM BeagleboneBlack Linux-4.1.13
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-12"></a>     Created:      2016-03-20  22:33:34 UTC
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-13"></a>     Type:         Kernel Image
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-14"></a>     Compression:  uncompressed
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-15"></a>     Data Start:   0x820000e8
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-16"></a>     Data Size:    3325704 Bytes = 3.2 MiB
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-17"></a>     Architecture: ARM
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-18"></a>     OS:           Linux
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-19"></a>     Load Address: 0x80008000
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-20"></a>     Entry Point:  0x80008000
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-21"></a>     Hash algo:    crc32
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-22"></a>     Hash value:   62b34510
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-23"></a>     Hash algo:    sha1
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-24"></a>     Hash value:   04be40f903db0deb1cd632416e82f09828f05545
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-25"></a>   Verifying Hash Integrity ... crc32+ sha1+ OK
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-26"></a>## Loading fdt from FIT Image at 82000000 ...
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-27"></a>   Using 'config@1' configuration
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-28"></a>   Trying 'fdt@1' fdt subimage
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-29"></a>     Description:  ARM Boneblack device tree blob
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-30"></a>     Created:      2016-03-20  22:33:34 UTC
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-31"></a>     Type:         Flat Device Tree
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-32"></a>     Compression:  uncompressed
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-33"></a>     Data Start:   0x8232c11c
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-34"></a>     Data Size:    33030 Bytes = 32.3 KiB
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-35"></a>     Architecture: ARM
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-36"></a>     Hash algo:    crc32
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-37"></a>     Hash value:   a101a6b3
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-38"></a>     Hash algo:    sha1
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-39"></a>     Hash value:   711dfa46a5cb4c8286035d1577fb6cc6eff22370
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-40"></a>   Verifying Hash Integrity ... crc32+ sha1+ OK
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-41"></a>   Booting using the fdt blob at 0x8232c11c
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-42"></a>   Loading Kernel Image ... OK
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-43"></a>   Loading Device Tree to 8fff4000, end 8ffff105 ... OK
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-44"></a>
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-45"></a>Starting kernel ...
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-46"></a>
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-47"></a>[    0.000000] Booting Linux on physical CPU 0x0
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-48"></a>[    0.000000] Initializing cgroup subsys cpuset
+<a name="rest_code_9a2fc48ba5754b528ad13d8f28eef55c-49"></a>[    0.000000] Initializing cgroup subsys cpu
+</pre>
+<p>As I can see, it detects the presence of boot.scr, follows the instruction given such as set the bootargs and 'fatload' the zImage.itb then
+boot Linux kernel. The part dealing with creating partitions and booting the image is done.</p>
+<div class="section" id="todo">
+<h4>Todo</h4>
+<p>I should update my boot.scr to be a little bit more accommodating to multiple root filesystems.</p>
+</div>
+</div>
+<div class="section" id="citations">
+<h3>Citations</h3>
+<table class="docutils footnote" frame="void" id="id1" rules="none">
+<colgroup>
+<col class="label">
+<col>
+</colgroup>
+<tbody valign="top"><tr>
+<td class="label">[1]</td>
+<td><a class="reference external" href="https://buildroot.org">https://buildroot.org</a></td>
+</tr></tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id2" rules="none">
+<colgroup>
+<col class="label">
+<col>
+</colgroup>
+<tbody valign="top"><tr>
+<td class="label">[2]</td>
+<td>uImage.FIT directory of u-boot/doc</td>
+</tr></tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id3" rules="none">
+<colgroup>
+<col class="label">
+<col>
+</colgroup>
+<tbody valign="top"><tr>
+<td class="label">[3]</td>
+<td>BBB_SRM.pdf, user reference manual of beagle bone black.</td>
+</tr></tbody>
+</table>
+</div>
+</div>
+</div>
+    </div>
+    
+
+</article>
+</div>
+        <!--End of body content-->
+
+        <footer id="footer">
+            Contents © 2016         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+        </footer>
+</div>
+</div>
+
+
+            <script src="../../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+    moment.locale("en");
+    fancydates(0, "YYYY-MM-DD HH:mm");
+    </script><!-- end fancy dates -->
+</body>
+</html>
