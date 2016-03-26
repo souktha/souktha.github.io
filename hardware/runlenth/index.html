@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<head>
+<meta charset="utf-8">
+<base href="http://souktha.github.io/hardware/runlenth/">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Run-length encoding with FPGA | Soukthavy Sopha</title>
+<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<meta content="#5670d4" name="theme-color">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
+<link rel="canonical" href="http://souktha.github.io/hardware/runlenth/">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Soukthavy">
+<link rel="prev" href="../../misc/repartition-boneblk/" title="Repartitioning 4GB Beaglebone Black eMMC flash" type="text/html">
+<meta property="og:site_name" content="Soukthavy Sopha">
+<meta property="og:title" content="Run-length encoding with FPGA">
+<meta property="og:url" content="http://souktha.github.io/hardware/runlenth/">
+<meta property="og:description" content="Run-length encoding is one simple encoding, if not the simplest form of data compression. The more repetition in the
+data stream the better it is. For example, if input data stream is 'A2.A2.C1.C2.B4.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2016-03-26T18:40:58Z">
+<meta property="article:tag" content="hardware">
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-inverse navbar-static-top"><div class="container">
+<!-- This keeps the margins nice -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://souktha.github.io/">
+
+                <span id="blog-title">Soukthavy Sopha</span>
+            </a>
+        </div>
+<!-- /.navbar-header -->
+        <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
+            <ul class="nav navbar-nav">
+<li>
+<a href="../../archive.html">Archive</a>
+                </li>
+<li>
+<a href="../../categories/">Tags</a>
+                </li>
+<li>
+<a href="../../rss.xml">RSS feed</a>
+            </li>
+<li class="dropdown">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Blog <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+<li>
+<a href="../../software">Sofware</a>
+                    </li>
+<li>
+<a href="../../hardware">Hardware</a>
+                    </li>
+<li>
+<a href="../../misc">Misc</a>
+            </li>
+</ul>
+</li>
+<li>
+<a href="https://github.com/souktha">My Github</a>
+
+                
+            </li>
+</ul>
+<ul class="nav navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        <div class="row">
+            
+            
+<article class="storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Run-length encoding with FPGA</a></h1>
+
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>Run-length encoding is one simple encoding, if not the simplest form of data compression. The more repetition in the
+data stream the better it is. For example, if input data stream is 'A2.A2.C1.C2.B4.B4.B4.B4.B4.B4.B4.B4' the output
+would be '02.A2.01.C1.01.C2.08.B4'. If there are 258 bytes of B4, then output would be '...FF.B4.03.B4'.
+In this experiment I simulated the flow of data stream and the encoding with verilog on the Nexys4DDR board, but first
+I should specify the specification of the implementation.</p>
+<!-- TEASER_END -->
+<div class="section" id="design-specification">
+<h2>Design Specification</h2>
+<ul class="simple">
+<li>Host shall assert RTS as a request to send.</li>
+<li>In response to RTS, the target shall assert CTS if it is ready to process the incoming stream.</li>
+<li>Host shall transmit on CTS response, place data to din, and strobe data with den as its clock. Host
+drives din and den signals. Host shall not drive din and den on deassertion of CTS.</li>
+<li>Host shall latch the byte count on the rising edge of drdy, and the byte value on its falling edge.</li>
+<li>At any time, host may terminate transmission by deasserting RTS. In response to the deassertion of RTS,
+target shall terminate its RLE process by returning all the remaining bytes count and byte value.</li>
+</ul>
+<p>Host refers to the source of input data stream while target is this simulated target circuit.</p>
+</div>
+<div class="section" id="implementation">
+<h2>Implementation</h2>
+<p>Two state machines used in this implemenation. One state is on the main clock and the other is on the
+data stream clock. The main clock is simulated at 100MHZ while the data clock is 180 degree out of phase
+of the main clock. These two state machines represent the input state machine and the output state machine.</p>
+</div>
+<div class="section" id="tool-and-source-files">
+<h2>Tool and source files</h2>
+<ul class="simple">
+<li>Vivado 2015.4</li>
+<li>source files: rle.v, rle_tb.v. No constraint file is required as it is only for simulation. Script file
+is also provided to set up the simulation.</li>
+</ul>
+<div class="section" id="running-simulation">
+<h3>Running simulation</h3>
+<ul class="simple">
+<li>cd to source.</li>
+<li>Start vivado.</li>
+<li>Select 'Tools-&gt;Run Tcl script'</li>
+<li>Select setup-rle.tcl</li>
+<li>On tcl console, 'create' to setup.</li>
+<li>'Project Manager -&gt; Run Simulation -&gt; Run Behavioral Simulation'.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="simulation-result">
+<h2>Simulation result</h2>
+<p>The following figures show the result of my simulation. Fig 1 is the response of non repeated stream of
+charater bytes.</p>
+<pre class="code text"><a name="rest_code_e011ea388d434481a94d3eaf0d095639-1"></a>wait(cts)@(posedge fast_ck) begin
+<a name="rest_code_e011ea388d434481a94d3eaf0d095639-2"></a>    #1 din = 8'hAD;
+<a name="rest_code_e011ea388d434481a94d3eaf0d095639-3"></a>    #5 data_ck = 1'b1;
+<a name="rest_code_e011ea388d434481a94d3eaf0d095639-4"></a>    end
+<a name="rest_code_e011ea388d434481a94d3eaf0d095639-5"></a>wait(cts)@(posedge fast_ck) begin
+<a name="rest_code_e011ea388d434481a94d3eaf0d095639-6"></a>#5 data_ck = 1'b0;
+<a name="rest_code_e011ea388d434481a94d3eaf0d095639-7"></a>    #1 din = 8'h5E;
+<a name="rest_code_e011ea388d434481a94d3eaf0d095639-8"></a>    #5 data_ck = 1'b1;
+<a name="rest_code_e011ea388d434481a94d3eaf0d095639-9"></a>    end
+</pre>
+<div class="figure">
+<img alt="../../images/hardware/case1.png" src="../../images/hardware/case1.png"><p class="caption">Fig1: input ad.5e output 01.ad</p>
+</div>
+<p>and the case where maximum bytes count per transaction is reached. In this case the host send 258 bytes, Fig2.</p>
+<pre class="code text"><a name="rest_code_a1a42e4da949446989a8b5fea56220a0-1"></a>for (i = 0; i &lt; 258; i = i+1 ) begin
+<a name="rest_code_a1a42e4da949446989a8b5fea56220a0-2"></a>    #5 data_ck = 1'b0;
+<a name="rest_code_a1a42e4da949446989a8b5fea56220a0-3"></a>    wait(cts) @(posedge fast_ck) begin
+<a name="rest_code_a1a42e4da949446989a8b5fea56220a0-4"></a>         #1 din = 8'h77;
+<a name="rest_code_a1a42e4da949446989a8b5fea56220a0-5"></a>        #5 data_ck = 1'b1;
+<a name="rest_code_a1a42e4da949446989a8b5fea56220a0-6"></a>        end
+<a name="rest_code_a1a42e4da949446989a8b5fea56220a0-7"></a>    end
+</pre>
+<div class="figure">
+<img alt="../../images/hardware/case4.png" src="../../images/hardware/case4.png"><p class="caption">Fig2: 258 bytes breaks out with 254 bytes</p>
+</div>
+<p>It should have been 255 byte sent instead of 254; however, the bytes count is not lost as show in Fig3.</p>
+<div class="figure">
+<img alt="../../images/hardware/case5.png" src="../../images/hardware/case5.png"><p class="caption">Fig3: 4 bytes sent follow the 254 bytes earlier.</p>
+</div>
+<p>and the remaining process continue until host ceases transmission, Fig4.</p>
+<div class="figure">
+<img alt="../../images/hardware/case7.png" src="../../images/hardware/case7.png">
+</div>
+</div>
+<div class="section" id="conclusion">
+<h2>Conclusion</h2>
+<p>While this type of encoding can be implemented easily in software, but I can tell that it is much faster
+doing it in hardware and it may not be complicated as I thought it would be. It probably takes the same
+amount of coding. One thing for sure, I cannot do certain thing in one clock cycle in software, but I
+can do so in hardware. To me, this is the added benefit.</p>
+</div>
+</div>
+    </div>
+    
+
+</article>
+</div>
+        <!--End of body content-->
+
+        <footer id="footer">
+            Contents © 2016         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+        </footer>
+</div>
+</div>
+
+
+            <script src="../../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+    moment.locale("en");
+    fancydates(0, "YYYY-MM-DD HH:mm");
+    </script><!-- end fancy dates -->
+</body>
+</html>
