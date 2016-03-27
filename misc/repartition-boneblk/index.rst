@@ -12,7 +12,7 @@
 .. $Author$
 
 I bought the Beaglebone Black Rev C nearly two years ago. When I received it, I powered it up and
-saw that everything appeared to be functional, put it back in the box and never had the change
+saw that everything appeared to be functional, put it back in the box and never had the chance
 to work with it again until now. It looks like it was preloaded with Debian (I am not sure). There
 must have been a lot of updates ever since.
 
