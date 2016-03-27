@@ -45,7 +45,7 @@ Tool and source files
 =====================
 - Vivado 2015.4
 - source files: rle.v, rle_tb.v. No constraint file is required as it is only for simulation. Script file
-  is also provided to set up the simulation.
+  is also provided to set up the simulation (https://github.com/souktha/RLE).
   
         
 Running simulation
