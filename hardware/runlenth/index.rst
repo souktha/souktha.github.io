@@ -6,8 +6,8 @@
 .. link: 
 .. description: 
 .. type: text
-.. $LastChangedDate: 2016-03-26 13:47:28 -0700 (Sat, 26 Mar 2016) $
-.. $Rev: 58 $
+.. $LastChangedDate: 2016-03-26 21:14:40 -0700 (Sat, 26 Mar 2016) $
+.. $Rev: 61 $
 
 Run-length encoding is one simple encoding, if not the simplest form of data compression. The more repetition in the
 data stream the better it is. For example, if input data stream is 'A2.A2.C1.C2.B4.B4.B4.B4.B4.B4.B4.B4' the output 
