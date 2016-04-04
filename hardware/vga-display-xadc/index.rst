@@ -97,7 +97,7 @@ Test
 =====
 
 I use the output of the waveform generator to connect to the XADC channel 19 input. I take the snapshot photos of the
-sampled for the sine waveform and the ramp waveform as they are display on the VGA monitor below.
+sampled for the sine waveform and the ramp waveform as they are displayed on the VGA monitor below.
 
 .. figure:: ../../images/hardware/10khz1vpp.jpg
 
@@ -107,8 +107,8 @@ sampled for the sine waveform and the ramp waveform as they are display on the V
 
         Image of the sampled 4KHZ sine waveform, 1VPP 
 
-The images above show the snapshot of the sampled waveform as I toggle *SW[0]* to start/stop data storing process. The 
-sampling process is however continuous, only the storage part is controlled by *SW[0]*.
+The images above are the snapshots of the sampled waveforms resulting from the toggling of *SW[0]* that start/stop data storing process. The 
+sampling process is continuous, only the storing process is controlled by *SW[0]*.
 
 Not much information from the LED displays since the data rate is much too fast to capture and the forever changing
 data output to the LED display make them stay lit.

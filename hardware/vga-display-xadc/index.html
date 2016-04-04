@@ -120,41 +120,41 @@ not worth the effort.</p>
 <li>In this implementation, the XADC is to be operated in <em>Single Channel mode</em> on channel 19 (<em>VAUXP[3], VAUXN[3]</em>).
 Its timing mode is <em>continuous mode</em> and its conversion rate is set to 500 KSPS. It is instantiated from the generated core IP.</li>
 </ul>
-<pre class="code text"><a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-1"></a>xadc_wiz_0 XADC_INST(
-<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-2"></a>    .daddr_in(8'd19), //19 for vaux3
-<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-3"></a>    .dclk_in(CLK100MHZ),  //4*time FS. This is set in the IP wizard.
-<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-4"></a>    .den_in(dp_we),  //connect this to eoc_out for continuous sampling.
-<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-5"></a>    .di_in(),  //not use
-<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-6"></a>    .dwe_in(),  //not use
-<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-7"></a>    .reset_in(),
-<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-8"></a>    .vauxp3(vauxp3),
-<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-9"></a>    .vauxn3(vauxn3),
-<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-10"></a>    .busy_out(xadc_bsy),
-<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-11"></a>    .channel_out(chout),
-<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-12"></a>    .do_out(xadc_dout),
-<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-13"></a>    .drdy_out(xadc_drdy),
-<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-14"></a>    .eoc_out(dp_we),
-<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-15"></a>    .eos_out(xadc_eos),
-<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-16"></a>    .alarm_out(xdc_alarm),
-<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-17"></a>    .vp_in(),
-<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-18"></a>    .vn_in()
-<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-19"></a>    );
+<pre class="code text"><a name="rest_code_02d0a744bd4f459c81bd187b31a9121a-1"></a>xadc_wiz_0 XADC_INST(
+<a name="rest_code_02d0a744bd4f459c81bd187b31a9121a-2"></a>    .daddr_in(8'd19), //19 for vaux3
+<a name="rest_code_02d0a744bd4f459c81bd187b31a9121a-3"></a>    .dclk_in(CLK100MHZ),  //4*time FS. This is set in the IP wizard.
+<a name="rest_code_02d0a744bd4f459c81bd187b31a9121a-4"></a>    .den_in(dp_we),  //connect this to eoc_out for continuous sampling.
+<a name="rest_code_02d0a744bd4f459c81bd187b31a9121a-5"></a>    .di_in(),  //not use
+<a name="rest_code_02d0a744bd4f459c81bd187b31a9121a-6"></a>    .dwe_in(),  //not use
+<a name="rest_code_02d0a744bd4f459c81bd187b31a9121a-7"></a>    .reset_in(),
+<a name="rest_code_02d0a744bd4f459c81bd187b31a9121a-8"></a>    .vauxp3(vauxp3),
+<a name="rest_code_02d0a744bd4f459c81bd187b31a9121a-9"></a>    .vauxn3(vauxn3),
+<a name="rest_code_02d0a744bd4f459c81bd187b31a9121a-10"></a>    .busy_out(xadc_bsy),
+<a name="rest_code_02d0a744bd4f459c81bd187b31a9121a-11"></a>    .channel_out(chout),
+<a name="rest_code_02d0a744bd4f459c81bd187b31a9121a-12"></a>    .do_out(xadc_dout),
+<a name="rest_code_02d0a744bd4f459c81bd187b31a9121a-13"></a>    .drdy_out(xadc_drdy),
+<a name="rest_code_02d0a744bd4f459c81bd187b31a9121a-14"></a>    .eoc_out(dp_we),
+<a name="rest_code_02d0a744bd4f459c81bd187b31a9121a-15"></a>    .eos_out(xadc_eos),
+<a name="rest_code_02d0a744bd4f459c81bd187b31a9121a-16"></a>    .alarm_out(xdc_alarm),
+<a name="rest_code_02d0a744bd4f459c81bd187b31a9121a-17"></a>    .vp_in(),
+<a name="rest_code_02d0a744bd4f459c81bd187b31a9121a-18"></a>    .vn_in()
+<a name="rest_code_02d0a744bd4f459c81bd187b31a9121a-19"></a>    );
 </pre>
 <ul class="simple">
 <li>The two bipolar inputs are from PMOD JXADC pin 1 (<em>AD3P</em>) and pin 7 (<em>AD3N</em>). The two inputs are connected to waveform generator during the test.</li>
 <li>The output of XADC is stored in DPRAM location on XADC's EOC signal by its <em>DRDY_OUT</em>. Its <em>EOC_OUT</em> is connected to <em>DEN_IN</em> for continuous sampling.</li>
 </ul>
-<pre class="code text"><a name="rest_code_d1133433bacd40a1ad5e6a2cad9b69cd-1"></a>ram_dual_port #(
-<a name="rest_code_d1133433bacd40a1ad5e6a2cad9b69cd-2"></a>    .DATA_WIDTH(16),
-<a name="rest_code_d1133433bacd40a1ad5e6a2cad9b69cd-3"></a>    .ADDR_WIDTH(10))
-<a name="rest_code_d1133433bacd40a1ad5e6a2cad9b69cd-4"></a> dp_ram(
-<a name="rest_code_d1133433bacd40a1ad5e6a2cad9b69cd-5"></a>    .clk(CLK100MHZ),
-<a name="rest_code_d1133433bacd40a1ad5e6a2cad9b69cd-6"></a>    .we(xadc_drdy &amp; SW[0]), //write on every DRDY as enabled by SW[0]
-<a name="rest_code_d1133433bacd40a1ad5e6a2cad9b69cd-7"></a>    .data(xadc_dout), //data from xadc to be stored
-<a name="rest_code_d1133433bacd40a1ad5e6a2cad9b69cd-8"></a>    .read_addr(x), //location to be read for VGA x-coordinate
-<a name="rest_code_d1133433bacd40a1ad5e6a2cad9b69cd-9"></a>    .write_addr(xadc_waddr), //location to store on EOC
-<a name="rest_code_d1133433bacd40a1ad5e6a2cad9b69cd-10"></a>    .q(dp_rdata) //Y data read correspond to x-coordinate
-<a name="rest_code_d1133433bacd40a1ad5e6a2cad9b69cd-11"></a>    );
+<pre class="code text"><a name="rest_code_09aebe3a3ea44e3f8d0745ac028fc757-1"></a>ram_dual_port #(
+<a name="rest_code_09aebe3a3ea44e3f8d0745ac028fc757-2"></a>    .DATA_WIDTH(16),
+<a name="rest_code_09aebe3a3ea44e3f8d0745ac028fc757-3"></a>    .ADDR_WIDTH(10))
+<a name="rest_code_09aebe3a3ea44e3f8d0745ac028fc757-4"></a> dp_ram(
+<a name="rest_code_09aebe3a3ea44e3f8d0745ac028fc757-5"></a>    .clk(CLK100MHZ),
+<a name="rest_code_09aebe3a3ea44e3f8d0745ac028fc757-6"></a>    .we(xadc_drdy &amp; SW[0]), //write on every DRDY as enabled by SW[0]
+<a name="rest_code_09aebe3a3ea44e3f8d0745ac028fc757-7"></a>    .data(xadc_dout), //data from xadc to be stored
+<a name="rest_code_09aebe3a3ea44e3f8d0745ac028fc757-8"></a>    .read_addr(x), //location to be read for VGA x-coordinate
+<a name="rest_code_09aebe3a3ea44e3f8d0745ac028fc757-9"></a>    .write_addr(xadc_waddr), //location to store on EOC
+<a name="rest_code_09aebe3a3ea44e3f8d0745ac028fc757-10"></a>    .q(dp_rdata) //Y data read correspond to x-coordinate
+<a name="rest_code_09aebe3a3ea44e3f8d0745ac028fc757-11"></a>    );
 </pre>
 <ul class="simple">
 <li>SW[0] is use as sampling on/off switch. If SW[0]=1, sampled data is continously stored and displayed otherwise it displayed the previous sampled data.
@@ -169,15 +169,15 @@ only bring in those modules fnd instantiate them for this exercise.</p>
 <div class="section" id="test">
 <h2>Test</h2>
 <p>I use the output of the waveform generator to connect to the XADC channel 19 input. I take the snapshot photos of the
-sampled for the sine waveform and the ramp waveform as they are display on the VGA monitor below.</p>
+sampled for the sine waveform and the ramp waveform as they are displayed on the VGA monitor below.</p>
 <div class="figure">
 <img alt="../../images/hardware/10khz1vpp.jpg" src="../../images/hardware/10khz1vpp.jpg"><p class="caption">Image of the sampled 10KHZ ramp waveform, 1VPP</p>
 </div>
 <div class="figure">
 <img alt="../../images/hardware/4khz1vpp.jpg" src="../../images/hardware/4khz1vpp.jpg"><p class="caption">Image of the sampled 4KHZ sine waveform, 1VPP</p>
 </div>
-<p>The images above show the snapshot of the sampled waveform as I toggle <em>SW[0]</em> to start/stop data storing process. The
-sampling process is however continuous, only the storage part is controlled by <em>SW[0]</em>.</p>
+<p>The images above are the snapshots of the sampled waveforms resulting from the toggling of <em>SW[0]</em> that start/stop data storing process. The
+sampling process is continuous, only the storing process is controlled by <em>SW[0]</em>.</p>
 <p>Not much information from the LED displays since the data rate is much too fast to capture and the forever changing
 data output to the LED display make them stay lit.</p>
 </div>
