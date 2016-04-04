@@ -224,7 +224,7 @@ Just use the sample 'kernel_fdt.its', edit and use it. Here is my 'kernel.its' f
         	};
         };
 
-Pay attention to 'data' field. If your data file is not in the current directory wkere the kernel.its file resides you need to adjust their paths
+Pay attention to 'data' field. If your data file is not in the current directory where the kernel.its file resides you need to adjust their paths
 accordingly. This is suppposedly the simplest form of 'its' file I need to create FDT image. Next I do,
 
 .. code-block::

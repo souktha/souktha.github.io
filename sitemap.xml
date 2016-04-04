@@ -15,7 +15,7 @@
  </url>
  <url>
   <loc>http://souktha.github.io/archive.html</loc>
-  <lastmod>2016-04-03T05:50:00Z</lastmod>
+  <lastmod>2016-04-03T22:59:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/blog/</loc>
@@ -59,7 +59,7 @@
  </url>
  <url>
   <loc>http://souktha.github.io/hardware/</loc>
-  <lastmod>2016-04-02T23:44:00Z</lastmod>
+  <lastmod>2016-04-03T22:59:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/hardware/hw_sample/</loc>
@@ -76,6 +76,10 @@
  <url>
   <loc>http://souktha.github.io/hardware/servo/</loc>
   <lastmod>2016-04-02T23:45:00Z</lastmod>
+ </url>
+ <url>
+  <loc>http://souktha.github.io/hardware/vga-display-xadc/</loc>
+  <lastmod>2016-04-03T22:59:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/hardware/vga_draw_graph/</loc>

@@ -11,6 +11,7 @@
 <link rel="canonical" href="http://souktha.github.io/software/bblk-ir/">
 <!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Soukthavy">
 <link rel="prev" href="../../hardware/runlenth/" title="Run-length encoding with FPGA" type="text/html">
+<link rel="next" href="../../hardware/vga-display-xadc/" title="Displaying Xilinx XADC on VGA" type="text/html">
 <meta property="og:site_name" content="Soukthavy Sopha">
 <meta property="og:title" content="Creating an IR receiver on AM335x BeagleBone Black">
 <meta property="og:url" content="http://souktha.github.io/software/bblk-ir/">
@@ -135,24 +136,24 @@ First thing I need to do is to redo pinmux for <em>T17</em> (Table 4.1, page 29)
 This is the pin for UART4_RXD. For this pin to function as UART4_RXD, it needs to be muxed to mode 6 of operation.
 To pinmux, I need to edit the device tree source, am335x-boneblack.dts, and add to '&amp;am33xx_pinmux' block to override their default settings.
 I do not need TX operation of this UART sinc it is only for RX operation.</p>
-<pre class="code text"><a name="rest_code_6b9c3b4b7471420b8e7784403638130f-1"></a>&amp;am33xx_pinmux {
-<a name="rest_code_6b9c3b4b7471420b8e7784403638130f-2"></a>         ..
-<a name="rest_code_6b9c3b4b7471420b8e7784403638130f-3"></a>
-<a name="rest_code_6b9c3b4b7471420b8e7784403638130f-4"></a>         uart4_pins: pinmux_uart4_pins {
-<a name="rest_code_6b9c3b4b7471420b8e7784403638130f-5"></a>         pinctrl-single,pins = &lt;
-<a name="rest_code_6b9c3b4b7471420b8e7784403638130f-6"></a>                 0x70 (PIN_INPUT_PULLUP | MUX_MODE6)     /* uart4_rxd.uart4_rxd*/
-<a name="rest_code_6b9c3b4b7471420b8e7784403638130f-7"></a>         &gt;;
-<a name="rest_code_6b9c3b4b7471420b8e7784403638130f-8"></a>        };
-<a name="rest_code_6b9c3b4b7471420b8e7784403638130f-9"></a> };
+<pre class="code text"><a name="rest_code_9c50329cbff448719776cbe08c6716ad-1"></a>&amp;am33xx_pinmux {
+<a name="rest_code_9c50329cbff448719776cbe08c6716ad-2"></a>         ..
+<a name="rest_code_9c50329cbff448719776cbe08c6716ad-3"></a>
+<a name="rest_code_9c50329cbff448719776cbe08c6716ad-4"></a>         uart4_pins: pinmux_uart4_pins {
+<a name="rest_code_9c50329cbff448719776cbe08c6716ad-5"></a>         pinctrl-single,pins = &lt;
+<a name="rest_code_9c50329cbff448719776cbe08c6716ad-6"></a>                 0x70 (PIN_INPUT_PULLUP | MUX_MODE6)     /* uart4_rxd.uart4_rxd*/
+<a name="rest_code_9c50329cbff448719776cbe08c6716ad-7"></a>         &gt;;
+<a name="rest_code_9c50329cbff448719776cbe08c6716ad-8"></a>        };
+<a name="rest_code_9c50329cbff448719776cbe08c6716ad-9"></a> };
 </pre>
 <p>I also need to enable UART4 that was defined, but was marked disabled otherwise I will not be able to use it. I can override this setting by
 adding the following to the dts file,</p>
-<pre class="code text"><a name="rest_code_6470f4ebb4394473afdf3514c64c1fe9-1"></a>&amp;uart4 {
-<a name="rest_code_6470f4ebb4394473afdf3514c64c1fe9-2"></a>        pinctrl-names = "default";
-<a name="rest_code_6470f4ebb4394473afdf3514c64c1fe9-3"></a>        pinctrl-0 = &lt;&amp;uart4_pins&gt;;
-<a name="rest_code_6470f4ebb4394473afdf3514c64c1fe9-4"></a>        compatible = "cir-uart";
-<a name="rest_code_6470f4ebb4394473afdf3514c64c1fe9-5"></a>        status = "okay";
-<a name="rest_code_6470f4ebb4394473afdf3514c64c1fe9-6"></a>};
+<pre class="code text"><a name="rest_code_71c5a1a32e274a9c86cac390854ca4c2-1"></a>&amp;uart4 {
+<a name="rest_code_71c5a1a32e274a9c86cac390854ca4c2-2"></a>        pinctrl-names = "default";
+<a name="rest_code_71c5a1a32e274a9c86cac390854ca4c2-3"></a>        pinctrl-0 = &lt;&amp;uart4_pins&gt;;
+<a name="rest_code_71c5a1a32e274a9c86cac390854ca4c2-4"></a>        compatible = "cir-uart";
+<a name="rest_code_71c5a1a32e274a9c86cac390854ca4c2-5"></a>        status = "okay";
+<a name="rest_code_71c5a1a32e274a9c86cac390854ca4c2-6"></a>};
 </pre>
 <p>So I add the block shown above just below '&amp;mcasp0' block. This is to set 'uart4' to use the pinmux that I define and set its status to be okay (enable).
 I also set the platform driver compatibilty to 'cir-uart'. This is going to be my new IR driver. The platform driver will invoke my driver upon
@@ -164,38 +165,38 @@ The simple part is done, now come the hard part. Getting the UART4 to work the w
 <h3>kernel driver</h3>
 <p>In reference to TI's AM335x <a class="footnote-reference" href="#id7" id="id4">[1]</a>, chapter 19, Universal Receiver/Transmitter, the clock for this UART is the external <em>PER_CLKOUTM2</em> <em>PRCM / 4</em> that feeds the UART's <em>fclk</em>.  The UART has to be clocked for the driver to be able to access its registers and configure it for use.</p>
 <p>The first thing this driver does is to register with the kernel platform framework having this <em>platform_driver</em> table,</p>
-<pre class="code text"><a name="rest_code_9c097493c3104348b8896afab3427725-1"></a>static struct platform_driver cir_platform_driver = {
-<a name="rest_code_9c097493c3104348b8896afab3427725-2"></a>        .driver = {
-<a name="rest_code_9c097493c3104348b8896afab3427725-3"></a>        .name           = "cir-uart",
-<a name="rest_code_9c097493c3104348b8896afab3427725-4"></a>        .of_match_table = cir_dt_ids,
-<a name="rest_code_9c097493c3104348b8896afab3427725-5"></a>        },
-<a name="rest_code_9c097493c3104348b8896afab3427725-6"></a>        .probe                  = cir_probe,
-<a name="rest_code_9c097493c3104348b8896afab3427725-7"></a>        .remove                 = cir_remove,
-<a name="rest_code_9c097493c3104348b8896afab3427725-8"></a>};
+<pre class="code text"><a name="rest_code_49a552fe6e77488c8a8c19a2bfb6f9de-1"></a>static struct platform_driver cir_platform_driver = {
+<a name="rest_code_49a552fe6e77488c8a8c19a2bfb6f9de-2"></a>        .driver = {
+<a name="rest_code_49a552fe6e77488c8a8c19a2bfb6f9de-3"></a>        .name           = "cir-uart",
+<a name="rest_code_49a552fe6e77488c8a8c19a2bfb6f9de-4"></a>        .of_match_table = cir_dt_ids,
+<a name="rest_code_49a552fe6e77488c8a8c19a2bfb6f9de-5"></a>        },
+<a name="rest_code_49a552fe6e77488c8a8c19a2bfb6f9de-6"></a>        .probe                  = cir_probe,
+<a name="rest_code_49a552fe6e77488c8a8c19a2bfb6f9de-7"></a>        .remove                 = cir_remove,
+<a name="rest_code_49a552fe6e77488c8a8c19a2bfb6f9de-8"></a>};
 </pre>
 <p>The <em>cir-uart</em> matches to what I defined in the device tree earlier. The will enable the platform driver framework to call
 its <em>cir_probe</em> for device probing and initializing the device.</p>
-<pre class="code text"><a name="rest_code_37c46f542248497181b61985e6ff5d47-1"></a>static int cir_probe(struct platform_device * pdev)
-<a name="rest_code_37c46f542248497181b61985e6ff5d47-2"></a>{
-<a name="rest_code_37c46f542248497181b61985e6ff5d47-3"></a>        ...
-<a name="rest_code_37c46f542248497181b61985e6ff5d47-4"></a>
-<a name="rest_code_37c46f542248497181b61985e6ff5d47-5"></a>        struct resource * regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-<a name="rest_code_37c46f542248497181b61985e6ff5d47-6"></a>        struct resource * irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
-<a name="rest_code_37c46f542248497181b61985e6ff5d47-7"></a>        ...
-<a name="rest_code_37c46f542248497181b61985e6ff5d47-8"></a>        /* use uart4_fck*/
-<a name="rest_code_37c46f542248497181b61985e6ff5d47-9"></a>        clk = clk_get(&amp;pdev-&gt;dev,"dpll_per_m2_div4_ck"); //expect 48MHZ clock feed
-<a name="rest_code_37c46f542248497181b61985e6ff5d47-10"></a>        ..
-<a name="rest_code_37c46f542248497181b61985e6ff5d47-11"></a>
-<a name="rest_code_37c46f542248497181b61985e6ff5d47-12"></a>        device_init_wakeup(&amp;pdev-&gt;dev, true);
-<a name="rest_code_37c46f542248497181b61985e6ff5d47-13"></a>        pm_runtime_use_autosuspend(&amp;pdev-&gt;dev);
-<a name="rest_code_37c46f542248497181b61985e6ff5d47-14"></a>        pm_runtime_set_autosuspend_delay(&amp;pdev-&gt;dev,-1);
-<a name="rest_code_37c46f542248497181b61985e6ff5d47-15"></a>        pm_runtime_irq_safe(&amp;pdev-&gt;dev);
-<a name="rest_code_37c46f542248497181b61985e6ff5d47-16"></a>        pm_runtime_enable(&amp;pdev-&gt;dev);
-<a name="rest_code_37c46f542248497181b61985e6ff5d47-17"></a>
-<a name="rest_code_37c46f542248497181b61985e6ff5d47-18"></a>        pm_runtime_get_sync(&amp;pdev-&gt;dev);
-<a name="rest_code_37c46f542248497181b61985e6ff5d47-19"></a>
-<a name="rest_code_37c46f542248497181b61985e6ff5d47-20"></a>        cirdev-&gt;clk = clk;
-<a name="rest_code_37c46f542248497181b61985e6ff5d47-21"></a>        clk_prepare_enable(clk);
+<pre class="code text"><a name="rest_code_1ea16e134ac44542be693242df849f68-1"></a>static int cir_probe(struct platform_device * pdev)
+<a name="rest_code_1ea16e134ac44542be693242df849f68-2"></a>{
+<a name="rest_code_1ea16e134ac44542be693242df849f68-3"></a>        ...
+<a name="rest_code_1ea16e134ac44542be693242df849f68-4"></a>
+<a name="rest_code_1ea16e134ac44542be693242df849f68-5"></a>        struct resource * regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+<a name="rest_code_1ea16e134ac44542be693242df849f68-6"></a>        struct resource * irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
+<a name="rest_code_1ea16e134ac44542be693242df849f68-7"></a>        ...
+<a name="rest_code_1ea16e134ac44542be693242df849f68-8"></a>        /* use uart4_fck*/
+<a name="rest_code_1ea16e134ac44542be693242df849f68-9"></a>        clk = clk_get(&amp;pdev-&gt;dev,"dpll_per_m2_div4_ck"); //expect 48MHZ clock feed
+<a name="rest_code_1ea16e134ac44542be693242df849f68-10"></a>        ..
+<a name="rest_code_1ea16e134ac44542be693242df849f68-11"></a>
+<a name="rest_code_1ea16e134ac44542be693242df849f68-12"></a>        device_init_wakeup(&amp;pdev-&gt;dev, true);
+<a name="rest_code_1ea16e134ac44542be693242df849f68-13"></a>        pm_runtime_use_autosuspend(&amp;pdev-&gt;dev);
+<a name="rest_code_1ea16e134ac44542be693242df849f68-14"></a>        pm_runtime_set_autosuspend_delay(&amp;pdev-&gt;dev,-1);
+<a name="rest_code_1ea16e134ac44542be693242df849f68-15"></a>        pm_runtime_irq_safe(&amp;pdev-&gt;dev);
+<a name="rest_code_1ea16e134ac44542be693242df849f68-16"></a>        pm_runtime_enable(&amp;pdev-&gt;dev);
+<a name="rest_code_1ea16e134ac44542be693242df849f68-17"></a>
+<a name="rest_code_1ea16e134ac44542be693242df849f68-18"></a>        pm_runtime_get_sync(&amp;pdev-&gt;dev);
+<a name="rest_code_1ea16e134ac44542be693242df849f68-19"></a>
+<a name="rest_code_1ea16e134ac44542be693242df849f68-20"></a>        cirdev-&gt;clk = clk;
+<a name="rest_code_1ea16e134ac44542be693242df849f68-21"></a>        clk_prepare_enable(clk);
 </pre>
 <p>The device probe get the device resource information from the platfrom framework. I look up the source
 code in <em>arch/arm/mach-omap2</em> to find out the name of the clock that is the most likely be the one I should be
@@ -204,186 +205,186 @@ ask <em>pm_runtime..</em> to put it into use. The remaining part is the typical 
 line etc..</p>
 <p>Next the driver allocates RC device structure, fills in the RC device operations and its information and register
 for service with the RC framework driver. In the RC device structure, I have mostly empty functions
-defined since the device do not need special handling. It is only for the formality. I have it mapped to
+defined since the device does not need special handling. It is only for the formality. I have it mapped to
 <em>RC_MAP_RC6_MCE</em>, but it can be changed at run-time. Work queue is also used for this
 driver for input event processing as the BH portion of interrupt handling.</p>
-<pre class="code text"><a name="rest_code_c3bf9e89e9f14c479ef2d360fc702f60-1"></a>ir_props = rc_allocate_device();
-<a name="rest_code_c3bf9e89e9f14c479ef2d360fc702f60-2"></a>..
-<a name="rest_code_c3bf9e89e9f14c479ef2d360fc702f60-3"></a>ir_props-&gt;driver_type = RC_DRIVER_IR_RAW;
-<a name="rest_code_c3bf9e89e9f14c479ef2d360fc702f60-4"></a>ir_props-&gt;allowed_protocols = RC_BIT_ALL;
-<a name="rest_code_c3bf9e89e9f14c479ef2d360fc702f60-5"></a>ir_props-&gt;priv = (void * )cirdev;
-<a name="rest_code_c3bf9e89e9f14c479ef2d360fc702f60-6"></a>ir_props-&gt;s_idle = cir_set_idle;
-<a name="rest_code_c3bf9e89e9f14c479ef2d360fc702f60-7"></a>ir_props-&gt;open = cir_open;
-<a name="rest_code_c3bf9e89e9f14c479ef2d360fc702f60-8"></a>ir_props-&gt;close = cir_close;
-<a name="rest_code_c3bf9e89e9f14c479ef2d360fc702f60-9"></a>..
-<a name="rest_code_c3bf9e89e9f14c479ef2d360fc702f60-10"></a>ir_props-&gt;map_name = RC_MAP_RC6_MCE;
-<a name="rest_code_c3bf9e89e9f14c479ef2d360fc702f60-11"></a>..
-<a name="rest_code_c3bf9e89e9f14c479ef2d360fc702f60-12"></a>INIT_WORK((struct work_struct * )&amp;cirdev-&gt;bh,irevent_bh);
-<a name="rest_code_c3bf9e89e9f14c479ef2d360fc702f60-13"></a>INIT_LIST_HEAD((struct list_head * )&amp;cirdev-&gt;head);
-<a name="rest_code_c3bf9e89e9f14c479ef2d360fc702f60-14"></a>
-<a name="rest_code_c3bf9e89e9f14c479ef2d360fc702f60-15"></a>err = rc_register_device(cirdev-&gt;irprops);
+<pre class="code text"><a name="rest_code_1c978dc9b164404fb50409ee8ae2ce32-1"></a>ir_props = rc_allocate_device();
+<a name="rest_code_1c978dc9b164404fb50409ee8ae2ce32-2"></a>..
+<a name="rest_code_1c978dc9b164404fb50409ee8ae2ce32-3"></a>ir_props-&gt;driver_type = RC_DRIVER_IR_RAW;
+<a name="rest_code_1c978dc9b164404fb50409ee8ae2ce32-4"></a>ir_props-&gt;allowed_protocols = RC_BIT_ALL;
+<a name="rest_code_1c978dc9b164404fb50409ee8ae2ce32-5"></a>ir_props-&gt;priv = (void * )cirdev;
+<a name="rest_code_1c978dc9b164404fb50409ee8ae2ce32-6"></a>ir_props-&gt;s_idle = cir_set_idle;
+<a name="rest_code_1c978dc9b164404fb50409ee8ae2ce32-7"></a>ir_props-&gt;open = cir_open;
+<a name="rest_code_1c978dc9b164404fb50409ee8ae2ce32-8"></a>ir_props-&gt;close = cir_close;
+<a name="rest_code_1c978dc9b164404fb50409ee8ae2ce32-9"></a>..
+<a name="rest_code_1c978dc9b164404fb50409ee8ae2ce32-10"></a>ir_props-&gt;map_name = RC_MAP_RC6_MCE;
+<a name="rest_code_1c978dc9b164404fb50409ee8ae2ce32-11"></a>..
+<a name="rest_code_1c978dc9b164404fb50409ee8ae2ce32-12"></a>INIT_WORK((struct work_struct * )&amp;cirdev-&gt;bh,irevent_bh);
+<a name="rest_code_1c978dc9b164404fb50409ee8ae2ce32-13"></a>INIT_LIST_HEAD((struct list_head * )&amp;cirdev-&gt;head);
+<a name="rest_code_1c978dc9b164404fb50409ee8ae2ce32-14"></a>
+<a name="rest_code_1c978dc9b164404fb50409ee8ae2ce32-15"></a>err = rc_register_device(cirdev-&gt;irprops);
 </pre>
 <p>The UART is at the reset state and won't get initialized until the RC called its <em>cir_open()</em> operation. This will happen
 when <em>/dev/input/eventx</em> is opened by external application to make use of it.</p>
 <p>Once the IR stream bits is received and decoded by the UART, the RX interrupt will be generated and will be serviced
 by <em>cir_irq_handler</em> interrupt handler. The handler put the received byte into the buffer and schedule the BH workqueue.
-The BH handler then takes the byte off from the buffer and push it upstream to the IR core driver.</p>
-<pre class="code text"><a name="rest_code_4267acd31f6a470fa92518f50e5acaf8-1"></a>..
-<a name="rest_code_4267acd31f6a470fa92518f50e5acaf8-2"></a>if ( (pulse == 0) || (pulse == 0xff) ) {
-<a name="rest_code_4267acd31f6a470fa92518f50e5acaf8-3"></a>        ev.pulse = pulse ? 1 : 0 ;
-<a name="rest_code_4267acd31f6a470fa92518f50e5acaf8-4"></a>        ev.duration = (protocol == RC_TYPE_SONY12 ) ? 600000 * 8: 562500 * 8 ;
-<a name="rest_code_4267acd31f6a470fa92518f50e5acaf8-5"></a>        ir_raw_event_store_with_filter(cirdev-&gt;irprops, &amp;ev);
-<a name="rest_code_4267acd31f6a470fa92518f50e5acaf8-6"></a>        continue;
-<a name="rest_code_4267acd31f6a470fa92518f50e5acaf8-7"></a>}
-<a name="rest_code_4267acd31f6a470fa92518f50e5acaf8-8"></a>
-<a name="rest_code_4267acd31f6a470fa92518f50e5acaf8-9"></a>for (j = 0; j &lt; 8; j++) {
-<a name="rest_code_4267acd31f6a470fa92518f50e5acaf8-10"></a>        ev.pulse = pulse &amp; 1;
-<a name="rest_code_4267acd31f6a470fa92518f50e5acaf8-11"></a>        pulse = pulse &gt;&gt; 1;
-<a name="rest_code_4267acd31f6a470fa92518f50e5acaf8-12"></a>        if (protocol == RC_TYPE_SONY12) {
-<a name="rest_code_4267acd31f6a470fa92518f50e5acaf8-13"></a>                ev.duration = 600000 ; //duration * 1000; //in ns
-<a name="rest_code_4267acd31f6a470fa92518f50e5acaf8-14"></a>        }
-<a name="rest_code_4267acd31f6a470fa92518f50e5acaf8-15"></a>        else
-<a name="rest_code_4267acd31f6a470fa92518f50e5acaf8-16"></a>                ev.duration = 562500; //duration * 1000; //in ns
-<a name="rest_code_4267acd31f6a470fa92518f50e5acaf8-17"></a>                ir_raw_event_store_with_filter(cirdev-&gt;irprops, &amp;ev);
-<a name="rest_code_4267acd31f6a470fa92518f50e5acaf8-18"></a>        }
-<a name="rest_code_4267acd31f6a470fa92518f50e5acaf8-19"></a>         ..
-<a name="rest_code_4267acd31f6a470fa92518f50e5acaf8-20"></a>ir_raw_event_handle(cirdev-&gt;irprops);
+The BH handler then takes the byte off from the buffer and pushes it upstream to the IR core driver.</p>
+<pre class="code text"><a name="rest_code_beb0122b728045398ae84d5ecedf5df5-1"></a>..
+<a name="rest_code_beb0122b728045398ae84d5ecedf5df5-2"></a>if ( (pulse == 0) || (pulse == 0xff) ) {
+<a name="rest_code_beb0122b728045398ae84d5ecedf5df5-3"></a>        ev.pulse = pulse ? 1 : 0 ;
+<a name="rest_code_beb0122b728045398ae84d5ecedf5df5-4"></a>        ev.duration = (protocol == RC_TYPE_SONY12 ) ? 600000 * 8: 562500 * 8 ;
+<a name="rest_code_beb0122b728045398ae84d5ecedf5df5-5"></a>        ir_raw_event_store_with_filter(cirdev-&gt;irprops, &amp;ev);
+<a name="rest_code_beb0122b728045398ae84d5ecedf5df5-6"></a>        continue;
+<a name="rest_code_beb0122b728045398ae84d5ecedf5df5-7"></a>}
+<a name="rest_code_beb0122b728045398ae84d5ecedf5df5-8"></a>
+<a name="rest_code_beb0122b728045398ae84d5ecedf5df5-9"></a>for (j = 0; j &lt; 8; j++) {
+<a name="rest_code_beb0122b728045398ae84d5ecedf5df5-10"></a>        ev.pulse = pulse &amp; 1;
+<a name="rest_code_beb0122b728045398ae84d5ecedf5df5-11"></a>        pulse = pulse &gt;&gt; 1;
+<a name="rest_code_beb0122b728045398ae84d5ecedf5df5-12"></a>        if (protocol == RC_TYPE_SONY12) {
+<a name="rest_code_beb0122b728045398ae84d5ecedf5df5-13"></a>                ev.duration = 600000 ; //duration * 1000; //in ns
+<a name="rest_code_beb0122b728045398ae84d5ecedf5df5-14"></a>        }
+<a name="rest_code_beb0122b728045398ae84d5ecedf5df5-15"></a>        else
+<a name="rest_code_beb0122b728045398ae84d5ecedf5df5-16"></a>                ev.duration = 562500; //duration * 1000; //in ns
+<a name="rest_code_beb0122b728045398ae84d5ecedf5df5-17"></a>                ir_raw_event_store_with_filter(cirdev-&gt;irprops, &amp;ev);
+<a name="rest_code_beb0122b728045398ae84d5ecedf5df5-18"></a>        }
+<a name="rest_code_beb0122b728045398ae84d5ecedf5df5-19"></a>         ..
+<a name="rest_code_beb0122b728045398ae84d5ecedf5df5-20"></a>ir_raw_event_handle(cirdev-&gt;irprops);
 </pre>
 <p>For simplicity, I omit the sleep/wakeup support in the driver, instead I add proc file interface for
 debugging purpose. The proc file is a simple registers dump using sequential file mechanism.</p>
-<pre class="code text"><a name="rest_code_267cf5d5ebdc426d859183d067106e02-1"></a>struct file_operations proc_regs_fops = {
-<a name="rest_code_267cf5d5ebdc426d859183d067106e02-2"></a>        .open =  proc_seq_open,
-<a name="rest_code_267cf5d5ebdc426d859183d067106e02-3"></a>        .read = seq_read,
-<a name="rest_code_267cf5d5ebdc426d859183d067106e02-4"></a>        .llseek = seq_lseek,
-<a name="rest_code_267cf5d5ebdc426d859183d067106e02-5"></a>        .write = proc_reg_write,
-<a name="rest_code_267cf5d5ebdc426d859183d067106e02-6"></a>        .owner = THIS_MODULE,
-<a name="rest_code_267cf5d5ebdc426d859183d067106e02-7"></a>};
-<a name="rest_code_267cf5d5ebdc426d859183d067106e02-8"></a>..
-<a name="rest_code_267cf5d5ebdc426d859183d067106e02-9"></a>
-<a name="rest_code_267cf5d5ebdc426d859183d067106e02-10"></a>if (!(cir_procdir_entry = proc_mkdir("cir",NULL))) {
-<a name="rest_code_267cf5d5ebdc426d859183d067106e02-11"></a>        goto exit_free_data;
-<a name="rest_code_267cf5d5ebdc426d859183d067106e02-12"></a>}
-<a name="rest_code_267cf5d5ebdc426d859183d067106e02-13"></a>cirdev-&gt;proc_entry = cir_procdir_entry;
-<a name="rest_code_267cf5d5ebdc426d859183d067106e02-14"></a>if (!(entry = proc_create_data("regs",S_IFREG | S_IRUGO | S_IWUSR,
-<a name="rest_code_267cf5d5ebdc426d859183d067106e02-15"></a>                                                           cirdev-&gt;proc_entry,
-<a name="rest_code_267cf5d5ebdc426d859183d067106e02-16"></a>                                                           &amp;proc_regs_fops,
-<a name="rest_code_267cf5d5ebdc426d859183d067106e02-17"></a>                                                           NULL)) ) {
+<pre class="code text"><a name="rest_code_c1ad8b7cc97744da82224cb32bd77b28-1"></a>struct file_operations proc_regs_fops = {
+<a name="rest_code_c1ad8b7cc97744da82224cb32bd77b28-2"></a>        .open =  proc_seq_open,
+<a name="rest_code_c1ad8b7cc97744da82224cb32bd77b28-3"></a>        .read = seq_read,
+<a name="rest_code_c1ad8b7cc97744da82224cb32bd77b28-4"></a>        .llseek = seq_lseek,
+<a name="rest_code_c1ad8b7cc97744da82224cb32bd77b28-5"></a>        .write = proc_reg_write,
+<a name="rest_code_c1ad8b7cc97744da82224cb32bd77b28-6"></a>        .owner = THIS_MODULE,
+<a name="rest_code_c1ad8b7cc97744da82224cb32bd77b28-7"></a>};
+<a name="rest_code_c1ad8b7cc97744da82224cb32bd77b28-8"></a>..
+<a name="rest_code_c1ad8b7cc97744da82224cb32bd77b28-9"></a>
+<a name="rest_code_c1ad8b7cc97744da82224cb32bd77b28-10"></a>if (!(cir_procdir_entry = proc_mkdir("cir",NULL))) {
+<a name="rest_code_c1ad8b7cc97744da82224cb32bd77b28-11"></a>        goto exit_free_data;
+<a name="rest_code_c1ad8b7cc97744da82224cb32bd77b28-12"></a>}
+<a name="rest_code_c1ad8b7cc97744da82224cb32bd77b28-13"></a>cirdev-&gt;proc_entry = cir_procdir_entry;
+<a name="rest_code_c1ad8b7cc97744da82224cb32bd77b28-14"></a>if (!(entry = proc_create_data("regs",S_IFREG | S_IRUGO | S_IWUSR,
+<a name="rest_code_c1ad8b7cc97744da82224cb32bd77b28-15"></a>                                                           cirdev-&gt;proc_entry,
+<a name="rest_code_c1ad8b7cc97744da82224cb32bd77b28-16"></a>                                                           &amp;proc_regs_fops,
+<a name="rest_code_c1ad8b7cc97744da82224cb32bd77b28-17"></a>                                                           NULL)) ) {
 </pre>
 <p>Once I compile the driver, <em>cir.ko</em>, I can load and test it. As part of input event, the input event driver, <em>evdev</em> is also used.</p>
-<pre class="code text"><a name="rest_code_26da704e477a47f8b123619322f5d65e-1"></a># modprobe evdev
-<a name="rest_code_26da704e477a47f8b123619322f5d65e-2"></a># insmod cir.ko
+<pre class="code text"><a name="rest_code_a6b9c28a44954e409f0d1af96eb21041-1"></a># modprobe evdev
+<a name="rest_code_a6b9c28a44954e409f0d1af96eb21041-2"></a># insmod cir.ko
 </pre>
 </div>
 </div>
 <div class="section" id="testing">
 <h2>Testing</h2>
 <p>Having the debug code, upon driver loading I can see that the platform framework call it with,</p>
-<pre class="code text"><a name="rest_code_4a43079039774893869c0dbb3798a1a9-1"></a># insmod ci# insmod cir.ko
-<a name="rest_code_4a43079039774893869c0dbb3798a1a9-2"></a>[   40.972690] cir_probe: entering with regs start 0x481a8000, size 0x2000, irq 156
-<a name="rest_code_4a43079039774893869c0dbb3798a1a9-3"></a>[   40.980266] cir_probe:uartclk 48000000, wakeirq 0, id   (null), sbase 0xfa1a8000, mapbase 481a8000
-<a name="rest_code_4a43079039774893869c0dbb3798a1a9-4"></a>[   40.990945] cir_probe: fck rate 48000000
+<pre class="code text"><a name="rest_code_8e5c09779e9c4777a4e233bd054260fa-1"></a># insmod ci# insmod cir.ko
+<a name="rest_code_8e5c09779e9c4777a4e233bd054260fa-2"></a>[   40.972690] cir_probe: entering with regs start 0x481a8000, size 0x2000, irq 156
+<a name="rest_code_8e5c09779e9c4777a4e233bd054260fa-3"></a>[   40.980266] cir_probe:uartclk 48000000, wakeirq 0, id   (null), sbase 0xfa1a8000, mapbase 481a8000
+<a name="rest_code_8e5c09779e9c4777a4e233bd054260fa-4"></a>[   40.990945] cir_probe: fck rate 48000000
 </pre>
 <p>So far so good. My debugging messages indicate that I get the UART4 resource information correctly.To make sure I get what
-I think I really get is to add few extra debug code to actually read the AM3358 registers <a class="footnote-reference" href="#id7" id="id5">[1]</a> to verify the setting.</p>
-<pre class="code text"><a name="rest_code_f4a9e98995dd4568b629415e9484bc40-1"></a>[   99.034228] get_uart_clock, CM_PER_L4LS_CLKCTRL=0x4502
-<a name="rest_code_f4a9e98995dd4568b629415e9484bc40-2"></a>[   99.039409] get_uart_clock, CM_PER_UART4_CLKCTRL=0x2
-<a name="rest_code_f4a9e98995dd4568b629415e9484bc40-3"></a>[   99.045336] get_uart_clock: MDR1 reg = 0x7, CFPS 0x69
+I think I really get is to add few extra debug code to actually read the AM3358 registers <a class="footnote-reference" href="#id7" id="id5">[1]</a> just to verify the setting.</p>
+<pre class="code text"><a name="rest_code_5d8fd5997e404a30ad29e1c9598f5af4-1"></a>[   99.034228] get_uart_clock, CM_PER_L4LS_CLKCTRL=0x4502
+<a name="rest_code_5d8fd5997e404a30ad29e1c9598f5af4-2"></a>[   99.039409] get_uart_clock, CM_PER_UART4_CLKCTRL=0x2
+<a name="rest_code_5d8fd5997e404a30ad29e1c9598f5af4-3"></a>[   99.045336] get_uart_clock: MDR1 reg = 0x7, CFPS 0x69
 </pre>
 <p>The first two lines is the value of <em>CM_PER_L4LS_CLKCTRL</em> <a class="footnote-reference" href="#id7" id="id6">[1]</a> and <em>CM_PER_UART4_CLKCTRL</em> respectively. This is the
-indication that clock line is activated correctly. The last line was a reading of two UART registers, <em>MDR1</em> and
+indication that clock line is activated correctly. The last line is to read two UART registers, <em>MDR1</em> and
 <em>CFPS</em>. If clock line is not activated, reading the two UART registers would have resulted in kernel crash
 because the IO bus would be stuck and cause I/O fault to happen. It is the painful way to know something is wrong.</p>
 <p>I can check IRQ45 of UART4 is registered with the kernel correctly.</p>
-<pre class="code text"><a name="rest_code_bc9db637fc4a44f6bf8b02ed3e5809e7-1"></a># cat /proc/interrupts
-<a name="rest_code_bc9db637fc4a44f6bf8b02ed3e5809e7-2"></a>           CPU0
-<a name="rest_code_bc9db637fc4a44f6bf8b02ed3e5809e7-3"></a> 16:       3050      INTC  68 Level     gp_timer
-<a name="rest_code_bc9db637fc4a44f6bf8b02ed3e5809e7-4"></a> ...
-<a name="rest_code_bc9db637fc4a44f6bf8b02ed3e5809e7-5"></a>156:          0      INTC  45 Level     cir
-<a name="rest_code_bc9db637fc4a44f6bf8b02ed3e5809e7-6"></a>...
+<pre class="code text"><a name="rest_code_ddb7aa9cd4bc469b89c3219f47a394db-1"></a># cat /proc/interrupts
+<a name="rest_code_ddb7aa9cd4bc469b89c3219f47a394db-2"></a>           CPU0
+<a name="rest_code_ddb7aa9cd4bc469b89c3219f47a394db-3"></a> 16:       3050      INTC  68 Level     gp_timer
+<a name="rest_code_ddb7aa9cd4bc469b89c3219f47a394db-4"></a> ...
+<a name="rest_code_ddb7aa9cd4bc469b89c3219f47a394db-5"></a>156:          0      INTC  45 Level     cir
+<a name="rest_code_ddb7aa9cd4bc469b89c3219f47a394db-6"></a>...
 </pre>
 <p>There is my interrupt handler and current count is at 0. While at it I can check my proc file for registers dump at
 the device's idle state.</p>
-<pre class="code text"><a name="rest_code_884d1fc930724888a65d8c51635cc969-1"></a># cat /proc/cir/regs
-<a name="rest_code_884d1fc930724888a65d8c51635cc969-2"></a>rhr                      0x44
-<a name="rest_code_884d1fc930724888a65d8c51635cc969-3"></a>acreg                    0x10
-<a name="rest_code_884d1fc930724888a65d8c51635cc969-4"></a>..
+<pre class="code text"><a name="rest_code_7ee5c3df06e749b59bf037eb0e9975c6-1"></a># cat /proc/cir/regs
+<a name="rest_code_7ee5c3df06e749b59bf037eb0e9975c6-2"></a>rhr                      0x44
+<a name="rest_code_7ee5c3df06e749b59bf037eb0e9975c6-3"></a>acreg                    0x10
+<a name="rest_code_7ee5c3df06e749b59bf037eb0e9975c6-4"></a>..
 </pre>
 <p>Having verify the information that I expect, I have more confident to do further test. The next step is to
 test with <em>ir-keytable</em> utility.</p>
-<pre class="code text"><a name="rest_code_3ff8748f52e94e64ad57b4e96c79c6b6-1"></a># ir-keytable
-<a name="rest_code_3ff8748f52e94e64ad57b4e96c79c6b6-2"></a>Found /sys/class/rc/rc0/ (/dev/input/event0) with:
-<a name="rest_code_3ff8748f52e94e64ad57b4e96c79c6b6-3"></a>        Driver (null), table rc-rc6-mce
-<a name="rest_code_3ff8748f52e94e64ad57b4e96c79c6b6-4"></a>        Supported protocols: unknown other lirc rc-5 jvc sony nec sanyo mce-kbd rc-6 sharp xmp
-<a name="rest_code_3ff8748f52e94e64ad57b4e96c79c6b6-5"></a>        Enabled protocols: lirc rc-6
-<a name="rest_code_3ff8748f52e94e64ad57b4e96c79c6b6-6"></a>        Name: CIR Infrared Remote Receiver
-<a name="rest_code_3ff8748f52e94e64ad57b4e96c79c6b6-7"></a>        bus: 0, vendor/product: 0000:0000, version: 0x0000
-<a name="rest_code_3ff8748f52e94e64ad57b4e96c79c6b6-8"></a>        Repeat delay = 500 ms, repeat period = 125 ms
+<pre class="code text"><a name="rest_code_95e31ee939604389973769663557c8d3-1"></a># ir-keytable
+<a name="rest_code_95e31ee939604389973769663557c8d3-2"></a>Found /sys/class/rc/rc0/ (/dev/input/event0) with:
+<a name="rest_code_95e31ee939604389973769663557c8d3-3"></a>        Driver (null), table rc-rc6-mce
+<a name="rest_code_95e31ee939604389973769663557c8d3-4"></a>        Supported protocols: unknown other lirc rc-5 jvc sony nec sanyo mce-kbd rc-6 sharp xmp
+<a name="rest_code_95e31ee939604389973769663557c8d3-5"></a>        Enabled protocols: lirc rc-6
+<a name="rest_code_95e31ee939604389973769663557c8d3-6"></a>        Name: CIR Infrared Remote Receiver
+<a name="rest_code_95e31ee939604389973769663557c8d3-7"></a>        bus: 0, vendor/product: 0000:0000, version: 0x0000
+<a name="rest_code_95e31ee939604389973769663557c8d3-8"></a>        Repeat delay = 500 ms, repeat period = 125 ms
 </pre>
 <p>Looks like the tool recognize the registered IR device. I will change to use SONY protocol instead of
 <em>lirc rc-6</em> so I issue this command,</p>
-<pre class="code text"><a name="rest_code_258251ee0d254a71a2f3bb04ff2b5d07-1"></a># ir-keytable -c -p SONY
-<a name="rest_code_258251ee0d254a71a2f3bb04ff2b5d07-2"></a>Old keytable cleared
-<a name="rest_code_258251ee0d254a71a2f3bb04ff2b5d07-3"></a>Protocols changed to sony
-<a name="rest_code_258251ee0d254a71a2f3bb04ff2b5d07-4"></a># ir-keytable
-<a name="rest_code_258251ee0d254a71a2f3bb04ff2b5d07-5"></a>Found /sys/class/rc/rc0/ (/dev/input/event0) with:
-<a name="rest_code_258251ee0d254a71a2f3bb04ff2b5d07-6"></a>        Driver (null), table rc-rc6-mce
-<a name="rest_code_258251ee0d254a71a2f3bb04ff2b5d07-7"></a>        Supported protocols: unknown other lirc rc-5 jvc sony nec sanyo mce-kbd rc-6 sharp xmp
-<a name="rest_code_258251ee0d254a71a2f3bb04ff2b5d07-8"></a>        Enabled protocols: sony
-<a name="rest_code_258251ee0d254a71a2f3bb04ff2b5d07-9"></a>        Name: CIR Infrared Remote Receiver
-<a name="rest_code_258251ee0d254a71a2f3bb04ff2b5d07-10"></a>        bus: 0, vendor/product: 0000:0000, version: 0x0000
-<a name="rest_code_258251ee0d254a71a2f3bb04ff2b5d07-11"></a>        Repeat delay = 500 ms, repeat period = 125 ms
+<pre class="code text"><a name="rest_code_c798f5e8c4044908823f54ff79356718-1"></a># ir-keytable -c -p SONY
+<a name="rest_code_c798f5e8c4044908823f54ff79356718-2"></a>Old keytable cleared
+<a name="rest_code_c798f5e8c4044908823f54ff79356718-3"></a>Protocols changed to sony
+<a name="rest_code_c798f5e8c4044908823f54ff79356718-4"></a># ir-keytable
+<a name="rest_code_c798f5e8c4044908823f54ff79356718-5"></a>Found /sys/class/rc/rc0/ (/dev/input/event0) with:
+<a name="rest_code_c798f5e8c4044908823f54ff79356718-6"></a>        Driver (null), table rc-rc6-mce
+<a name="rest_code_c798f5e8c4044908823f54ff79356718-7"></a>        Supported protocols: unknown other lirc rc-5 jvc sony nec sanyo mce-kbd rc-6 sharp xmp
+<a name="rest_code_c798f5e8c4044908823f54ff79356718-8"></a>        Enabled protocols: sony
+<a name="rest_code_c798f5e8c4044908823f54ff79356718-9"></a>        Name: CIR Infrared Remote Receiver
+<a name="rest_code_c798f5e8c4044908823f54ff79356718-10"></a>        bus: 0, vendor/product: 0000:0000, version: 0x0000
+<a name="rest_code_c798f5e8c4044908823f54ff79356718-11"></a>        Repeat delay = 500 ms, repeat period = 125 ms
 </pre>
 <p>So far so good. Next is to run the test with the IR receiver and SONY based remote control I found
 in my junk box.</p>
-<pre class="code text"><a name="rest_code_3d0174a9211c4ed7b56956cdbb3fd6b2-1"></a># ir-keytable -t
-<a name="rest_code_3d0174a9211c4ed7b56956cdbb3fd6b2-2"></a>Testing events. Please, press CTRL-C to abort.
-<a name="rest_code_3d0174a9211c4ed7b56956cdbb3fd6b2-3"></a>1214.743017: event type EV_MSC(0x04): scancode = 0x19000a
-<a name="rest_code_3d0174a9211c4ed7b56956cdbb3fd6b2-4"></a>1214.743017: event type EV_SYN(0x00).
-<a name="rest_code_3d0174a9211c4ed7b56956cdbb3fd6b2-5"></a>...
-<a name="rest_code_3d0174a9211c4ed7b56956cdbb3fd6b2-6"></a>218.540761: event type EV_MSC(0x04): scancode = 0x19000b
-<a name="rest_code_3d0174a9211c4ed7b56956cdbb3fd6b2-7"></a>1218.540761: event type EV_SYN(0x00).
-<a name="rest_code_3d0174a9211c4ed7b56956cdbb3fd6b2-8"></a>1218.585536: event type EV_MSC(0x04): scancode = 0x19000b
+<pre class="code text"><a name="rest_code_388ecab08cb64b9388e82fee7a74dbed-1"></a># ir-keytable -t
+<a name="rest_code_388ecab08cb64b9388e82fee7a74dbed-2"></a>Testing events. Please, press CTRL-C to abort.
+<a name="rest_code_388ecab08cb64b9388e82fee7a74dbed-3"></a>1214.743017: event type EV_MSC(0x04): scancode = 0x19000a
+<a name="rest_code_388ecab08cb64b9388e82fee7a74dbed-4"></a>1214.743017: event type EV_SYN(0x00).
+<a name="rest_code_388ecab08cb64b9388e82fee7a74dbed-5"></a>...
+<a name="rest_code_388ecab08cb64b9388e82fee7a74dbed-6"></a>218.540761: event type EV_MSC(0x04): scancode = 0x19000b
+<a name="rest_code_388ecab08cb64b9388e82fee7a74dbed-7"></a>1218.540761: event type EV_SYN(0x00).
+<a name="rest_code_388ecab08cb64b9388e82fee7a74dbed-8"></a>1218.585536: event type EV_MSC(0x04): scancode = 0x19000b
 </pre>
 <p>Scan code of SONY remote control is detected and decoded. For <em>power</em> button it is 0x1900a and for <em>menu</em>
 button it is 0x19000b. With this information, I can create the keymaps for it. Luckily this remote control
 has only a small number of buttons so it is created quickly. I store this keymap file as <em>sony</em> in
 <em>/etc/rc_keymaps</em>.</p>
-<pre class="code text"><a name="rest_code_bdf1830a2faa4d9cbafcd7863c330e54-1"></a># cat /etc/rc_keymaps/sony
-<a name="rest_code_bdf1830a2faa4d9cbafcd7863c330e54-2"></a>0x19000a KEY_POWER
-<a name="rest_code_bdf1830a2faa4d9cbafcd7863c330e54-3"></a>0x19000b KEY_MENU
-<a name="rest_code_bdf1830a2faa4d9cbafcd7863c330e54-4"></a>0x19000c KEY_UP
-<a name="rest_code_bdf1830a2faa4d9cbafcd7863c330e54-5"></a>0x19000d KEY_REWIND
-<a name="rest_code_bdf1830a2faa4d9cbafcd7863c330e54-6"></a>0x19000e KEY_ENTER
-<a name="rest_code_bdf1830a2faa4d9cbafcd7863c330e54-7"></a>0x19000f KEY_FORWARD
-<a name="rest_code_bdf1830a2faa4d9cbafcd7863c330e54-8"></a>0x190010 KEY_DOWN
+<pre class="code text"><a name="rest_code_22d8cc23d2cf4d04a4402ac32a19ccac-1"></a># cat /etc/rc_keymaps/sony
+<a name="rest_code_22d8cc23d2cf4d04a4402ac32a19ccac-2"></a>0x19000a KEY_POWER
+<a name="rest_code_22d8cc23d2cf4d04a4402ac32a19ccac-3"></a>0x19000b KEY_MENU
+<a name="rest_code_22d8cc23d2cf4d04a4402ac32a19ccac-4"></a>0x19000c KEY_UP
+<a name="rest_code_22d8cc23d2cf4d04a4402ac32a19ccac-5"></a>0x19000d KEY_REWIND
+<a name="rest_code_22d8cc23d2cf4d04a4402ac32a19ccac-6"></a>0x19000e KEY_ENTER
+<a name="rest_code_22d8cc23d2cf4d04a4402ac32a19ccac-7"></a>0x19000f KEY_FORWARD
+<a name="rest_code_22d8cc23d2cf4d04a4402ac32a19ccac-8"></a>0x190010 KEY_DOWN
 </pre>
 <p>Next I load the keymap mapping for the next test.</p>
-<pre class="code text"><a name="rest_code_e975e7e47fcc4306b6a4c00c7f4a9ce7-1"></a># ir-keytable -c -p sony -w /etc/rc_keymaps/sony
-<a name="rest_code_e975e7e47fcc4306b6a4c00c7f4a9ce7-2"></a>Old keytable cleared
-<a name="rest_code_e975e7e47fcc4306b6a4c00c7f4a9ce7-3"></a>Wrote 7 keycode(s) to driver
-<a name="rest_code_e975e7e47fcc4306b6a4c00c7f4a9ce7-4"></a>Protocols changed to sony
-<a name="rest_code_e975e7e47fcc4306b6a4c00c7f4a9ce7-5"></a># ir-keytable -t
-<a name="rest_code_e975e7e47fcc4306b6a4c00c7f4a9ce7-6"></a>Testing events. Please, press CTRL-C to abort.
-<a name="rest_code_e975e7e47fcc4306b6a4c00c7f4a9ce7-7"></a>1608.313105: event type EV_MSC(0x04): scancode = 0x19000a
-<a name="rest_code_e975e7e47fcc4306b6a4c00c7f4a9ce7-8"></a>1608.313105: event type EV_KEY(0x01) key_down: KEY_POWER(0x0001)
-<a name="rest_code_e975e7e47fcc4306b6a4c00c7f4a9ce7-9"></a>1608.313105: event type EV_SYN(0x00).
-<a name="rest_code_e975e7e47fcc4306b6a4c00c7f4a9ce7-10"></a>...
-<a name="rest_code_e975e7e47fcc4306b6a4c00c7f4a9ce7-11"></a>1613.269840: event type EV_MSC(0x04): scancode = 0x190010
-<a name="rest_code_e975e7e47fcc4306b6a4c00c7f4a9ce7-12"></a>1613.269840: event type EV_KEY(0x01) key_down: KEY_DOWN(0x0001)
-<a name="rest_code_e975e7e47fcc4306b6a4c00c7f4a9ce7-13"></a>1613.269840: event type EV_SYN(0x00).
+<pre class="code text"><a name="rest_code_21ac5018d1c445249bb22ce8e900f159-1"></a># ir-keytable -c -p sony -w /etc/rc_keymaps/sony
+<a name="rest_code_21ac5018d1c445249bb22ce8e900f159-2"></a>Old keytable cleared
+<a name="rest_code_21ac5018d1c445249bb22ce8e900f159-3"></a>Wrote 7 keycode(s) to driver
+<a name="rest_code_21ac5018d1c445249bb22ce8e900f159-4"></a>Protocols changed to sony
+<a name="rest_code_21ac5018d1c445249bb22ce8e900f159-5"></a># ir-keytable -t
+<a name="rest_code_21ac5018d1c445249bb22ce8e900f159-6"></a>Testing events. Please, press CTRL-C to abort.
+<a name="rest_code_21ac5018d1c445249bb22ce8e900f159-7"></a>1608.313105: event type EV_MSC(0x04): scancode = 0x19000a
+<a name="rest_code_21ac5018d1c445249bb22ce8e900f159-8"></a>1608.313105: event type EV_KEY(0x01) key_down: KEY_POWER(0x0001)
+<a name="rest_code_21ac5018d1c445249bb22ce8e900f159-9"></a>1608.313105: event type EV_SYN(0x00).
+<a name="rest_code_21ac5018d1c445249bb22ce8e900f159-10"></a>...
+<a name="rest_code_21ac5018d1c445249bb22ce8e900f159-11"></a>1613.269840: event type EV_MSC(0x04): scancode = 0x190010
+<a name="rest_code_21ac5018d1c445249bb22ce8e900f159-12"></a>1613.269840: event type EV_KEY(0x01) key_down: KEY_DOWN(0x0001)
+<a name="rest_code_21ac5018d1c445249bb22ce8e900f159-13"></a>1613.269840: event type EV_SYN(0x00).
 </pre>
 <p>Now that I can see that the key events are generated with respect to their scancodes. Changing
 protocol to match the type of remote control is also flexible, for example, I can change
-protocol to NEC, <em>nec</em> to use with an old TV remote control,</p>
-<pre class="code text"><a name="rest_code_fc46e34a40254348a99b0010ae7edb51-1"></a># ir-keytable -c -p nec
-<a name="rest_code_fc46e34a40254348a99b0010ae7edb51-2"></a>Old keytable cleared
-<a name="rest_code_fc46e34a40254348a99b0010ae7edb51-3"></a>Protocols changed to nec
-<a name="rest_code_fc46e34a40254348a99b0010ae7edb51-4"></a># ir-keytable -t
-<a name="rest_code_fc46e34a40254348a99b0010ae7edb51-5"></a>Testing events. Please, press CTRL-C to abort.
-<a name="rest_code_fc46e34a40254348a99b0010ae7edb51-6"></a>2280.369927: event type EV_MSC(0x04): scancode = 0x847904
-<a name="rest_code_fc46e34a40254348a99b0010ae7edb51-7"></a>2280.369927: event type EV_SYN(0x00).
-<a name="rest_code_fc46e34a40254348a99b0010ae7edb51-8"></a>2285.859057: event type EV_MSC(0x04): scancode = 0x84790a
-<a name="rest_code_fc46e34a40254348a99b0010ae7edb51-9"></a>2285.859057: event type EV_SYN(0x00).
+protocol to NEC, <em>nec</em> to use with an old TV remote control that uses NEC protocol,</p>
+<pre class="code text"><a name="rest_code_f3785c1ba33e4958ba9ec48150e6f52f-1"></a># ir-keytable -c -p nec
+<a name="rest_code_f3785c1ba33e4958ba9ec48150e6f52f-2"></a>Old keytable cleared
+<a name="rest_code_f3785c1ba33e4958ba9ec48150e6f52f-3"></a>Protocols changed to nec
+<a name="rest_code_f3785c1ba33e4958ba9ec48150e6f52f-4"></a># ir-keytable -t
+<a name="rest_code_f3785c1ba33e4958ba9ec48150e6f52f-5"></a>Testing events. Please, press CTRL-C to abort.
+<a name="rest_code_f3785c1ba33e4958ba9ec48150e6f52f-6"></a>2280.369927: event type EV_MSC(0x04): scancode = 0x847904
+<a name="rest_code_f3785c1ba33e4958ba9ec48150e6f52f-7"></a>2280.369927: event type EV_SYN(0x00).
+<a name="rest_code_f3785c1ba33e4958ba9ec48150e6f52f-8"></a>2285.859057: event type EV_MSC(0x04): scancode = 0x84790a
+<a name="rest_code_f3785c1ba33e4958ba9ec48150e6f52f-9"></a>2285.859057: event type EV_SYN(0x00).
 </pre>
 <p>Should I need to use this remote control, I would want to create the keymap for its scancodes; however,
 this remote control has too many buttons, I will not create keymap for it for the time being. The scancodes
@@ -394,7 +395,7 @@ the map file.</p>
 <h2>Conclusion</h2>
 <p>While there are many choices to use the IR of this type. One would be the GPIO type of driver to handle the
 IR stream, perhaps bit-banging it. If there is a small piece of hardware that left unused, it is better
-to use it. If it is already included in the cost of the product then I better find the use of it.</p>
+to use it. Since it is already included in the cost of the product, I better find the use of it.</p>
 <p>This driver is available in my github repository, <a class="reference external" href="https://github.com/souktha/ir">https://github.com/souktha/ir</a>. There is a lot of room to
 improve and it is not yet robust. If I load/unload multiple times, it would crash. Once I have enough time
 in my hand, I will fix it. Perhaps it is because I oversimplify it by ignoring certain aspect of <em>pm_runtime</em>.</p>

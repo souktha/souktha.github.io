@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<head>
+<meta charset="utf-8">
+<base href="http://souktha.github.io/hardware/vga-display-xadc/">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Displaying Xilinx XADC on VGA | Soukthavy Sopha</title>
+<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<meta content="#5670d4" name="theme-color">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
+<link rel="canonical" href="http://souktha.github.io/hardware/vga-display-xadc/">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Soukthavy">
+<link rel="prev" href="../../software/bblk-ir/" title="Creating an IR receiver on AM335x BeagleBone Black" type="text/html">
+<meta property="og:site_name" content="Soukthavy Sopha">
+<meta property="og:title" content="Displaying Xilinx XADC on VGA">
+<meta property="og:url" content="http://souktha.github.io/hardware/vga-display-xadc/">
+<meta property="og:description" content="My previous blog was about displaying simple bar graph on a standard VGA 640x480@60HZ monitor using synthesized Verilog code.
+This blog is to follow on with that exercise, but using the actual sampled">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2016-04-03T21:10:14Z">
+<meta property="article:tag" content="hardware">
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-inverse navbar-static-top"><div class="container">
+<!-- This keeps the margins nice -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://souktha.github.io/">
+
+                <span id="blog-title">Soukthavy Sopha</span>
+            </a>
+        </div>
+<!-- /.navbar-header -->
+        <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
+            <ul class="nav navbar-nav">
+<li>
+<a href="../../archive.html">Archive</a>
+                </li>
+<li>
+<a href="../../categories/">Tags</a>
+                </li>
+<li>
+<a href="../../rss.xml">RSS feed</a>
+            </li>
+<li class="dropdown">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Blog <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+<li>
+<a href="../../software">Sofware</a>
+                    </li>
+<li>
+<a href="../../hardware">Hardware</a>
+                    </li>
+<li>
+<a href="../../misc">Misc</a>
+            </li>
+</ul>
+</li>
+<li>
+<a href="https://github.com/souktha">My Github</a>
+
+                
+            </li>
+</ul>
+<ul class="nav navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        <div class="row">
+            
+            
+<article class="storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Displaying Xilinx XADC on VGA</a></h1>
+
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>My previous blog was about displaying simple bar graph on a standard VGA <a class="reference external" href="mailto:640x480@60HZ">640x480@60HZ</a> monitor using synthesized Verilog code.
+This blog is to follow on with that exercise, but using the actual sampled data from the Xilinx XADC instead.</p>
+<!-- TEASER_END -->
+<p>The Artix7 FPGA on Digilent Nexys4DDR has a dual 12-bit 1 MPBS Analog-to-Digital converter in it which I think is
+pretty good enough for the wide variety of applications. According to its user guide <a class="footnote-reference" href="#id3" id="id1">[1]</a>, this integrated component
+is available in several Xilinx FPGA products. My understanding about its functionality would eventually be
+applicable to other Xilinx's FPGAs such as the Kintex, Zynq-7000 etc.. Later on I will use it with the Zynq-7000 series
+with the integrated ARM Cortex.</p>
+<p>This XADC can access up to 16 auxiliary analog input channels. This is stated in page 17 of its user guide <a class="footnote-reference" href="#id3" id="id2">[1]</a>.
+For my exercise I will use only one bipolar pair of <em>Vp/Vn</em> input channels of this device. The nominal input range
+to this ADC channel will be in accordance to its specification which is 0-1V.</p>
+<div class="section" id="tools-and-equipment-use">
+<h2>Tools and equipment use</h2>
+<ul class="simple">
+<li>Xilinx Vivado 2015.4</li>
+<li>Digilent Nexys4DDR</li>
+<li>Arbitrary waveform generator</li>
+<li>VGA monitor</li>
+<li>Cables</li>
+</ul>
+</div>
+<div class="section" id="implementation">
+<h2>Implementation</h2>
+<p>Unfortunately I will have to make use of the Xilinx IP core for the XADC. Generate and instantiate it then feed its output
+to the VGA display monitor. I do not know its core well enough to do it with pure Verilog code. Even if I do it may
+not worth the effort.</p>
+<div class="section" id="the-interfaces">
+<h3>The interfaces</h3>
+<ul class="simple">
+<li>In this implementation, the XADC is to be operated in <em>Single Channel mode</em> on channel 19 (<em>VAUXP[3], VAUXN[3]</em>).
+Its timing mode is <em>continuous mode</em> and its conversion rate is set to 500 KSPS. It is instantiated from the generated core IP.</li>
+</ul>
+<pre class="code text"><a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-1"></a>xadc_wiz_0 XADC_INST(
+<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-2"></a>    .daddr_in(8'd19), //19 for vaux3
+<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-3"></a>    .dclk_in(CLK100MHZ),  //4*time FS. This is set in the IP wizard.
+<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-4"></a>    .den_in(dp_we),  //connect this to eoc_out for continuous sampling.
+<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-5"></a>    .di_in(),  //not use
+<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-6"></a>    .dwe_in(),  //not use
+<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-7"></a>    .reset_in(),
+<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-8"></a>    .vauxp3(vauxp3),
+<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-9"></a>    .vauxn3(vauxn3),
+<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-10"></a>    .busy_out(xadc_bsy),
+<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-11"></a>    .channel_out(chout),
+<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-12"></a>    .do_out(xadc_dout),
+<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-13"></a>    .drdy_out(xadc_drdy),
+<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-14"></a>    .eoc_out(dp_we),
+<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-15"></a>    .eos_out(xadc_eos),
+<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-16"></a>    .alarm_out(xdc_alarm),
+<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-17"></a>    .vp_in(),
+<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-18"></a>    .vn_in()
+<a name="rest_code_cdc3c7cf6f664d5e8947b9c0770da7e6-19"></a>    );
+</pre>
+<ul class="simple">
+<li>The two bipolar inputs are from PMOD JXADC pin 1 (<em>AD3P</em>) and pin 7 (<em>AD3N</em>). The two inputs are connected to waveform generator during the test.</li>
+<li>The output of XADC is stored in DPRAM location on XADC's EOC signal by its <em>DRDY_OUT</em>. Its <em>EOC_OUT</em> is connected to <em>DEN_IN</em> for continuous sampling.</li>
+</ul>
+<pre class="code text"><a name="rest_code_d1133433bacd40a1ad5e6a2cad9b69cd-1"></a>ram_dual_port #(
+<a name="rest_code_d1133433bacd40a1ad5e6a2cad9b69cd-2"></a>    .DATA_WIDTH(16),
+<a name="rest_code_d1133433bacd40a1ad5e6a2cad9b69cd-3"></a>    .ADDR_WIDTH(10))
+<a name="rest_code_d1133433bacd40a1ad5e6a2cad9b69cd-4"></a> dp_ram(
+<a name="rest_code_d1133433bacd40a1ad5e6a2cad9b69cd-5"></a>    .clk(CLK100MHZ),
+<a name="rest_code_d1133433bacd40a1ad5e6a2cad9b69cd-6"></a>    .we(xadc_drdy &amp; SW[0]), //write on every DRDY as enabled by SW[0]
+<a name="rest_code_d1133433bacd40a1ad5e6a2cad9b69cd-7"></a>    .data(xadc_dout), //data from xadc to be stored
+<a name="rest_code_d1133433bacd40a1ad5e6a2cad9b69cd-8"></a>    .read_addr(x), //location to be read for VGA x-coordinate
+<a name="rest_code_d1133433bacd40a1ad5e6a2cad9b69cd-9"></a>    .write_addr(xadc_waddr), //location to store on EOC
+<a name="rest_code_d1133433bacd40a1ad5e6a2cad9b69cd-10"></a>    .q(dp_rdata) //Y data read correspond to x-coordinate
+<a name="rest_code_d1133433bacd40a1ad5e6a2cad9b69cd-11"></a>    );
+</pre>
+<ul class="simple">
+<li>SW[0] is use as sampling on/off switch. If SW[0]=1, sampled data is continously stored and displayed otherwise it displayed the previous sampled data.
+Basically I use it to take a snapshot of the sampled data.</li>
+<li>The LED displays are not very useful other than to display the activity.</li>
+<li>VGA plot the sampled point corresponded to the stored sampled data, <em>xadc_data</em> which is scaled value of the actual 12-bit data.</li>
+</ul>
+<p>Code that generates VGA display signal and the related DPRAM access was described in my previous post. In this exercise, I
+only bring in those modules fnd instantiate them for this exercise.</p>
+</div>
+</div>
+<div class="section" id="test">
+<h2>Test</h2>
+<p>I use the output of the waveform generator to connect to the XADC channel 19 input. I take the snapshot photos of the
+sampled for the sine waveform and the ramp waveform as they are display on the VGA monitor below.</p>
+<div class="figure">
+<img alt="../../images/hardware/10khz1vpp.jpg" src="../../images/hardware/10khz1vpp.jpg"><p class="caption">Image of the sampled 10KHZ ramp waveform, 1VPP</p>
+</div>
+<div class="figure">
+<img alt="../../images/hardware/4khz1vpp.jpg" src="../../images/hardware/4khz1vpp.jpg"><p class="caption">Image of the sampled 4KHZ sine waveform, 1VPP</p>
+</div>
+<p>The images above show the snapshot of the sampled waveform as I toggle <em>SW[0]</em> to start/stop data storing process. The
+sampling process is however continuous, only the storage part is controlled by <em>SW[0]</em>.</p>
+<p>Not much information from the LED displays since the data rate is much too fast to capture and the forever changing
+data output to the LED display make them stay lit.</p>
+</div>
+<div class="section" id="conclusion">
+<h2>Conclusion</h2>
+<p>It looks like the XADC is working for me. It took me a while to figure out and tuning the parameter especially when plotting
+in on the screen. My sample code is in <a class="reference external" href="https://github.com/souktha/vga_display_xadc">https://github.com/souktha/vga_display_xadc</a>. Source code includes a tcl script. By
+running the setup script it will create the workspace and run everything to generate the FPGA bitstream.</p>
+</div>
+<div class="section" id="citations">
+<h2>Citations</h2>
+<table class="docutils footnote" frame="void" id="id3" rules="none">
+<colgroup>
+<col class="label">
+<col>
+</colgroup>
+<tbody valign="top"><tr>
+<td class="label">[1]</td>
+<td>
+<em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>)</em> 7 Series FPGAs and Zynq-7000 All Programmable SoC XADC Dual 12-bit 1 MSPS Analog-to-Digital Converter User guide,
+UG480(v1.7), May 2015, Xilinx.</td>
+</tr></tbody>
+</table>
+</div>
+</div>
+    </div>
+    
+
+</article>
+</div>
+        <!--End of body content-->
+
+        <footer id="footer">
+            Contents © 2016         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+        </footer>
+</div>
+</div>
+
+
+            <script src="../../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+    moment.locale("en");
+    fancydates(0, "YYYY-MM-DD HH:mm");
+    </script><!-- end fancy dates -->
+</body>
+</html>

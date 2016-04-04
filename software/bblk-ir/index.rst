@@ -148,7 +148,7 @@ line etc..
 
 Next the driver allocates RC device structure, fills in the RC device operations and its information and register
 for service with the RC framework driver. In the RC device structure, I have mostly empty functions
-defined since the device do not need special handling. It is only for the formality. I have it mapped to
+defined since the device does not need special handling. It is only for the formality. I have it mapped to
 *RC_MAP_RC6_MCE*, but it can be changed at run-time. Work queue is also used for this
 driver for input event processing as the BH portion of interrupt handling.
 
@@ -175,7 +175,7 @@ when */dev/input/eventx* is opened by external application to make use of it.
 
 Once the IR stream bits is received and decoded by the UART, the RX interrupt will be generated and will be serviced
 by *cir_irq_handler* interrupt handler. The handler put the received byte into the buffer and schedule the BH workqueue.
-The BH handler then takes the byte off from the buffer and push it upstream to the IR core driver.
+The BH handler then takes the byte off from the buffer and pushes it upstream to the IR core driver.
 
 .. code-block::
 
@@ -243,7 +243,7 @@ Having the debug code, upon driver loading I can see that the platform framework
         [   40.990945] cir_probe: fck rate 48000000
         
 So far so good. My debugging messages indicate that I get the UART4 resource information correctly.To make sure I get what
-I think I really get is to add few extra debug code to actually read the AM3358 registers [1]_ to verify the setting.
+I think I really get is to add few extra debug code to actually read the AM3358 registers [1]_ just to verify the setting.
 
 .. code-block::
 
@@ -252,7 +252,7 @@ I think I really get is to add few extra debug code to actually read the AM3358 
         [   99.045336] get_uart_clock: MDR1 reg = 0x7, CFPS 0x69
 
 The first two lines is the value of *CM_PER_L4LS_CLKCTRL* [1]_ and *CM_PER_UART4_CLKCTRL* respectively. This is the 
-indication that clock line is activated correctly. The last line was a reading of two UART registers, *MDR1* and 
+indication that clock line is activated correctly. The last line is to read two UART registers, *MDR1* and 
 *CFPS*. If clock line is not activated, reading the two UART registers would have resulted in kernel crash
 because the IO bus would be stuck and cause I/O fault to happen. It is the painful way to know something is wrong.
 
@@ -358,7 +358,7 @@ Next I load the keymap mapping for the next test.
 
 Now that I can see that the key events are generated with respect to their scancodes. Changing
 protocol to match the type of remote control is also flexible, for example, I can change
-protocol to NEC, *nec* to use with an old TV remote control,
+protocol to NEC, *nec* to use with an old TV remote control that uses NEC protocol,
 
 .. code-block::
 
@@ -382,7 +382,7 @@ Conclusion
 
 While there are many choices to use the IR of this type. One would be the GPIO type of driver to handle the
 IR stream, perhaps bit-banging it. If there is a small piece of hardware that left unused, it is better
-to use it. If it is already included in the cost of the product then I better find the use of it.
+to use it. Since it is already included in the cost of the product, I better find the use of it.
 
 This driver is available in my github repository, https://github.com/souktha/ir. There is a lot of room to
 improve and it is not yet robust. If I load/unload multiple times, it would crash. Once I have enough time
