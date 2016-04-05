@@ -62,7 +62,7 @@ The IR driver will be running on the current kernel version of my BBLK board whi
 First thing I need to do is to redo pinmux for *T17* (Table 4.1, page 29) [4]_. *T17* is the ball pin of Am3358, not the BBLK P9's header pin. On P9 it is pin 11.
 This is the pin for UART4_RXD. For this pin to function as UART4_RXD, it needs to be muxed to mode 6 of operation.
 To pinmux, I need to edit the device tree source, am335x-boneblack.dts, and add to '&am33xx_pinmux' block to override their default settings.
-I do not need TX operation of this UART sinc it is only for RX operation.
+I do not need TX operation of this UART since it is only for RX operation.
 
 .. code-block::
         
