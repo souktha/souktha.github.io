@@ -6,8 +6,8 @@
 .. link: 
 .. description: 
 .. type: text
-.. $LastChangedDate: 2016-03-26 21:14:40 -0700 (Sat, 26 Mar 2016) $
-.. $Rev: 61 $
+.. $LastChangedDate: 2016-04-09 18:53:41 -0700 (Sat, 09 Apr 2016) $
+.. $Rev: 79 $
 
 Run-length encoding is one simple encoding, if not the simplest form of data compression. The more repetition in the
 data stream the better it is. For example, if input data stream is 'A2.A2.C1.C2.B4.B4.B4.B4.B4.B4.B4.B4' the output 
@@ -97,7 +97,8 @@ and the case where maximum bytes count per transaction is reached. In this case 
 
         Fig2: 258 bytes breaks out with 254 bytes
 
-It should have been 255 byte sent instead of 254; however, the bytes count is not lost as show in Fig3.
+It should have been 255 byte sent instead of 254; however, the bytes count is not lost as show in Fig3 where the
+remaining 4 bytes follow.
 
 .. figure:: ../../images/hardware/case5.png
 
