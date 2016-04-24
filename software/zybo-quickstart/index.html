@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<head>
+<meta charset="utf-8">
+<base href="http://souktha.github.io/software/zybo-quickstart/">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Decoupling Xilinx Zynq PS and PL on Linux for Digilent Zybo | Soukthavy Sopha</title>
+<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<meta content="#5670d4" name="theme-color">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
+<link rel="canonical" href="http://souktha.github.io/software/zybo-quickstart/">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Soukthavy">
+<link rel="prev" href="../../misc/squashfs-ubi/" title="UBI block and read-only NAND FS" type="text/html">
+<meta property="og:site_name" content="Soukthavy Sopha">
+<meta property="og:title" content="Decoupling Xilinx Zynq PS and PL on Linux for Digilent Zybo">
+<meta property="og:url" content="http://souktha.github.io/software/zybo-quickstart/">
+<meta property="og:description" content="Digilent Zybo board is built around Xilinx Zynq-7000 family [1]. This Zynq-7000 is integrated with a dual-core
+ARM Cortex-A9 processor that has Linux support for it. In addition to this PS unit, the X">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2016-04-23T19:08:20Z">
+<meta property="article:tag" content="software hardware">
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-inverse navbar-static-top"><div class="container">
+<!-- This keeps the margins nice -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://souktha.github.io/">
+
+                <span id="blog-title">Soukthavy Sopha</span>
+            </a>
+        </div>
+<!-- /.navbar-header -->
+        <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
+            <ul class="nav navbar-nav">
+<li>
+<a href="../../archive.html">Archive</a>
+                </li>
+<li>
+<a href="../../categories/">Tags</a>
+                </li>
+<li>
+<a href="../../rss.xml">RSS feed</a>
+            </li>
+<li class="dropdown">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Blog <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+<li>
+<a href="../../software">Sofware</a>
+                    </li>
+<li>
+<a href="../../hardware">Hardware</a>
+                    </li>
+<li>
+<a href="../../misc">Misc</a>
+            </li>
+</ul>
+</li>
+<li>
+<a href="https://github.com/souktha">My Github</a>
+
+                
+            </li>
+</ul>
+<ul class="nav navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        <div class="row">
+            
+            
+<article class="storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Decoupling Xilinx Zynq PS and PL on Linux for Digilent Zybo</a></h1>
+
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>Digilent Zybo board is built around Xilinx Zynq-7000 family [<a class="reference internal" href="#id1">1</a>]. This Zynq-7000 is integrated with a dual-core
+ARM Cortex-A9 processor that has Linux support for it. In addition to this PS unit, the Xilinx 7-series
+FPGA is also integrated as the PL component of this SoC [<a class="reference internal" href="#id2">2</a>]. This demonstation will show how easy it is
+to decouple PS and PL components.</p>
+<!-- TEASER_END -->
+<p>Xilinx provides tools and utilities to get the Linux up and running on this board. One can use the
+GNU tools in their SDK to build Linux kernel and u-boot, but those tools are based on standard
+<em>glibc</em> which is too big for my use so I chose to build the smaller toolchain and root FS with
+<em>buildroot</em> based on uClibc. For my use,</p>
+<pre class="code text"><a name="rest_code_ada422142dc24ec595cd61397a3f37af-1"></a>buildroot-2016.02$make zedboard_defconfig
+<a name="rest_code_ada422142dc24ec595cd61397a3f37af-2"></a>buildroot-2016.02$make
+</pre>
+<p>The default configuration builds the basic cross toolchain and minimum rootfs with majority of the utilities
+provided by <em>busybox</em>.
+For this demo, it is not relevant what toolchain to use. Use what suits you. It is fine to stick
+with Xilinx GNU toolchain. It will work as well.</p>
+<div class="section" id="essential-software-components">
+<h2>Essential software components</h2>
+<p>. uboot-xlnx, Xilinx version. Built with <em>zynq_zybo_defconfig</em>.</p>
+<p>. linux-xlnx, Xilinx version. Built with <em>xilinx_zynq_defconfig</em>.</p>
+<p>. root FS.</p>
+<p>Once the u-boot and kernel built is done, prepare the SD card to put boot code, kernel and rootfs.
+For the boot code, I need two files, <em>boot.bin</em> (in u-boot-xlnx/spl directory) and <em>u-boot.img</em>.
+Copy them to SD boot partition. After that I populate the SD root partition with my choice of
+rootfs.
+For my development, I combine zImage with dtb so I do not have to have it load separately during
+kernel boot up. I use the script below for my source,</p>
+<pre class="code text"><a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-1"></a>/dts-v1/;
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-2"></a>
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-3"></a>/ {
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-4"></a>description = "ARM Zynq Zybo FIT (Flattened Image Tree)";
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-5"></a>#address-cells = &lt;1&gt;;
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-6"></a>
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-7"></a>images {
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-8"></a>        kernel@1 {
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-9"></a>                description = "ARM Xilinx Zynq Linux-4.x";
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-10"></a>                data = /incbin/("zImage");
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-11"></a>                type = "kernel";
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-12"></a>                arch = "arm";
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-13"></a>                os = "linux";
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-14"></a>                compression = "none";
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-15"></a>                load = &lt;0x800000&gt;;
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-16"></a>                entry = &lt;0x800000&gt;;
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-17"></a>                hash@1 {
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-18"></a>                        algo = "crc32";
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-19"></a>                };
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-20"></a>                hash@2 {
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-21"></a>                        algo = "sha1";
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-22"></a>                };
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-23"></a>        };
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-24"></a>
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-25"></a>        fdt@1 {
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-26"></a>                description = "ARM Zynq Zybo device tree blob";
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-27"></a>                data = /incbin/("dts/zynq-zybo.dtb");
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-28"></a>                type = "flat_dt";
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-29"></a>                arch = "arm";
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-30"></a>                compression = "none";
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-31"></a>
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-32"></a>                hash@1 {
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-33"></a>                        algo = "crc32";
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-34"></a>                };
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-35"></a>                hash@2 {
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-36"></a>                        algo = "sha1";
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-37"></a>                };
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-38"></a>        };
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-39"></a>
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-40"></a>};
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-41"></a>
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-42"></a>configurations {
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-43"></a>        default = "config@1";
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-44"></a>
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-45"></a>        config@1 {
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-46"></a>                description = "Zynq Zybo";
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-47"></a>                kernel = "kernel@1";
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-48"></a>                fdt = "fdt@1";
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-49"></a>        };
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-50"></a>
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-51"></a>};
+<a name="rest_code_4749a9aa808a46fdaad0af8e54263f78-52"></a>};
+</pre>
+<p>I place this script, <em>kernel.its</em>, in <em>linux-xlnx/arch/arm/boot</em> where I create the kernel image
+with device tree blob</p>
+<pre class="code text"><a name="rest_code_0f56723150fb44f3a334593226467c8d-1"></a>$mkimage -f kernel.its zImage.itb
+</pre>
+<p>The <em>zImage.itb</em> will be copied to SD boot partition later, but I need to test it first.
+I stop at u-boot prompt at boot up to tftp zImage.itb,</p>
+<pre class="code text"><a name="rest_code_24d1962046264009ade45ce18e01034b-1"></a>zynq&gt;tftpboot 100000 zImage.itb
+<a name="rest_code_24d1962046264009ade45ce18e01034b-2"></a>ethernet@e000b000 Waiting for PHY auto negotiation to complete...... done
+<a name="rest_code_24d1962046264009ade45ce18e01034b-3"></a>Using ethernet@e000b000 device
+<a name="rest_code_24d1962046264009ade45ce18e01034b-4"></a>TFTP from server 192.168.10.14; our IP address is 192.168.10.3
+<a name="rest_code_24d1962046264009ade45ce18e01034b-5"></a>Filename 'zImage.itb'.
+<a name="rest_code_24d1962046264009ade45ce18e01034b-6"></a>Load address: 0x100000
+<a name="rest_code_24d1962046264009ade45ce18e01034b-7"></a>Loading: ################################################################
+<a name="rest_code_24d1962046264009ade45ce18e01034b-8"></a> #################################################################
+<a name="rest_code_24d1962046264009ade45ce18e01034b-9"></a> ..
+<a name="rest_code_24d1962046264009ade45ce18e01034b-10"></a> ####################
+<a name="rest_code_24d1962046264009ade45ce18e01034b-11"></a> 3.4 MiB/s
+<a name="rest_code_24d1962046264009ade45ce18e01034b-12"></a>done
+<a name="rest_code_24d1962046264009ade45ce18e01034b-13"></a>Bytes transferred = 3760372 (3960f4 hex)
+<a name="rest_code_24d1962046264009ade45ce18e01034b-14"></a>Zynq&gt; set bootargs 'root=dev/mmcblk0p2 rootfstype=ext4 rootwait rw' &amp;&amp; bootm 100000
+<a name="rest_code_24d1962046264009ade45ce18e01034b-15"></a>## Loading kernel from FIT Image at 00100000 ...
+<a name="rest_code_24d1962046264009ade45ce18e01034b-16"></a>   Using 'config@1' configuration
+<a name="rest_code_24d1962046264009ade45ce18e01034b-17"></a>   Verifying Hash Integrity ... OK
+<a name="rest_code_24d1962046264009ade45ce18e01034b-18"></a>   Trying 'kernel@1' kernel subimage
+<a name="rest_code_24d1962046264009ade45ce18e01034b-19"></a>     Description:  ARM Xilinx Zynq Linux-4.x
+<a name="rest_code_24d1962046264009ade45ce18e01034b-20"></a>     Type:         Kernel Image
+<a name="rest_code_24d1962046264009ade45ce18e01034b-21"></a>     Compression:  uncompressed
+<a name="rest_code_24d1962046264009ade45ce18e01034b-22"></a>     Data Start:   0x001000e8
+<a name="rest_code_24d1962046264009ade45ce18e01034b-23"></a>     ..
+<a name="rest_code_24d1962046264009ade45ce18e01034b-24"></a>  Verifying Hash Integrity ... crc32+ sha1+ OK
+<a name="rest_code_24d1962046264009ade45ce18e01034b-25"></a>   Booting using the fdt blob at 0x493b6c
+<a name="rest_code_24d1962046264009ade45ce18e01034b-26"></a>   Loading Kernel Image ... OK
+<a name="rest_code_24d1962046264009ade45ce18e01034b-27"></a>   Loading Device Tree to 1f314000, end 1f31925e ... OK
+<a name="rest_code_24d1962046264009ade45ce18e01034b-28"></a>
+<a name="rest_code_24d1962046264009ade45ce18e01034b-29"></a>Starting kernel ...
+<a name="rest_code_24d1962046264009ade45ce18e01034b-30"></a>
+<a name="rest_code_24d1962046264009ade45ce18e01034b-31"></a>Booting Linux on physical CPU 0x0
+<a name="rest_code_24d1962046264009ade45ce18e01034b-32"></a>Linux version 4.4.0-xilinx-34568-g9c1d910-dirty (xxx@host3) (gcc version 4.9.3 (Buildroot 2016.02) ) #2 SMP PREEMPT Sat Apr 23 18:32:38 PDT 2016
+<a name="rest_code_24d1962046264009ade45ce18e01034b-33"></a>CPU: ARMv7 Processor [413fc090] revision 0 (ARMv7), cr=18c5387d
+<a name="rest_code_24d1962046264009ade45ce18e01034b-34"></a>CPU: PIPT / VIPT nonaliasing data cache, VIPT aliasing instruction cache
+<a name="rest_code_24d1962046264009ade45ce18e01034b-35"></a>Machine model: Zynq ZYBO Development Board
+<a name="rest_code_24d1962046264009ade45ce18e01034b-36"></a>..
+<a name="rest_code_24d1962046264009ade45ce18e01034b-37"></a>
+<a name="rest_code_24d1962046264009ade45ce18e01034b-38"></a>EXT4-fs (mmcblk0p2): mounted filesystem with ordered data mode. Opts: (null)
+<a name="rest_code_24d1962046264009ade45ce18e01034b-39"></a>VFS: Mounted root (ext4 filesystem) on device 179:2.
+<a name="rest_code_24d1962046264009ade45ce18e01034b-40"></a>devtmpfs: mounted
+<a name="rest_code_24d1962046264009ade45ce18e01034b-41"></a>Freeing unused kernel memory: 252K (c06bb000 - c06fa000)
+<a name="rest_code_24d1962046264009ade45ce18e01034b-42"></a>EXT4-fs (mmcblk0p2): re-mounted. Opts: data=ordered
+<a name="rest_code_24d1962046264009ade45ce18e01034b-43"></a>..
+<a name="rest_code_24d1962046264009ade45ce18e01034b-44"></a>done.
+<a name="rest_code_24d1962046264009ade45ce18e01034b-45"></a>Starting network...
+<a name="rest_code_24d1962046264009ade45ce18e01034b-46"></a>IPv6: ADDRCONF(NETDEV_UP): eth0: link is not ready
+<a name="rest_code_24d1962046264009ade45ce18e01034b-47"></a>Starting ntpd: OK
+<a name="rest_code_24d1962046264009ade45ce18e01034b-48"></a>
+<a name="rest_code_24d1962046264009ade45ce18e01034b-49"></a>Welcome to Buildroot
+<a name="rest_code_24d1962046264009ade45ce18e01034b-50"></a>buildroot login:
+</pre>
+<p>Once I verified that <em>zImage.itb</em> is good and rootfs is sane. I can finalize the SD card and edit the necessary
+boot scripts. The Linux booting process is done at this point and I can login to Zybo linux host.</p>
+</div>
+<div class="section" id="tool-to-validate-the-decoupling-of-ps-and-pl-components">
+<h2>Tool to validate the decoupling of PS and PL components</h2>
+<p>. Only Vivado h/w synthesis tool. No SDK needed.</p>
+<p>The tool that can be used to program the bitstrem to the PL components of the board is readily availble as a
+character device driver, <em>xilinx_devcfg</em>, which is a device configuration driver. This is the built-in compoent
+of the kernel. I need not modify anything as it is working just fine, but I need to know how to use it.
+If I load the bitstream that generated by Vivado, it will hang and I have to reset the board. This is because
+it assumes that the binary I load is generated by SDK's <em>bitgen</em> so it tries to post initialize the FPGA after the loading.
+The bitstgream generated by Vivado synthesis tool is considered <em>partial bitstream</em> so
+it needs to be loaded as partial bitstream. To do that, I need to tell it before I load the bitstream,</p>
+<pre class="code text"><a name="rest_code_bbea2849028b4c129075e096eb8d92b2-1"></a>$echo 1 &gt; /sys/devices/soc0/amba/f8007000.devcfg/is_partial_bitstream
+</pre>
+<p>After this flag is set, FPGA post initialization will not be invoked. This enable me to load the bitstream
+at will. Of course, this assumes that the system is running in non-secure mode and that no POR is required.</p>
+<p>Using this simple switches to LEDs, synthesize and generate the bitstream (Vivado) and load it,</p>
+<pre class="code text"><a name="rest_code_0f04c55a66564dbcb76ff9b75ea91214-1"></a>`timescale 1ns / 1ps
+<a name="rest_code_0f04c55a66564dbcb76ff9b75ea91214-2"></a>module simpletest(
+<a name="rest_code_0f04c55a66564dbcb76ff9b75ea91214-3"></a>    input [3:0] sw,
+<a name="rest_code_0f04c55a66564dbcb76ff9b75ea91214-4"></a>    output [3:0] led,
+<a name="rest_code_0f04c55a66564dbcb76ff9b75ea91214-5"></a>    input clk
+<a name="rest_code_0f04c55a66564dbcb76ff9b75ea91214-6"></a>    );
+<a name="rest_code_0f04c55a66564dbcb76ff9b75ea91214-7"></a>
+<a name="rest_code_0f04c55a66564dbcb76ff9b75ea91214-8"></a>    assign led = sw ;
+<a name="rest_code_0f04c55a66564dbcb76ff9b75ea91214-9"></a>
+<a name="rest_code_0f04c55a66564dbcb76ff9b75ea91214-10"></a>endmodule
+</pre>
+<p>Consider that to be <em>helloworld</em> for the PL component. Once synthesized, bring it over to the Zybo
+and load it,</p>
+<pre class="code text"><a name="rest_code_16b5d2499fe7443f89737e99ef454403-1"></a>$cat simpletest.bit &gt; /dev/xdevcfg
+</pre>
+<p>After the <em>is_partial_bitstream</em> is set, I can keep on loading the bitstream. Any new bitstream will
+overwrite the old one that is currently active. If the bitstream is part of the kernel component such
+that it instantiates I/O device within Linux, I will need to consider stopping the process that use
+that I/O and unload its driver before loading the new bitstream. This is strictly implementation
+dependent based on the design.</p>
+</div>
+<div class="section" id="conclusion">
+<h2>Conclusion</h2>
+<p>The benefit that I get from this is:</p>
+<p>. I do not need to use <em>bitgen</em> for a quick test run on the FPGA code that is not interdependent
+with kernel. I can avoid exporting the bitstream to Xilinx SDK for various cases.</p>
+<p>. I do not need to restart to load the bitstream at bootup time ie.. u-boot's <em>fpga load ..</em> command.</p>
+<p>. I can keep PS/PL decouple for the FPGA test code until I am ready to integrate the PS/PL for embedded
+purpose.</p>
+</div>
+<div class="section" id="citations">
+<h2>Citations</h2>
+<table class="docutils footnote" frame="void" id="id1" rules="none">
+<colgroup>
+<col class="label">
+<col>
+</colgroup>
+<tbody valign="top"><tr>
+<td class="label">[1]</td>
+<td>Zybo(TM) FPGA Board Reference Manual, zybo_rm.pdf, Februrary 2013, Zybo rev B, Digilent.</td>
+</tr></tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id2" rules="none">
+<colgroup>
+<col class="label">
+<col>
+</colgroup>
+<tbody valign="top"><tr>
+<td class="label">[2]</td>
+<td>Zynq-7000 All Programmable SoC Techincal Reference Manual, ug585-Zynq-7000-TRM.pdf, Feb 2015, Xilinx.</td>
+</tr></tbody>
+</table>
+</div>
+</div>
+    </div>
+    
+
+</article>
+</div>
+        <!--End of body content-->
+
+        <footer id="footer">
+            Contents © 2016         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+        </footer>
+</div>
+</div>
+
+
+            <script src="../../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+    moment.locale("en");
+    fancydates(0, "YYYY-MM-DD HH:mm");
+    </script><!-- end fancy dates -->
+</body>
+</html>
