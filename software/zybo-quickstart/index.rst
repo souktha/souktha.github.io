@@ -1,7 +1,7 @@
 .. title: Decoupling Xilinx Zynq PS and PL on Linux for Digilent Zybo
 .. slug: zybo-quickstart
 .. date: 2016-04-23 19:08:20 UTC
-.. tags: software hardware
+.. tags: software, hardware
 .. category: 
 .. link: 
 .. description: 
