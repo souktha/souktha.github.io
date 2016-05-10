@@ -76,7 +76,26 @@
 <div class="sectionindex">
     <header><h2><a href=".">Software</a></h2>
     </header><div class="postindex">
-    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="zybo-quickstart/" class="u-url">Decoupling Xilinx Zynq PS and PL on Linux for Digilent Zybo</a></h1>
+    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="dm814x_sata/" class="u-url">Adding SATA HD boot support to DM814x U-Boot</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="dm814x_sata/" rel="bookmark"><time class="published dt-published" datetime="2016-05-09T20:13:36Z" title="2016-05-09 20:13">2016-05-09 20:13</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<p>TI DM814x/AM287x evaluation platform (TI8148 EVM) can boot from various connected devices depending on the setting
+of the BTMode[4-0] pins as described in chapter 4.5.2.1 of its respective technical reference manual [<a class="reference internal" href="dm814x_sata/#id1">1</a>]. Typically
+the EVM boot its first stage of u-boot as the minimum boot loaders. TI calls it <em>min-nand</em> boot loader
+configuration. This minimum boot then bootstraps a secondary boot phase which is a
+a full featured u-boot for this platform.
+The EV platform has SATA H/W support where I will bring up the SATA HDD in the second phase of booting so that I can load the
+Linux kernel image from HDD instead of loading it from NAND device.</p>
+<p class="more"><a href="dm814x_sata/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="zybo-quickstart/" class="u-url">Decoupling Xilinx Zynq PS and PL on Linux for Digilent Zybo</a></h1>
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn">
                 Soukthavy

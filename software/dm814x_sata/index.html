@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<head>
+<meta charset="utf-8">
+<base href="http://souktha.github.io/software/dm814x_sata/">
+<meta name="description" content="SATA support for DM814x U-Boot">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Adding SATA HD boot support to DM814x U-Boot | Soukthavy Sopha</title>
+<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<meta content="#5670d4" name="theme-color">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
+<link rel="canonical" href="http://souktha.github.io/software/dm814x_sata/">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="description" itemprop="description" content="SATA support for DM814x U-Boot">
+<meta name="author" content="Soukthavy">
+<link rel="prev" href="../zybo-quickstart/" title="Decoupling Xilinx Zynq PS and PL on Linux for Digilent Zybo" type="text/html">
+<meta property="og:site_name" content="Soukthavy Sopha">
+<meta property="og:title" content="Adding SATA HD boot support to DM814x U-Boot">
+<meta property="og:url" content="http://souktha.github.io/software/dm814x_sata/">
+<meta property="og:description" content="SATA support for DM814x U-Boot">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2016-05-09T20:13:36Z">
+<meta property="article:tag" content="software">
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-inverse navbar-static-top"><div class="container">
+<!-- This keeps the margins nice -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://souktha.github.io/">
+
+                <span id="blog-title">Soukthavy Sopha</span>
+            </a>
+        </div>
+<!-- /.navbar-header -->
+        <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
+            <ul class="nav navbar-nav">
+<li>
+<a href="../../archive.html">Archive</a>
+                </li>
+<li>
+<a href="../../categories/">Tags</a>
+                </li>
+<li>
+<a href="../../rss.xml">RSS feed</a>
+            </li>
+<li class="dropdown">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Blog <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+<li>
+<a href="../../software">Sofware</a>
+                    </li>
+<li>
+<a href="../../hardware">Hardware</a>
+                    </li>
+<li>
+<a href="../../misc">Misc</a>
+            </li>
+</ul>
+</li>
+<li>
+<a href="https://github.com/souktha">My Github</a>
+
+                
+            </li>
+</ul>
+<ul class="nav navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        <div class="row">
+            
+            
+<article class="storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Adding SATA HD boot support to DM814x U-Boot</a></h1>
+
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>TI DM814x/AM287x evaluation platform (TI8148 EVM) can boot from various connected devices depending on the setting
+of the BTMode[4-0] pins as described in chapter 4.5.2.1 of its respective technical reference manual [<a class="reference internal" href="#id1">1</a>]. Typically
+the EVM boot its first stage of u-boot as the minimum boot loaders. TI calls it <em>min-nand</em> boot loader
+configuration. This minimum boot then bootstraps a secondary boot phase which is a
+a full featured u-boot for this platform.
+The EV platform has SATA H/W support where I will bring up the SATA HDD in the second phase of booting so that I can load the
+Linux kernel image from HDD instead of loading it from NAND device.</p>
+<!-- TEASER_END -->
+<div class="section" id="objective">
+<h2>Objective</h2>
+<p>While booting from NAND is working perfectly fine, having the option to boot from SATA HDD brings greater flexibility
+to the platform. I can have many versions of uImage in the disk partition where I can selectively use for booting.
+I may have five or ten versions of it. It won't matter because I have plenty of disk space to store it, load it and
+run it instead of limiting myself to the space available in NAND device.</p>
+</div>
+<div class="section" id="sata-feature-implementation">
+<h2>SATA feature implementation</h2>
+<p>For this development, I use TI's latest SDK [<a class="reference internal" href="#id3">3</a>] and its associated cross toolchain [<a class="reference internal" href="#id2">2</a>]. The EZSDK u-boot
+source code resides in <em>board-support/u-boot-2010.06-psp04.04.00.01</em> directory after the EZSDK installation. This
+would be the version that I modify to add SATA support.
+The integrated SATA controller of DM814x is capable of supporting up to 3Gbps per HBA port operating in AHCI mode. I
+will make use of AHCI driver that is already in place with some modifcation needed to get it to work properly.</p>
+<div class="section" id="what-is-are-needed-to-get-sata-interface-working">
+<h3>What is/are needed to get SATA interface working</h3>
+<p>1) Program the PLL for the correct values. I modify <em>sata_pll_config()</em> of <em>board/ti/ti8148/evm.c</em> for the correct
+values that use to configure <em>SATA_PLLCFGx</em> as shown in TI document, section 21.3.1, base on the 100MHZ low-jitter clock.</p>
+<pre class="code text"><a name="rest_code_92852ebff1834af684317ad6bab1abf7-1"></a>/*use 100MHZ low jitter clock feed*/
+<a name="rest_code_92852ebff1834af684317ad6bab1abf7-2"></a>__raw_writel(0x00000004, SATA_PLLCFG0);
+<a name="rest_code_92852ebff1834af684317ad6bab1abf7-3"></a>for(i=0; i &lt; 4; i++)delay(0xFFFF);
+<a name="rest_code_92852ebff1834af684317ad6bab1abf7-4"></a>
+<a name="rest_code_92852ebff1834af684317ad6bab1abf7-5"></a>__raw_writel(0x812C003C, SATA_PLLCFG1);
+<a name="rest_code_92852ebff1834af684317ad6bab1abf7-6"></a>for(i=0; i &lt; 10; i++)delay(0xFFFF);
+<a name="rest_code_92852ebff1834af684317ad6bab1abf7-7"></a>....
+<a name="rest_code_92852ebff1834af684317ad6bab1abf7-8"></a>....
+<a name="rest_code_92852ebff1834af684317ad6bab1abf7-9"></a>sata_phy_config();
+</pre>
+<ol class="arabic simple" start="2">
+<li>Add small piece of code to program SATA PHY (SERDES) namely the RX and TX configuration registers.</li>
+</ol>
+<pre class="code text"><a name="rest_code_62fd4e37a31e4e72896943d789c76e8f-1"></a>static void sata_phy_config(void)
+<a name="rest_code_62fd4e37a31e4e72896943d789c76e8f-2"></a>{
+<a name="rest_code_62fd4e37a31e4e72896943d789c76e8f-3"></a>__raw_writel(TI814X_SATA_PHY_CFGRX0_VAL, SATA_PHY_CFGRX0);
+<a name="rest_code_62fd4e37a31e4e72896943d789c76e8f-4"></a>__raw_writel(TI814X_SATA_PHY_CFGRX1_VAL, SATA_PHY_CFGRX1);
+<a name="rest_code_62fd4e37a31e4e72896943d789c76e8f-5"></a>__raw_writel(TI814X_SATA_PHY_CFGRX2_VAL, SATA_PHY_CFGRX2);
+<a name="rest_code_62fd4e37a31e4e72896943d789c76e8f-6"></a>__raw_writel(TI814X_SATA_PHY_CFGRX3_VAL, SATA_PHY_CFGRX3);
+<a name="rest_code_62fd4e37a31e4e72896943d789c76e8f-7"></a>
+<a name="rest_code_62fd4e37a31e4e72896943d789c76e8f-8"></a>__raw_writel(TI814X_SATA_PHY_CFGTX0_VAL, SATA_PHY_CFGTX0);
+<a name="rest_code_62fd4e37a31e4e72896943d789c76e8f-9"></a>__raw_writel(TI814X_SATA_PHY_CFGTX1_VAL, SATA_PHY_CFGTX1);
+<a name="rest_code_62fd4e37a31e4e72896943d789c76e8f-10"></a>__raw_writel(TI814X_SATA_PHY_CFGTX2_VAL, SATA_PHY_CFGTX2);
+<a name="rest_code_62fd4e37a31e4e72896943d789c76e8f-11"></a>__raw_writel(TI814X_SATA_PHY_CFGTX3_VAL, SATA_PHY_CFGTX3);
+<a name="rest_code_62fd4e37a31e4e72896943d789c76e8f-12"></a>}
+</pre>
+<p>3) Modify <em>drivers/block/ahci.c</em> slighty. The AHCI driver code assumes that the controller is connected via
+PCI bus which is not true for this EVM platform. Since the integrated SATA controller is memory mapped to the SoC
+physical address space, the modification is needed. I define <em>CONFIG_SCSI_AHCI_PLAT</em> to disable blocks of code
+that are PCI related, for example,</p>
+<pre class="code text"><a name="rest_code_60d856c3dcdd43d5a05b780fbd4c6369-1"></a>#ifndef CONFIG_SCSI_AHCI_PLAT
+<a name="rest_code_60d856c3dcdd43d5a05b780fbd4c6369-2"></a>pci_read_config_word(pdev, PCI_VENDOR_ID, &amp;vendor);
+<a name="rest_code_60d856c3dcdd43d5a05b780fbd4c6369-3"></a>...
+<a name="rest_code_60d856c3dcdd43d5a05b780fbd4c6369-4"></a>#endif
+</pre>
+<p>and replace those blocks where memory mapped access is applicable. I also raise command timeout a little
+bit to ensure that it works for slower HDD.</p>
+<p>4) Add <em>CONFIG_SCSI_AHCI_PLAT</em> for AHCI driver and enable SCSI (AHCI) support in u-boot configuration file,
+<em>include/configs/ti8148_evm.h</em> for one SCSI HDD, one SCSI LUN.</p>
+<pre class="code text"><a name="rest_code_001af8d204974e13a9e3e9f2f5ea4018-1"></a># define CONFIG_CMD_SCSI        1
+<a name="rest_code_001af8d204974e13a9e3e9f2f5ea4018-2"></a>...
+<a name="rest_code_001af8d204974e13a9e3e9f2f5ea4018-3"></a>
+<a name="rest_code_001af8d204974e13a9e3e9f2f5ea4018-4"></a>#ifdef CONFIG_CMD_SCSI
+<a name="rest_code_001af8d204974e13a9e3e9f2f5ea4018-5"></a>        #define CONFIG_SCSI_AHCI
+<a name="rest_code_001af8d204974e13a9e3e9f2f5ea4018-6"></a>        #define CONFIG_SCSI_AHCI_PLAT
+<a name="rest_code_001af8d204974e13a9e3e9f2f5ea4018-7"></a>        #define CONFIG_SYS_SCSI_MAX_DEVICE 1
+<a name="rest_code_001af8d204974e13a9e3e9f2f5ea4018-8"></a>        #define CONFIG_SYS_SCSI_MAX_SCSI_ID 1
+<a name="rest_code_001af8d204974e13a9e3e9f2f5ea4018-9"></a>        #define CONFIG_SYS_SCSI_MAX_LUN  1
+<a name="rest_code_001af8d204974e13a9e3e9f2f5ea4018-10"></a>#endif
+</pre>
+<p>The complete code change is available in my git repository in the form of patch file where it could be
+patched to the TI's u-boot release directly (<a class="reference external" href="https://github.com/souktha/dm814x-u-boot-psp04.04.01">https://github.com/souktha/dm814x-u-boot-psp04.04.01</a>).
+The patch file will patch four files for this implementation,
+<em>drivers/block/ahci.c, common/cmd_scsi.c, include/configs/ti8148_evm.h, board/ti/ti8148/evm.c</em>.</p>
+</div>
+</div>
+<div class="section" id="building-and-testing">
+<h2>Building and testing</h2>
+<p>The code change is for the secondary stage of u-boot so <em>ti8148_evm_config_nand</em> is the configuration to
+be used when building this platform's u-boot.</p>
+<div class="section" id="building">
+<h3>Building</h3>
+<pre class="code text"><a name="rest_code_db338e6c65304f41a20c5698fbb26ec1-1"></a>$make ARCH=arm ti8148_evm_config_nand
+<a name="rest_code_db338e6c65304f41a20c5698fbb26ec1-2"></a>$make ARCH=arm CROSS_COMPILE=arm-none-linux-gnueabi-
+</pre>
+<p>are the command lines for configuring and building u-boot. After building is complete, <em>u-boot.bin</em> can be used for
+testing.</p>
+</div>
+<div class="section" id="testing">
+<h3>Testing</h3>
+<p>The new u-boot can be tested before flashing to NAND partition. To do this, stop the boot during its
+first stage boot (TI-MIN), then load the code to test it (one HDD connected).</p>
+<pre class="code text"><a name="rest_code_b0719539352a427ba206850621e93c6a-1"></a>...
+<a name="rest_code_b0719539352a427ba206850621e93c6a-2"></a>The 2nd stage U-Boot will now be auto-loaded
+<a name="rest_code_b0719539352a427ba206850621e93c6a-3"></a>Please do not interrupt the countdown till ...
+<a name="rest_code_b0719539352a427ba206850621e93c6a-4"></a>Hit any key to stop autoboot:  1
+<a name="rest_code_b0719539352a427ba206850621e93c6a-5"></a>TI-MIN#
+</pre>
+<p>Use u-boot's <em>loady 0x80800000</em> to download code to memory via UART port using Y-modem protocol. Once downloading is
+completed, just <em>go &lt;load address&gt;</em>,</p>
+<pre class="code text"><a name="rest_code_740f6cc0197243e9af29240fb295de14-1"></a> TI-MIN#loady 80800000
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-2"></a> ## Ready for binary (ymodem) download to 0x80800000 at 115200 bps...
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-3"></a> Cm - CRC mode, 1700(SOH)/0(STX)/0(CAN) packets, 8 retries
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-4"></a> ## Total Size      = 0x000350dc = 217308 Bytes
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-5"></a> TI-MIN#go 80800000
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-6"></a> ## Starting application at 0x80800000 ...
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-7"></a>
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-8"></a>
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-9"></a> U-Boot 2010.06 (May 09 2016 - 20:09:26)
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-10"></a>
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-11"></a> TI8148-GP rev 2.1
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-12"></a>
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-13"></a> ARM clk: 600MHz
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-14"></a> DDR clk: 400MHz
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-15"></a>
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-16"></a> I2C:   ready
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-17"></a> DRAM:  2 GiB
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-18"></a> NAND:  HW ECC BCH8 Selected
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-19"></a> 256 MiB
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-20"></a> MMC:   OMAP SD/MMC: 0
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-21"></a> *** Warning - bad CRC or NAND, using default environment
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-22"></a>
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-23"></a>                   .:;rrr;;.
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-24"></a>             ,5#@@@@#####@@@@@@#2,
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-25"></a>          ,A@@@hi;;;r5;;;;r;rrSG@@@A,
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-26"></a>        r@@#i;:;s222hG;rrsrrrrrr;ri#@@r
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-27"></a>      :@@hr:r;SG3ssrr2r;rrsrsrsrsrr;rh@@:
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-28"></a>     B@H;;rr;3Hs;rrr;sr;;rrsrsrsrsrsr;;H@B
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-29"></a>    @@s:rrs;5#;;rrrr;r#@H:;;rrsrsrsrsrr:s@@
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-30"></a>   @@;;srs&amp;X#9;r;r;;,2@@@rrr:;;rrsrsrsrr;;@@
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-31"></a>  @@;;rrsrrs@MB#@@@@@###@@@@@@#rsrsrsrsrr;;@@
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-32"></a> G@r;rrsrsr;#X;SX25Ss#@@#M@#9H9rrsrsrsrsrs;r@G
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-33"></a> @9:srsrsrs;2@;:;;:.X@@@@@H::;rrsrsrsrsrsrr:3@
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-34"></a>X@;rrsrsrsrr;XAi;;:&amp;@@#@Bs:rrsrsrsrsrsrsrsrr;@X
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-35"></a>@#;rsrsrsrsrr;r2ir@@@###::rrsrsrsrsrsrsrsrsr:@@
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-36"></a>@A:rrsrsrsrr;:2@29@@M@@@;:;rrrrsrsrsrsrsrsrs;H@
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-37"></a>@&amp;;rsrsrsrr;A@@@@@@###@@@s::;:;;rrsrsrsrsrsr;G@
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-38"></a>@#:rrsrsrsr;G@5Hr25@@@#@@@#9XG9s:rrrrsrsrsrs:#@
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-39"></a>M@;rsrsrsrs;r@&amp;#;::S@@@@@@@M@@@@Grr:;rsrsrsr;@#
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-40"></a>:@s;rsrsrsrr:M#Msrr;;&amp;#@@@@@@@@@@H@@5;rsrsr;s@,
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-41"></a> @@:rrsrsrsr;S@rrrsr;:;r3MH@@#@M5,S@@irrsrr:@@
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-42"></a>  @A:rrsrsrsrrrrrsrsrrr;::;@##@r:;rH@h;srr:H@
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-43"></a>  ;@9:rrsrsrsrrrsrsrsrsr;,S@Hi@i:;s;MX;rr:h@;
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-44"></a>   r@B:rrrrsrsrsrsrsrr;;sA@#i,i@h;r;S5;r:H@r
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-45"></a>    ,@@r;rrrsrsrsrsrr;2BM3r:;r:G@:rrr;;r@@,
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-46"></a>      B@Mr;rrrrsrsrsr@@S;;;rrr:5M;rr;rM@H
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-47"></a>       .@@@i;;rrrrsrs2i;rrrrr;r@M:;i@@@.
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-48"></a>         .A@@#5r;;;r;;;rrr;r:r#AsM@@H.
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-49"></a>            ;&amp;@@@@MhXS5i5SX9B@@@@G;
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-50"></a>                :ihM#@@@@@##hs,
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-51"></a>
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-52"></a> AHCI 0001.0300 32 slots 1 ports 3 Gbps 0x1 impl SATA mode
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-53"></a> flags: ncq stag pm led clo only pmp pio slum part
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-54"></a> Net:   &lt;ethaddr&gt; not set. Reading from E-fuse
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-55"></a> Detected MACID:0:18:32:39:b2:f2
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-56"></a> cpsw
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-57"></a> Hit any key to stop autoboot:  3
+<a name="rest_code_740f6cc0197243e9af29240fb295de14-58"></a> TI8148_EVM#
+</pre>
+<p>The new u-boot detects the SATA controller as shown just below the text art. U-Boot's <em>SCSI</em> command and
+<em>FAT</em> command can be used for the rest of the tests relating to SATA HDD access.</p>
+<pre class="code text"><a name="rest_code_0612f3aab71a4810bd882299ad40b183-1"></a>TI8148_EVM#scsi scan
+<a name="rest_code_0612f3aab71a4810bd882299ad40b183-2"></a>scanning bus for devices...
+<a name="rest_code_0612f3aab71a4810bd882299ad40b183-3"></a>  Device 0: (0:0) Vendor: ATA Prod.: Hitachi HTS54505 Rev: GG2O
+<a name="rest_code_0612f3aab71a4810bd882299ad40b183-4"></a>    Type: Hard Disk
+<a name="rest_code_0612f3aab71a4810bd882299ad40b183-5"></a>    Capacity: 476940.0 MB = 465.7 GB (976773168 x 512)
+<a name="rest_code_0612f3aab71a4810bd882299ad40b183-6"></a>
+<a name="rest_code_0612f3aab71a4810bd882299ad40b183-7"></a>TI8148_EVM#scsi part
+<a name="rest_code_0612f3aab71a4810bd882299ad40b183-8"></a>
+<a name="rest_code_0612f3aab71a4810bd882299ad40b183-9"></a>Partition Map for SCSI device 0  --   Partition Type: DOS
+<a name="rest_code_0612f3aab71a4810bd882299ad40b183-10"></a>
+<a name="rest_code_0612f3aab71a4810bd882299ad40b183-11"></a>Partition     Start Sector     Num Sectors     Type
+<a name="rest_code_0612f3aab71a4810bd882299ad40b183-12"></a>    1                 2048        20971520       b
+<a name="rest_code_0612f3aab71a4810bd882299ad40b183-13"></a>    2             20973568       955799600      83
+<a name="rest_code_0612f3aab71a4810bd882299ad40b183-14"></a>TI8148_EVM#
+</pre>
+<p>The <em>scan</em> data above is the result of the <em>INQUIRY</em> command while the data from <em>part</em> is the result from
+reading HDD partition information. <em>FAT</em> commands that list file on partition as well as loading file are:</p>
+<pre class="code text"><a name="rest_code_314b7ba096a34fa4ac2508e02af0740a-1"></a>TI8148_EVM#fatls scsi 0
+<a name="rest_code_314b7ba096a34fa4ac2508e02af0740a-2"></a>  3522384   uimage
+<a name="rest_code_314b7ba096a34fa4ac2508e02af0740a-3"></a> 95158272   rootfs.ubi.img
+<a name="rest_code_314b7ba096a34fa4ac2508e02af0740a-4"></a> 100925440   rootfs.ubi.img.624
+<a name="rest_code_314b7ba096a34fa4ac2508e02af0740a-5"></a>
+<a name="rest_code_314b7ba096a34fa4ac2508e02af0740a-6"></a>3 file(s), 0 dir(s)
+<a name="rest_code_314b7ba096a34fa4ac2508e02af0740a-7"></a>
+<a name="rest_code_314b7ba096a34fa4ac2508e02af0740a-8"></a>TI8148_EVM#fatload scsi 0 80800000 uimage
+<a name="rest_code_314b7ba096a34fa4ac2508e02af0740a-9"></a>reading uimage
+<a name="rest_code_314b7ba096a34fa4ac2508e02af0740a-10"></a>
+<a name="rest_code_314b7ba096a34fa4ac2508e02af0740a-11"></a>3522384 bytes read
+<a name="rest_code_314b7ba096a34fa4ac2508e02af0740a-12"></a>TI8148_EVM#bootm 80800000
+<a name="rest_code_314b7ba096a34fa4ac2508e02af0740a-13"></a>## Booting kernel from Legacy Image at 80800000 ...
+<a name="rest_code_314b7ba096a34fa4ac2508e02af0740a-14"></a>   Image Name:   Linux-2.6.37
+<a name="rest_code_314b7ba096a34fa4ac2508e02af0740a-15"></a>   Image Type:   ARM Linux Kernel Image (uncompressed)
+<a name="rest_code_314b7ba096a34fa4ac2508e02af0740a-16"></a>   Data Size:    3522320 Bytes = 3.4 MiB
+<a name="rest_code_314b7ba096a34fa4ac2508e02af0740a-17"></a>   Load Address: 80008000
+<a name="rest_code_314b7ba096a34fa4ac2508e02af0740a-18"></a>   Entry Point:  80008000
+<a name="rest_code_314b7ba096a34fa4ac2508e02af0740a-19"></a>   Verifying Checksum ... OK
+<a name="rest_code_314b7ba096a34fa4ac2508e02af0740a-20"></a>   Loading Kernel Image ... OK
+<a name="rest_code_314b7ba096a34fa4ac2508e02af0740a-21"></a>OK
+<a name="rest_code_314b7ba096a34fa4ac2508e02af0740a-22"></a>
+<a name="rest_code_314b7ba096a34fa4ac2508e02af0740a-23"></a>Starting kernel ...
+<a name="rest_code_314b7ba096a34fa4ac2508e02af0740a-24"></a>
+<a name="rest_code_314b7ba096a34fa4ac2508e02af0740a-25"></a>Uncompressing Linux... done, booting the kernel.
+</pre>
+<p>U-Boot's <em>bootcmd</em> can then be customize to <em>fatload</em> the kernel image from the harddisk instead of NAND
+or SD card. To do this, set  <em>bootcmd='fatload scsi 0 $loadaddr uImage2 &amp;&amp; bootm $loadaddr'</em>.</p>
+<p><em>u-boot.bin</em> that is tested above can be flashed to NAND partition. For my case, the partition offset
+is at <em>0x20000</em>, and the size of this u-boot is less than 256KB.</p>
+<p>After I satisfy with the result, I download and flash to NAND using the commands below.</p>
+<pre class="code text"><a name="rest_code_084468f6df9e4c46a0b8875e762e2361-1"></a>TI-MIN#nand erase 20000 40000
+<a name="rest_code_084468f6df9e4c46a0b8875e762e2361-2"></a>TI-MIN#nandecc hw 2
+<a name="rest_code_084468f6df9e4c46a0b8875e762e2361-3"></a>TI-MIN#nand write 80800000 20000 40000
+</pre>
+</div>
+</div>
+<div class="section" id="conclusion">
+<h2>Conclusion</h2>
+<p>Having SATA support added to u-boot for this platform gives me the flexibilty to have multiple images in
+the FAT partition of the HDD where I can selectively use.</p>
+</div>
+<div class="section" id="citations">
+<h2>Citations</h2>
+<table class="docutils footnote" frame="void" id="id1" rules="none">
+<colgroup>
+<col class="label">
+<col>
+</colgroup>
+<tbody valign="top"><tr>
+<td class="label">[1]</td>
+<td>TMS320DM814x Davinci Digital Video Processor Technical Reference Manual, SPRUGZ8D, Revised April 2013.</td>
+</tr></tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id2" rules="none">
+<colgroup>
+<col class="label">
+<col>
+</colgroup>
+<tbody valign="top"><tr>
+<td class="label">[2]</td>
+<td>arm-2009q1-203-arm-none-linux-gnueabi.bin, TI cross toolchain.</td>
+</tr></tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id3" rules="none">
+<colgroup>
+<col class="label">
+<col>
+</colgroup>
+<tbody valign="top"><tr>
+<td class="label">[3]</td>
+<td>LINUXEZSDK-DAVINCI: Linux EZ Software Development Kit (EZSDK) for DM814x and DM816x- ALPHA,ezsdk_dm814x-evm_5_05_01_04_setuplinux, www.ti.com/tool/linuxezsdk-davinci, v5.05.01.04-ALPHA, 10 OCt, 2012.</td>
+</tr></tbody>
+</table>
+</div>
+</div>
+    </div>
+    
+
+</article>
+</div>
+        <!--End of body content-->
+
+        <footer id="footer">
+            Contents © 2016         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+        </footer>
+</div>
+</div>
+
+
+            <script src="../../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+    moment.locale("en");
+    fancydates(0, "YYYY-MM-DD HH:mm");
+    </script><!-- end fancy dates -->
+</body>
+</html>
