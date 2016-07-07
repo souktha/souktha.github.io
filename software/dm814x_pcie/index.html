@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<head>
+<meta charset="utf-8">
+<base href="http://souktha.github.io/software/dm814x_pcie/">
+<meta name="description" content="PCIe support and splash screen for DM814x U-Boot">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Adding PCIe support and bring up the boot splash screen to DM814x U-Boot | Soukthavy Sopha</title>
+<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<meta content="#5670d4" name="theme-color">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
+<link rel="canonical" href="http://souktha.github.io/software/dm814x_pcie/">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="description" itemprop="description" content="PCIe support and splash screen for DM814x U-Boot">
+<meta name="author" content="Soukthavy">
+<link rel="prev" href="../dm814x_sata/" title="Adding SATA HD boot support to DM814x U-Boot" type="text/html">
+<meta property="og:site_name" content="Soukthavy Sopha">
+<meta property="og:title" content="Adding PCIe support and bring up the boot splash screen to DM814x U-Bo">
+<meta property="og:url" content="http://souktha.github.io/software/dm814x_pcie/">
+<meta property="og:description" content="PCIe support and splash screen for DM814x U-Boot">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2016-06-11T22:18:26Z">
+<meta property="article:tag" content="software">
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-inverse navbar-static-top"><div class="container">
+<!-- This keeps the margins nice -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://souktha.github.io/">
+
+                <span id="blog-title">Soukthavy Sopha</span>
+            </a>
+        </div>
+<!-- /.navbar-header -->
+        <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
+            <ul class="nav navbar-nav">
+<li>
+<a href="../../archive.html">Archive</a>
+                </li>
+<li>
+<a href="../../categories/">Tags</a>
+                </li>
+<li>
+<a href="../../rss.xml">RSS feed</a>
+            </li>
+<li class="dropdown">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Blog <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+<li>
+<a href="../../software">Sofware</a>
+                    </li>
+<li>
+<a href="../../hardware">Hardware</a>
+                    </li>
+<li>
+<a href="../../misc">Misc</a>
+            </li>
+</ul>
+</li>
+<li>
+<a href="https://github.com/souktha">My Github</a>
+
+                
+            </li>
+</ul>
+<ul class="nav navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        <div class="row">
+            
+            
+<article class="storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Adding PCIe support and bring up the boot splash screen to DM814x U-Boot</a></h1>
+
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>It is desirable to have some visual feedback to user during system boot up process especially if the system takes more
+than few seconds to boot. For the Linux based set-top box that boot to the main GUI menu may take considerable
+amount of time depending on the number of processes it needs to start. Some system may need to program the FPGA bitmask,
+bring up the networking processes or bring up some externally connected devices. These steps add up to the total system boot up
+time. For system with video support, it is a good practice to have video up as soon as possible so that the user
+would know that the system is working and it is in the process of booting up the system. This is commonly known as
+putting the boot splash screen during boot process.</p>
+<!-- TEASER_END -->
+<p>The TI8148 has the integrated PCIe support in it. The TI OMAP DM814x/AM287x evaluation platform (TI8148 EVM) also comes
+with one PCIe connnector where the HBA can be attached; however, the TI's official released <em>u-boot-2010.06-psp04.00.01</em>
+does not have PCIe support enable. The board that I am using for this demonstration is the derivation of TI EVM board
+having a proprietary PCIe based video processor chips built in to the system. The video processor chip is capable of
+processing 4K-3D video. It has two HDMI ports and it has the built-in video/audio processing unit. This post is not
+about the integrated HDVPSS.</p>
+<p>In order to put the splash screen at u-boot level, I have to do these things,</p>
+<ul class="simple">
+<li>Initialize PCIe PLL clocks subsytem.</li>
+<li>Initialize PCIe RC (Root Complex).</li>
+<li>Initialize the video processor HDMI subsystem.</li>
+<li>Put up the splash screen with logo and status bar.</li>
+</ul>
+<div class="section" id="initialize-the-pcie-pll">
+<h2>Initialize the PCIe PLL</h2>
+<p>In reference to  <em>u-boot-2010.06-psp04.04.00.01</em> of EZSDK, the file <em>board/ti/ti8148/evm.c</em> has function <em>pcie_pll_config()</em> disable (commented out). It is understandable that the original author exercised the practice of not leaving free-running clock enable if no device
+was using it. Since I will be using it, this function need to be enable to configure PCIE's PLL clock in the control module
+(section 3 and 19.2.1 of [<a class="reference internal" href="#id1">1</a>]). The registers to be configured are PLLCFG0 to PLLCFG4 of the PCIe control
+module (base offset is 4814_0000). I made some minor change for the board I am using, enabling MEAS
+and enabling latch (50%).</p>
+<pre class="code text"><a name="rest_code_46a2e721757741088096d8d81bcac43d-1"></a>static void pcie_pll_config()
+<a name="rest_code_46a2e721757741088096d8d81bcac43d-2"></a>{
+<a name="rest_code_46a2e721757741088096d8d81bcac43d-3"></a>        ..
+<a name="rest_code_46a2e721757741088096d8d81bcac43d-4"></a>        __raw_writel(0x70007017, PCIE_PLLCFG0); //per 19.3.1.1.1 sprugz8b.pdf manual.
+<a name="rest_code_46a2e721757741088096d8d81bcac43d-5"></a>        /*wait for ADPLL lock*/
+<a name="rest_code_46a2e721757741088096d8d81bcac43d-6"></a>        ..
+<a name="rest_code_46a2e721757741088096d8d81bcac43d-7"></a>}
+</pre>
+<p>at the end of <em>pcie_pll_config()</em>, wait for PLL to phase-lock by polling PLLSTATUS bit 1. Also a call to the function should
+be made in <em>prcm_init()</em>. This portion of code is only to
+configure PLL, feeding clock to the PCIe subsytem. It is the first step to be done before configuring/enumeratating
+the PCIe device. This PCIe PLL configuration must be done before the complete powerup sequence before the clock module
+is locked out so it is made as part of SBL ie.. (min_config).</p>
+</div>
+<div class="section" id="initialize-pcie-root-complex">
+<h2>Initialize PCIe Root Complex</h2>
+<p>The PCIe configuration registers of this OMAP SoC start at 5100_0000. The PCIe module is based on Synopsis Designware
+Core (DWC) and TI SERDES PHY. It can
+operate in either endpoint (EP) or root complex (RC). The mode to be initialized for this purpose is RC mode. To do this
+is to set RC mode(2) for PCIE_CFG(480h) of the control module, bring PCIe out of reset sequence and enable PCIe clock (
+<em>CM_DEFAULT_PCI_CLKCTRL</em>, section 2.10.7 of [<a class="reference internal" href="#id1">1</a>]). Once the PCIe is out of stand-by mode, the PCIe link can be trained or
+set-up. Because the PCIe module of this SoC is single lane (x1), the PCIe is configured for x1 before link training
+is initiated. When link training is completed, the PCIe is configured as bridge device with outbound transaction
+set for base address 2000_0000 (refers to 2.12.1 of [<a class="reference internal" href="#id4">4</a>]). Some part of the code,</p>
+<pre class="code text"><a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-1"></a>/*Various regions in PCIESS address space, sprugz8d document section 19.2.4.1, fig 19.2*/
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-2"></a>..
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-3"></a>#define SPACE0_LOCAL_CFG_OFFSET         0x1000  /*local config space*/
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-4"></a>#define SPACE0_REMOTE_CFG_OFFSET        0x2000  /*remote config space*/
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-5"></a>#define SPACE0_IO_OFFSET                0x3000  /*remote device IO space*/
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-6"></a>#define PCIE_CONFIG_BASE                0x51000000
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-7"></a>..
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-8"></a>..
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-9"></a>static void set_outbound_trans(u32 start, u32 end)
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-10"></a>{
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-11"></a>int i, tr_size;
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-12"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-13"></a>/*Set outbound translation size per window division*/
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-14"></a>__raw_writel(CFG_PCIM_WIN_SZ_IDX &amp; 0x7, reg_virt + OB_SIZE);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-15"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-16"></a>tr_size = (1 &lt;&lt; (CFG_PCIM_WIN_SZ_IDX &amp; 0x7)) * SZ_1M;
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-17"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-18"></a>/*Direct 1:1 mapping of RC &lt;-&gt; PCI memory space*/
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-19"></a>for (i = 0; (i &lt; CFG_PCIM_WIN_CNT) &amp;&amp; (start &lt; end); i++) {
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-20"></a>        __raw_writel(start | 1, reg_virt + OB_OFFSET_INDEX(i));
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-21"></a>        __raw_writel(0, reg_virt + OB_OFFSET_HI(i));
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-22"></a>        start += tr_size;
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-23"></a>}
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-24"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-25"></a>/*Enable OB translation*/
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-26"></a> __raw_writel(OB_XLAT_EN_VAL | __raw_readl(reg_virt + CMD_STATUS),
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-27"></a>                 reg_virt + CMD_STATUS);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-28"></a>}
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-29"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-30"></a>..
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-31"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-32"></a>static void set_inbound_trans(void)
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-33"></a>{
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-34"></a>/*Configure and set up BAR0*/
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-35"></a>set_dbi_mode();
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-36"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-37"></a>/*Enable BAR0*/
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-38"></a>__raw_writel(1, reg_virt + SPACE0_LOCAL_CFG_OFFSET +
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-39"></a>                PCI_BASE_ADDRESS_0);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-40"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-41"></a>__raw_writel(SZ_4K - 1, reg_virt +
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-42"></a>                SPACE0_LOCAL_CFG_OFFSET + PCI_BASE_ADDRESS_0);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-43"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-44"></a>clear_dbi_mode();
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-45"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-46"></a>__raw_writel(reg_phys, reg_virt + SPACE0_LOCAL_CFG_OFFSET
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-47"></a>                        + PCI_BASE_ADDRESS_0);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-48"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-49"></a>/*Configure BAR1 only if inbound window is specified*/
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-50"></a>if (ram_base != ram_end) {
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-51"></a>        __raw_writel(ram_base, reg_virt + IB_START0_LO);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-52"></a>        __raw_writel(0, reg_virt + IB_START0_HI);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-53"></a>        __raw_writel(1, reg_virt + IB_BAR0);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-54"></a>        __raw_writel(ram_base, reg_virt + IB_OFFSET0);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-55"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-56"></a>        set_dbi_mode();
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-57"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-58"></a>        __raw_writel(1, reg_virt + SPACE0_LOCAL_CFG_OFFSET +
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-59"></a>                        PCI_BASE_ADDRESS_1);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-60"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-61"></a>        __raw_writel(ram_end - ram_base, reg_virt +
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-62"></a>                SPACE0_LOCAL_CFG_OFFSET + PCI_BASE_ADDRESS_1);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-63"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-64"></a>        clear_dbi_mode();
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-65"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-66"></a>        /*Set BAR1 attributes and value in config space*/
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-67"></a>        __raw_writel(ram_base | PCI_BASE_ADDRESS_MEM_PREFETCH,
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-68"></a>                        reg_virt + SPACE0_LOCAL_CFG_OFFSET
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-69"></a>                        + PCI_BASE_ADDRESS_1);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-70"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-71"></a>        __raw_writel(IB_XLAT_EN_VAL | __raw_readl(reg_virt +
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-72"></a>                                CMD_STATUS), reg_virt + CMD_STATUS);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-73"></a>        }
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-74"></a>}
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-75"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-76"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-77"></a>static void omap_pcie_setup(void)
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-78"></a>{
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-79"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-80"></a>  u32 val;
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-81"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-82"></a>__raw_writel(2, CTRL_BASE + 0x480); /*RC mode*/
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-83"></a>/*bring PCIE out of reset sequence (PRM_DEFAULT)*/
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-84"></a>__raw_writel( __raw_readl(PRCM_BASE+0xb10) | 0x80,PRCM_BASE+0xb10);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-85"></a>udelay(10);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-86"></a>__raw_writel( __raw_readl(PRCM_BASE+0xb10) &amp; ~0x80,PRCM_BASE+0xb10);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-87"></a>delay(3);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-88"></a>__raw_writel(__raw_readl(PRCM_BASE+0xb14) &amp; 0x80,PRCM_BASE+0xb14); //clear this bit
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-89"></a>delay(3);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-90"></a>/*enable PCIE clock (CM_DEFAULT)*/
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-91"></a>__raw_writel(0,PRCM_BASE+0x578);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-92"></a>udelay(10);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-93"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-94"></a>__raw_writel(2,PRCM_BASE+0x510);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-95"></a>__raw_writel(2,PRCM_BASE+0x578);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-96"></a>while ( __raw_readl(PRCM_BASE+0x578) &amp; 0x70000 )delay(3);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-97"></a>__raw_writel(DIR_SPD | __raw_readl(
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-98"></a>                        reg_virt + SPACE0_LOCAL_CFG_OFFSET + PL_GEN2),
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-99"></a>                reg_virt + SPACE0_LOCAL_CFG_OFFSET + PL_GEN2);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-100"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-101"></a>/*set x1*/
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-102"></a>val = __raw_readl(reg_virt + SPACE0_LOCAL_CFG_OFFSET +
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-103"></a>                LINK_CAP);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-104"></a>val = (val &amp; ~(0x3f &lt;&lt; 4)) | (1 &lt;&lt; 4);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-105"></a>__raw_writel(val, reg_virt + SPACE0_LOCAL_CFG_OFFSET +
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-106"></a>                LINK_CAP); /*not to confuse, this is PCIESS local config reg, not PCIe config reg which is RO*/
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-107"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-108"></a>val = __raw_readl(reg_virt + SPACE0_LOCAL_CFG_OFFSET + PL_GEN2);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-109"></a>val = (val &amp; ~(0xff &lt;&lt; 8)) | (1 &lt;&lt; 8);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-110"></a>__raw_writel(val, reg_virt + SPACE0_LOCAL_CFG_OFFSET + PL_GEN2);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-111"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-112"></a>val = __raw_readl(reg_virt + SPACE0_LOCAL_CFG_OFFSET +
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-113"></a>                PL_LINK_CTRL);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-114"></a>val = (val &amp; ~(0x3F &lt;&lt; 16)) | (1 &lt;&lt; 16);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-115"></a>__raw_writel(val, reg_virt + SPACE0_LOCAL_CFG_OFFSET +
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-116"></a>                        PL_LINK_CTRL);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-117"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-118"></a>/*Initiate Link Trainin*/
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-119"></a> __raw_writel(LTSSM_EN_VAL | __raw_readl(reg_virt + CMD_STATUS),
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-120"></a>                 reg_virt + CMD_STATUS);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-121"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-122"></a>udelay(100000);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-123"></a>/*set up as bridge*/
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-124"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-125"></a>__raw_writew(PCI_CLASS_BRIDGE_PCI,
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-126"></a>                reg_virt + SPACE0_LOCAL_CFG_OFFSET + PCI_CLASS_DEVICE);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-127"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-128"></a>disable_bars(); //for now
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-129"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-130"></a>set_outbound_trans(0x20000000, 0x30000000-1); //non-prefetch mem area
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-131"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-132"></a>/*Enable 32-bit IO addressing support*/
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-133"></a>__raw_writew(PCI_IO_RANGE_TYPE_32 | (PCI_IO_RANGE_TYPE_32 &lt;&lt; 8),
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-134"></a>                reg_virt + SPACE0_LOCAL_CFG_OFFSET + PCI_IO_BASE);
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-135"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-136"></a>/*not plan to use interrupt*/
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-137"></a>__raw_writel(0xf, reg_virt + IRQ_ENABLE_CLR); //not enable irq
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-138"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-139"></a>/*skip MSI interrupt chain setup*/
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-140"></a>
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-141"></a>get_and_clear_err();
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-142"></a>}
+<a name="rest_code_7f6e088d2d704cff8d87c34293db6f2e-143"></a>..
+</pre>
+<p>The mapped BAR, 2000_0000 is the 256MB address space set aside for PCIe device's use [<a class="reference internal" href="#id4">4</a>].
+This is corresponded to the  address of the downstream PCIe video chip. Accessing this address space after the mapping is to access the video processor chip (below snippet). For system with more than one PCIe devices, extra code for buses enumeration is needed. Shown here is for the simplest case, single PCIe device [<a class="reference internal" href="#id6">6</a>].</p>
+<p>The next step is to set up the PCI header structure of u-boot so that it can be accessible by its drivers and utility. This
+includes registering PCI device, its respective read/write configuration space handlers etc..
+Post enumeration is to set up the inbound transaction address space which is the local system memory space of the system.</p>
+<pre class="code text"><a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-1"></a>static struct pci_config_table pci_redray_config_table[] = {
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-2"></a>/*104c,8888 - TI host bridge*/
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-3"></a>        {0x104c, 0x8888, PCI_CLASS_BRIDGE_HOST,
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-4"></a>         PCI_ANY_ID, PCI_ANY_ID, PCI_ANY_ID, pci_setup_ti_bridge},
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-5"></a>        {0x..., 0x..., 0x11, /*note: omit proprieatary info here*/
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-6"></a>         PCI_ANY_ID, PCI_ANY_ID, PCI_ANY_ID, pci_setup_vp}, /*pci_setup_vp is to set up this proprietary video processor chip*/
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-7"></a>
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-8"></a>{ }
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-9"></a>};
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-10"></a>..
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-11"></a>
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-12"></a>struct pci_controller hose = {
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-13"></a>        config_table: pci_vp_config_table,
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-14"></a>};
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-15"></a>
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-16"></a>..
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-17"></a>
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-18"></a>void omap_pci_init(struct pci_controller* hose)
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-19"></a>{
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-20"></a>unsigned int val,offset;
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-21"></a>pci_dev_t dev;
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-22"></a>
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-23"></a>omap_pcie_setup();//as shown above
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-24"></a>
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-25"></a>hose-&gt;first_busno = 0;
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-26"></a>hose-&gt;last_busno = 0x1f;
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-27"></a>
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-28"></a>/*memory space*/
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-29"></a>pci_set_region (&amp;hose-&gt;regions[0],
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-30"></a>                0x20000000,
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-31"></a>                0, 0x1900000, PCI_REGION_MEM);
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-32"></a>hose-&gt;pci_mem = &amp;hose-&gt;regions[0];
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-33"></a>
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-34"></a>/*PCI memory space*/
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-35"></a>pci_set_region (&amp;hose-&gt;regions[1],
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-36"></a>                0x20b00000,
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-37"></a>                0, 0x100000, PCI_REGION_PREFETCH);
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-38"></a>hose-&gt;pci_prefetch = &amp;hose-&gt;regions[1];
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-39"></a>hose-&gt;pci_io = NULL;
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-40"></a>
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-41"></a>/*PCI I/O space*/
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-42"></a>
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-43"></a>hose-&gt;region_count = 2;
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-44"></a>
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-45"></a>pci_register_hose (hose);
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-46"></a>pci_set_ops(hose,
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-47"></a>            pci_hose_read_config_byte_via_dword,
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-48"></a>            pci_hose_read_config_word_via_dword,
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-49"></a>            ti81xx_pci_read_config,
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-50"></a>            pci_hose_write_config_byte_via_dword,
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-51"></a>            pci_hose_write_config_word_via_dword,
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-52"></a>            ti81xx_pci_write_config );
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-53"></a>
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-54"></a>pciauto_config_init(hose);
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-55"></a>hose-&gt;current_busno = hose-&gt;first_busno+1;
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-56"></a>dev = PCI_BDF(hose-&gt;first_busno,0,0);
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-57"></a>pciauto_prescan_setup_bridge(hose,dev,hose-&gt;current_busno);
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-58"></a>pciauto_setup_device(hose,dev,0,hose-&gt;pci_mem,hose-&gt;pci_prefetch,hose-&gt;pci_io);
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-59"></a>hose-&gt;last_busno = pci_hose_scan(hose);
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-60"></a>hose-&gt;last_busno = hose-&gt;current_busno;
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-61"></a>
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-62"></a>/*fix up*/
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-63"></a>__raw_writel(0x20800000,reg_virt + SPACE0_REMOTE_CFG_OFFSET + PCI_BASE_ADDRESS_0);
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-64"></a>__raw_writel(0x20000000,reg_virt + SPACE0_REMOTE_CFG_OFFSET + PCI_BASE_ADDRESS_1);
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-65"></a>__raw_writel(0x010130,  reg_virt + SPACE0_REMOTE_CFG_OFFSET + PCI_INTERRUPT_LINE);
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-66"></a>__raw_writel(0x100546,  reg_virt + SPACE0_REMOTE_CFG_OFFSET + PCI_COMMAND);
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-67"></a>
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-68"></a>/*fix up max read request*/
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-69"></a>offset =  __raw_readl(reg_virt + SPACE0_REMOTE_CFG_OFFSET + PCI_CAPABILITY_LIST);
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-70"></a>val =  __raw_readl(reg_virt + SPACE0_REMOTE_CFG_OFFSET + offset + 8);
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-71"></a>val = (val &amp; ~(3 &lt;&lt; 12)) | (1 &lt;&lt; 12); /*max read requst mask is 256bytes/read*/
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-72"></a>__raw_writel(val,  reg_virt + SPACE0_REMOTE_CFG_OFFSET + offset + 8 );
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-73"></a>
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-74"></a>__raw_writel(0x100147,  reg_virt + SPACE0_REMOTE_CFG_OFFSET + PCI_COMMAND);
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-75"></a>__raw_writel(0x100147,  reg_virt + SPACE0_LOCAL_CFG_OFFSET + PCI_COMMAND);
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-76"></a>
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-77"></a>ram_base = 0x80000000;
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-78"></a>ram_end = ram_base + 0x7fffffff;
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-79"></a>/*Post enumeration fixups*/
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-80"></a>set_inbound_trans();
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-81"></a>__raw_writew(__raw_readw(reg_virt + SPACE0_LOCAL_CFG_OFFSET +
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-82"></a>                        PCI_IO_BASE) | PCI_IO_RANGE_TYPE_32 |
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-83"></a>                        (PCI_IO_RANGE_TYPE_32 &lt;&lt; 8),
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-84"></a>                        reg_virt + SPACE0_LOCAL_CFG_OFFSET +
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-85"></a>                        PCI_IO_BASE);
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-86"></a>
+<a name="rest_code_9c3cc00cfbaa406ebd31eddb132baf15-87"></a>}
+</pre>
+<p>When all is done with PCIe device configuration, the device's PCIe memory mapped address space can be dumped with
+u-boot's <em>md</em> command. Sample below is the content of the video processor control registers area.</p>
+<pre class="code text"><a name="rest_code_fdf251bb7a7b473f8c8420d64e036056-1"></a>TI-MIN#md 20000000
+<a name="rest_code_fdf251bb7a7b473f8c8420d64e036056-2"></a>20000000: 00000000 00000000 00000000 00000000    ................
+<a name="rest_code_fdf251bb7a7b473f8c8420d64e036056-3"></a>20000010: 00000000 00000000 00000000 00000000    ................
+<a name="rest_code_fdf251bb7a7b473f8c8420d64e036056-4"></a>20000020: 00000000 00000000 00000000 00000000    ................
+<a name="rest_code_fdf251bb7a7b473f8c8420d64e036056-5"></a>20000030: 00000000 00000000 00000000 00000035    ............5...
+<a name="rest_code_fdf251bb7a7b473f8c8420d64e036056-6"></a>20000040: 000003e7 0000000e 0000000f 00000000    ................
+<a name="rest_code_fdf251bb7a7b473f8c8420d64e036056-7"></a>20000050: 00000000 00000011 00000035 000003e7    ........5.......
+<a name="rest_code_fdf251bb7a7b473f8c8420d64e036056-8"></a>20000060: 0000000e 0000000f 00000000 00000000    ................
+</pre>
+<p>TI document section 19.3.1 [<a class="reference internal" href="#id1">1</a>] describes all the necessary steps needed to set up the RC mode for this module. Initialization of PCIESS for
+the boot code or the high level kernel OS takes the exact same steps. In fact, I ported part of the code from the linux kernel originally
+done by TI [<a class="reference internal" href="#id3">3</a>] in <em>linux-2.6,37-psp04.04.00.01/mach-omap2/pcie-ti81xx.c</em>.</p>
+</div>
+<div class="section" id="initialize-the-video-processor-s-hdmi-subsystem">
+<h2>Initialize the video processor's HDMI subsystem</h2>
+<p>From this point onward, the PCIe video processor is accessible by u-boot. The proprietary video processor used
+in this derived platform has external DDR3 video display memory that need to be configured. The first step in this
+process is to set up its PLL clocks subsystem and set up its DDR3 memory controller (DDR training). Video PLL clock and audio
+PLL clock are set up as part of this initialization. Following this step, the EDID is read from the connected
+display device (monitor/tv) so that it can setup the HDMI interface correctly. My board's HDMI is connected to ASUS
+LCD monitor.</p>
+<pre class="code text"><a name="rest_code_a24e48f3a0b04396abae77a46df0fa00-1"></a>U-Boot 2010.06 (Jul 02 2016 - 17:35:59)
+<a name="rest_code_a24e48f3a0b04396abae77a46df0fa00-2"></a>
+<a name="rest_code_a24e48f3a0b04396abae77a46df0fa00-3"></a>TI8148-GP rev 2.1
+<a name="rest_code_a24e48f3a0b04396abae77a46df0fa00-4"></a>
+<a name="rest_code_a24e48f3a0b04396abae77a46df0fa00-5"></a>ARM clk: 720MHz
+<a name="rest_code_a24e48f3a0b04396abae77a46df0fa00-6"></a>DDR clk: 533MHz
+<a name="rest_code_a24e48f3a0b04396abae77a46df0fa00-7"></a>
+<a name="rest_code_a24e48f3a0b04396abae77a46df0fa00-8"></a>I2C:   ready
+<a name="rest_code_a24e48f3a0b04396abae77a46df0fa00-9"></a>DRAM:  2 GiB
+<a name="rest_code_a24e48f3a0b04396abae77a46df0fa00-10"></a>NAND:  HW ECC BCH8 Selected
+<a name="rest_code_a24e48f3a0b04396abae77a46df0fa00-11"></a>256 MiB
+<a name="rest_code_a24e48f3a0b04396abae77a46df0fa00-12"></a>
+<a name="rest_code_a24e48f3a0b04396abae77a46df0fa00-13"></a>..
+<a name="rest_code_a24e48f3a0b04396abae77a46df0fa00-14"></a>
+<a name="rest_code_a24e48f3a0b04396abae77a46df0fa00-15"></a>DDR trained (0x80000fff).
+<a name="rest_code_a24e48f3a0b04396abae77a46df0fa00-16"></a>
+<a name="rest_code_a24e48f3a0b04396abae77a46df0fa00-17"></a>Pixel clocks  :148500 KHZ
+<a name="rest_code_a24e48f3a0b04396abae77a46df0fa00-18"></a>Horizontal pix:1920
+<a name="rest_code_a24e48f3a0b04396abae77a46df0fa00-19"></a>Vertical   pix:1080
+<a name="rest_code_a24e48f3a0b04396abae77a46df0fa00-20"></a>Display size H:598 mm
+<a name="rest_code_a24e48f3a0b04396abae77a46df0fa00-21"></a>Display size V:592 mm
+<a name="rest_code_a24e48f3a0b04396abae77a46df0fa00-22"></a>Display Name     : VS278
+<a name="rest_code_a24e48f3a0b04396abae77a46df0fa00-23"></a>Display serial no: D1LMQS148212
+<a name="rest_code_a24e48f3a0b04396abae77a46df0fa00-24"></a>
+<a name="rest_code_a24e48f3a0b04396abae77a46df0fa00-25"></a>MMC:   OMAP SD/MMC: 0
+<a name="rest_code_a24e48f3a0b04396abae77a46df0fa00-26"></a>Net:   Detected MACID:2c:b6:9d:d0:d1:d2
+<a name="rest_code_a24e48f3a0b04396abae77a46df0fa00-27"></a>cpsw
+<a name="rest_code_a24e48f3a0b04396abae77a46df0fa00-28"></a>Hit any key to stop autoboot:  1
+</pre>
+<p>The information from EDID is used for configuring the HDMI [<a class="reference internal" href="#id5">5</a>] to match the capability of the display unit (TV/monitor) so that
+the splash screen will be properly centered. The gamma LUT, chroma scaler, dithering frame dimension, info frame, color space
+etc.. for the video pipe and the HDMI component of the video processor are then initialized accordingly.</p>
+</div>
+<div class="section" id="put-up-splash-screen-logo">
+<h2>Put up splash screen logo</h2>
+<p>The final step is to load the video pixels of the splash screen. One is static logo image and one is the progressive
+status bar. The logo image that is compiled along u-boot code (~100k) is then DMAed by the video processor to its
+layered output display memory buffer, the main display buffer. The overlay progressive status bar is output in the
+same way, but to its OSD display buffer and having its progress status update mechanism hooks up to the timer tick
+in order to update the progress bar. This part of putting the splash screen is the proprietary part that I cannot
+include any snippet due to NDA.</p>
+<div class="figure">
+<img alt="../../images/misc/splash-screen.jpg" src="../../images/misc/splash-screen.jpg"><p class="caption">Splash screen with a progressing status bar (company logo blocked out).</p>
+</div>
+</div>
+<div class="section" id="conclusion">
+<h2>Conclusion</h2>
+<p>It takes a little bit of effort to get this done, coding and debugging, but some lessons are learned during the
+process.</p>
+<div class="section" id="citations">
+<h3>Citations</h3>
+<table class="docutils footnote" frame="void" id="id1" rules="none">
+<colgroup>
+<col class="label">
+<col>
+</colgroup>
+<tbody valign="top"><tr>
+<td class="label">[1]</td>
+<td>TMS320DM814x Davinci Digital Video Processor Technical Reference Manual, SPRUGZ8D, Revised April 2013.</td>
+</tr></tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id2" rules="none">
+<colgroup>
+<col class="label">
+<col>
+</colgroup>
+<tbody valign="top"><tr>
+<td class="label">[2]</td>
+<td>arm-2009q1-203-arm-none-linux-gnueabi.bin, TI cross toolchain.</td>
+</tr></tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id3" rules="none">
+<colgroup>
+<col class="label">
+<col>
+</colgroup>
+<tbody valign="top"><tr>
+<td class="label">[3]</td>
+<td>LINUXEZSDK-DAVINCI: Linux EZ Software Development Kit (EZSDK) for DM814x and DM816x- ALPHA,ezsdk_dm814x-evm_5_05_01_04_setuplinux, www.ti.com/tool/linuxezsdk-davinci, v5.05.01.04-ALPHA, 10 OCt, 2012.</td>
+</tr></tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id4" rules="none">
+<colgroup>
+<col class="label">
+<col>
+</colgroup>
+<tbody valign="top"><tr>
+<td class="label">[4]</td>
+<td>TMS320DM8148, TMS320DM8148, TMS320DM8146, SPRS647D-MARCH 2011-REVISED SEPTEMBER 2012.</td>
+</tr></tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id5" rules="none">
+<colgroup>
+<col class="label">
+<col>
+</colgroup>
+<tbody valign="top"><tr>
+<td class="label">[5]</td>
+<td>High Definition Multimedia Interface, Specification Version 1.3a, November 10, 2006</td>
+</tr></tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id6" rules="none">
+<colgroup>
+<col class="label">
+<col>
+</colgroup>
+<tbody valign="top"><tr>
+<td class="label">[6]</td>
+<td>PCI Express System Architecture, MindShare Inc, Addison Wesley, ISBN: 0-321-15630-7, September 04, 2003.</td>
+</tr></tbody>
+</table>
+</div>
+</div>
+</div>
+    </div>
+    
+
+</article>
+</div>
+        <!--End of body content-->
+
+        <footer id="footer">
+            Contents © 2016         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+        </footer>
+</div>
+</div>
+
+
+            <script src="../../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+    moment.locale("en");
+    fancydates(0, "YYYY-MM-DD HH:mm");
+    </script><!-- end fancy dates -->
+</body>
+</html>

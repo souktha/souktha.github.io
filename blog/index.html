@@ -78,7 +78,26 @@
 
     
 <div class="postindex">
-    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../software/dm814x_sata/" class="u-url">Adding SATA HD boot support to DM814x U-Boot</a></h1>
+    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../software/dm814x_pcie/" class="u-url">Adding PCIe support and bring up the boot splash screen to DM814x U-Boot</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="../software/dm814x_pcie/" rel="bookmark"><time class="published dt-published" datetime="2016-06-11T22:18:26Z" title="2016-06-11 22:18">2016-06-11 22:18</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<p>It is desirable to have some visual feedback to user during system boot up process especially if the system takes more
+than few seconds to boot. For the Linux based set-top box that boot to the main GUI menu may take considerable
+amount of time depending on the number of processes it needs to start. Some system may need to program the FPGA bitmask,
+bring up the networking processes or bring up some externally connected devices. These steps add up to the total system boot up
+time. For system with video support, it is a good practice to have video up as soon as possible so that the user
+would know that the system is working and it is in the process of booting up the system. This is commonly known as
+putting the boot splash screen during boot process.</p>
+<p class="more"><a href="../software/dm814x_pcie/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../software/dm814x_sata/" class="u-url">Adding SATA HD boot support to DM814x U-Boot</a></h1>
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn">
                 Soukthavy
@@ -227,23 +246,6 @@ required pixel clock frequency of 800 * 60 * 525 = 25.200MHZ.</p>
 like to directly access a device that is connected by serial console to my local machine, for example, a beaglebone black
 board that is connected to my home PC serial console ttyUSB0. I implemented a simple console server for this purpose.</p>
 <p class="more"><a href="../software/tty2comport/">Read more…</a></p>
-</div>
-    </div>
-    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../hardware/servo/" class="u-url">servo driver</a></h1>
-        <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn">
-                Soukthavy
-            </span></p>
-            <p class="dateline"><a href="../hardware/servo/" rel="bookmark"><time class="published dt-published" datetime="2016-03-12T05:25:40Z" title="2016-03-12 05:25">2016-03-12 05:25</time></a></p>
-        </div>
-    </header><div class="p-summary entry-summary">
-    <div>
-<p>Servo motor is an electromechanical drive that is relatively simple to operate. A
-typically servo motor has relatively few movements, namely left, right and center.
-Controlling its movement is to send the periodic pulse width of about 1.5ms, 1ms or 2ms for
-the center, left, and the right movement respectively.
-In this demo, I use a very simple verilog code to control its movement.</p>
-<p class="more"><a href="../hardware/servo/">Read more…</a></p>
 </div>
     </div>
     </article>
