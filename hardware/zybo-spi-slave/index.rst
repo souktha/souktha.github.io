@@ -568,6 +568,8 @@ with the custom SPI slave of the PL with its standard SPI protocol.
 Although the design of SPI slave device in this exercise is a do-nothing, it merely exercises the PS-PL
 interconnectivity, I think it can be expanded to do some useful work. 
 
+Source code for this exercise is at https://github.com/souktha/zybo_spi_slave
+
 Citations
 ==========
 
