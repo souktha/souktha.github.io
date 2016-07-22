@@ -15,7 +15,7 @@
  </url>
  <url>
   <loc>http://souktha.github.io/archive.html</loc>
-  <lastmod>2016-07-06T21:21:00Z</lastmod>
+  <lastmod>2016-07-21T22:04:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/blog/</loc>
@@ -27,7 +27,7 @@
  </url>
  <url>
   <loc>http://souktha.github.io/blog/index-1.html</loc>
-  <lastmod>2016-07-06T21:21:00Z</lastmod>
+  <lastmod>2016-07-21T22:04:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/blog/restructuredtext-demo-import-from-demotxt/</loc>
@@ -67,7 +67,7 @@
  </url>
  <url>
   <loc>http://souktha.github.io/hardware/</loc>
-  <lastmod>2016-07-06T21:21:00Z</lastmod>
+  <lastmod>2016-07-21T22:04:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/hardware/hw_sample/</loc>
@@ -92,6 +92,10 @@
  <url>
   <loc>http://souktha.github.io/hardware/vga_draw_graph/</loc>
   <lastmod>2016-07-06T21:21:00Z</lastmod>
+ </url>
+ <url>
+  <loc>http://souktha.github.io/hardware/zybo-spi-slave/</loc>
+  <lastmod>2016-07-21T22:04:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/listings/</loc>

@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<head>
+<meta charset="utf-8">
+<base href="http://souktha.github.io/hardware/zybo-spi-slave/">
+<meta name="description" content="Adding custom SPI slave device connected to SPI0 via EMIO">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zynq Zybo SPI slave via EMIO | Soukthavy Sopha</title>
+<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<meta content="#5670d4" name="theme-color">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
+<link rel="canonical" href="http://souktha.github.io/hardware/zybo-spi-slave/">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="description" itemprop="description" content="Adding custom SPI slave device connected to SPI0 via EMIO">
+<meta name="author" content="Soukthavy">
+<link rel="prev" href="../../software/dm814x_pcie/" title="Adding PCIe support and bring up the boot splash screen to DM814x U-Boot" type="text/html">
+<meta property="og:site_name" content="Soukthavy Sopha">
+<meta property="og:title" content="Zynq Zybo SPI slave via EMIO">
+<meta property="og:url" content="http://souktha.github.io/hardware/zybo-spi-slave/">
+<meta property="og:description" content="Adding custom SPI slave device connected to SPI0 via EMIO">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2016-07-17T18:10:54Z">
+<meta property="article:tag" content="hardware">
+<meta property="article:tag" content="software">
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-inverse navbar-static-top"><div class="container">
+<!-- This keeps the margins nice -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://souktha.github.io/">
+
+                <span id="blog-title">Soukthavy Sopha</span>
+            </a>
+        </div>
+<!-- /.navbar-header -->
+        <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
+            <ul class="nav navbar-nav">
+<li>
+<a href="../../archive.html">Archive</a>
+                </li>
+<li>
+<a href="../../categories/">Tags</a>
+                </li>
+<li>
+<a href="../../rss.xml">RSS feed</a>
+            </li>
+<li class="dropdown">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Blog <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+<li>
+<a href="../../software">Sofware</a>
+                    </li>
+<li>
+<a href="../../hardware">Hardware</a>
+                    </li>
+<li>
+<a href="../../misc">Misc</a>
+            </li>
+</ul>
+</li>
+<li>
+<a href="https://github.com/souktha">My Github</a>
+
+                
+            </li>
+</ul>
+<ul class="nav navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        <div class="row">
+            
+            
+<article class="storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Zynq Zybo SPI slave via EMIO</a></h1>
+
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>I would like to add a simple IO peripheral device to the Zynq Zybo board and I would like to learn how much
+effort I need to get PS-PL interconnected and can be used by high level OS such as Linux.
+For this exercise, I choose to create a simplest device for the Zynq PL that interface with its PS. My choice
+is to create a SPI slave device (PL) that will interconnect to the SPY master of the Zynq (PS).</p>
+<!-- TEASER_END -->
+<p>Although there are a lot of MIO pins available on Zynq7000, but they are almost always used up. For Zybo board they
+are mostly used for various peripheral devices such as Ethernet, USB, SD, UART, CAN etc. If more IO is needed, the
+EMIO is available for MIO-EMIO routing (Chapter 2,17 of [<a class="reference internal" href="#id2">2</a>]). Here is the simple specification of the SPI slave
+device for this exercise.</p>
+<div class="section" id="spi-slave-device">
+<h2>SPI Slave device</h2>
+<p>. Four wires: MOSI (input from master), MISO (output to master), _CS (chip select from master), CLK (clock from master).</p>
+<p>. Phase and Polarity fixed to mode 0.</p>
+<p>. Support back-to-back transfer.</p>
+<p>. Use MIO/EMIO routing interface of the zynq7000.</p>
+<p>. 8-bits command/data.</p>
+<p>. Basic command support: Read ID (0x1d), Read(0xea), Write(0xad). Limited to three commands for simplicity. Any other
+commands is rejected.</p>
+<p>Here is the sample of verilog code of my SPI slave device, <em>spi_slave.v</em>,</p>
+<pre class="code verilog"><a name="rest_code_9967617cfaff46979a3c610a1b70b905-1"></a>    <span class="no">`timescale</span> <span class="mh">1</span><span class="n">ns</span> <span class="o">/</span> <span class="mh">100</span><span class="n">ps</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-2"></a>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-3"></a><span class="cp">    `define DEVICE_ID 8'h5a</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-4"></a>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-5"></a>    <span class="cm">/* SPI slave interface.</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-6"></a><span class="cm">    This is a simple version of SPI slave mode 0.</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-7"></a><span class="cm">    * /</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-8"></a>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-9"></a><span class="cm">    module spi_slave #(parameter WIDTH=8) (</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-10"></a><span class="cm">        input clk,  //system clock feed</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-11"></a><span class="cm">        input _cs,  // chip select, active low</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-12"></a><span class="cm">        input sck,  //spi master clock</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-13"></a><span class="cm">        input mosi, //input from master</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-14"></a><span class="cm">        output miso</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-15"></a><span class="cm">    );</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-16"></a><span class="cm">        reg [WIDTH-1:0] din, dout,slave_dout;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-17"></a><span class="cm">        reg [4:0] bitcount;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-18"></a><span class="cm">        reg sout, dload;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-19"></a><span class="cm">        reg [7:0] command;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-20"></a>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-21"></a><span class="cm">        reg [2:0] current,next;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-22"></a><span class="cm">        /* possible states: IDLE, CMD_IN, CMD_PROCESS for command received,</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-23"></a><span class="cm">        DIN for data from master, DOUT for data to master.</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-24"></a><span class="cm">        Commands are: READ_ID=0x1d, READ=0xea, WRITE=0xad.</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-25"></a><span class="cm">            ID data  * /</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-26"></a><span class="cm">        parameter IDLE=0, CMD_IN=1, CMD_PROCESS=2, DIN=3, DOUT=4, INVALID=5, CMD_DEBUG=6;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-27"></a><span class="cm">        parameter READ_ID=8'h1d, READ=8'hea, WRITE=8'had;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-28"></a>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-29"></a><span class="cm">        initial begin</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-30"></a><span class="cm">            current = IDLE;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-31"></a><span class="cm">            next = IDLE;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-32"></a><span class="cm">            command = 8'h0;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-33"></a><span class="cm">            bitcount = 8'h0;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-34"></a><span class="cm">            dload = 1'b0;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-35"></a><span class="cm">         end</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-36"></a>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-37"></a><span class="cm">      /* _cs is to remain asserted during command and data transfer.*/</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-38"></a>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-39"></a>        <span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">,</span> <span class="k">negedge</span> <span class="n">_cs</span><span class="p">)</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-40"></a>         <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="n">_cs</span> <span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-41"></a>             <span class="k">if</span> <span class="p">(</span><span class="n">current</span> <span class="o">==</span> <span class="no">IDLE</span> <span class="p">)</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-42"></a>                    <span class="n">current</span> <span class="o">&lt;=</span> <span class="no">CMD_IN</span><span class="p">;</span>      <span class="cm">/* on assertion of _cs*/</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-43"></a>             <span class="k">else</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-44"></a>                     <span class="n">current</span> <span class="o">&lt;=</span> <span class="n">next</span><span class="p">;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-45"></a>             <span class="k">end</span> <span class="k">else</span> <span class="n">current</span> <span class="o">&lt;=</span> <span class="no">IDLE</span><span class="p">;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-46"></a>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-47"></a>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-48"></a>       <span class="cm">/* state machine transition*/</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-49"></a>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-50"></a>        <span class="k">always</span><span class="p">@(</span><span class="n">current</span> <span class="k">or</span> <span class="n">bitcount</span> <span class="k">or</span> <span class="n">_cs</span><span class="p">)</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-51"></a>            <span class="k">if</span> <span class="p">(</span><span class="n">_cs</span> <span class="p">)</span> <span class="n">next</span> <span class="o">=</span> <span class="no">IDLE</span><span class="p">;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-52"></a>            <span class="k">else</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-53"></a>        <span class="k">case</span><span class="p">(</span><span class="n">current</span><span class="p">)</span> <span class="c1">//full_case</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-54"></a>        <span class="nl">CMD_IN:</span> <span class="k">begin</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-55"></a>            <span class="k">if</span> <span class="p">(</span> <span class="n">bitcount</span><span class="p">[</span><span class="mh">3</span><span class="p">])</span> <span class="k">begin</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-56"></a>                <span class="p">#</span><span class="mh">1</span> <span class="n">command</span> <span class="o">=</span> <span class="n">din</span><span class="p">;</span> <span class="c1">//latch in command</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-57"></a>                            <span class="n">next</span> <span class="o">=</span> <span class="no">CMD_PROCESS</span><span class="p">;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-58"></a>                      <span class="k">end</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-59"></a>                    <span class="k">else</span> <span class="k">begin</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-60"></a>                      <span class="n">next</span> <span class="o">=</span> <span class="no">CMD_IN</span><span class="p">;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-61"></a>                      <span class="k">end</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-62"></a>                    <span class="k">end</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-63"></a>        <span class="nl">CMD_PROCESS:</span> <span class="k">begin</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-64"></a>                    <span class="k">case</span> <span class="p">(</span><span class="n">command</span><span class="p">)</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-65"></a>                            <span class="nl">READ_ID:</span> <span class="k">begin</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-66"></a>                                    <span class="n">slave_dout</span> <span class="o">=</span> <span class="no">`DEVICE_ID</span><span class="p">;</span> <span class="c1">//ID is 5A or as defined</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-67"></a>                                    <span class="n">next</span> <span class="o">=</span> <span class="no">DOUT</span><span class="p">;</span> <span class="c1">// transition to DOUT via miso</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-68"></a>                                    <span class="n">dload</span> <span class="o">=</span> <span class="mh">1</span><span class="mb">'b1</span><span class="p">;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-69"></a>                                    <span class="k">end</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-70"></a>                            <span class="nl">READ:</span> <span class="k">begin</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-71"></a>                                    <span class="n">slave_dout</span> <span class="o">=</span> <span class="mh">8'hc4</span><span class="p">;</span> <span class="c1">//use this for dummy read for now</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-72"></a>                                    <span class="n">next</span> <span class="o">=</span> <span class="no">DOUT</span><span class="p">;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-73"></a>                                    <span class="n">dload</span> <span class="o">=</span> <span class="mh">1</span><span class="mb">'b1</span><span class="p">;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-74"></a>                                    <span class="k">end</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-75"></a>                            <span class="nl">WRITE:</span> <span class="k">begin</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-76"></a>                                    <span class="n">next</span> <span class="o">=</span> <span class="no">DIN</span><span class="p">;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-77"></a>                                    <span class="k">end</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-78"></a>                            <span class="k">default</span><span class="o">:</span> <span class="k">begin</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-79"></a>                                    <span class="n">next</span> <span class="o">=</span> <span class="no">CMD_IN</span><span class="p">;</span> <span class="c1">//reject invalid cmd</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-80"></a>                                    <span class="k">end</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-81"></a>                            <span class="k">endcase</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-82"></a>                    <span class="k">end</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-83"></a>         <span class="nl">DIN:</span> <span class="k">begin</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-84"></a>            <span class="k">if</span> <span class="p">(</span> <span class="n">bitcount</span><span class="p">[</span><span class="mh">4</span><span class="p">]</span>  <span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-85"></a>                    <span class="n">next</span> <span class="o">=</span> <span class="no">CMD_IN</span><span class="p">;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-86"></a>               <span class="k">end</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-87"></a>                    <span class="k">else</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-88"></a>                            <span class="n">next</span> <span class="o">=</span> <span class="no">DIN</span><span class="p">;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-89"></a>                    <span class="k">end</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-90"></a>        <span class="nl">DOUT:</span> <span class="k">begin</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-91"></a>            <span class="k">if</span> <span class="p">(</span> <span class="n">bitcount</span><span class="p">[</span><span class="mh">4</span><span class="p">]</span> <span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-92"></a>                    <span class="n">next</span> <span class="o">=</span> <span class="no">CMD_IN</span><span class="p">;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-93"></a>            <span class="k">end</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-94"></a>            <span class="k">else</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-95"></a>                    <span class="n">next</span> <span class="o">=</span> <span class="no">DOUT</span><span class="p">;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-96"></a>                    <span class="n">dload</span> <span class="o">=</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-97"></a>            <span class="k">end</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-98"></a>    <span class="k">endcase</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-99"></a>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-100"></a>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-101"></a><span class="cm">/* MISO at z if not in DOUT phase. Don't drive it.*/</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-102"></a><span class="k">assign</span> <span class="p">#</span><span class="mh">1</span> <span class="n">miso</span> <span class="o">=</span> <span class="n">sout</span><span class="p">;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-103"></a>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-104"></a><span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">sck</span><span class="p">,</span> <span class="k">posedge</span> <span class="n">_cs</span><span class="p">,</span> <span class="k">posedge</span> <span class="n">current</span> <span class="p">)</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-105"></a>  <span class="k">if</span> <span class="p">(</span><span class="n">_cs</span> <span class="o">||</span> <span class="n">current</span> <span class="o">!=</span> <span class="no">DOUT</span><span class="p">)</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-106"></a>   <span class="n">sout</span> <span class="o">&lt;=</span> <span class="mh">1</span><span class="p">'</span><span class="n">bz</span><span class="p">;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-107"></a>  <span class="k">else</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-108"></a>   <span class="n">sout</span> <span class="o">&lt;=</span> <span class="n">dout</span><span class="p">[</span><span class="mh">7</span><span class="p">];</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-109"></a>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-110"></a><span class="o">/*</span> <span class="n">sample</span> <span class="no">MOSI</span> <span class="n">bits</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-111"></a><span class="o">&gt;--</span><span class="mh">01234567</span><span class="o">----&gt;---</span><span class="mh">01234567</span><span class="o">-----&gt;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-112"></a> <span class="o">|--------------------------|</span>   <span class="o">*</span> <span class="o">/</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-113"></a><span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">sck</span><span class="p">,</span> <span class="k">posedge</span> <span class="n">_cs</span> <span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-114"></a>            <span class="k">if</span> <span class="p">(</span><span class="n">_cs</span> <span class="p">)</span> <span class="p">#</span><span class="mh">1</span> <span class="n">bitcount</span> <span class="o">&lt;=</span> <span class="mh">8'h0</span><span class="p">;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-115"></a>    <span class="k">else</span>  <span class="k">begin</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-116"></a>            <span class="p">#</span><span class="mh">1</span> <span class="n">din</span> <span class="o">&lt;=</span> <span class="p">{</span><span class="n">din</span><span class="p">[</span><span class="mh">6</span><span class="o">:</span><span class="mh">0</span><span class="p">],</span><span class="n">mosi</span><span class="p">};</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-117"></a>            <span class="p">#</span><span class="mh">1</span> <span class="n">bitcount</span> <span class="o">&lt;=</span> <span class="n">bitcount</span> <span class="o">+</span> <span class="mh">1</span><span class="mb">'b1</span><span class="p">;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-118"></a>        <span class="k">if</span> <span class="p">(</span><span class="n">bitcount</span><span class="p">[</span><span class="mh">4</span><span class="p">])</span> <span class="p">#</span><span class="mh">1</span> <span class="n">bitcount</span> <span class="o">&lt;=</span> <span class="mh">4'h1</span><span class="p">;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-119"></a>     <span class="k">end</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-120"></a><span class="k">end</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-121"></a>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-122"></a><span class="o">/*</span> <span class="n">Transmit</span> <span class="no">MSB</span> <span class="n">first</span> <span class="o">*</span> <span class="o">/</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-123"></a><span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">sck</span><span class="p">,</span> <span class="k">posedge</span> <span class="n">dload</span><span class="p">)</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-124"></a>            <span class="k">if</span> <span class="p">(</span><span class="n">dload</span><span class="p">)</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-125"></a>             <span class="n">dout</span> <span class="o">&lt;=</span> <span class="n">slave_dout</span><span class="p">;</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-126"></a>            <span class="k">else</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-127"></a>             <span class="n">dout</span> <span class="o">&lt;=</span> <span class="p">{</span><span class="n">dout</span><span class="p">[</span><span class="mh">6</span><span class="o">:</span><span class="mh">0</span><span class="p">],</span><span class="n">mosi</span><span class="p">};</span> <span class="c1">//loop with input data</span>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-128"></a>
+<a name="rest_code_9967617cfaff46979a3c610a1b70b905-129"></a>    <span class="k">endmodule</span>
+</pre>
+<p>That is all for this simple SPI slave device. It is then simulated with <em>spi_slave_tb.v</em>, and from what
+I can tell it should work and that the code is synthesizable. It is now ready for integration to the PL
+part of the Zynq7000.</p>
+</div>
+<div class="section" id="software-tools">
+<h2>Software tools</h2>
+<p>The sofware tools and software packages I use for this exercise are:</p>
+<p>. Vivado 2016.1 webpack.</p>
+<p>. Cross GNU toolchain to compile the Linux kernel and SPI slave driver later.</p>
+<p>. Xilinx Linux kernel, device tree plugin (for Xilinx SDK).</p>
+</div>
+<div class="section" id="simulate-spi-slave-device">
+<h2>Simulate SPI slave device</h2>
+<p>Using Vivado, I create the project for the simulation of the SPI slave device shown above. This simple
+project needs only two files, <em>spi_slave.v</em> which is the main SPI slave device source and <em>spi_slave_tb.v</em>,
+its testbench.</p>
+<div class="figure">
+<img alt="../../images/hardware/spi_slave_sim.JPG" src="../../images/hardware/spi_slave_sim.JPG"><p class="caption">Waveform of the simulated SPI slave device.</p>
+</div>
+<p>Looks like it will work, so my next step is to create the custom IP package for it.</p>
+</div>
+<div class="section" id="create-and-package-ip">
+<h2>Create and package IP</h2>
+<p>Start vivado and do these steps to create the custom IP that will be integrated into the design later,</p>
+<p>. Quick Start -&gt; Create new project -&gt; next</p>
+<p>. Fill in the Project name and project location. Project name set to <em>spi_ip</em> and project location set to my local workspace -&gt; next.</p>
+<p>. Project type leave it as RTL project -&gt; next.</p>
+<p>. Add existing IP -&gt; next since no existing IP to be added in this page.</p>
+<p>. Add constraints -&gt; next since no constraint to be added in this page.</p>
+<p>. Default part -&gt; Boards -&gt; Zybo -&gt;next (select Zybo).</p>
+<p>. New Project Summary -&gt; Finish.</p>
+<p>. Tools -&gt; Create and package IP -&gt; next -&gt; Create a new AXI4 peripheral.</p>
+<div class="figure">
+<img alt="../../images/hardware/slave_ip_create_package_ip.png" src="../../images/hardware/slave_ip_create_package_ip.png">
+</div>
+<p>. Peripheral Detail -&gt; name set to <em>myspi_ip</em> -&gt; next.</p>
+<p>. Add interface -&gt; next</p>
+<p>. Create Peripheral -&gt; Edit IP -&gt; Finish.</p>
+<div class="figure">
+<img alt="../../images/hardware/slave_ip_edit_ip.png" src="../../images/hardware/slave_ip_edit_ip.png">
+</div>
+<p>After <em>edit_myspi_ip_v1_0</em> pops up, add <em>spi_slave.v</em> and modify the AXI template as necessary,</p>
+<div class="figure">
+<img alt="../../images/hardware/slave_ip_add_sources.png" src="../../images/hardware/slave_ip_add_sources.png">
+</div>
+<p>. Under Design Sources, right click on <em>myspi_ip_v1_0</em> and select add sources to add <em>spi_slave.v</em>.</p>
+<p>. Double clicks on <em>myspi_ip_v1_0.v</em> to open for editing.</p>
+<p>. Add the following code,</p>
+<pre class="code verilog"><a name="rest_code_db480f4f18cd47f1a4b43e4cb826c767-1"></a><span class="c1">// Users to add ports here</span>
+<a name="rest_code_db480f4f18cd47f1a4b43e4cb826c767-2"></a><span class="k">input</span> <span class="kt">wire</span> <span class="n">spi_cs</span><span class="p">,</span>
+<a name="rest_code_db480f4f18cd47f1a4b43e4cb826c767-3"></a><span class="k">input</span> <span class="kt">wire</span> <span class="n">spi_mosi</span><span class="p">,</span> <span class="c1">//it is input with respect to this slave</span>
+<a name="rest_code_db480f4f18cd47f1a4b43e4cb826c767-4"></a><span class="k">input</span> <span class="kt">wire</span> <span class="n">spi_sck</span><span class="p">,</span>
+<a name="rest_code_db480f4f18cd47f1a4b43e4cb826c767-5"></a><span class="k">output</span> <span class="kt">wire</span> <span class="n">spi_miso</span><span class="p">,</span>
+<a name="rest_code_db480f4f18cd47f1a4b43e4cb826c767-6"></a><span class="c1">// User ports ends</span>
+</pre>
+<p>. Save and close <em>myspi_ip_v1_0.v</em> file.</p>
+<p>. Double clicks to open <em>myspi_ip_v1_0_S00_AXI.v</em> for editing. Add the following code to instantiate the
+custom SPI slave IP,</p>
+<pre class="code verilog"><a name="rest_code_31c8a86f25f54be18d9b6b0e9c45120d-1"></a>    <span class="c1">// Users to add ports here</span>
+<a name="rest_code_31c8a86f25f54be18d9b6b0e9c45120d-2"></a>    <span class="k">input</span> <span class="kt">wire</span> <span class="n">_cs</span><span class="p">,</span>
+<a name="rest_code_31c8a86f25f54be18d9b6b0e9c45120d-3"></a>    <span class="k">input</span> <span class="kt">wire</span> <span class="n">mosi</span><span class="p">,</span>
+<a name="rest_code_31c8a86f25f54be18d9b6b0e9c45120d-4"></a>    <span class="k">input</span> <span class="kt">wire</span> <span class="n">sck</span><span class="p">,</span>
+<a name="rest_code_31c8a86f25f54be18d9b6b0e9c45120d-5"></a>    <span class="k">output</span> <span class="kt">wire</span> <span class="n">miso</span><span class="p">,</span>
+<a name="rest_code_31c8a86f25f54be18d9b6b0e9c45120d-6"></a>    <span class="c1">// User ports ends</span>
+<a name="rest_code_31c8a86f25f54be18d9b6b0e9c45120d-7"></a>
+<a name="rest_code_31c8a86f25f54be18d9b6b0e9c45120d-8"></a>    <span class="p">..</span>
+<a name="rest_code_31c8a86f25f54be18d9b6b0e9c45120d-9"></a>    <span class="c1">//instantiate spi_slave here at the end of the file.</span>
+<a name="rest_code_31c8a86f25f54be18d9b6b0e9c45120d-10"></a>    <span class="c1">// Add user logic here</span>
+<a name="rest_code_31c8a86f25f54be18d9b6b0e9c45120d-11"></a><span class="n">spi_slave</span> <span class="n">myspi</span><span class="p">(</span>
+<a name="rest_code_31c8a86f25f54be18d9b6b0e9c45120d-12"></a><span class="p">.</span><span class="n">_cs</span><span class="p">(</span><span class="n">_cs</span><span class="p">),</span>
+<a name="rest_code_31c8a86f25f54be18d9b6b0e9c45120d-13"></a><span class="p">.</span><span class="n">miso</span><span class="p">(</span><span class="n">miso</span><span class="p">),</span>
+<a name="rest_code_31c8a86f25f54be18d9b6b0e9c45120d-14"></a><span class="p">.</span><span class="n">mosi</span><span class="p">(</span><span class="n">mosi</span><span class="p">),</span>
+<a name="rest_code_31c8a86f25f54be18d9b6b0e9c45120d-15"></a><span class="p">.</span><span class="n">sck</span><span class="p">(</span><span class="n">sck</span><span class="p">),</span>
+<a name="rest_code_31c8a86f25f54be18d9b6b0e9c45120d-16"></a><span class="p">.</span><span class="n">clk</span><span class="p">(</span><span class="no">S_AXI_ACLK</span><span class="p">));</span>
+<a name="rest_code_31c8a86f25f54be18d9b6b0e9c45120d-17"></a>    <span class="c1">// User logic ends</span>
+</pre>
+<p>. Save and close the source file, <em>myspi_ip_v1_0_S00_AXI.v</em>.</p>
+<p>. File Groups -&gt; Merge change Groups Wizards to merge all the changes made.</p>
+<p>. Review and Package -&gt; Re-package IP.</p>
+<p>. Finised packaging. Do you want to close the project -&gt; yes.</p>
+<p>. Close <em>spi_ip</em> project.</p>
+<p>This completed packaging the SPI slave IP for this demo. The IP is packaged and stored in the
+<em>ip_repo</em> in my local workspace (default).</p>
+</div>
+<div class="section" id="create-zynq-design-block-with-the-custom-spi-slave-ip">
+<h2>Create Zynq design block with the custom SPI slave IP</h2>
+<p>Having custom IP ready, now it can be integrated into the Zynq Zybo system. Starting a new project,</p>
+<p>. Quick Start -&gt; Create a New Vivado Project -&gt; next.</p>
+<p>. Project name set to <em>zybo_spi</em> and project location set to local workspace then -&gt; next.</p>
+<p>. Project Type set to RTL project -&gt; next.</p>
+<p>. Add sources -&gt; next (no source to add).</p>
+<p>. Add existing IP -&gt; next.</p>
+<p>. Add constraints -&gt; next.</p>
+<p>. Default part -&gt; Boards -&gt; <em>zybo</em> -&gt; next.</p>
+<p>. New Project Sumamry -&gt; Finish.</p>
+<p>Create zynq block design,</p>
+<p>. Flow Navigator -&gt; IP Integrator -&gt; Create Block Design.</p>
+<p>. Design Name set to <em>zybo_spi</em> -&gt; Ok.</p>
+<p>. Diagram -&gt; Add IP to add Zynq.</p>
+<p>. Double click Zynq7 processing syatem to add ZYnq block. This is the PS. PL (IP) is to added next.</p>
+<p>. Project Manager -&gt; Project Settings -&gt; IP -&gt; Repository Manager. Click (+) to add IP repository where <em>spi_ip</em> is packaged. Click Ok when done.</p>
+<p>. Diagram -&gt; Add IP. Type <em>myspi</em> in search box of IP list and select <em>myspi_ip_v1_0</em> to add.</p>
+<div class="figure">
+<img alt="../../images/hardware/zybo_spi_add_iprepos.png" src="../../images/hardware/zybo_spi_add_iprepos.png">
+</div>
+<p>. Diagram -&gt; Run block automation and Run Connection automation for Zynq and SPI slave IP -&gt; Ok.</p>
+<p>. Edit Zynq7 PS from default design before making the  connections,</p>
+<div class="figure">
+<img alt="../../images/hardware/zybo_spi_recustomize.png" src="../../images/hardware/zybo_spi_recustomize.png">
+</div>
+<p>. Double click on Zynq7 PS in the block diagram to open its setting (Zybo default).</p>
+<p>. Recustomize IP -&gt; MIO Configurations -&gt; SPI0 click to enable and leave it at EMIO interface -&gt; OK.</p>
+<p>. Now SPI0 appears in Zynq7 block. Expand it to make connection to SPI slave IP.</p>
+<p>. Make connections between Zynq7 to <em>myspi_ip_0</em> block: SPI0_MOSI_O-&gt;spi_mosi, SPI0_MISO_I-&gt;spi_miso,
+SPI0_SCLK_O-&gt;spi_sck, SPI0_SS_O-&gt;spi_cs.</p>
+<div class="figure">
+<img alt="../../images/hardware/zybo_spi_makeconnections.png" src="../../images/hardware/zybo_spi_makeconnections.png">
+</div>
+<p>. Diagram -&gt; Validate Design.</p>
+<p>. Design sources -&gt; Zybo_spi.bd -&gt; Create HDL Wrapper, Let Vivado manage wrapper and auto-update -&gt; OK.</p>
+<p>. IP Integrator -&gt; Generate Block Design -&gt; Generate.</p>
+<p>. Flow Navigator -&gt; Run  Synthesis.</p>
+<p>. Run Implementation.</p>
+<p>. Generate bitstream.</p>
+<p>. Skip Open Implemeted Design. Click Cancel.</p>
+<p>. File -&gt; Export -&gt; Export Hardware (include bitstream ).</p>
+<p>. File -&gt; Launch SDK -&gt; OK.</p>
+<p>The bitstream generated for this design is <em>zybo_spi_wrapper.bit</em>. This will be used later.</p>
+</div>
+<div class="section" id="generating-device-tree">
+<h2>Generating device tree</h2>
+<p>Next step is to generate device tree for the BSP of this design. On Xilinx SDK,</p>
+<p>. Xilinx Tool -&gt; Repositories, add <em>device-tree-xlnx</em> for local workspace.</p>
+<div class="figure">
+<img alt="../../images/hardware/zybo_spi_add_sdk_repos.png" src="../../images/hardware/zybo_spi_add_sdk_repos.png">
+</div>
+<p>. File -&gt; New -&gt; Board Support Package. <em>Board Support Package OS</em> set to <em>device_tree</em> -&gt; Finish.</p>
+<p>. View the generated file in <em>device_tree_bsp_0</em>. Files of interest are <em>zynq-7000.dtsi</em> and <em>system.dts</em>.</p>
+<p>. File -&gt; Exit to close SDK.</p>
+<p>Device tree files are store in my workspace/zybo_spi/zybo_spi.sdk/device_tree_bsp_0 directory. The
+<em>device-tree-xlnx</em> is pulled from Xilinx github (<a class="reference external" href="https://github.com/Xilinx/device-tree-xlnx">https://github.com/Xilinx/device-tree-xlnx</a>).</p>
+</div>
+<div class="section" id="port-device-tree-to-linux-kernel">
+<h2>Port device tree to Linux kernel</h2>
+<p>There are two files that need to be replaced or modified, <em>zynq-7000.dtsi</em> and <em>zynq-zybo.dts</em>. Both of
+these are located in <em>linux-xlnx/arch/arm/boot/dts</em> directory which is Xilinx's kernel git version. I replace
+the original <em>zynq-7000.dtsi</em> with the one generated from my design and add portion of code in <em>system.dts</em> into
+the existing <em>zynq-zybo.dts</em> as follows,</p>
+<pre class="code text"><a name="rest_code_b6d7b9536bfc4d88bf7bc3f40d7205cc-1"></a>//add this custom spi0 block for my custom driver, spi5a
+<a name="rest_code_b6d7b9536bfc4d88bf7bc3f40d7205cc-2"></a>&amp;spi0 {
+<a name="rest_code_b6d7b9536bfc4d88bf7bc3f40d7205cc-3"></a>        is-decoded-cs = &lt;0&gt;;
+<a name="rest_code_b6d7b9536bfc4d88bf7bc3f40d7205cc-4"></a>        num-cs = &lt;3&gt;;
+<a name="rest_code_b6d7b9536bfc4d88bf7bc3f40d7205cc-5"></a>        status = "okay";
+<a name="rest_code_b6d7b9536bfc4d88bf7bc3f40d7205cc-6"></a>
+<a name="rest_code_b6d7b9536bfc4d88bf7bc3f40d7205cc-7"></a>        spi5a@0 {
+<a name="rest_code_b6d7b9536bfc4d88bf7bc3f40d7205cc-8"></a>        compatible = "souk,spi5a";
+<a name="rest_code_b6d7b9536bfc4d88bf7bc3f40d7205cc-9"></a>        reg = &lt;0&gt;;
+<a name="rest_code_b6d7b9536bfc4d88bf7bc3f40d7205cc-10"></a>        spi-max-frequency = &lt;1000000&gt;;
+<a name="rest_code_b6d7b9536bfc4d88bf7bc3f40d7205cc-11"></a>      };
+<a name="rest_code_b6d7b9536bfc4d88bf7bc3f40d7205cc-12"></a>
+<a name="rest_code_b6d7b9536bfc4d88bf7bc3f40d7205cc-13"></a>};//end of zynq-zybo.dts
+</pre>
+<p>Since my Zybo's kernel(zImage) has already been compiled, I only need to recompile the device tree.</p>
+<pre class="code text"><a name="rest_code_aacc376acf394c54b41988983bdce514-1"></a>make ARCH=arm CROSS_COMPILE=arm-linux- zynq-zybo.dtb
+</pre>
+<p>follow by appending the device tree blob to zImage for booting. This is creating the U-Boot FIT image,</p>
+<pre class="code text"><a name="rest_code_a443f94b598340ec99a7cfeefcc9f0fe-1"></a>mkimage -f kernel.its zImage.itb
+</pre>
+<p>The <em>kernel.its</em> is the FIT image description source file. This file is created and placed in
+<em>linux-xlnx/arch/arm/boot/</em> directory. I 'cd' to this directory to create the FIT image. This is
+the content of <em>kernel.its</em>,</p>
+<pre class="code text"><a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-1"></a> /dts-v1/;
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-2"></a>
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-3"></a>/ {
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-4"></a>         description = "ARM Zynq Zybo FIT (Flattened Image Tree)";
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-5"></a>         #address-cells = &lt;1&gt;;
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-6"></a>
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-7"></a>         images {
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-8"></a>                 kernel@1 {
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-9"></a>                         description = "ARM Xilinx Zynq Linux-4.x";
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-10"></a>                         data = /incbin/("zImage");
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-11"></a>                         type = "kernel";
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-12"></a>                         arch = "arm";
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-13"></a>                         os = "linux";
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-14"></a>                         compression = "none";
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-15"></a>                         load = &lt;0x800000&gt;;
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-16"></a>                         entry = &lt;0x800000&gt;;
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-17"></a>                         hash@1 {
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-18"></a>                                 algo = "crc32";
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-19"></a>                         };
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-20"></a>                         hash@2 {
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-21"></a>                                 algo = "sha1";
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-22"></a>                         };
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-23"></a>                 };
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-24"></a>
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-25"></a>                 fdt@1 {
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-26"></a>                         description = "ARM Zynq Zybo device tree blob";
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-27"></a>                         data = /incbin/("dts/zynq-zybo.dtb");
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-28"></a>                         type = "flat_dt";
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-29"></a>                         arch = "arm";
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-30"></a>                         compression = "none";
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-31"></a>
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-32"></a>                         hash@1 {
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-33"></a>                                 algo = "crc32";
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-34"></a>                         };
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-35"></a>                         hash@2 {
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-36"></a>                                 algo = "sha1";
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-37"></a>                         };
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-38"></a>                 };
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-39"></a>
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-40"></a>         };
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-41"></a>
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-42"></a>         configurations {
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-43"></a>                 default = "config@1";
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-44"></a>
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-45"></a>                 config@1 {
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-46"></a>                         description = "Zynq Zybo";
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-47"></a>                         kernel = "kernel@1";
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-48"></a>                         fdt = "fdt@1";
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-49"></a>                 };
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-50"></a>
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-51"></a>                 };
+<a name="rest_code_670cc224ac3740b5889e0bbb18d9ff38-52"></a> };
+</pre>
+</div>
+<div class="section" id="custom-linux-spi-slave-device-driver">
+<h2>Custom Linux SPI slave device driver</h2>
+<p>The final step is to create the Linux SPI slave device driver. This should be very simple to create since
+it is for the do-nothing device. It is the driver that only exercises/validates the SPI protocol. As shown in
+the verilog code, this device only accepts three commands: READ_ID(<em>0x1d</em>) where it will return the value of
+<em>0x5a</em> as its ID. READ(<em>0xea) where it will return value *0xc4</em>, and WRITE(<em>0xad</em>). WRITE command will not
+return anything. It is meant for this SPI slave device to act upon it. For this design it does not do anything
+with data written from host (master SPI).
+Here is major the code for SPI slave device driver, <em>spi5a.c</em>, which is very simple. All it does is reading ID
+and reading a fixed data from the SPI slave on loading. It is to prove that if the data return from
+these operations, then the SPI slave device works.</p>
+<table class="codetable"><tr>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-1"> 1</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-2"> 2</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-3"> 3</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-4"> 4</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-5"> 5</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-6"> 6</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-7"> 7</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-8"> 8</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-9"> 9</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-10">10</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-11">11</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-12">12</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-13">13</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-14">14</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-15">15</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-16">16</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-17">17</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-18">18</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-19">19</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-20">20</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-21">21</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-22">22</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-23">23</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-24">24</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-25">25</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-26">26</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-27">27</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-28">28</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-29">29</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-30">30</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-31">31</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-32">32</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-33">33</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-34">34</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-35">35</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-36">36</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-37">37</a>
+<a href="#rest_code_a82919f07a144ecd9d7141b58bbc49cf-38">38</a></pre></div></td>
+<td class="code"><pre class="code c"><a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-1"></a><span class="p">...</span>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-2"></a>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-3"></a><span class="k">static</span> <span class="kt">int</span> <span class="n">spi5a_probe</span><span class="p">(</span><span class="k">struct</span> <span class="n">spi_device</span> <span class="o">*</span> <span class="n">spi</span><span class="p">)</span>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-4"></a><span class="p">{</span>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-5"></a>        <span class="kt">int</span> <span class="n">ret</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-6"></a>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-7"></a>        <span class="n">spi</span><span class="o">-&gt;</span><span class="n">bits_per_word</span> <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-8"></a>        <span class="n">spi_setup</span><span class="p">(</span><span class="n">spi</span><span class="p">);</span>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-9"></a>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-10"></a>        <span class="n">printk</span><span class="p">(</span><span class="n">KERN_INFO</span> <span class="s">"spi read ID for cs %d, mode %d, bpw %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">spi</span><span class="o">-&gt;</span><span class="n">chip_select</span><span class="p">,</span><span class="n">spi</span><span class="o">-&gt;</span><span class="n">mode</span><span class="p">,</span><span class="n">spi</span><span class="o">-&gt;</span><span class="n">bits_per_word</span><span class="p">);</span>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-11"></a>        <span class="n">ret</span> <span class="o">=</span> <span class="n">spi_w8r8</span><span class="p">(</span><span class="n">spi</span><span class="p">,</span> <span class="mh">0x1d</span><span class="p">);</span> <span class="c1">//read ID</span>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-12"></a>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-13"></a>        <span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-14"></a>                <span class="n">dev_err</span><span class="p">(</span><span class="o">&amp;</span><span class="n">spi</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">,</span> <span class="s">"not found.</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-15"></a>                <span class="n">printk</span><span class="p">(</span><span class="n">KERN_INFO</span> <span class="s">"spi read id return 0x%x</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">ret</span><span class="p">);</span>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-16"></a>                <span class="k">return</span> <span class="n">ret</span><span class="p">;</span>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-17"></a>        <span class="p">}</span>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-18"></a>        <span class="n">printk</span><span class="p">(</span><span class="n">KERN_INFO</span> <span class="s">"%s returns id= 0x%x</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">__FUNCTION__</span><span class="p">,(</span><span class="n">u8</span><span class="p">)</span><span class="n">ret</span><span class="p">);</span>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-19"></a>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-20"></a>        <span class="n">ret</span> <span class="o">=</span> <span class="n">spi_w8r8</span><span class="p">(</span><span class="n">spi</span><span class="p">,</span> <span class="mh">0xea</span><span class="p">);</span> <span class="c1">//read</span>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-21"></a>        <span class="n">printk</span><span class="p">(</span><span class="n">KERN_INFO</span> <span class="s">"%s read(ea) returns 0x%x</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">__FUNCTION__</span><span class="p">,(</span><span class="n">u8</span><span class="p">)</span><span class="n">ret</span><span class="p">);</span>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-22"></a>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-23"></a>        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-24"></a><span class="p">}</span>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-25"></a>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-26"></a><span class="k">static</span> <span class="kt">int</span> <span class="n">spi5a_remove</span><span class="p">(</span><span class="k">struct</span> <span class="n">spi_device</span> <span class="o">*</span> <span class="n">spi</span><span class="p">)</span>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-27"></a><span class="p">{</span>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-28"></a>        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-29"></a><span class="p">}</span>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-30"></a>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-31"></a><span class="k">static</span> <span class="k">struct</span> <span class="n">spi_driver</span> <span class="n">spi5a_driver</span> <span class="o">=</span> <span class="p">{</span>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-32"></a>        <span class="p">.</span><span class="n">driver</span> <span class="o">=</span> <span class="p">{</span>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-33"></a>                <span class="p">.</span><span class="n">name</span>   <span class="o">=</span> <span class="s">"spi5a"</span><span class="p">,</span>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-34"></a>        <span class="p">},</span>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-35"></a>        <span class="p">.</span><span class="n">probe</span>  <span class="o">=</span> <span class="n">spi5a_probe</span><span class="p">,</span>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-36"></a>        <span class="p">.</span><span class="n">remove</span> <span class="o">=</span> <span class="n">spi5a_remove</span><span class="p">,</span>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-37"></a><span class="p">};</span>
+<a name="rest_code_a82919f07a144ecd9d7141b58bbc49cf-38"></a><span class="p">...</span>
+</pre></td>
+</tr></table>
+<p>Line 7,8 setup kernel SPI device interface. Line 11,20 read SPI slave device and display the result. Next is
+to compile the device into kernel module to obtain <em>spi5a.ko</em>.</p>
+</div>
+<div class="section" id="test-the-spi-slave-device">
+<h2>Test the SPI slave device</h2>
+<p>Next is to test the custom SPI device. For this, Zybo has to boot up to login prompt and bitstream has to be loaded
+follows by loading the driver.</p>
+<p>. Boot up and login to Zybo. The kernel image is the version built with the generated device tree of this design having
+SPI0 enable for use. The Xilinx default version from git will not work for this design. This is the whole idea of
+everything that was done in prior steps.</p>
+<p>. Load <em>zybo_spi_wrapper.bit</em>, load the Linux <em>spi5a</em> custom driver and observe the result. These two files are
+stored in my local root directory of rootfs.</p>
+<table class="codetable"><tr>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_2f560b6bc17c4cc2a88779e097160a03-1">1</a>
+<a href="#rest_code_2f560b6bc17c4cc2a88779e097160a03-2">2</a>
+<a href="#rest_code_2f560b6bc17c4cc2a88779e097160a03-3">3</a>
+<a href="#rest_code_2f560b6bc17c4cc2a88779e097160a03-4">4</a>
+<a href="#rest_code_2f560b6bc17c4cc2a88779e097160a03-5">5</a></pre></div></td>
+<td class="code"><pre class="code console"><a name="rest_code_2f560b6bc17c4cc2a88779e097160a03-1"></a><span class="gp">#</span> cat zybo_spi_slave_wrapper.bit &gt; /dev/xdevcfg
+<a name="rest_code_2f560b6bc17c4cc2a88779e097160a03-2"></a><span class="gp">#</span> insmod ./spi5a.ko
+<a name="rest_code_2f560b6bc17c4cc2a88779e097160a03-3"></a><span class="go">spi read ID for cs 0, mode 0, bpw 8</span>
+<a name="rest_code_2f560b6bc17c4cc2a88779e097160a03-4"></a><span class="go">spi5a_probe returns id= 0x5a</span>
+<a name="rest_code_2f560b6bc17c4cc2a88779e097160a03-5"></a><span class="go">spi5a_probe read(ea) returns 0xc4</span>
+</pre></td>
+</tr></table>
+<p>Line 1 is to load the generated FPGA bitstream (PL) of this simple hardware. Line 2 is to load the linux kernel module
+which is the SPI slave device driver. Line 3 is the debugging message to confirm the SPI device that the driver is
+communicated with.</p>
+<p>I get the result I expected (line 4,5) , reading device ID returns 0x5a, and read return 0xc4. This is consistent to
+what being set in the synthesized Verilog code, <em>spi_slave.v</em></p>
+</div>
+<div class="section" id="conclusion">
+<h2>Conclusion</h2>
+<p>This concludes that PS-PL interface of the Zynq works for this design and it is coherent with
+respect to high level OS (Linux), that is the master SPI controller of the Zynq PS can communicate
+with the custom SPI slave of the PL with its standard SPI protocol.
+Although the design of SPI slave device in this exercise is a do-nothing, it merely exercises the PS-PL
+interconnectivity, I think it can be expanded to do some useful work.</p>
+<div class="section" id="citations">
+<h3>Citations</h3>
+<table class="docutils footnote" frame="void" id="id1" rules="none">
+<colgroup>
+<col class="label">
+<col>
+</colgroup>
+<tbody valign="top"><tr>
+<td class="label">[1]</td>
+<td>Zybo(TM) FPGA Board Reference Manual, zybo_rm.pdf, Februrary 2013, Zybo rev B, Digilent.</td>
+</tr></tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id2" rules="none">
+<colgroup>
+<col class="label">
+<col>
+</colgroup>
+<tbody valign="top"><tr>
+<td class="label">[2]</td>
+<td>Zynq-7000 All Programmable SoC Techincal Reference Manual, ug585-Zynq-7000-TRM.pdf, Feb 2015, Xilinx.</td>
+</tr></tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id3" rules="none">
+<colgroup>
+<col class="label">
+<col>
+</colgroup>
+<tbody valign="top"><tr>
+<td class="label">[3]</td>
+<td>Zynq-7000 All Programmable SoC Embedded Design Tutorial, UG1165(v2015.3), ug1165-zynq-embedded-design-tutorial.pdf, Sept 30 2015, Xilinx.</td>
+</tr></tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id4" rules="none">
+<colgroup>
+<col class="label">
+<col>
+</colgroup>
+<tbody valign="top"><tr>
+<td class="label">[4]</td>
+<td>Zybo FPGA Board Reference Manual, Revised Feb 2013, Rev B, Digilent Inc.</td>
+</tr></tbody>
+</table>
+</div>
+</div>
+</div>
+    </div>
+    
+
+</article>
+</div>
+        <!--End of body content-->
+
+        <footer id="footer">
+            Contents © 2016         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+        </footer>
+</div>
+</div>
+
+
+            <script src="../../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+    moment.locale("en");
+    fancydates(0, "YYYY-MM-DD HH:mm");
+    </script><!-- end fancy dates -->
+</body>
+</html>
