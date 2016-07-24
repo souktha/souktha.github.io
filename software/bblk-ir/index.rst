@@ -102,7 +102,8 @@ In reference to TI's AM335x [1]_, chapter 19, Universal Receiver/Transmitter, th
 
 The first thing this driver does is to register with the kernel platform framework having this *platform_driver* table,
 
-.. code-block::
+.. code-block:: c
+ :linenos:
 
         static struct platform_driver cir_platform_driver = {
 	        .driver = {
@@ -116,7 +117,8 @@ The first thing this driver does is to register with the kernel platform framewo
 The *cir-uart* matches to what I defined in the device tree earlier. The will enable the platform driver framework to call 
 its *cir_probe* for device probing and initializing the device. 
 
-.. code-block::
+.. code-block:: c
+ :linenos:
 
         static int cir_probe(struct platform_device * pdev)
         {
@@ -152,7 +154,8 @@ defined since the device does not need special handling. It is only for the form
 *RC_MAP_RC6_MCE*, but it can be changed at run-time. Work queue is also used for this
 driver for input event processing as the BH portion of interrupt handling.
 
-.. code-block::
+.. code-block:: c
+ :linenos:
 
 	ir_props = rc_allocate_device();
         ..
@@ -177,7 +180,8 @@ Once the IR stream bits is received and decoded by the UART, the RX interrupt wi
 by *cir_irq_handler* interrupt handler. The handler put the received byte into the buffer and schedule the BH workqueue.
 The BH handler then takes the byte off from the buffer and pushes it upstream to the IR core driver.
 
-.. code-block::
+.. code-block:: c
+ :linenos:
 
         ..
 	if ( (pulse == 0) || (pulse == 0xff) ) {
@@ -203,7 +207,8 @@ The BH handler then takes the byte off from the buffer and pushes it upstream to
 For simplicity, I omit the sleep/wakeup support in the driver, instead I add proc file interface for 
 debugging purpose. The proc file is a simple registers dump using sequential file mechanism.
 
-.. code-block::
+.. code-block:: c
+ :linenos:
 
         struct file_operations proc_regs_fops = {
         	.open =  proc_seq_open,
@@ -225,7 +230,7 @@ debugging purpose. The proc file is a simple registers dump using sequential fil
 
 Once I compile the driver, *cir.ko*, I can load and test it. As part of input event, the input event driver, *evdev* is also used.
 
-.. code-block::
+.. code-block:: console
         
         # modprobe evdev 
         # insmod cir.ko 
@@ -235,7 +240,7 @@ Testing
 
 Having the debug code, upon driver loading I can see that the platform framework call it with,
 
-.. code-block::
+.. code-block:: console
 
         # insmod ci# insmod cir.ko 
         [   40.972690] cir_probe: entering with regs start 0x481a8000, size 0x2000, irq 156
@@ -245,7 +250,7 @@ Having the debug code, upon driver loading I can see that the platform framework
 So far so good. My debugging messages indicate that I get the UART4 resource information correctly.To make sure I get what
 I think I really get is to add few extra debug code to actually read the AM3358 registers [1]_ just to verify the setting.
 
-.. code-block::
+.. code-block:: console
 
         [   99.034228] get_uart_clock, CM_PER_L4LS_CLKCTRL=0x4502
         [   99.039409] get_uart_clock, CM_PER_UART4_CLKCTRL=0x2
@@ -258,7 +263,7 @@ because the IO bus would be stuck and cause I/O fault to happen. It is the painf
 
 I can check IRQ45 of UART4 is registered with the kernel correctly.
 
-.. code-block::
+.. code-block:: console
 
         # cat /proc/interrupts 
                    CPU0       
@@ -270,7 +275,7 @@ I can check IRQ45 of UART4 is registered with the kernel correctly.
 There is my interrupt handler and current count is at 0. While at it I can check my proc file for registers dump at
 the device's idle state.
 
-.. code-block::
+.. code-block:: console
 
         # cat /proc/cir/regs 
         rhr                      0x44
@@ -280,7 +285,7 @@ the device's idle state.
 Having verify the information that I expect, I have more confident to do further test. The next step is to
 test with *ir-keytable* utility.
 
-.. code-block::
+.. code-block:: console
 
         # ir-keytable 
         Found /sys/class/rc/rc0/ (/dev/input/event0) with:
@@ -294,7 +299,7 @@ test with *ir-keytable* utility.
 Looks like the tool recognize the registered IR device. I will change to use SONY protocol instead of 
 *lirc rc-6* so I issue this command,
 
-.. code-block::
+.. code-block:: console
 
         # ir-keytable -c -p SONY
         Old keytable cleared
@@ -311,7 +316,7 @@ Looks like the tool recognize the registered IR device. I will change to use SON
 So far so good. Next is to run the test with the IR receiver and SONY based remote control I found 
 in my junk box.
 
-.. code-block::
+.. code-block:: console
 
         # ir-keytable -t 
         Testing events. Please, press CTRL-C to abort.
@@ -327,7 +332,7 @@ button it is 0x19000b. With this information, I can create the keymaps for it. L
 has only a small number of buttons so it is created quickly. I store this keymap file as *sony* in 
 */etc/rc_keymaps*.
 
-.. code-block::
+.. code-block:: console
 
         # cat /etc/rc_keymaps/sony 
         0x19000a KEY_POWER
@@ -340,7 +345,7 @@ has only a small number of buttons so it is created quickly. I store this keymap
 
 Next I load the keymap mapping for the next test.
 
-.. code-block::
+.. code-block:: console
 
         # ir-keytable -c -p sony -w /etc/rc_keymaps/sony  
         Old keytable cleared
@@ -360,7 +365,7 @@ Now that I can see that the key events are generated with respect to their scanc
 protocol to match the type of remote control is also flexible, for example, I can change
 protocol to NEC, *nec* to use with an old TV remote control that uses NEC protocol,
 
-.. code-block::
+.. code-block:: console
 
         # ir-keytable -c -p nec
         Old keytable cleared

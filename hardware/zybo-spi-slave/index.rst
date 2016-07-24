@@ -559,6 +559,51 @@ communicated with.
 I get the result I expected (line 4,5) , reading device ID returns 0x5a, and read return 0xc4. This is consistent to
 what being set in the synthesized Verilog code, *spi_slave.v*
 
+Packaging bitstream to the system
+---------------------------------
+
+Since I am using U-Boot and Linux OS for my Zybo board, I can automate the process of loading the bitstream at U-Boot
+stage by U-Boot script and U-Boot command. U-Boot for this board supports FPGA bitmask loading, using U-Boot's 
+*fpga loadb 0 $loadaddr $filesize* (line 18) will load this bitstream as demonstate below,
+
+.. code-block:: console
+ :linenos:
+
+        Zynq> tftpboot $loadaddr zybo_spi_wrapper.bit 
+        ethernet@e000b000 Waiting for PHY auto negotiation to complete...... done
+        Using ethernet@e000b000 device
+        TFTP from server 192.168.10.14; our IP address is 192.168.10.3
+        Filename 'zybo_spi_wrapper.bit'.
+        Load address: 0x100000
+        Loading: #################################################################
+                 #################################################################
+                 #################################################################
+                 #################################################################
+                 #################################################################
+                 #################################################################
+                 ##################
+                 3.3 MiB/s
+        done
+        Bytes transferred = 2083852 (1fcc0c hex)
+        Zynq>
+        Zynq> fpga loadb 0 $loadaddr $filesize
+          design filename = "zybo_spi_wrapper;UserID=0XFFFFFFFF;Version=2016.1"
+          part number = "7z010clg400"
+          date = "2016/07/19"
+          time = "19:27:06"
+          bytes in bitstream = 2083740
+        zynq_align_dma_buffer: Align buffer at 100070 to 100000(swap 1)
+        Zynq> 
+
+Instead of tftp load as shown above. The FPGA bitstream file can be read from SD card and load to the Zynq in the same
+way following by the normal boot sequence ie.. loading kernel image. Once at Linux OS, loading bitstream via
+
+.. code-block:: console
+
+        #cat zybo_spi_wrapper_bit > /dev/xdevcfg
+
+is no longer required. This is my preferred way of loading bitstream.
+
 Conclusion
 ----------
 

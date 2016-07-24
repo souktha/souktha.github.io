@@ -44,7 +44,8 @@ The interfaces
 - In this implementation, the XADC is to be operated in *Single Channel mode* on channel 19 (*VAUXP[3], VAUXN[3]*). 
   Its timing mode is *continuous mode* and its conversion rate is set to 500 KSPS. It is instantiated from the generated core IP.
 
-.. code-block::
+.. code-block:: verilog
+ :linenos:
 
     xadc_wiz_0 XADC_INST(
         .daddr_in(8'd19), //19 for vaux3
@@ -70,7 +71,8 @@ The interfaces
 - The two bipolar inputs are from PMOD JXADC pin 1 (*AD3P*) and pin 7 (*AD3N*). The two inputs are connected to waveform generator during the test. 
 - The output of XADC is stored in DPRAM location on XADC's EOC signal by its *DRDY_OUT*. Its *EOC_OUT* is connected to *DEN_IN* for continuous sampling.
 
-.. code-block::
+.. code-block:: verilog
+ :linenos:
 
     ram_dual_port #(
         .DATA_WIDTH(16), 

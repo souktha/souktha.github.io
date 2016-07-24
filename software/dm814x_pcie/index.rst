@@ -41,7 +41,7 @@ was using it. Since I will be using it, this function need to be enable to confi
 module (base offset is 4814_0000). I made some minor change for the board I am using, enabling MEAS
 and enabling latch (50%).
 
-.. code-block::
+.. code-block:: c
 
         static void pcie_pll_config()
         {
@@ -69,7 +69,8 @@ set-up. Because the PCIe module of this SoC is single lane (x1), the PCIe is con
 is initiated. When link training is completed, the PCIe is configured as bridge device with outbound transaction
 set for base address 2000_0000 (refers to 2.12.1 of [4_]). Some part of the code,
 
-.. code-block::
+.. code-block:: c
+ :linenos:
 
         /*Various regions in PCIESS address space, sprugz8d document section 19.2.4.1, fig 19.2*/
         ..
@@ -223,7 +224,8 @@ The next step is to set up the PCI header structure of u-boot so that it can be 
 includes registering PCI device, its respective read/write configuration space handlers etc..
 Post enumeration is to set up the inbound transaction address space which is the local system memory space of the system.
 
-.. code-block::
+.. code-block:: c
+ :linenos:
 
         static struct pci_config_table pci_redray_config_table[] = {
         /*104c,8888 - TI host bridge*/
@@ -316,7 +318,7 @@ Post enumeration is to set up the inbound transaction address space which is the
 When all is done with PCIe device configuration, the device's PCIe memory mapped address space can be dumped with 
 u-boot's *md* command. Sample below is the content of the video processor control registers area.
 
-.. code-block::
+.. code-block:: console
 
         TI-MIN#md 20000000 
         20000000: 00000000 00000000 00000000 00000000    ................
@@ -341,7 +343,8 @@ PLL clock are set up as part of this initialization. Following this step, the ED
 display device (monitor/tv) so that it can setup the HDMI interface correctly. My board's HDMI is connected to ASUS
 LCD monitor.
 
-.. code-block::
+.. code-block:: console
+ :linenos:
 
         U-Boot 2010.06 (Jul 02 2016 - 17:35:59)
 

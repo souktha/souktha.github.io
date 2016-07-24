@@ -40,7 +40,8 @@ What is/are needed to get SATA interface working
 1) Program the PLL for the correct values. I modify *sata_pll_config()* of *board/ti/ti8148/evm.c* for the correct 
 values that use to configure *SATA_PLLCFGx* as shown in TI document, section 21.3.1, base on the 100MHZ low-jitter clock. 
 
-.. code-block::
+.. code-block:: c
+ :linenos:
 
 	/*use 100MHZ low jitter clock feed*/
 	__raw_writel(0x00000004, SATA_PLLCFG0);
@@ -55,7 +56,8 @@ values that use to configure *SATA_PLLCFGx* as shown in TI document, section 21.
 
 2) Add small piece of code to program SATA PHY (SERDES) namely the RX and TX configuration registers.
 
-.. code-block::
+.. code-block:: c
+ :linenos:
 
         static void sata_phy_config(void)
         {
@@ -76,7 +78,7 @@ PCI bus which is not true for this EVM platform. Since the integrated SATA contr
 physical address space, the modification is needed. I define *CONFIG_SCSI_AHCI_PLAT* to disable blocks of code
 that are PCI related, for example,
 
-.. code-block::
+.. code-block:: c
 
         #ifndef CONFIG_SCSI_AHCI_PLAT
 	pci_read_config_word(pdev, PCI_VENDOR_ID, &vendor);
@@ -89,7 +91,7 @@ bit to ensure that it works for slower HDD.
 4) Add *CONFIG_SCSI_AHCI_PLAT* for AHCI driver and enable SCSI (AHCI) support in u-boot configuration file,
 *include/configs/ti8148_evm.h* for one SCSI HDD, one SCSI LUN.
 
-.. code-block::
+.. code-block:: c
 
         # define CONFIG_CMD_SCSI        1
         ...
@@ -143,7 +145,8 @@ first stage boot (TI-MIN), then load the code to test it (one HDD connected).
 Use u-boot's *loady 0x80800000* to download code to memory via UART port using Y-modem protocol. Once downloading is 
 completed, just *go <load address>*,
 
-.. code-block::
+.. code-block:: console
+ :linenos:
 
         TI-MIN#loady 80800000 
         ## Ready for binary (ymodem) download to 0x80800000 at 115200 bps...
@@ -204,10 +207,11 @@ completed, just *go <load address>*,
         Hit any key to stop autoboot:  3
         TI8148_EVM#
 
-The new u-boot detects the SATA controller as shown just below the text art. U-Boot's *SCSI* command and 
+The new u-boot detects the SATA controller as shown just below the text art(line 52). U-Boot's *SCSI* command and 
 *FAT* command can be used for the rest of the tests relating to SATA HDD access.
 
-.. code-block::
+.. code-block:: console
+ :linenos:
 
         TI8148_EVM#scsi scan 
         scanning bus for devices...
@@ -224,10 +228,11 @@ The new u-boot detects the SATA controller as shown just below the text art. U-B
             2		  20973568	 955799600	83
         TI8148_EVM#
 
-The *scan* data above is the result of the *INQUIRY* command while the data from *part* is the result from 
+The *scan* data above (line 1) is the result of the *INQUIRY* command while the data from *part* (line 7) is the result from 
 reading HDD partition information. *FAT* commands that list file on partition as well as loading file are:
 
-.. code-block::
+.. code-block:: console
+ :linenos:
 
         TI8148_EVM#fatls scsi 0 
           3522384   uimage 
@@ -255,7 +260,7 @@ reading HDD partition information. *FAT* commands that list file on partition as
 
         Uncompressing Linux... done, booting the kernel.
 
-U-Boot's *bootcmd* can then be customize to *fatload* the kernel image from the harddisk instead of NAND
+U-Boot's *bootcmd* can then be customize to *fatload* (line 8) the kernel image from the harddisk instead of NAND
 or SD card. To do this, set  *bootcmd='fatload scsi 0 $loadaddr uImage2 && bootm $loadaddr'*.
 
 *u-boot.bin* that is tested above can be flashed to NAND partition. For my case, the partition offset
