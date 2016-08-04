@@ -99,24 +99,24 @@ to work with it again until now. It looks like it was preloaded with Debian (I a
 must have been a lot of updates ever since.</p>
 <!-- TEASER_END -->
 <p>This is what shows up on serial port console on boot up,</p>
-<pre class="code text"><a name="rest_code_80b9014aa3544ba99b5ee1b6a252dc7d-1"></a>U-Boot 2014.04-00015-gb4422bd (Apr 22 2014 - 13:24:29)
-<a name="rest_code_80b9014aa3544ba99b5ee1b6a252dc7d-2"></a>
-<a name="rest_code_80b9014aa3544ba99b5ee1b6a252dc7d-3"></a>I2C:   ready
-<a name="rest_code_80b9014aa3544ba99b5ee1b6a252dc7d-4"></a>DRAM:  512 MiB
-<a name="rest_code_80b9014aa3544ba99b5ee1b6a252dc7d-5"></a>NAND:  0 MiB
-<a name="rest_code_80b9014aa3544ba99b5ee1b6a252dc7d-6"></a>MMC:   OMAP SD/MMC: 0, OMAP SD/MMC: 1
+<pre class="code console"><a name="rest_code_154e1a85a77045e9981c2957612eb5c6-1"></a><span class="go">U-Boot 2014.04-00015-gb4422bd (Apr 22 2014 - 13:24:29)</span>
+<a name="rest_code_154e1a85a77045e9981c2957612eb5c6-2"></a>
+<a name="rest_code_154e1a85a77045e9981c2957612eb5c6-3"></a><span class="go">I2C:   ready</span>
+<a name="rest_code_154e1a85a77045e9981c2957612eb5c6-4"></a><span class="go">DRAM:  512 MiB</span>
+<a name="rest_code_154e1a85a77045e9981c2957612eb5c6-5"></a><span class="go">NAND:  0 MiB</span>
+<a name="rest_code_154e1a85a77045e9981c2957612eb5c6-6"></a><span class="go">MMC:   OMAP SD/MMC: 0, OMAP SD/MMC: 1</span>
 </pre>
 <p>I examine its on-board MMC1 (4GB) for the partition information and find two factory created partitions,</p>
-<pre class="code text"><a name="rest_code_1a45f72a980b4687b04a86e84e1629b9-1"></a>=&gt; mmc dev 1
-<a name="rest_code_1a45f72a980b4687b04a86e84e1629b9-2"></a>switch to partitions #0, OK
-<a name="rest_code_1a45f72a980b4687b04a86e84e1629b9-3"></a>mmc1(part 0) is current device
-<a name="rest_code_1a45f72a980b4687b04a86e84e1629b9-4"></a>=&gt; mmc part
-<a name="rest_code_1a45f72a980b4687b04a86e84e1629b9-5"></a>
-<a name="rest_code_1a45f72a980b4687b04a86e84e1629b9-6"></a>Partition Map for MMC device 1  --   Partition Type: DOS
-<a name="rest_code_1a45f72a980b4687b04a86e84e1629b9-7"></a>
-<a name="rest_code_1a45f72a980b4687b04a86e84e1629b9-8"></a>Part    Start Sector    Num Sectors     UUID            Type
-<a name="rest_code_1a45f72a980b4687b04a86e84e1629b9-9"></a>  1     2048            196608          00000000-01     0e Boot
-<a name="rest_code_1a45f72a980b4687b04a86e84e1629b9-10"></a>  2     198656          7354368         00000000-02     83
+<pre class="code console"><a name="rest_code_eeb6bbec71b045d491df6670be6847b6-1"></a><span class="go">=&gt; mmc dev 1</span>
+<a name="rest_code_eeb6bbec71b045d491df6670be6847b6-2"></a><span class="go">switch to partitions #0, OK</span>
+<a name="rest_code_eeb6bbec71b045d491df6670be6847b6-3"></a><span class="go">mmc1(part 0) is current device</span>
+<a name="rest_code_eeb6bbec71b045d491df6670be6847b6-4"></a><span class="go">=&gt; mmc part</span>
+<a name="rest_code_eeb6bbec71b045d491df6670be6847b6-5"></a>
+<a name="rest_code_eeb6bbec71b045d491df6670be6847b6-6"></a><span class="go">Partition Map for MMC device 1  --   Partition Type: DOS</span>
+<a name="rest_code_eeb6bbec71b045d491df6670be6847b6-7"></a>
+<a name="rest_code_eeb6bbec71b045d491df6670be6847b6-8"></a><span class="go">Part    Start Sector    Num Sectors     UUID            Type</span>
+<a name="rest_code_eeb6bbec71b045d491df6670be6847b6-9"></a><span class="go">  1     2048            196608          00000000-01     0e Boot</span>
+<a name="rest_code_eeb6bbec71b045d491df6670be6847b6-10"></a><span class="go">  2     198656          7354368         00000000-02     83</span>
 </pre>
 <p>It is obvious that I cannot repartition this MMC1 if I boot from the on-board eMMC flash because it becomes
 a root partition itself. Maybe I could by pivoting root, but I am not sure I want to mount and edit the script of ramdisk
@@ -126,83 +126,83 @@ which according to the BBLK document, it is regarded to be MMC0 device with resp
 I begin to search for the cross toolchains. While there are readily available from TI website as well as
 some others, they tend to come in large package, toolchain and rootfs. I decide to build it on my own using
 buildroot[<a class="reference internal" href="#id1">1</a>]. I also notice that the preloaded kernel is also quite old,</p>
-<pre class="code text"><a name="rest_code_31e11e73a49642afa5747183ece6dbfd-1"></a>root@beaglebone:~# uname -ra
-<a name="rest_code_31e11e73a49642afa5747183ece6dbfd-2"></a>Linux beaglebone 3.8.13-bone47 #1 SMP Fri Apr 11 01:36:09 UTC 2014 armv7l GNU/Linux
+<pre class="code console"><a name="rest_code_80cafb0027c5498ca3a6fbe7578b9bd7-1"></a><span class="gp">root@beaglebone:~#</span> uname -ra
+<a name="rest_code_80cafb0027c5498ca3a6fbe7578b9bd7-2"></a><span class="go">Linux beaglebone 3.8.13-bone47 #1 SMP Fri Apr 11 01:36:09 UTC 2014 armv7l GNU/Linux</span>
 </pre>
 <p>This gives me more excuse to totally upgrade it.
 Once my cross toolchain and basic rootfs built is completed, I am ready to repartition MMC1. First I boot from
 SD card. My SD card has the necessary tools, fdisk, mkfs installed so I am ready to repartition.</p>
 <p>'fdisk /dev/mmcblk1' and then 'p' command to print partition. This is what is on my board,</p>
-<pre class="code text"><a name="rest_code_6bcaf68f8b09442693e094278aee394f-1"></a>Disk /dev/mmcblk1: 3867 MB, 3867148288 bytes
-<a name="rest_code_6bcaf68f8b09442693e094278aee394f-2"></a>4 heads, 16 sectors/track, 118016 cylinders
-<a name="rest_code_6bcaf68f8b09442693e094278aee394f-3"></a>Units = cylinders of 64 * 512 = 32768 bytes
-<a name="rest_code_6bcaf68f8b09442693e094278aee394f-4"></a>
-<a name="rest_code_6bcaf68f8b09442693e094278aee394f-5"></a>Device Boot      Start         End      Blocks  Id System
-<a name="rest_code_6bcaf68f8b09442693e094278aee394f-6"></a>/dev/mmcblk1p1   *          33        3104       98304   e Win95 FAT16 (LBA)
-<a name="rest_code_6bcaf68f8b09442693e094278aee394f-7"></a>/dev/mmcblk1p2            3105      118016     3677184  83 Linux
+<pre class="code console"><a name="rest_code_58756833448e4f2ca70c793089174610-1"></a><span class="go">Disk /dev/mmcblk1: 3867 MB, 3867148288 bytes</span>
+<a name="rest_code_58756833448e4f2ca70c793089174610-2"></a><span class="go">4 heads, 16 sectors/track, 118016 cylinders</span>
+<a name="rest_code_58756833448e4f2ca70c793089174610-3"></a><span class="go">Units = cylinders of 64 * 512 = 32768 bytes</span>
+<a name="rest_code_58756833448e4f2ca70c793089174610-4"></a>
+<a name="rest_code_58756833448e4f2ca70c793089174610-5"></a><span class="go">Device Boot      Start         End      Blocks  Id System</span>
+<a name="rest_code_58756833448e4f2ca70c793089174610-6"></a><span class="go">/dev/mmcblk1p1   *          33        3104       98304   e Win95 FAT16 (LBA)</span>
+<a name="rest_code_58756833448e4f2ca70c793089174610-7"></a><span class="go">/dev/mmcblk1p2            3105      118016     3677184  83 Linux</span>
 </pre>
 <p>Firt thing to do is to delete these two partitions and recreate three new partitions. One for FAT to please AM335X ROM boot, and
 two rootfs partitions. One rootfs partition is for the rootfs I built on my own, the second one I plan to use TI rootfs to see
 what they have. For u-boot, I built after I clone from the git repos, and for the kernel I used TI' source of Linux 4.1.3 git. These
 two items are on my SD card that I boot while the rootfs is from buildroot. Put it simply, they are all new.</p>
-<pre class="code text"><a name="rest_code_5beb58da02984e429d1502f904c142af-1"></a> U-Boot 2016.03 (Mar 17 2016 - 07:36:31 -0700)
-<a name="rest_code_5beb58da02984e429d1502f904c142af-2"></a>
-<a name="rest_code_5beb58da02984e429d1502f904c142af-3"></a>Watchdog enabled
-<a name="rest_code_5beb58da02984e429d1502f904c142af-4"></a> I2C:   ready
-<a name="rest_code_5beb58da02984e429d1502f904c142af-5"></a> DRAM:  512 MiB
-<a name="rest_code_5beb58da02984e429d1502f904c142af-6"></a> MMC:   OMAP SD/MMC: 0, OMAP SD/MMC: 1
-<a name="rest_code_5beb58da02984e429d1502f904c142af-7"></a> ....
-<a name="rest_code_5beb58da02984e429d1502f904c142af-8"></a> Linux version 4.1.13-g8dc6617 (xxxx@xxxx) (gcc version 5.3.0 (Buildroot 2016.02) ) #2 PREEMPT Tue Mar 15 13:35:14 PDT 2016
-<a name="rest_code_5beb58da02984e429d1502f904c142af-9"></a>
-<a name="rest_code_5beb58da02984e429d1502f904c142af-10"></a> ...
-<a name="rest_code_5beb58da02984e429d1502f904c142af-11"></a>
-<a name="rest_code_5beb58da02984e429d1502f904c142af-12"></a> Welcome to Buildroot
-<a name="rest_code_5beb58da02984e429d1502f904c142af-13"></a> beaglebone login: root
-<a name="rest_code_5beb58da02984e429d1502f904c142af-14"></a> #
+<pre class="code console"><a name="rest_code_5963c3ffe85b4df88390ca90226c0254-1"></a><span class="go"> U-Boot 2016.03 (Mar 17 2016 - 07:36:31 -0700)</span>
+<a name="rest_code_5963c3ffe85b4df88390ca90226c0254-2"></a>
+<a name="rest_code_5963c3ffe85b4df88390ca90226c0254-3"></a><span class="go">Watchdog enabled</span>
+<a name="rest_code_5963c3ffe85b4df88390ca90226c0254-4"></a><span class="go"> I2C:   ready</span>
+<a name="rest_code_5963c3ffe85b4df88390ca90226c0254-5"></a><span class="go"> DRAM:  512 MiB</span>
+<a name="rest_code_5963c3ffe85b4df88390ca90226c0254-6"></a><span class="go"> MMC:   OMAP SD/MMC: 0, OMAP SD/MMC: 1</span>
+<a name="rest_code_5963c3ffe85b4df88390ca90226c0254-7"></a><span class="go"> ....</span>
+<a name="rest_code_5963c3ffe85b4df88390ca90226c0254-8"></a><span class="go"> Linux version 4.1.13-g8dc6617 (xxxx@xxxx) (gcc version 5.3.0 (Buildroot 2016.02) ) #2 PREEMPT Tue Mar 15 13:35:14 PDT 2016</span>
+<a name="rest_code_5963c3ffe85b4df88390ca90226c0254-9"></a>
+<a name="rest_code_5963c3ffe85b4df88390ca90226c0254-10"></a><span class="go"> ...</span>
+<a name="rest_code_5963c3ffe85b4df88390ca90226c0254-11"></a>
+<a name="rest_code_5963c3ffe85b4df88390ca90226c0254-12"></a><span class="go"> Welcome to Buildroot</span>
+<a name="rest_code_5963c3ffe85b4df88390ca90226c0254-13"></a><span class="go"> beaglebone login: root</span>
+<a name="rest_code_5963c3ffe85b4df88390ca90226c0254-14"></a><span class="gp"> #</span>
 </pre>
 <p>Continue with fdisk, I delete both partition with 'd' command. After that I use 'x' command to get to expert mode. In this page of
 command menu, I change heads and sectors to 255 and 63 respectively. Commit the change, exit fdisk to reenter again so I can
 verify what I did earlier is still good just to be sure.</p>
-<pre class="code text"><a name="rest_code_1e15bb1002b04a07927c707ee9eaaf4b-1"></a>Disk /dev/mmcblk1: 3867 MB, 3867148288 bytes
-<a name="rest_code_1e15bb1002b04a07927c707ee9eaaf4b-2"></a>255 heads, 63 sectors/track, 118016 cylinders
-<a name="rest_code_1e15bb1002b04a07927c707ee9eaaf4b-3"></a>Units = cylinders of 16065 * 512 = 8225280 bytes
-<a name="rest_code_1e15bb1002b04a07927c707ee9eaaf4b-4"></a>
-<a name="rest_code_1e15bb1002b04a07927c707ee9eaaf4b-5"></a>Device Boot      Start         End      Blocks  Id System
-<a name="rest_code_1e15bb1002b04a07927c707ee9eaaf4b-6"></a>
-<a name="rest_code_1e15bb1002b04a07927c707ee9eaaf4b-7"></a>Command (m for help): n
-<a name="rest_code_1e15bb1002b04a07927c707ee9eaaf4b-8"></a>Command action
-<a name="rest_code_1e15bb1002b04a07927c707ee9eaaf4b-9"></a>   e   extended
-<a name="rest_code_1e15bb1002b04a07927c707ee9eaaf4b-10"></a>   p   primary partition (1-4)
+<pre class="code console"><a name="rest_code_7f1921f8c6644ea181df36d829afcbdc-1"></a><span class="go">Disk /dev/mmcblk1: 3867 MB, 3867148288 bytes</span>
+<a name="rest_code_7f1921f8c6644ea181df36d829afcbdc-2"></a><span class="go">255 heads, 63 sectors/track, 118016 cylinders</span>
+<a name="rest_code_7f1921f8c6644ea181df36d829afcbdc-3"></a><span class="go">Units = cylinders of 16065 * 512 = 8225280 bytes</span>
+<a name="rest_code_7f1921f8c6644ea181df36d829afcbdc-4"></a>
+<a name="rest_code_7f1921f8c6644ea181df36d829afcbdc-5"></a><span class="go">Device Boot      Start         End      Blocks  Id System</span>
+<a name="rest_code_7f1921f8c6644ea181df36d829afcbdc-6"></a>
+<a name="rest_code_7f1921f8c6644ea181df36d829afcbdc-7"></a><span class="go">Command (m for help): n</span>
+<a name="rest_code_7f1921f8c6644ea181df36d829afcbdc-8"></a><span class="go">Command action</span>
+<a name="rest_code_7f1921f8c6644ea181df36d829afcbdc-9"></a><span class="go">   e   extended</span>
+<a name="rest_code_7f1921f8c6644ea181df36d829afcbdc-10"></a><span class="go">   p   primary partition (1-4)</span>
 </pre>
 <p>so far so good. The heads and sectors are what I set so I proceed to to the rest of the steps on creating new partitions. These
 are my new partitions after I recreated.</p>
-<pre class="code text"><a name="rest_code_f0da8cbb903b4584bec0c82da93c4cc1-1"></a>Disk /dev/mmcblk0: 3867 MB, 3867148288 bytes
-<a name="rest_code_f0da8cbb903b4584bec0c82da93c4cc1-2"></a>255 heads, 63 sectors/track, 470 cylinders
-<a name="rest_code_f0da8cbb903b4584bec0c82da93c4cc1-3"></a>Units = cylinders of 16065 * 512 = 8225280 bytes
-<a name="rest_code_f0da8cbb903b4584bec0c82da93c4cc1-4"></a>
-<a name="rest_code_f0da8cbb903b4584bec0c82da93c4cc1-5"></a>Device Boot      Start         End      Blocks  Id System
-<a name="rest_code_f0da8cbb903b4584bec0c82da93c4cc1-6"></a>/dev/mmcblk0p1   *           1          13      104391   e Win95 FAT16 (LBA)
-<a name="rest_code_f0da8cbb903b4584bec0c82da93c4cc1-7"></a>/dev/mmcblk0p2              14         196     1469947+ 83 Linux
-<a name="rest_code_f0da8cbb903b4584bec0c82da93c4cc1-8"></a>/dev/mmcblk0p3             197         470     2200905  83 Linux
+<pre class="code console"><a name="rest_code_b9b3ee15436b405e9af2d534eaaf5906-1"></a><span class="go">Disk /dev/mmcblk0: 3867 MB, 3867148288 bytes</span>
+<a name="rest_code_b9b3ee15436b405e9af2d534eaaf5906-2"></a><span class="go">255 heads, 63 sectors/track, 470 cylinders</span>
+<a name="rest_code_b9b3ee15436b405e9af2d534eaaf5906-3"></a><span class="go">Units = cylinders of 16065 * 512 = 8225280 bytes</span>
+<a name="rest_code_b9b3ee15436b405e9af2d534eaaf5906-4"></a>
+<a name="rest_code_b9b3ee15436b405e9af2d534eaaf5906-5"></a><span class="go">Device Boot      Start         End      Blocks  Id System</span>
+<a name="rest_code_b9b3ee15436b405e9af2d534eaaf5906-6"></a><span class="go">/dev/mmcblk0p1   *           1          13      104391   e Win95 FAT16 (LBA)</span>
+<a name="rest_code_b9b3ee15436b405e9af2d534eaaf5906-7"></a><span class="go">/dev/mmcblk0p2              14         196     1469947+ 83 Linux</span>
+<a name="rest_code_b9b3ee15436b405e9af2d534eaaf5906-8"></a><span class="go">/dev/mmcblk0p3             197         470     2200905  83 Linux</span>
 </pre>
 <p>I will have two sets of rootfs partition, p2 and p3 of roughly equal size with the variety of zImage will be in p1 partition (FAT). The next
 step is to populate the rootfs and the FAT partition. For root partition, I could do it live after mounting /dev/mmcblk0p2 to /mnt, for example,</p>
-<pre class="code text"><a name="rest_code_71cbe00fd0c14697b6f27dda43537d03-1"></a>wget ftp://myhost/rootfs.tar.gz -O - | tar xz -C /mnt
+<pre class="code console"><a name="rest_code_b5664415a61742158a4340a1fbf021e7-1"></a><span class="go">wget ftp://myhost/rootfs.tar.gz -O - | tar xz -C /mnt</span>
 </pre>
 <p>There is nothing magical about it. Of course, the filesystem must first be created on all partitions ie..mkfs them first.
 Once this is done, FAT partition can be mounted and copy the u-boot and the zImage and the boot script.
 Before my OS boot, I stop at u-boot prompt to confirm my new partitions as I would expect them to be,</p>
-<pre class="code text"><a name="rest_code_e834d03aaf2f4897a34864dfcc83d5fc-1"></a>mmc dev 1
-<a name="rest_code_e834d03aaf2f4897a34864dfcc83d5fc-2"></a>switch to partitions #0, OK
-<a name="rest_code_e834d03aaf2f4897a34864dfcc83d5fc-3"></a>mmc1(part 0) is current device
-<a name="rest_code_e834d03aaf2f4897a34864dfcc83d5fc-4"></a>=&gt; mmc part
-<a name="rest_code_e834d03aaf2f4897a34864dfcc83d5fc-5"></a>
-<a name="rest_code_e834d03aaf2f4897a34864dfcc83d5fc-6"></a>Partition Map for MMC device 1  --   Partition Type: DOS
-<a name="rest_code_e834d03aaf2f4897a34864dfcc83d5fc-7"></a>
-<a name="rest_code_e834d03aaf2f4897a34864dfcc83d5fc-8"></a>Part    Start Sector    Num Sectors     UUID            Type
-<a name="rest_code_e834d03aaf2f4897a34864dfcc83d5fc-9"></a>  1     63              208782          00000000-01     0e Boot
-<a name="rest_code_e834d03aaf2f4897a34864dfcc83d5fc-10"></a>  2     208845          2939895         00000000-02     83
-<a name="rest_code_e834d03aaf2f4897a34864dfcc83d5fc-11"></a>  3     3148740         4401810         00000000-03     83
+<pre class="code console"><a name="rest_code_88934aa946b448c5ae82feb5fe145783-1"></a><span class="go">mmc dev 1</span>
+<a name="rest_code_88934aa946b448c5ae82feb5fe145783-2"></a><span class="go">switch to partitions #0, OK</span>
+<a name="rest_code_88934aa946b448c5ae82feb5fe145783-3"></a><span class="go">mmc1(part 0) is current device</span>
+<a name="rest_code_88934aa946b448c5ae82feb5fe145783-4"></a><span class="go">=&gt; mmc part</span>
+<a name="rest_code_88934aa946b448c5ae82feb5fe145783-5"></a>
+<a name="rest_code_88934aa946b448c5ae82feb5fe145783-6"></a><span class="go">Partition Map for MMC device 1  --   Partition Type: DOS</span>
+<a name="rest_code_88934aa946b448c5ae82feb5fe145783-7"></a>
+<a name="rest_code_88934aa946b448c5ae82feb5fe145783-8"></a><span class="go">Part    Start Sector    Num Sectors     UUID            Type</span>
+<a name="rest_code_88934aa946b448c5ae82feb5fe145783-9"></a><span class="go">  1     63              208782          00000000-01     0e Boot</span>
+<a name="rest_code_88934aa946b448c5ae82feb5fe145783-10"></a><span class="go">  2     208845          2939895         00000000-02     83</span>
+<a name="rest_code_88934aa946b448c5ae82feb5fe145783-11"></a><span class="go">  3     3148740         4401810         00000000-03     83</span>
 </pre>
 <p>So far so good.</p>
 <div class="section" id="create-zimage-with-fdt">
@@ -213,141 +213,267 @@ putting the FDT onto zImage. The how-to is well documented in u-bood/doc/uImage.
 <div class="section" id="creating-kernel-its-file">
 <h3>Creating kernel.its file</h3>
 <p>Just use the sample 'kernel_fdt.its', edit and use it. Here is my 'kernel.its' file ,</p>
-<pre class="code text"><a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-1"></a>/dts-v1/;
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-2"></a>
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-3"></a>/ {
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-4"></a>        description = "ARM BBLK FIT (Flattened Image Tree)";
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-5"></a>        #address-cells = &lt;1&gt;;
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-6"></a>
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-7"></a>        images {
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-8"></a>                kernel@1 {
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-9"></a>                        description = "ARM BeagleboneBlack Linux-4.1.13";
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-10"></a>                        data = /incbin/("zImage");
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-11"></a>                        type = "kernel";
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-12"></a>                        arch = "arm";
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-13"></a>                        os = "linux";
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-14"></a>                        compression = "none";
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-15"></a>                        load = &lt;0x80008000&gt;;
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-16"></a>                        entry = &lt;0x80008000&gt;;
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-17"></a>                        hash@1 {
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-18"></a>                        algo = "crc32";
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-19"></a>                        };
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-20"></a>                        hash@2 {
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-21"></a>                                algo = "sha1";
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-22"></a>                        };
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-23"></a>                };
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-24"></a>
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-25"></a>                fdt@1 {
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-26"></a>                        description = "ARM Boneblack device tree blob";
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-27"></a>                        data = /incbin/("am335x-boneblack.dtb");
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-28"></a>                        type = "flat_dt";
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-29"></a>                        arch = "arm";
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-30"></a>                        compression = "none";
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-31"></a>
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-32"></a>                        hash@1 {
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-33"></a>                                algo = "crc32";
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-34"></a>                        };
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-35"></a>                        hash@2 {
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-36"></a>                                algo = "sha1";
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-37"></a>                        };
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-38"></a>                };
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-39"></a>
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-40"></a>        };
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-41"></a>
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-42"></a>        configurations {
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-43"></a>                default = "config@1";
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-44"></a>
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-45"></a>                config@1 {
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-46"></a>                        description = "BeagleboneBlack";
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-47"></a>                        kernel = "kernel@1";
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-48"></a>                        fdt = "fdt@1";
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-49"></a>                };
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-50"></a>
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-51"></a>        };
-<a name="rest_code_78e57fe151c34182b5cc8e3686d0509e-52"></a>};
+<pre class="code text"><a name="rest_code_cf892a80472245d98a79a52fd76e093e-1"></a>/dts-v1/;
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-2"></a>
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-3"></a>/ {
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-4"></a>        description = "ARM BBLK FIT (Flattened Image Tree)";
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-5"></a>        #address-cells = &lt;1&gt;;
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-6"></a>
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-7"></a>        images {
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-8"></a>                kernel@1 {
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-9"></a>                        description = "ARM BeagleboneBlack Linux-4.1.13";
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-10"></a>                        data = /incbin/("zImage");
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-11"></a>                        type = "kernel";
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-12"></a>                        arch = "arm";
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-13"></a>                        os = "linux";
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-14"></a>                        compression = "none";
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-15"></a>                        load = &lt;0x80008000&gt;;
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-16"></a>                        entry = &lt;0x80008000&gt;;
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-17"></a>                        hash@1 {
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-18"></a>                        algo = "crc32";
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-19"></a>                        };
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-20"></a>                        hash@2 {
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-21"></a>                                algo = "sha1";
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-22"></a>                        };
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-23"></a>                };
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-24"></a>
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-25"></a>                fdt@1 {
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-26"></a>                        description = "ARM Boneblack device tree blob";
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-27"></a>                        data = /incbin/("am335x-boneblack.dtb");
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-28"></a>                        type = "flat_dt";
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-29"></a>                        arch = "arm";
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-30"></a>                        compression = "none";
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-31"></a>
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-32"></a>                        hash@1 {
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-33"></a>                                algo = "crc32";
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-34"></a>                        };
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-35"></a>                        hash@2 {
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-36"></a>                                algo = "sha1";
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-37"></a>                        };
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-38"></a>                };
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-39"></a>
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-40"></a>        };
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-41"></a>
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-42"></a>        configurations {
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-43"></a>                default = "config@1";
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-44"></a>
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-45"></a>                config@1 {
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-46"></a>                        description = "BeagleboneBlack";
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-47"></a>                        kernel = "kernel@1";
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-48"></a>                        fdt = "fdt@1";
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-49"></a>                };
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-50"></a>
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-51"></a>        };
+<a name="rest_code_cf892a80472245d98a79a52fd76e093e-52"></a>};
 </pre>
 <p>Pay attention to 'data' field. If your data file is not in the current directory where the kernel.its file resides you need to adjust their paths
 accordingly. This is suppposedly the simplest form of 'its' file I need to create FDT image. Next I do,</p>
-<pre class="code text"><a name="rest_code_2a0ee92832a44656b4ceb7af9dd19201-1"></a>$mkimage -f kernel.its zImage.itb
+<pre class="code console"><a name="rest_code_92c87d399bd647c090ab8590a66cf172-1"></a><span class="gp">$</span>mkimage -f kernel.its zImage.itb
 </pre>
 <p>The output zImage.itb (I can name it anything) is my FIT file ready to be loaded. I need to do one more thing to complete this process.</p>
 </div>
 <div class="section" id="create-boot-scr">
 <h3>Create boot.scr</h3>
 <p>I notice that every time I boot, I see this message on the console port,</p>
-<pre class="code text"><a name="rest_code_969d4ddfc9dd4e97950e5120d66bd46e-1"></a>SD/MMC found on device 1
-<a name="rest_code_969d4ddfc9dd4e97950e5120d66bd46e-2"></a>reading boot.scr
-<a name="rest_code_969d4ddfc9dd4e97950e5120d66bd46e-3"></a>** Unable to read file boot.scr **
-<a name="rest_code_969d4ddfc9dd4e97950e5120d66bd46e-4"></a>reading uEnv.txt
+<pre class="code console"><a name="rest_code_b986868dc4ab40379f087d772715d0e8-1"></a><span class="go">SD/MMC found on device 1</span>
+<a name="rest_code_b986868dc4ab40379f087d772715d0e8-2"></a><span class="go">reading boot.scr</span>
+<a name="rest_code_b986868dc4ab40379f087d772715d0e8-3"></a><span class="go">** Unable to read file boot.scr **</span>
+<a name="rest_code_b986868dc4ab40379f087d772715d0e8-4"></a><span class="go">reading uEnv.txt</span>
 </pre>
 <p>This is because there was no boot.scr so u-boot falls back to reading uEnv.txt instead. 'boot.scr' is not text file, but an image file. This is the
 source file for my boot.scr. Basically I can convert uEnv.txt to boot.scr, but I want a much simpler one. This is my 'boot.scr.src',</p>
-<pre class="code text"><a name="rest_code_7dd12bd3f7ea46e28f89627708a5fd19-1"></a>set loadaddr 82000000
-<a name="rest_code_7dd12bd3f7ea46e28f89627708a5fd19-2"></a>set bootargs 'console=ttyS0,115200n8 rootfstype=ext4 root=/dev/mmcblk0p2 earlyprintk'
-<a name="rest_code_7dd12bd3f7ea46e28f89627708a5fd19-3"></a>fatload mmc 1:1 $loadaddr zImage.itb
-<a name="rest_code_7dd12bd3f7ea46e28f89627708a5fd19-4"></a>bootm $loadaddr
+<pre class="code console"><a name="rest_code_0412023781504857949dfe8c27ddaaa3-1"></a><span class="go">set loadaddr 82000000</span>
+<a name="rest_code_0412023781504857949dfe8c27ddaaa3-2"></a><span class="go">set bootargs 'console=ttyS0,115200n8 rootfstype=ext4 root=/dev/mmcblk0p2 earlyprintk'</span>
+<a name="rest_code_0412023781504857949dfe8c27ddaaa3-3"></a><span class="go">fatload mmc 1:1 $loadaddr zImage.itb</span>
+<a name="rest_code_0412023781504857949dfe8c27ddaaa3-4"></a><span class="go">bootm $loadaddr</span>
 </pre>
 <p>This is it for now. It is the minimalist approach. Next I create 'boot.scr',</p>
-<pre class="code text"><a name="rest_code_8b19f30c5eff426891ded979a18e6733-1"></a>$mkimage  -C none -A arm -T script -a 80000000 -e 80000000 -d boot.scr.src boot.scr
+<pre class="code console"><a name="rest_code_46a9ac0a62ab46158aa5085d7c281530-1"></a><span class="gp">$</span>mkimage  -C none -A arm -T script -a <span class="m">80000000</span> -e <span class="m">80000000</span> -d boot.scr.src boot.scr
 </pre>
 <p>This is my default boot.scr that is copied to the boot partition (FAT) of the flash MMC1 where u-boot will read from at boot time.
 Here is what happens after all these things,</p>
-<pre class="code text"><a name="rest_code_558794c756c1403eb9533fd16ccd7a29-1"></a>Scanning mmc 1:1...
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-2"></a>Found U-Boot script /boot.scr
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-3"></a>reading /boot.scr
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-4"></a>234 bytes read in 3 ms (76.2 KiB/s)
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-5"></a>## Executing script at 80000000
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-6"></a>reading zImage.itb
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-7"></a>3360080 bytes read in 187 ms (17.1 MiB/s)
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-8"></a>## Loading kernel from FIT Image at 82000000 ...
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-9"></a>   Using 'config@1' configuration
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-10"></a>   Trying 'kernel@1' kernel subimage
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-11"></a>     Description:  ARM BeagleboneBlack Linux-4.1.13
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-12"></a>     Created:      2016-03-20  22:33:34 UTC
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-13"></a>     Type:         Kernel Image
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-14"></a>     Compression:  uncompressed
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-15"></a>     Data Start:   0x820000e8
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-16"></a>     Data Size:    3325704 Bytes = 3.2 MiB
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-17"></a>     Architecture: ARM
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-18"></a>     OS:           Linux
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-19"></a>     Load Address: 0x80008000
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-20"></a>     Entry Point:  0x80008000
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-21"></a>     Hash algo:    crc32
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-22"></a>     Hash value:   62b34510
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-23"></a>     Hash algo:    sha1
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-24"></a>     Hash value:   04be40f903db0deb1cd632416e82f09828f05545
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-25"></a>   Verifying Hash Integrity ... crc32+ sha1+ OK
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-26"></a>## Loading fdt from FIT Image at 82000000 ...
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-27"></a>   Using 'config@1' configuration
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-28"></a>   Trying 'fdt@1' fdt subimage
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-29"></a>     Description:  ARM Boneblack device tree blob
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-30"></a>     Created:      2016-03-20  22:33:34 UTC
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-31"></a>     Type:         Flat Device Tree
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-32"></a>     Compression:  uncompressed
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-33"></a>     Data Start:   0x8232c11c
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-34"></a>     Data Size:    33030 Bytes = 32.3 KiB
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-35"></a>     Architecture: ARM
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-36"></a>     Hash algo:    crc32
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-37"></a>     Hash value:   a101a6b3
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-38"></a>     Hash algo:    sha1
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-39"></a>     Hash value:   711dfa46a5cb4c8286035d1577fb6cc6eff22370
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-40"></a>   Verifying Hash Integrity ... crc32+ sha1+ OK
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-41"></a>   Booting using the fdt blob at 0x8232c11c
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-42"></a>   Loading Kernel Image ... OK
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-43"></a>   Loading Device Tree to 8fff4000, end 8ffff105 ... OK
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-44"></a>
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-45"></a>Starting kernel ...
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-46"></a>
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-47"></a>[    0.000000] Booting Linux on physical CPU 0x0
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-48"></a>[    0.000000] Initializing cgroup subsys cpuset
-<a name="rest_code_558794c756c1403eb9533fd16ccd7a29-49"></a>[    0.000000] Initializing cgroup subsys cpu
+<pre class="code console"><a name="rest_code_070cdd8922f74dc490399e44cc0455e9-1"></a><span class="go">Scanning mmc 1:1...</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-2"></a><span class="go">Found U-Boot script /boot.scr</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-3"></a><span class="go">reading /boot.scr</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-4"></a><span class="go">234 bytes read in 3 ms (76.2 KiB/s)</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-5"></a><span class="gp">#</span><span class="c1"># Executing script at 80000000</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-6"></a><span class="go">reading zImage.itb</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-7"></a><span class="go">3360080 bytes read in 187 ms (17.1 MiB/s)</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-8"></a><span class="gp">#</span><span class="c1"># Loading kernel from FIT Image at 82000000 ...</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-9"></a><span class="go">   Using 'config@1' configuration</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-10"></a><span class="go">   Trying 'kernel@1' kernel subimage</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-11"></a><span class="go">     Description:  ARM BeagleboneBlack Linux-4.1.13</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-12"></a><span class="go">     Created:      2016-03-20  22:33:34 UTC</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-13"></a><span class="go">     Type:         Kernel Image</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-14"></a><span class="go">     Compression:  uncompressed</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-15"></a><span class="go">     Data Start:   0x820000e8</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-16"></a><span class="go">     Data Size:    3325704 Bytes = 3.2 MiB</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-17"></a><span class="go">     Architecture: ARM</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-18"></a><span class="go">     OS:           Linux</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-19"></a><span class="go">     Load Address: 0x80008000</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-20"></a><span class="go">     Entry Point:  0x80008000</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-21"></a><span class="go">     Hash algo:    crc32</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-22"></a><span class="go">     Hash value:   62b34510</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-23"></a><span class="go">     Hash algo:    sha1</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-24"></a><span class="go">     Hash value:   04be40f903db0deb1cd632416e82f09828f05545</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-25"></a><span class="go">   Verifying Hash Integrity ... crc32+ sha1+ OK</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-26"></a><span class="gp">#</span><span class="c1"># Loading fdt from FIT Image at 82000000 ...</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-27"></a><span class="go">   Using 'config@1' configuration</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-28"></a><span class="go">   Trying 'fdt@1' fdt subimage</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-29"></a><span class="go">     Description:  ARM Boneblack device tree blob</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-30"></a><span class="go">     Created:      2016-03-20  22:33:34 UTC</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-31"></a><span class="go">     Type:         Flat Device Tree</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-32"></a><span class="go">     Compression:  uncompressed</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-33"></a><span class="go">     Data Start:   0x8232c11c</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-34"></a><span class="go">     Data Size:    33030 Bytes = 32.3 KiB</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-35"></a><span class="go">     Architecture: ARM</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-36"></a><span class="go">     Hash algo:    crc32</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-37"></a><span class="go">     Hash value:   a101a6b3</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-38"></a><span class="go">     Hash algo:    sha1</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-39"></a><span class="go">     Hash value:   711dfa46a5cb4c8286035d1577fb6cc6eff22370</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-40"></a><span class="go">   Verifying Hash Integrity ... crc32+ sha1+ OK</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-41"></a><span class="go">   Booting using the fdt blob at 0x8232c11c</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-42"></a><span class="go">   Loading Kernel Image ... OK</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-43"></a><span class="go">   Loading Device Tree to 8fff4000, end 8ffff105 ... OK</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-44"></a>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-45"></a><span class="go">Starting kernel ...</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-46"></a>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-47"></a><span class="go">[    0.000000] Booting Linux on physical CPU 0x0</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-48"></a><span class="go">[    0.000000] Initializing cgroup subsys cpuset</span>
+<a name="rest_code_070cdd8922f74dc490399e44cc0455e9-49"></a><span class="go">[    0.000000] Initializing cgroup subsys cpu</span>
 </pre>
 <p>As I can see, u-boot detects the presence of boot.scr, follows the instruction given such as set the bootargs and 'fatload' the zImage.itb then
 boot Linux kernel. The part dealing with creating partitions and booting the image is done.</p>
-<div class="section" id="todo">
-<h4>Todo</h4>
-<p>I should update my boot.scr to be a little bit more accommodating to multiple root filesystems.</p>
+<p>So far the method shown above is pretty much done at high level, booting up, deleting and recreating the partitions.
+Specifically, it is done at the OS level (Linux) while another alternative of creating/recreating eMMC partitions
+for this platform existed where it can be done at U-Boot level. The Boneblack can boot straight off the raw eMMC
+partition at fixed LBA offset if it is properly configured. To do this, I need to make sure the following flags,
+<em>CONFIG_SYS_MMSD_RAW_MODE_xxx_SECTOR</em> are set when building its SPL (MLO). The <em>MLO</em> and <em>u-boot.img</em> can then be
+copied to the eMMC raw partition at the fixed LBA offsets <em>0x100</em> and <em>0x300</em> respectively.</p>
 </div>
+<div class="section" id="boot-from-emmc-raw-partition">
+<h3>Boot from eMMC raw partition</h3>
+<p>. Follow <em>doc/README.gpt</em> on creating the GPT partition on the eMMC. This is what I have after
+creating four GPT partitions. Hint: Use host's tool <em>uuidgen</em> to generate the UUID needed.</p>
+<pre class="code console"><a name="rest_code_3616ef7c4ed84ddba99bdbf37261e84e-1"></a><span class="go">Partition Map for MMC device 1  --   Partition Type: EFI</span>
+<a name="rest_code_3616ef7c4ed84ddba99bdbf37261e84e-2"></a>
+<a name="rest_code_3616ef7c4ed84ddba99bdbf37261e84e-3"></a><span class="go">Part    Start LBA       End LBA         Name</span>
+<a name="rest_code_3616ef7c4ed84ddba99bdbf37261e84e-4"></a><span class="go">        Attributes</span>
+<a name="rest_code_3616ef7c4ed84ddba99bdbf37261e84e-5"></a><span class="go">        Type GUID</span>
+<a name="rest_code_3616ef7c4ed84ddba99bdbf37261e84e-6"></a><span class="go">        Partition GUID</span>
+<a name="rest_code_3616ef7c4ed84ddba99bdbf37261e84e-7"></a><span class="go">  1     0x00000022      0x00001021      "u-boot"</span>
+<a name="rest_code_3616ef7c4ed84ddba99bdbf37261e84e-8"></a><span class="go">        attrs:  0x0000000000000000</span>
+<a name="rest_code_3616ef7c4ed84ddba99bdbf37261e84e-9"></a><span class="go">        type:   ebd0a0a2-b9e5-4433-87c0-68b6b72699c7</span>
+<a name="rest_code_3616ef7c4ed84ddba99bdbf37261e84e-10"></a><span class="go">        guid:   1377cef2-31f4-2341-bf92-706fe6b86817</span>
+<a name="rest_code_3616ef7c4ed84ddba99bdbf37261e84e-11"></a><span class="go">  2     0x00001022      0x00002021      "env"</span>
+<a name="rest_code_3616ef7c4ed84ddba99bdbf37261e84e-12"></a><span class="go">        attrs:  0x0000000000000000</span>
+<a name="rest_code_3616ef7c4ed84ddba99bdbf37261e84e-13"></a><span class="go">        type:   ebd0a0a2-b9e5-4433-87c0-68b6b72699c7</span>
+<a name="rest_code_3616ef7c4ed84ddba99bdbf37261e84e-14"></a><span class="go">        guid:   e54754d6-363e-8249-b30d-1f705412c6ba</span>
+<a name="rest_code_3616ef7c4ed84ddba99bdbf37261e84e-15"></a><span class="go">  3     0x00002022      0x00007021      "kernel"</span>
+<a name="rest_code_3616ef7c4ed84ddba99bdbf37261e84e-16"></a><span class="go">        attrs:  0x0000000000000000</span>
+<a name="rest_code_3616ef7c4ed84ddba99bdbf37261e84e-17"></a><span class="go">        type:   ebd0a0a2-b9e5-4433-87c0-68b6b72699c7</span>
+<a name="rest_code_3616ef7c4ed84ddba99bdbf37261e84e-18"></a><span class="go">        guid:   0d74cff8-8691-654a-b56c-468983a435b4</span>
+<a name="rest_code_3616ef7c4ed84ddba99bdbf37261e84e-19"></a><span class="go">  4     0x00007022      0x00733fde      "rootfs"</span>
+<a name="rest_code_3616ef7c4ed84ddba99bdbf37261e84e-20"></a><span class="go">        attrs:  0x0000000000000000</span>
+<a name="rest_code_3616ef7c4ed84ddba99bdbf37261e84e-21"></a><span class="go">        type:   ebd0a0a2-b9e5-4433-87c0-68b6b72699c7</span>
+<a name="rest_code_3616ef7c4ed84ddba99bdbf37261e84e-22"></a><span class="go">        guid:   3c6a05e6-e730-6e45-9fa5-a6e37b9283b6</span>
+<a name="rest_code_3616ef7c4ed84ddba99bdbf37261e84e-23"></a><span class="go">U-Boot#</span>
+</pre>
+<p>. Download MLO and u-boot.img and write to the eMMC raw partition. The fixed locations <em>0x100</em> and <em>0x300</em> fall
+into the u-boot partition (0x22..0x1021). Line 12,24 are <em>mmc write</em> to the fixed LBA offsets of the eMMC for
+0x90 and 0x269 blocks where each block is 512 bytes.</p>
+<table class="codetable"><tr>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_433d2e39ee0b439d9174c7663f16b53b-1"> 1</a>
+<a href="#rest_code_433d2e39ee0b439d9174c7663f16b53b-2"> 2</a>
+<a href="#rest_code_433d2e39ee0b439d9174c7663f16b53b-3"> 3</a>
+<a href="#rest_code_433d2e39ee0b439d9174c7663f16b53b-4"> 4</a>
+<a href="#rest_code_433d2e39ee0b439d9174c7663f16b53b-5"> 5</a>
+<a href="#rest_code_433d2e39ee0b439d9174c7663f16b53b-6"> 6</a>
+<a href="#rest_code_433d2e39ee0b439d9174c7663f16b53b-7"> 7</a>
+<a href="#rest_code_433d2e39ee0b439d9174c7663f16b53b-8"> 8</a>
+<a href="#rest_code_433d2e39ee0b439d9174c7663f16b53b-9"> 9</a>
+<a href="#rest_code_433d2e39ee0b439d9174c7663f16b53b-10">10</a>
+<a href="#rest_code_433d2e39ee0b439d9174c7663f16b53b-11">11</a>
+<a href="#rest_code_433d2e39ee0b439d9174c7663f16b53b-12">12</a>
+<a href="#rest_code_433d2e39ee0b439d9174c7663f16b53b-13">13</a>
+<a href="#rest_code_433d2e39ee0b439d9174c7663f16b53b-14">14</a>
+<a href="#rest_code_433d2e39ee0b439d9174c7663f16b53b-15">15</a>
+<a href="#rest_code_433d2e39ee0b439d9174c7663f16b53b-16">16</a>
+<a href="#rest_code_433d2e39ee0b439d9174c7663f16b53b-17">17</a>
+<a href="#rest_code_433d2e39ee0b439d9174c7663f16b53b-18">18</a>
+<a href="#rest_code_433d2e39ee0b439d9174c7663f16b53b-19">19</a>
+<a href="#rest_code_433d2e39ee0b439d9174c7663f16b53b-20">20</a>
+<a href="#rest_code_433d2e39ee0b439d9174c7663f16b53b-21">21</a>
+<a href="#rest_code_433d2e39ee0b439d9174c7663f16b53b-22">22</a>
+<a href="#rest_code_433d2e39ee0b439d9174c7663f16b53b-23">23</a>
+<a href="#rest_code_433d2e39ee0b439d9174c7663f16b53b-24">24</a></pre></div></td>
+<td class="code"><pre class="code console"><a name="rest_code_433d2e39ee0b439d9174c7663f16b53b-1"></a><span class="go">U-Boot# tftpboot $loadaddr MLO</span>
+<a name="rest_code_433d2e39ee0b439d9174c7663f16b53b-2"></a><span class="go">link up on port 0, speed 100, full duplex</span>
+<a name="rest_code_433d2e39ee0b439d9174c7663f16b53b-3"></a><span class="go">Using cpsw device</span>
+<a name="rest_code_433d2e39ee0b439d9174c7663f16b53b-4"></a><span class="go">TFTP from server 192.168....</span>
+<a name="rest_code_433d2e39ee0b439d9174c7663f16b53b-5"></a><span class="go">Filename 'MLO'.</span>
+<a name="rest_code_433d2e39ee0b439d9174c7663f16b53b-6"></a><span class="go">Load address: 0x82000000</span>
+<a name="rest_code_433d2e39ee0b439d9174c7663f16b53b-7"></a><span class="go">Loading: *##############</span>
+<a name="rest_code_433d2e39ee0b439d9174c7663f16b53b-8"></a><span class="go"> 850.6 KiB/s</span>
+<a name="rest_code_433d2e39ee0b439d9174c7663f16b53b-9"></a><span class="go">done</span>
+<a name="rest_code_433d2e39ee0b439d9174c7663f16b53b-10"></a><span class="go">Bytes transferred = 72332 (11a8c hex)</span>
+<a name="rest_code_433d2e39ee0b439d9174c7663f16b53b-11"></a>
+<a name="rest_code_433d2e39ee0b439d9174c7663f16b53b-12"></a><span class="go">U-Boot# mmc write $loadaddr 0x100 90</span>
+<a name="rest_code_433d2e39ee0b439d9174c7663f16b53b-13"></a>
+<a name="rest_code_433d2e39ee0b439d9174c7663f16b53b-14"></a><span class="go">U-Boot# tftpboot $loadaddr u-boot.img</span>
+<a name="rest_code_433d2e39ee0b439d9174c7663f16b53b-15"></a><span class="go">link up on port 0, speed 100, full duplex</span>
+<a name="rest_code_433d2e39ee0b439d9174c7663f16b53b-16"></a><span class="go">Using cpsw device</span>
+<a name="rest_code_433d2e39ee0b439d9174c7663f16b53b-17"></a><span class="go">TFTP from server 192.168....</span>
+<a name="rest_code_433d2e39ee0b439d9174c7663f16b53b-18"></a><span class="go">Filename 'u-boot.img'.</span>
+<a name="rest_code_433d2e39ee0b439d9174c7663f16b53b-19"></a><span class="go">Load address: 0x82000000</span>
+<a name="rest_code_433d2e39ee0b439d9174c7663f16b53b-20"></a><span class="go">Loading: *#############################################################</span>
+<a name="rest_code_433d2e39ee0b439d9174c7663f16b53b-21"></a><span class="go"> 1.3 MiB/s</span>
+<a name="rest_code_433d2e39ee0b439d9174c7663f16b53b-22"></a><span class="go">done</span>
+<a name="rest_code_433d2e39ee0b439d9174c7663f16b53b-23"></a><span class="go">Bytes transferred = 309548 (4b92c hex)</span>
+<a name="rest_code_433d2e39ee0b439d9174c7663f16b53b-24"></a><span class="go">U-Boot# mmc write $loadaddr 0x300 269</span>
+</pre></td>
+</tr></table>
+<p>. Download kernel image and write to the <em>kernel</em> partition. Having the named partition for it is not necessary
+, but it is easier to keep track of it later.</p>
+<pre class="code console"><a name="rest_code_8eb8af01de134c31a17c1bccd182b6e0-1"></a><span class="go">tftpboot $loadaddr zImage.itb</span>
+<a name="rest_code_8eb8af01de134c31a17c1bccd182b6e0-2"></a><span class="go">link up on port 0, speed 100, full duplex</span>
+<a name="rest_code_8eb8af01de134c31a17c1bccd182b6e0-3"></a><span class="go">Using cpsw device</span>
+<a name="rest_code_8eb8af01de134c31a17c1bccd182b6e0-4"></a><span class="go">TFTP from server 192.168.10.14; our IP address is 192.168.10.20</span>
+<a name="rest_code_8eb8af01de134c31a17c1bccd182b6e0-5"></a><span class="go">Filename 'zImage.itb'.</span>
+<a name="rest_code_8eb8af01de134c31a17c1bccd182b6e0-6"></a><span class="go">Load address: 0x82000000</span>
+<a name="rest_code_8eb8af01de134c31a17c1bccd182b6e0-7"></a><span class="go">Loading: *################################################################</span>
+<a name="rest_code_8eb8af01de134c31a17c1bccd182b6e0-8"></a><span class="gp">         #</span><span class="c1">################################################################</span>
+<a name="rest_code_8eb8af01de134c31a17c1bccd182b6e0-9"></a><span class="go">         ..</span>
+<a name="rest_code_8eb8af01de134c31a17c1bccd182b6e0-10"></a>
+<a name="rest_code_8eb8af01de134c31a17c1bccd182b6e0-11"></a><span class="go">U-Boot# mmc write $loadaddr 2022 1b00</span>
+</pre>
+<p>. Download root FS and write it to <em>rootfs</em> partition and set the u-boot's <em>bootargs</em> to specify the rootfs.</p>
+<pre class="code console"><a name="rest_code_ac1d34c9318847cc982ee5ac04fe27ed-1"></a><span class="go">U-Boot# tftpboot $loadaddr rootfs.ext4</span>
+<a name="rest_code_ac1d34c9318847cc982ee5ac04fe27ed-2"></a><span class="go">link up on port 0, speed 100, full duplex</span>
+<a name="rest_code_ac1d34c9318847cc982ee5ac04fe27ed-3"></a><span class="go">Using cpsw device</span>
+<a name="rest_code_ac1d34c9318847cc982ee5ac04fe27ed-4"></a><span class="go">TFTP from server 192.168.10.14; our IP address is 192.168.10.20</span>
+<a name="rest_code_ac1d34c9318847cc982ee5ac04fe27ed-5"></a><span class="go">Filename 'rootfs.ext4'.</span>
+<a name="rest_code_ac1d34c9318847cc982ee5ac04fe27ed-6"></a><span class="go">Load address: 0x82000000</span>
+<a name="rest_code_ac1d34c9318847cc982ee5ac04fe27ed-7"></a><span class="go">Loading: *################################################################</span>
+<a name="rest_code_ac1d34c9318847cc982ee5ac04fe27ed-8"></a><span class="gp">         #</span><span class="c1">################################################################</span>
+<a name="rest_code_ac1d34c9318847cc982ee5ac04fe27ed-9"></a><span class="go">         ..</span>
+<a name="rest_code_ac1d34c9318847cc982ee5ac04fe27ed-10"></a><span class="go">done</span>
+<a name="rest_code_ac1d34c9318847cc982ee5ac04fe27ed-11"></a><span class="go">Bytes transferred = 130077696 (7c0d400 hex)</span>
+<a name="rest_code_ac1d34c9318847cc982ee5ac04fe27ed-12"></a><span class="go">U-Boot# mmc write $loadaddr 7022 3e070</span>
+</pre>
+<p>. Set/verify <em>bootcmd</em> to read kernel image from the correct LBA offset of the <em>kernel</em> partition as well as
+set/verify the <em>bootargs</em> to have the correct partition for the rootFS. The LBA offset for kernel partition
+above is at <em>0x2022</em>.</p>
+<pre class="code console"><a name="rest_code_be73d2f2a4c843729e3cebeada299cfd-1"></a><span class="go">U-Boot# pr bootcmd</span>
+<a name="rest_code_be73d2f2a4c843729e3cebeada299cfd-2"></a><span class="go">bootcmd=mmc dev 1 &amp;&amp; mmc read $loadaddr 2022 8200 &amp;&amp; bootm $loadaddr</span>
+<a name="rest_code_be73d2f2a4c843729e3cebeada299cfd-3"></a><span class="go">U-Boot# pr bootargs</span>
+<a name="rest_code_be73d2f2a4c843729e3cebeada299cfd-4"></a><span class="go">bootargs=console=ttyS0,115200n8 root=/dev/mmcblk0p4 rw rootwait</span>
+</pre>
+<p>The system should be able to boot and mount the rootfs correctly. The setting of <em>bootcmd</em> above is to
+read the kernel from LBA <em>0x2022</em> for 8200 blocks and boot from it. The <em>bootargs</em> is set to make sure
+that the rootfs is pointed to the 4th partition of the eMMC.</p>
+<p>Of all the four GPT partitions created, the only partition that has FS is the <em>rootfs</em> while all others
+are raw partitions. This is almost similar to booting from NAND device.</p>
 </div>
 <div class="section" id="citations">
 <h3>Citations</h3>
