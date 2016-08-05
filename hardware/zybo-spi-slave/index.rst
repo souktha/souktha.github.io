@@ -10,7 +10,7 @@
 I would like to add a simple IO peripheral device to the Zynq Zybo board and I would like to learn how much
 effort I need to get PS-PL interconnected and can be used by high level OS such as Linux.
 For this exercise, I choose to create a simplest device for the Zynq PL that interface with its PS. My choice
-is to create a SPI slave device (PL) that will interconnect to the SPY master of the Zynq (PS).
+is to create a SPI slave device (PL) that will interconnect to the SPI master of the Zynq (PS).
 
 .. TEASER_END
 
