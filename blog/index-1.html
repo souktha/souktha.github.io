@@ -78,7 +78,46 @@
 
     
 <div class="postindex">
-    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../software/tty2comport/" class="u-url">Redirect tty login from ssh to UART port</a></h1>
+    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../misc/repartition-boneblk/" class="u-url">Repartitioning 4GB Beaglebone Black eMMC flash</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="../misc/repartition-boneblk/" rel="bookmark"><time class="published dt-published" datetime="2016-03-20T01:26:53Z" title="2016-03-20 01:26">2016-03-20 01:26</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<!-- $LastChangeDate$ -->
+<!-- $Rev$ -->
+<!-- $Author$ -->
+<p>I bought the Beaglebone Black Rev C nearly two years ago. When I received it, I powered it up and
+saw that everything appeared to be functional, put it back in the box and never had the chance
+to work with it again until now. It looks like it was preloaded with Debian (I am not sure). There
+must have been a lot of updates ever since.</p>
+<p class="more"><a href="../misc/repartition-boneblk/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../hardware/vga_draw_graph/" class="u-url">Drawing bargraph on VGA with Nexys4DDR</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="../hardware/vga_draw_graph/" rel="bookmark"><time class="published dt-published" datetime="2016-03-19T19:52:20Z" title="2016-03-19 19:52">2016-03-19 19:52</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<!-- $Author: ssop $ -->
+<!-- $LastChangeDate$ -->
+<!-- $Rev$ -->
+<p>The Digilent Nexys4DDR has only one video port which is a VGA port. With a small set of verilog code, I can synthesize a simple circuit to
+draw some bar graph having each line with a width of one pixel. To achieve this I need to create the HSYNC and VSYNC for the
+desired output of <a class="reference external" href="mailto:640x480@60HZ">640x480@60HZ</a>.
+The standard VGA of 640x480 is meant for its displayable area while it actually has 800x525 of total area. This makes the
+required pixel clock frequency of 800 * 60 * 525 = 25.200MHZ.</p>
+<p class="more"><a href="../hardware/vga_draw_graph/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../software/tty2comport/" class="u-url">Redirect tty login from ssh to UART port</a></h1>
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn">
                 Soukthavy

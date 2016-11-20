@@ -137,27 +137,27 @@ is also provided to set up the simulation (<a class="reference external" href="h
 <h2>Simulation result</h2>
 <p>The following figures show the result of my simulation. Fig 1 is the response of non repeated stream of
 charater bytes.</p>
-<pre class="code text"><a name="rest_code_db65dce9831a40b6a09a448036e2e93d-1"></a>wait(cts)@(posedge fast_ck) begin
-<a name="rest_code_db65dce9831a40b6a09a448036e2e93d-2"></a>    #1 din = 8'hAD;
-<a name="rest_code_db65dce9831a40b6a09a448036e2e93d-3"></a>    #5 data_ck = 1'b1;
-<a name="rest_code_db65dce9831a40b6a09a448036e2e93d-4"></a>    end
-<a name="rest_code_db65dce9831a40b6a09a448036e2e93d-5"></a>wait(cts)@(posedge fast_ck) begin
-<a name="rest_code_db65dce9831a40b6a09a448036e2e93d-6"></a>#5 data_ck = 1'b0;
-<a name="rest_code_db65dce9831a40b6a09a448036e2e93d-7"></a>    #1 din = 8'h5E;
-<a name="rest_code_db65dce9831a40b6a09a448036e2e93d-8"></a>    #5 data_ck = 1'b1;
-<a name="rest_code_db65dce9831a40b6a09a448036e2e93d-9"></a>    end
+<pre class="code text"><a name="rest_code_1530d16cfbf1422ea043606aa067ca8a-1"></a>wait(cts)@(posedge fast_ck) begin
+<a name="rest_code_1530d16cfbf1422ea043606aa067ca8a-2"></a>    #1 din = 8'hAD;
+<a name="rest_code_1530d16cfbf1422ea043606aa067ca8a-3"></a>    #5 data_ck = 1'b1;
+<a name="rest_code_1530d16cfbf1422ea043606aa067ca8a-4"></a>    end
+<a name="rest_code_1530d16cfbf1422ea043606aa067ca8a-5"></a>wait(cts)@(posedge fast_ck) begin
+<a name="rest_code_1530d16cfbf1422ea043606aa067ca8a-6"></a>#5 data_ck = 1'b0;
+<a name="rest_code_1530d16cfbf1422ea043606aa067ca8a-7"></a>    #1 din = 8'h5E;
+<a name="rest_code_1530d16cfbf1422ea043606aa067ca8a-8"></a>    #5 data_ck = 1'b1;
+<a name="rest_code_1530d16cfbf1422ea043606aa067ca8a-9"></a>    end
 </pre>
 <div class="figure">
 <img alt="../../images/hardware/case1.png" src="../../images/hardware/case1.png"><p class="caption">Fig1: input ad.5e output 01.ad</p>
 </div>
 <p>and the case where maximum bytes count per transaction is reached. In this case the host send 258 bytes, Fig2.</p>
-<pre class="code text"><a name="rest_code_74152909fdab476f95f9bb53da1bf63d-1"></a>for (i = 0; i &lt; 258; i = i+1 ) begin
-<a name="rest_code_74152909fdab476f95f9bb53da1bf63d-2"></a>    #5 data_ck = 1'b0;
-<a name="rest_code_74152909fdab476f95f9bb53da1bf63d-3"></a>    wait(cts) @(posedge fast_ck) begin
-<a name="rest_code_74152909fdab476f95f9bb53da1bf63d-4"></a>         #1 din = 8'h77;
-<a name="rest_code_74152909fdab476f95f9bb53da1bf63d-5"></a>        #5 data_ck = 1'b1;
-<a name="rest_code_74152909fdab476f95f9bb53da1bf63d-6"></a>        end
-<a name="rest_code_74152909fdab476f95f9bb53da1bf63d-7"></a>    end
+<pre class="code text"><a name="rest_code_7c6c17bc44964a26b61c870458d9b73c-1"></a>for (i = 0; i &lt; 258; i = i+1 ) begin
+<a name="rest_code_7c6c17bc44964a26b61c870458d9b73c-2"></a>    #5 data_ck = 1'b0;
+<a name="rest_code_7c6c17bc44964a26b61c870458d9b73c-3"></a>    wait(cts) @(posedge fast_ck) begin
+<a name="rest_code_7c6c17bc44964a26b61c870458d9b73c-4"></a>         #1 din = 8'h77;
+<a name="rest_code_7c6c17bc44964a26b61c870458d9b73c-5"></a>        #5 data_ck = 1'b1;
+<a name="rest_code_7c6c17bc44964a26b61c870458d9b73c-6"></a>        end
+<a name="rest_code_7c6c17bc44964a26b61c870458d9b73c-7"></a>    end
 </pre>
 <div class="figure">
 <img alt="../../images/hardware/case4.png" src="../../images/hardware/case4.png"><p class="caption">Fig2: 258 bytes breaks out with 254 bytes</p>

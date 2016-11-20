@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<head>
+<meta charset="utf-8">
+<base href="http://souktha.github.io/hardware/zybo-spi-stepper/">
+<meta name="description" content="SPI slave stepper motor">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SPI slave stepper motor with Zybo | Soukthavy Sopha</title>
+<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<meta content="#5670d4" name="theme-color">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
+<link rel="canonical" href="http://souktha.github.io/hardware/zybo-spi-stepper/">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="description" itemprop="description" content="SPI slave stepper motor">
+<meta name="author" content="Soukthavy">
+<link rel="prev" href="../zybo-spi-slave/" title="Zynq Zybo SPI slave via EMIO" type="text/html">
+<link rel="next" href="../../software/zynq_spi_stepper_sw/" title="Zynq SPI slave stepper motor driver" type="text/html">
+<meta property="og:site_name" content="Soukthavy Sopha">
+<meta property="og:title" content="SPI slave stepper motor with Zybo">
+<meta property="og:url" content="http://souktha.github.io/hardware/zybo-spi-stepper/">
+<meta property="og:description" content="SPI slave stepper motor">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2016-11-12T15:38:09Z">
+<meta property="article:tag" content="hardware">
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-inverse navbar-static-top"><div class="container">
+<!-- This keeps the margins nice -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://souktha.github.io/">
+
+                <span id="blog-title">Soukthavy Sopha</span>
+            </a>
+        </div>
+<!-- /.navbar-header -->
+        <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
+            <ul class="nav navbar-nav">
+<li>
+<a href="../../archive.html">Archive</a>
+                </li>
+<li>
+<a href="../../categories/">Tags</a>
+                </li>
+<li>
+<a href="../../rss.xml">RSS feed</a>
+            </li>
+<li class="dropdown">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Blog <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+<li>
+<a href="../../software">Sofware</a>
+                    </li>
+<li>
+<a href="../../hardware">Hardware</a>
+                    </li>
+<li>
+<a href="../../misc">Misc</a>
+            </li>
+</ul>
+</li>
+<li>
+<a href="https://github.com/souktha">My Github</a>
+
+                
+            </li>
+</ul>
+<ul class="nav navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        <div class="row">
+            
+            
+<article class="storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">SPI slave stepper motor with Zybo</a></h1>
+
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>My previous blog was to create the SPI slave device on Programmable Logic (PL) side of the Zynq7000 where it
+can be interconnected and can be accessible by the Processing System (PS) side of this SoC and I achieved the
+result I expected. Since that blog was only for validating my SPI slave design to be coherent with the rest of the
+system without doing much useful work, I would like to extend it so that I can make it do a bit more useful work.</p>
+<!-- TEASER_END -->
+<p>In the previous blog, I created the SPI slave IP by wrapping it to the AXI bus. The SPI slave Verilog module
+was instantiated by the AXI wrapper as the IP and brought into the rest of the board design where it get
+synthesized into the complete system. The generated Xilinx FPGA bitstream is then carried over to the SDK where
+the device tree of the design is generated. The device tree was then compiled and loaded to the board by the boot
+code for the Linux OS. A simple SPI slave driver was then created to read/write the SPI bus that validated the
+interface.</p>
+<p>This blog is about extending the SPI slave that I created for the exercise in the previous blog to do some
+useful work, but I will not wrap it with Xilinx's AXI interface as I try to minimize dependency on the external
+tool or external IP as much as possible.
+For this exercise I will add one extra stepper motor driver in connection to the SPI slave module so that it will
+become a SPI interface stepper motor driver.</p>
+<div class="section" id="hardware-components-and-tools">
+<h2>Hardware components and tools</h2>
+<p>. A stepper motor. For this component I can simply salvage a small stepper
+motor from a broken Samsung DVD drive. Its eject mechanism was broken, but its stepper motor is still good.
+Once I disassembled it, I could make use of its stepper motor. This stepper motor is the one that drives the
+mounted LASER LED assembly for its R/W operations. I only need to solder wires to the pair of the motor coils
+that will be driven by the PL in my design. This mechanical preparation should take about 10 to 15 minutes.</p>
+<p>. Strip of 4 wires needed for soldering to the motor assembly.</p>
+<p>. Soldering iron.</p>
+<p>. Digilent Zynq Zybo</p>
+<p>. L298 dual H Bridge Motor driver. This is the external driver that is needed to drive the motor since I don't think the Zybo
+board will source enough current to drive the motor. It is good to be on the safe side as it also
+provides a good electrical isolation to the main board.</p>
+</div>
+<div class="section" id="preparing-the-hardware-components">
+<h2>Preparing the hardware components</h2>
+<p>It was very easy to disassemble the DVD drive. I removed a small DVD stepper from its rail assembly before
+I could solder the wires to the coils.</p>
+<div class="figure">
+<img alt="../../images/hardware/dvd-open.jpg" src="../../images/hardware/dvd-open.jpg"><p class="caption">DVD drive</p>
+</div>
+<p>Once the soldering is done, the stepper motor is reinstalled to the rail assembly the way it was before.
+The original flat cable is trimmed since it is no longer needed.</p>
+<div class="figure">
+<img alt="../../images/hardware/stepper_2.jpg" src="../../images/hardware/stepper_2.jpg"><p class="caption">Stepper motor before and after soldering with its rail assembly</p>
+</div>
+</div>
+<div class="section" id="software-and-tools">
+<h2>Software and tools</h2>
+<p>. Vivado 2016.3 for the FPGA design and the synthesis. This is the latest as of this writing.</p>
+<p>. GNU Cross toolchain for cross compiling Linux kernel OS.</p>
+<p>. Linux SPI kernel device driver <a class="reference external" href="http://souktha.github.io/software/zynq_spi_stepper_sw">http://souktha.github.io/software/zynq_spi_stepper_sw</a> . This is similar to what was done in the my last blog, but with its
+functionality extended for command and status processing.</p>
+</div>
+<div class="section" id="creating-vivado-project">
+<h2>Creating Vivado project</h2>
+<p>First I need to create two IP modules, one for SPI slave interface and another for stepper motor interface. The SPI slave
+interface will be created from directory with just one single file, <em>spi_slave_if.v</em>. The same thing is done
+for stepper motor interface, one file also, <em>dvd-stepper-if.v</em>.</p>
+<ul>
+<li>
+<p class="first">Start Vivado and create <em>spi_stepper_if</em> project and <em>dvd_stepper_if</em> project one at a time.</p>
+<ul>
+<li><dl class="first docutils">
+<dt>Create an IP for SPI slave interface  using <em>Tool-&gt;Create and Package New IP</em>.</dt>
+<dd>
+<p class="first last">The IP are package from <em>/spi_slave_if_sources</em> where its respective source file, <em>spi_slave_if.v</em> is stored.</p>
+</dd>
+</dl></li>
+<li>
+<p class="first">Package the created IP modules then close the project.</p>
+</li>
+<li>
+<p class="first">Repeat the process to create <em>dvd_stepper_if</em> IP module.</p>
+</li>
+</ul>
+</li>
+<li>
+<p class="first">Create the zynq system with two newly created IPs.</p>
+<ul>
+<li><dl class="first docutils">
+<dt>Create block design with  <em>Flow Navigator, IP Integragor -&gt; Create Block Design</em>. Set design name to</dt>
+<dd>
+<p class="first last"><em>zybo_spi_stepper</em>. Accept default, <em>OK</em> to continue.</p>
+</dd>
+</dl></li>
+<li>
+<p class="first">On <em>Design</em> diagram, add ZYNQ7 Processing System with <em>Add IP</em>.</p>
+</li>
+<li><dl class="first docutils">
+<dt>Edit <em>Project Settings</em>. Add IP repositories to where my SPI IP and stepper IP are located with <em>Repository Manager</em>.</dt>
+<dd>
+<p class="first last">The repositories for these IPs are local to my workspace under the directories where they are created (above).
+This step will enable me to bring in all the custom IPs I created for this exercise into the design.</p>
+</dd>
+</dl></li>
+<li>
+<p class="first">Add <em>spi_slave_v1_0</em> from my local IP repository into the design. The name of IP is with the name of the verilog module,not its file name.</p>
+</li>
+<li>
+<p class="first">Add <em>dvd_stepper_hs_v1_0</em> from my local IP repository to the design.</p>
+</li>
+<li>
+<p class="first">Edit ZYNQ7 block to enable SPI0 master on EMIO.</p>
+</li>
+<li>
+<p class="first"><em>Run Block Automation</em> then  <em>Run Connection Automation</em> from the design <em>Diagram</em>.</p>
+</li>
+<li>
+<p class="first">Expand <em>SPI_0</em> of the ZYNQ7 block to make the following connections (manual) to <em>spi_stepper_ip_0</em> block,</p>
+<ul class="simple">
+<li>SPI0_SCLK_O to <em>sck</em>
+</li>
+<li>SPI0_MOSI_O to <em>mosi</em>
+</li>
+<li>SPI0_MISO_I to <em>miso</em>
+</li>
+<li>SPI0_SS_O to <em>_cs</em>
+</li>
+</ul>
+</li>
+<li>
+<dl class="first docutils">
+<dt>Using <em>Make External</em> to bring out the four signal of  <em>dvd_stepper_hs's coils</em> where they will be</dt>
+<dd>
+<p class="first last">connected to the stepper motor during design elaboration.</p>
+</dd>
+</dl>
+<ul class="simple">
+<li>Interconnecting the following signals of two new IPs.<ul>
+<li>spi_slave_v1_0's <em>steps</em> to dvd_stepper_hs_v1_0's <em>steps</em>
+</li>
+<li>spi_slave_v1_0's <em>load</em> to dvd_stepper_hs_v1_0's <em>load</em>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p class="first">Validate the design.</p>
+</li>
+<li>
+<p class="first">Generate Block Design.</p>
+</li>
+<li>
+<p class="first">Create HDL wrapper.</p>
+</li>
+</ul>
+</li>
+<li>
+<p class="first">Open Elaborated Design. Select I/O Ports tab to assign <em>coils</em> to Zybo PMOD JE1, JE7, JE2 and JE8 with
+respect to the polarity of the motor coils. According to the board's schematic <a class="footnote-reference" href="#id6" id="id1">[5]</a>, these pins would be,</p>
+<ul class="simple">
+<li>coil[0] -&gt; v12 (JE1)</li>
+<li>coil[1] -&gt; v13 (JE7)</li>
+<li>coil[2] -&gt; w16 (JE2)</li>
+<li>coil[3] -&gt; u17 (JE8)</li>
+</ul>
+</li>
+<li>
+<p class="first">Save the new design constraint as <em>zybo_spi_stepper</em>.</p>
+<ul class="simple">
+<li>Run Synthesis and fix timing closure as needed.</li>
+<li>Run Implementation and fix timing closure as needed.</li>
+<li>Generate bitstream</li>
+</ul>
+</li>
+<li><dl class="first docutils">
+<dt>Export hardware including bitstream. This part is not necessary since I can use the old device tree generated</dt>
+<dd>
+<p class="first last">from last exercise. The device tree for zynq PS does not change with respect to this exercise from the last
+exercise.</p>
+</dd>
+</dl></li>
+</ul>
+<div class="figure">
+<img alt="../../images/hardware/block_diagram_1.JPG" src="../../images/hardware/block_diagram_1.JPG"><p class="caption">Block diagram with SPI slave IP and the stepper IP module on Zynq7000</p>
+</div>
+<p>I choose to use the actual board clock, 125MHZ instead of <em>FCLK_CLKO</em> from Zynq. According to the data sheet, this clock
+is 100MHZ.</p>
+</div>
+<div class="section" id="hdl-for-the-spi-slave-stepper-motor">
+<h2>HDL for the SPI slave stepper motor</h2>
+<p>For the SPI slave interface module, a bit more code is added to handle the write operation from the SPI master (Zynq).
+The write operation is for writing the step count to the stepper module. So for the SPI slave module,</p>
+<ul class="simple">
+<li>Expand the functionality of the SPI slave from the last design for the <em>WRITE</em> command such that the
+data written from the host is the steps count for the motor. The data is an 8 bit signed that represent
+stepping in either right(positive) or left direction. The sample of the added Verilog code to the original
+<em>spi_slave</em> module is shown below.</li>
+<li>Rewrite part of the code to eliminate gated clock.</li>
+<li>Rewrite part of the code so that the state of the SPI is only driven by the master SPI clock. The FPGA main clock feed
+is still use for the stepper motor interface.</li>
+<li>Pay better attention on timing closure of the design.</li>
+</ul>
+<p>Below is the main block of the small SPI slave verilog module. Line 2-5 take the serial data from MOSI on rising SPI clock. Line
+7-38 handles the SPI slave state transition from <em>idle, command input, data input, data output</em> state.
+Line 49-61 handles input processing for the incoming write step count or the outgoing stepper status. <em>running</em> is the state of
+the stepper motor output from the stepper module. It is returned as part of the status read command, <em>0xea</em>.
+Line 66-77 interfaces to the stepper motor module for the loading of stepper motor count and reading its status.</p>
+<table class="codetable"><tr>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-1"> 1</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-2"> 2</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-3"> 3</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-4"> 4</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-5"> 5</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-6"> 6</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-7"> 7</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-8"> 8</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-9"> 9</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-10">10</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-11">11</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-12">12</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-13">13</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-14">14</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-15">15</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-16">16</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-17">17</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-18">18</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-19">19</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-20">20</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-21">21</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-22">22</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-23">23</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-24">24</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-25">25</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-26">26</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-27">27</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-28">28</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-29">29</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-30">30</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-31">31</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-32">32</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-33">33</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-34">34</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-35">35</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-36">36</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-37">37</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-38">38</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-39">39</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-40">40</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-41">41</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-42">42</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-43">43</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-44">44</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-45">45</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-46">46</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-47">47</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-48">48</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-49">49</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-50">50</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-51">51</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-52">52</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-53">53</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-54">54</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-55">55</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-56">56</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-57">57</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-58">58</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-59">59</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-60">60</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-61">61</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-62">62</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-63">63</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-64">64</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-65">65</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-66">66</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-67">67</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-68">68</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-69">69</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-70">70</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-71">71</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-72">72</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-73">73</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-74">74</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-75">75</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-76">76</a>
+<a href="#rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-77">77</a></pre></div></td>
+<td class="code"><pre class="code verilog"><a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-1"></a>   <span class="cm">/*state machine transition*/</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-2"></a>   <span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">sck</span> <span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-3"></a>           <span class="n">din</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="no">`DELAY</span> <span class="p">{</span><span class="n">din</span><span class="p">[</span><span class="mh">6</span><span class="o">:</span><span class="mh">0</span><span class="p">],</span><span class="n">mosi</span><span class="p">};</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-4"></a>           <span class="n">bitcount</span> <span class="o">&lt;=</span> <span class="n">bitcount</span> <span class="o">+</span> <span class="mh">1</span><span class="mb">'b1</span><span class="p">;</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-5"></a>   <span class="k">end</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-6"></a>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-7"></a>   <span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">sck</span><span class="p">,</span> <span class="k">posedge</span> <span class="n">_cs</span><span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-8"></a>       <span class="k">if</span> <span class="p">(</span> <span class="n">_cs</span> <span class="p">)</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-9"></a>           <span class="n">state</span> <span class="o">&lt;=</span> <span class="no">IDLE</span><span class="p">;</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-10"></a>       <span class="k">else</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-11"></a>       <span class="k">case</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-12"></a>               <span class="nl">IDLE:</span> <span class="n">state</span> <span class="o">&lt;=</span> <span class="no">CMD_IN</span><span class="p">;</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-13"></a>               <span class="nl">CMD_IN:</span> <span class="k">begin</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-14"></a>                   <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="n">bitcount</span> <span class="o">&amp;&amp;</span> <span class="n">command_le</span> <span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-15"></a>                               <span class="k">if</span> <span class="p">(</span><span class="n">command</span> <span class="o">==</span> <span class="no">WRITE</span> <span class="p">)</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-16"></a>                                       <span class="n">state</span> <span class="o">&lt;=</span> <span class="no">DIN</span><span class="p">;</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-17"></a>                               <span class="k">else</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-18"></a>                                       <span class="n">state</span> <span class="o">&lt;=</span> <span class="no">DOUT</span><span class="p">;</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-19"></a>                   <span class="k">end</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-20"></a>                   <span class="k">else</span> <span class="k">begin</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-21"></a>                       <span class="n">state</span> <span class="o">&lt;=</span> <span class="no">CMD_IN</span><span class="p">;</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-22"></a>                       <span class="k">end</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-23"></a>               <span class="k">end</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-24"></a>               <span class="nl">DIN:</span> <span class="k">begin</span> <span class="c1">//data from master's MOSI</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-25"></a>                       <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="n">bitcount</span>  <span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-26"></a>                        <span class="n">state</span> <span class="o">&lt;=</span> <span class="no">IDLE</span><span class="p">;</span> <span class="c1">//CMD_IN;</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-27"></a>                       <span class="k">end</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-28"></a>                       <span class="k">else</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-29"></a>                           <span class="n">state</span> <span class="o">&lt;=</span> <span class="no">DIN</span><span class="p">;</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-30"></a>                       <span class="k">end</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-31"></a>               <span class="nl">DOUT:</span> <span class="k">begin</span> <span class="c1">//to master's MISO</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-32"></a>                       <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="n">bitcount</span> <span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-33"></a>                        <span class="n">state</span> <span class="o">&lt;=</span> <span class="no">IDLE</span><span class="p">;</span> <span class="c1">//CMD_IN;</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-34"></a>                       <span class="k">end</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-35"></a>                       <span class="k">else</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-36"></a>                        <span class="n">state</span> <span class="o">&lt;=</span> <span class="no">DOUT</span><span class="p">;</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-37"></a>                     <span class="k">end</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-38"></a>       <span class="k">endcase</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-39"></a>   <span class="k">end</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-40"></a>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-41"></a>   <span class="k">assign</span> <span class="n">miso</span> <span class="o">=</span> <span class="n">dout</span><span class="p">[</span><span class="mh">7</span><span class="p">];</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-42"></a>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-43"></a>   <span class="cm">/*sample MOSI bits</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-44"></a><span class="cm">   &gt;--01234567----&gt;---01234567-----&gt;</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-45"></a><span class="cm">    |--------------------------|*/</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-46"></a>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-47"></a>   <span class="cm">/*Transmit MSB first*/</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-48"></a>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-49"></a>   <span class="k">always</span><span class="p">@(</span><span class="k">negedge</span> <span class="n">sck</span><span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-50"></a>           <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="n">bitcount</span> <span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-51"></a>                <span class="n">dout</span> <span class="o">&lt;=</span> <span class="mh">8'h0</span><span class="p">;</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-52"></a>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-53"></a>                <span class="k">if</span> <span class="p">(</span>  <span class="n">command_le</span> <span class="p">)</span>  <span class="k">begin</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-54"></a>                   <span class="k">if</span> <span class="p">(</span> <span class="n">din</span> <span class="o">==</span> <span class="no">READ_ID</span> <span class="p">)</span> <span class="n">dout</span> <span class="o">&lt;=</span> <span class="no">`DEVICE_ID</span><span class="p">;</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-55"></a>                   <span class="k">if</span> <span class="p">(</span> <span class="n">din</span> <span class="o">==</span> <span class="no">READ</span> <span class="p">)</span> <span class="n">dout</span> <span class="o">&lt;=</span> <span class="mh">8'hc4</span> <span class="o">|</span> <span class="n">running</span><span class="p">;</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-56"></a>                <span class="k">end</span>  <span class="c1">//command_le</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-57"></a>           <span class="k">end</span> <span class="c1">// !bitcount</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-58"></a>           <span class="k">else</span> <span class="k">begin</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-59"></a>               <span class="n">dout</span> <span class="o">&lt;=</span> <span class="p">{</span><span class="n">dout</span><span class="p">[</span><span class="mh">6</span><span class="o">:</span><span class="mh">0</span><span class="p">],</span><span class="n">mosi</span><span class="p">};</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-60"></a>               <span class="k">end</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-61"></a>      <span class="k">end</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-62"></a>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-63"></a>   <span class="k">assign</span> <span class="n">data</span> <span class="o">=</span> <span class="n">din</span><span class="p">;</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-64"></a>   <span class="k">assign</span> <span class="n">load</span> <span class="o">=</span> <span class="n">load_count</span><span class="p">;</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-65"></a>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-66"></a>   <span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-67"></a>       <span class="k">if</span> <span class="p">(</span> <span class="n">command_le</span> <span class="p">)</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-68"></a>           <span class="n">command</span> <span class="o">&lt;=</span> <span class="n">din</span><span class="p">;</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-69"></a>       <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">running</span> <span class="o">&amp;&amp;</span> <span class="n">din</span> <span class="o">!=</span> <span class="mh">8'h0</span> <span class="p">)</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-70"></a>           <span class="n">command</span> <span class="o">&lt;=</span> <span class="mh">8'h0</span><span class="p">;</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-71"></a>   <span class="k">end</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-72"></a>   <span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-73"></a>       <span class="n">load_count</span> <span class="o">&lt;=</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-74"></a>       <span class="k">if</span> <span class="p">(</span> <span class="p">(</span><span class="n">bitcount</span> <span class="o">==</span> <span class="mh">3</span><span class="mb">'b0</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">command_le</span>  <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">running</span> <span class="p">)</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-75"></a>           <span class="k">if</span> <span class="p">(</span><span class="n">command</span> <span class="o">==</span> <span class="no">WRITE</span> <span class="p">)</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-76"></a>               <span class="n">load_count</span> <span class="o">&lt;=</span> <span class="mh">1</span><span class="mb">'b1</span><span class="p">;</span>
+<a name="rest_code_bc719ce4f3984b8b8891b0dac8fe23c5-77"></a>   <span class="k">end</span>
+</pre></td>
+</tr></table>
+<p>The simulation of the SPI slave functionality for writing step count command, <em>0xad</em> with the count value of 6 is shown below.</p>
+<div class="figure">
+<img alt="../../images/hardware/stepper_write.JPG" src="../../images/hardware/stepper_write.JPG"><p class="caption">Writing(<em>0xad</em>) stepper count value <em>6</em>.</p>
+</div>
+<p>The stepper driver module is the stand-alone IP that interfaces to the motor driver as shown in the block diagram.
+It drives the stepper coils at around 2KHZ for this design. It receives step count from the SPI slave
+interface module and count down to zero while driving the phases of the stepper motor as the count
+being decremented. The stepper steps by the number of count being received from SPI slave module. It outputs <em>running</em>
+status while the motor is running. The SPI slave use this status as the busy status of the stepper module.</p>
+<table class="codetable"><tr>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-1"> 1</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-2"> 2</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-3"> 3</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-4"> 4</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-5"> 5</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-6"> 6</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-7"> 7</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-8"> 8</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-9"> 9</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-10">10</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-11">11</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-12">12</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-13">13</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-14">14</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-15">15</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-16">16</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-17">17</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-18">18</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-19">19</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-20">20</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-21">21</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-22">22</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-23">23</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-24">24</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-25">25</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-26">26</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-27">27</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-28">28</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-29">29</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-30">30</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-31">31</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-32">32</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-33">33</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-34">34</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-35">35</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-36">36</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-37">37</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-38">38</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-39">39</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-40">40</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-41">41</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-42">42</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-43">43</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-44">44</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-45">45</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-46">46</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-47">47</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-48">48</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-49">49</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-50">50</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-51">51</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-52">52</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-53">53</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-54">54</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-55">55</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-56">56</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-57">57</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-58">58</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-59">59</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-60">60</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-61">61</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-62">62</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-63">63</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-64">64</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-65">65</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-66">66</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-67">67</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-68">68</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-69">69</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-70">70</a>
+<a href="#rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-71">71</a></pre></div></td>
+<td class="code"><pre class="code verilog"><a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-1"></a>   <span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-2"></a>       <span class="k">if</span> <span class="p">(</span> <span class="n">step_count</span> <span class="o">&gt;</span> <span class="mh">8'h0</span>  <span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-3"></a>           <span class="k">if</span> <span class="p">(</span><span class="n">clk2</span><span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-4"></a>               <span class="n">step_count</span> <span class="o">&lt;=</span> <span class="n">step_count</span> <span class="o">-</span> <span class="mh">1</span><span class="mb">'b1</span><span class="p">;</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-5"></a>               <span class="no">`ifdef</span> <span class="no">USE_COMBINATIONAL</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-6"></a>                <span class="n">current</span> <span class="o">&lt;=</span> <span class="n">next</span><span class="p">;</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-7"></a>                <span class="no">`endif</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-8"></a>               <span class="k">end</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-9"></a>           <span class="k">end</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-10"></a>       <span class="k">else</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-11"></a>        <span class="k">begin</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-12"></a>        <span class="k">if</span> <span class="p">(</span> <span class="n">ndet</span> <span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-13"></a>           <span class="k">if</span> <span class="p">(</span> <span class="n">steps</span><span class="p">[</span><span class="mh">7</span><span class="p">]</span> <span class="p">)</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-14"></a>                    <span class="n">step_count</span> <span class="o">&lt;=</span> <span class="o">~</span><span class="n">steps</span> <span class="o">+</span> <span class="mh">1</span><span class="mb">'b1</span><span class="p">;</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-15"></a>                   <span class="k">else</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-16"></a>                    <span class="n">step_count</span> <span class="o">&lt;=</span> <span class="n">steps</span><span class="p">;</span> <span class="c1">//infer latch</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-17"></a>        <span class="k">end</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-18"></a>        <span class="k">else</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-19"></a>        <span class="n">step_count</span> <span class="o">&lt;=</span> <span class="mh">8'h0</span><span class="p">;</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-20"></a>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-21"></a>        <span class="k">end</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-22"></a>   <span class="k">end</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-23"></a>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-24"></a>  <span class="no">`ifndef</span> <span class="no">USE_COMBINATIONAL</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-25"></a>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-26"></a>   <span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">)</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-27"></a>       <span class="k">case</span> <span class="p">(</span><span class="n">current</span><span class="p">)</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-28"></a>            <span class="nl">s0:</span> <span class="n">phase</span> <span class="o">&lt;=</span> <span class="mh">4</span><span class="mb">'b0101</span><span class="p">;</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-29"></a>            <span class="nl">s1:</span> <span class="n">phase</span> <span class="o">&lt;=</span> <span class="mh">4</span><span class="mb">'b1101</span><span class="p">;</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-30"></a>            <span class="nl">s2:</span> <span class="n">phase</span> <span class="o">&lt;=</span> <span class="mh">4</span><span class="mb">'b1001</span><span class="p">;</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-31"></a>            <span class="nl">s3:</span> <span class="n">phase</span> <span class="o">&lt;=</span> <span class="mh">4</span><span class="mb">'b1011</span><span class="p">;</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-32"></a>            <span class="nl">s4:</span> <span class="n">phase</span> <span class="o">&lt;=</span> <span class="mh">4</span><span class="mb">'b1010</span><span class="p">;</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-33"></a>            <span class="nl">s5:</span> <span class="n">phase</span> <span class="o">&lt;=</span> <span class="mh">4</span><span class="mb">'b1110</span><span class="p">;</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-34"></a>            <span class="nl">s6:</span> <span class="n">phase</span> <span class="o">&lt;=</span> <span class="mh">4</span><span class="mb">'b0110</span><span class="p">;</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-35"></a>            <span class="nl">s7:</span> <span class="n">phase</span> <span class="o">&lt;=</span> <span class="mh">4</span><span class="mb">'b0111</span><span class="p">;</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-36"></a>        <span class="k">endcase</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-37"></a>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-38"></a>   <span class="no">`else</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-39"></a>   <span class="k">assign</span> <span class="n">coils</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">~</span><span class="n">current</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">|</span> <span class="p">(</span><span class="o">~</span><span class="n">current</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">current</span><span class="p">[</span><span class="mh">0</span><span class="p">]);</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-40"></a>   <span class="k">assign</span> <span class="n">coils</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">current</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">|</span> <span class="p">(</span> <span class="n">current</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">current</span><span class="p">[</span><span class="mh">0</span><span class="p">]);</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-41"></a>   <span class="k">assign</span> <span class="n">coils</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">~</span><span class="n">current</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span> <span class="o">|</span> <span class="p">(</span> <span class="n">current</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">current</span><span class="p">[</span><span class="mh">0</span><span class="p">]);</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-42"></a>   <span class="k">assign</span> <span class="n">coils</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">current</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span> <span class="o">|</span> <span class="p">(</span><span class="o">~</span><span class="n">current</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">current</span><span class="p">[</span><span class="mh">0</span><span class="p">]);</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-43"></a>   <span class="no">`endif</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-44"></a>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-45"></a>   <span class="k">assign</span> <span class="n">running</span> <span class="o">=</span> <span class="p">(</span><span class="n">step_count</span> <span class="o">&gt;</span> <span class="mh">8'h0</span> <span class="p">);</span> <span class="c1">//as long as step count &gt; 0</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-46"></a>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-47"></a>  <span class="no">`ifndef</span> <span class="no">USE_COMBINATIONAL</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-48"></a>   <span class="k">always</span><span class="p">@(</span><span class="k">posedge</span>  <span class="n">clk</span><span class="p">)</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-49"></a>      <span class="k">if</span> <span class="p">(</span><span class="n">step_count</span> <span class="o">&gt;</span> <span class="mh">0</span> <span class="o">&amp;&amp;</span> <span class="n">clk2</span><span class="p">)</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-50"></a>      <span class="k">case</span> <span class="p">(</span><span class="n">current</span><span class="p">)</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-51"></a>           <span class="nl">s0:</span> <span class="n">current</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">direction</span> <span class="o">?</span> <span class="nl">s1:</span> <span class="n">s7</span><span class="p">);</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-52"></a>           <span class="nl">s1:</span> <span class="n">current</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">direction</span> <span class="o">?</span> <span class="n">s2</span> <span class="o">:</span> <span class="n">s0</span> <span class="p">);</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-53"></a>           <span class="nl">s2:</span> <span class="n">current</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">direction</span> <span class="o">?</span> <span class="n">s3</span> <span class="o">:</span> <span class="n">s1</span><span class="p">);</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-54"></a>           <span class="nl">s3:</span> <span class="n">current</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">direction</span> <span class="o">?</span> <span class="n">s4</span> <span class="o">:</span> <span class="n">s2</span><span class="p">);</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-55"></a>           <span class="nl">s4:</span> <span class="n">current</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">direction</span> <span class="o">?</span> <span class="n">s5</span> <span class="o">:</span> <span class="n">s3</span><span class="p">);</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-56"></a>           <span class="nl">s5:</span> <span class="n">current</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">direction</span> <span class="o">?</span> <span class="n">s6</span> <span class="o">:</span> <span class="n">s4</span><span class="p">);</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-57"></a>           <span class="nl">s6:</span> <span class="n">current</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">direction</span> <span class="o">?</span> <span class="n">s7</span> <span class="o">:</span> <span class="n">s5</span><span class="p">);</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-58"></a>           <span class="nl">s7:</span> <span class="n">current</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">direction</span> <span class="o">?</span> <span class="n">s0</span> <span class="o">:</span> <span class="n">s6</span><span class="p">);</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-59"></a>       <span class="k">endcase</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-60"></a>  <span class="no">`else</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-61"></a>      <span class="k">assign</span> <span class="n">next</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="o">~</span><span class="n">direction</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">current</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">current</span><span class="p">[</span><span class="mh">1</span><span class="p">])</span> <span class="o">|</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-62"></a>      <span class="p">(</span><span class="o">~</span><span class="n">direction</span> <span class="o">&amp;</span> <span class="n">current</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">current</span><span class="p">[</span><span class="mh">1</span><span class="p">])</span> <span class="o">|</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-63"></a>      <span class="p">(</span><span class="n">direction</span> <span class="o">&amp;</span> <span class="n">current</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">current</span><span class="p">[</span><span class="mh">1</span><span class="p">])</span> <span class="o">|</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-64"></a>      <span class="p">(</span><span class="n">direction</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">current</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">current</span><span class="p">[</span><span class="mh">1</span><span class="p">]);</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-65"></a>      <span class="k">assign</span> <span class="n">next</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">current</span><span class="p">[</span><span class="mh">0</span><span class="p">])</span> <span class="o">|</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-66"></a>      <span class="p">(</span><span class="o">~</span><span class="n">direction</span> <span class="o">&amp;</span> <span class="n">current</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">current</span><span class="p">[</span><span class="mh">0</span><span class="p">])</span> <span class="o">|</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-67"></a>      <span class="p">(</span><span class="n">direction</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">current</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">current</span><span class="p">[</span><span class="mh">0</span><span class="p">]);</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-68"></a>      <span class="k">assign</span> <span class="n">next</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">current</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="p">)</span> <span class="o">|</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-69"></a>      <span class="p">(</span><span class="o">~</span><span class="n">direction</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">current</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">current</span><span class="p">[</span><span class="mh">0</span><span class="p">])</span> <span class="o">|</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-70"></a>      <span class="p">(</span><span class="n">direction</span> <span class="o">&amp;</span> <span class="n">current</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">current</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span> <span class="p">);</span>
+<a name="rest_code_d714ca6b08c24268a9ac3fefe9d3c4e9-71"></a>  <span class="no">`endif</span>
+</pre></td>
+</tr></table>
+<div class="figure">
+<img alt="../../images/hardware/stepper_read_after_write.JPG" src="../../images/hardware/stepper_read_after_write.JPG"><p class="caption">Running status of motor from command <em>0xea</em></p>
+</div>
+<p>Both the state machine and the phases of the motor can be implemented with combinational logics, for example, the next state
+table below as the function of direction <em>D</em> and <em>current</em> state.</p>
+<table border="1" class="docutils">
+<colgroup><col width="100%"></colgroup>
+<thead valign="bottom"><tr>
+<th class="head">D | Current | Next</th>
+</tr></thead>
+<tbody valign="top">
+<tr>
+<td>0 |  000 | 100</td>
+</tr>
+<tr>
+<td>0 |  001 | 000</td>
+</tr>
+<tr>
+<td>0 |  010 | 011</td>
+</tr>
+<tr>
+<td>0 |  011 | 001</td>
+</tr>
+<tr>
+<td>0 |  100 | 101</td>
+</tr>
+<tr>
+<td>0 |  101 | 111</td>
+</tr>
+<tr>
+<td>0 |  110 | 010</td>
+</tr>
+<tr>
+<td>0 |  111 | 110</td>
+</tr>
+<tr>
+<td>1 |  000 | 001</td>
+</tr>
+<tr>
+<td>1 |  001 | 011</td>
+</tr>
+<tr>
+<td>1 |  010 | 110</td>
+</tr>
+<tr>
+<td>1 |  011 | 010</td>
+</tr>
+<tr>
+<td>1 |  100 | 000</td>
+</tr>
+<tr>
+<td>1 |  101 | 100</td>
+</tr>
+<tr>
+<td>1 |  110 | 111</td>
+</tr>
+<tr>
+<td>1 |  111 | 101</td>
+</tr>
+</tbody>
+</table>
+<p>The next state is simplified for their minterms as shown in the HDL code line 61-70. The motor phases are
+derived in the same manner where they are functions of the current state at line 39-42. I achieve the same
+result by implementing it with continous assignments as I would with the procedural assignments.</p>
+<div class="figure">
+<img alt="../../images/hardware/successive_writes.JPG" src="../../images/hardware/successive_writes.JPG"><p class="caption">Simulation of stepper motor control timing</p>
+</div>
+<div class="section" id="validating-the-design-and-testing">
+<h3>Validating the design and testing</h3>
+<p>For this design, I use two separate XDC file to constraint the design. One is for synthesis and the other
+is for implementation. The bitstream of the FPGA generated by this design is then loaded to the zynq and
+ready for testing. The kernel is built with the device tree created from my last exercise having the Zynq
+SPI master enable and muxed to EMIO. Because there is no change in Zynq h/w configuration in this design
+with respect to the last design, I do not have to re-export the h/w to the SDK in order to recreate the
+device tree.</p>
+<table class="codetable"><tr>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_6f2efe6c6e724ae7acd749eea8b8228e-1"> 1</a>
+<a href="#rest_code_6f2efe6c6e724ae7acd749eea8b8228e-2"> 2</a>
+<a href="#rest_code_6f2efe6c6e724ae7acd749eea8b8228e-3"> 3</a>
+<a href="#rest_code_6f2efe6c6e724ae7acd749eea8b8228e-4"> 4</a>
+<a href="#rest_code_6f2efe6c6e724ae7acd749eea8b8228e-5"> 5</a>
+<a href="#rest_code_6f2efe6c6e724ae7acd749eea8b8228e-6"> 6</a>
+<a href="#rest_code_6f2efe6c6e724ae7acd749eea8b8228e-7"> 7</a>
+<a href="#rest_code_6f2efe6c6e724ae7acd749eea8b8228e-8"> 8</a>
+<a href="#rest_code_6f2efe6c6e724ae7acd749eea8b8228e-9"> 9</a>
+<a href="#rest_code_6f2efe6c6e724ae7acd749eea8b8228e-10">10</a>
+<a href="#rest_code_6f2efe6c6e724ae7acd749eea8b8228e-11">11</a>
+<a href="#rest_code_6f2efe6c6e724ae7acd749eea8b8228e-12">12</a></pre></div></td>
+<td class="code"><pre class="code text"><a name="rest_code_6f2efe6c6e724ae7acd749eea8b8228e-1"></a># cat design_3_wrapper.bit &gt;/dev/xdevcfg
+<a name="rest_code_6f2efe6c6e724ae7acd749eea8b8228e-2"></a># insmod spi5a.ko
+<a name="rest_code_6f2efe6c6e724ae7acd749eea8b8228e-3"></a>spi max speed HZ: 1000000
+<a name="rest_code_6f2efe6c6e724ae7acd749eea8b8228e-4"></a>spi read ID for cs 0, mode 0, bpw 8
+<a name="rest_code_6f2efe6c6e724ae7acd749eea8b8228e-5"></a>Detected SPI Stepper ID 0x5a
+<a name="rest_code_6f2efe6c6e724ae7acd749eea8b8228e-6"></a>spi5a_probe read(ea) returns 0xc4
+<a name="rest_code_6f2efe6c6e724ae7acd749eea8b8228e-7"></a># cat /proc/stepper/status
+<a name="rest_code_6f2efe6c6e724ae7acd749eea8b8228e-8"></a>0xc4
+<a name="rest_code_6f2efe6c6e724ae7acd749eea8b8228e-9"></a># echo '0x44'&gt;/proc/stepper/steps &amp;&amp; cat /proc/stepper/status
+<a name="rest_code_6f2efe6c6e724ae7acd749eea8b8228e-10"></a>proc_stepcount_write: sbuf dd9b5e50, wrote step count 0x44, status 0
+<a name="rest_code_6f2efe6c6e724ae7acd749eea8b8228e-11"></a>0xc5
+<a name="rest_code_6f2efe6c6e724ae7acd749eea8b8228e-12"></a>#
+</pre></td>
+</tr></table>
+<p>Loading FPGA bitstream to zynq (line 1) and load the Linux SPI slave driver written for this design (line2). The SPI slave
+detects the newly instantiated h/w just fine so it prints out the status of that detection (line 3-6). I write the command
+to load the step count value <em>0x44</em> to the stepper drive and immediately read the status back where it indicates that
+the motor is running wih status <em>0xc5</em>. I observe that the stepper is stepping for the given count.</p>
+</div>
+<div class="section" id="conclusion">
+<h3>Conclusion</h3>
+<p>The most time consuming part of this design is the timing closure. I think it is almost always true in general
+where the HDL design only account for only fraction the amount of time to close the design. Vivado design suite also allows
+me to successfully creates and integrates the custom IPs without the need to use Xilinx AXI as done in my previous post.</p>
+</div>
+<div class="section" id="citations">
+<h3>Citations</h3>
+<table class="docutils footnote" frame="void" id="id2" rules="none">
+<colgroup>
+<col class="label">
+<col>
+</colgroup>
+<tbody valign="top"><tr>
+<td class="label">[1]</td>
+<td>Zybo(TM) FPGA Board Reference Manual, zybo_rm.pdf, Februrary 2013, Zybo rev B, Digilent.</td>
+</tr></tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id3" rules="none">
+<colgroup>
+<col class="label">
+<col>
+</colgroup>
+<tbody valign="top"><tr>
+<td class="label">[2]</td>
+<td>Zynq-7000 All Programmable SoC Techincal Reference Manual, ug585-Zynq-7000-TRM.pdf, Feb 2015, Xilinx.</td>
+</tr></tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id4" rules="none">
+<colgroup>
+<col class="label">
+<col>
+</colgroup>
+<tbody valign="top"><tr>
+<td class="label">[3]</td>
+<td>Zynq-7000 All Programmable SoC Embedded Design Tutorial, UG1165(v2015.3), ug1165-zynq-embedded-design-tutorial.pdf, Sept 30 2015, Xilinx.</td>
+</tr></tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id5" rules="none">
+<colgroup>
+<col class="label">
+<col>
+</colgroup>
+<tbody valign="top"><tr>
+<td class="label">[4]</td>
+<td>Zybo FPGA Board Reference Manual, Revised Feb 2013, Rev B, Digilent Inc.</td>
+</tr></tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id6" rules="none">
+<colgroup>
+<col class="label">
+<col>
+</colgroup>
+<tbody valign="top"><tr>
+<td class="label"><a class="fn-backref" href="#id1">[5]</a></td>
+<td>Zybo(TM) FPGA Board Schematic, zybo_sch.pdf, 5/7/2015, rev B.3, Digilent Inc.</td>
+</tr></tbody>
+</table>
+</div>
+</div>
+</div>
+    </div>
+    
+
+</article>
+</div>
+        <!--End of body content-->
+
+        <footer id="footer">
+            Contents © 2016         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+        </footer>
+</div>
+</div>
+
+
+            <script src="../../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+    moment.locale("en");
+    fancydates(0, "YYYY-MM-DD HH:mm");
+    </script><!-- end fancy dates -->
+</body>
+</html>

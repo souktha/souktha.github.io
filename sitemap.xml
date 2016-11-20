@@ -7,19 +7,19 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <url>
   <loc>http://souktha.github.io/</loc>
-  <lastmod>2016-07-06T21:21:00Z</lastmod>
+  <lastmod>2016-11-20T23:05:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/2016/</loc>
-  <lastmod>2016-07-06T21:21:00Z</lastmod>
+  <lastmod>2016-11-20T23:05:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/archive.html</loc>
-  <lastmod>2016-07-21T22:04:00Z</lastmod>
+  <lastmod>2016-11-20T23:05:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/blog/</loc>
-  <lastmod>2016-07-06T21:21:00Z</lastmod>
+  <lastmod>2016-11-20T23:05:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/blog/first-sample-blog-post/</loc>
@@ -27,7 +27,7 @@
  </url>
  <url>
   <loc>http://souktha.github.io/blog/index-1.html</loc>
-  <lastmod>2016-07-21T22:04:00Z</lastmod>
+  <lastmod>2016-11-20T23:05:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/blog/restructuredtext-demo-import-from-demotxt/</loc>
@@ -35,23 +35,23 @@
  </url>
  <url>
   <loc>http://souktha.github.io/categories/</loc>
-  <lastmod>2016-07-06T21:21:00Z</lastmod>
+  <lastmod>2016-11-20T23:05:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/categories/hardware/</loc>
-  <lastmod>2016-07-06T21:21:00Z</lastmod>
+  <lastmod>2016-11-20T23:05:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/categories/latex/</loc>
-  <lastmod>2016-07-06T21:21:00Z</lastmod>
+  <lastmod>2016-11-20T23:05:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/categories/mathjax/</loc>
-  <lastmod>2016-07-06T21:21:00Z</lastmod>
+  <lastmod>2016-11-20T23:05:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/categories/misc/</loc>
-  <lastmod>2016-07-06T21:21:00Z</lastmod>
+  <lastmod>2016-11-20T23:05:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/categories/software-hardware/</loc>
@@ -59,15 +59,15 @@
  </url>
  <url>
   <loc>http://souktha.github.io/categories/software/</loc>
-  <lastmod>2016-07-06T21:21:00Z</lastmod>
+  <lastmod>2016-11-20T23:05:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/galleries/</loc>
-  <lastmod>2016-07-06T21:21:00Z</lastmod>
+  <lastmod>2016-11-20T23:05:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/hardware/</loc>
-  <lastmod>2016-07-21T22:04:00Z</lastmod>
+  <lastmod>2016-11-20T23:05:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/hardware/hw_sample/</loc>
@@ -79,63 +79,67 @@
  </url>
  <url>
   <loc>http://souktha.github.io/hardware/runlenth/</loc>
-  <lastmod>2016-07-06T21:21:00Z</lastmod>
+  <lastmod>2016-11-20T23:05:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/hardware/servo/</loc>
-  <lastmod>2016-07-06T21:21:00Z</lastmod>
+  <lastmod>2016-11-20T23:05:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/hardware/vga-display-xadc/</loc>
-  <lastmod>2016-07-06T21:21:00Z</lastmod>
+  <lastmod>2016-11-20T23:05:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/hardware/vga_draw_graph/</loc>
-  <lastmod>2016-07-06T21:21:00Z</lastmod>
+  <lastmod>2016-11-20T23:05:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/hardware/zybo-spi-slave/</loc>
-  <lastmod>2016-07-21T22:04:00Z</lastmod>
+  <lastmod>2016-11-20T23:05:00Z</lastmod>
+ </url>
+ <url>
+  <loc>http://souktha.github.io/hardware/zybo-spi-stepper/</loc>
+  <lastmod>2016-11-20T23:05:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/listings/</loc>
-  <lastmod>2016-07-06T21:21:00Z</lastmod>
+  <lastmod>2016-11-20T23:05:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/misc/</loc>
-  <lastmod>2016-07-06T21:21:00Z</lastmod>
+  <lastmod>2016-11-20T23:05:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/misc/class_report_503/</loc>
-  <lastmod>2016-07-06T21:21:00Z</lastmod>
+  <lastmod>2016-11-20T23:05:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/misc/repartition-boneblk/</loc>
-  <lastmod>2016-07-06T21:21:00Z</lastmod>
+  <lastmod>2016-11-20T23:05:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/misc/restructuredtext-demo-import-from-demotxt/</loc>
-  <lastmod>2016-07-06T21:21:00Z</lastmod>
+  <lastmod>2016-11-20T23:05:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/misc/squashfs-ubi/</loc>
-  <lastmod>2016-07-06T21:21:00Z</lastmod>
+  <lastmod>2016-11-20T23:05:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/software/</loc>
-  <lastmod>2016-07-06T21:21:00Z</lastmod>
+  <lastmod>2016-11-20T23:05:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/software/bblk-ir/</loc>
-  <lastmod>2016-07-06T21:21:00Z</lastmod>
+  <lastmod>2016-11-20T23:05:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/software/dm814x_pcie/</loc>
-  <lastmod>2016-07-06T21:21:00Z</lastmod>
+  <lastmod>2016-11-20T23:05:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/software/dm814x_sata/</loc>
-  <lastmod>2016-07-06T21:21:00Z</lastmod>
+  <lastmod>2016-11-20T23:05:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/software/sw_sample_post/</loc>
@@ -143,10 +147,14 @@
  </url>
  <url>
   <loc>http://souktha.github.io/software/tty2comport/</loc>
-  <lastmod>2016-07-06T21:21:00Z</lastmod>
+  <lastmod>2016-11-20T23:05:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/software/zybo-quickstart/</loc>
-  <lastmod>2016-07-06T21:21:00Z</lastmod>
+  <lastmod>2016-11-20T23:05:00Z</lastmod>
+ </url>
+ <url>
+  <loc>http://souktha.github.io/software/zynq_spi_stepper_sw/</loc>
+  <lastmod>2016-11-20T23:05:00Z</lastmod>
  </url>
 </urlset>
