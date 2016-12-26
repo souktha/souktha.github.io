@@ -16,3 +16,5 @@ it for fun since I think it is simple enough to implement it in FPGA. The genera
 for this exercise is :math:`g(x)=1+x+x4` for an :math:`(n,k,d) \equiv (15,11,3)` code.
 
 .. TEASER_END
+
+*This is to be completed *
