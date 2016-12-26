@@ -2,7 +2,7 @@
 .. slug: runlenth
 .. date: 2016-03-26 18:40:58 UTC
 .. tags: hardware
-.. category: 
+.. category: FPGA
 .. link: 
 .. description: 
 .. type: text

@@ -2,7 +2,7 @@
 .. slug: vga_draw_graph
 .. date: 2016-03-19 19:52:20 UTC
 .. tags: hardware
-.. category: 
+.. category: FPGA
 .. link: 
 .. description: 
 .. type: text

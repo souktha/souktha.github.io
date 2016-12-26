@@ -2,7 +2,7 @@
 .. slug: zybo-spi-stepper
 .. date: 2016-11-12 15:38:09 UTC
 .. tags: hardware
-.. category: 
+.. category: FPGA
 .. link: 
 .. description: SPI slave stepper motor
 .. type: text

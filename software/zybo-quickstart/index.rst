@@ -2,7 +2,7 @@
 .. slug: zybo-quickstart
 .. date: 2016-04-23 19:08:20 UTC
 .. tags: software, hardware
-.. category: 
+.. category: Linux
 .. link: 
 .. description: 
 .. type: text

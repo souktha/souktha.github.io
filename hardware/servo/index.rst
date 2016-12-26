@@ -2,7 +2,7 @@
 .. slug: servo
 .. date: 2016-03-12 05:25:40 UTC
 .. tags: hardware
-.. category: 
+.. category: FPGA
 .. link: 
 .. description: driving servo with FPGA
 .. type: text

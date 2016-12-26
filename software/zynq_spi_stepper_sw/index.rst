@@ -2,7 +2,7 @@
 .. slug: zynq_spi_stepper_sw
 .. date: 2016-11-17 00:40:47 UTC
 .. tags: software
-.. category: 
+.. category: Linux
 .. link: 
 .. description: Linux device driver for zynq SPI slave stepper motor
 .. type: text

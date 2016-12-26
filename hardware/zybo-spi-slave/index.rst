@@ -2,7 +2,7 @@
 .. slug: zybo-spi-slave
 .. date: 2016-07-17 18:10:54 UTC
 .. tags: hardware, software
-.. category: 
+.. category: FPGA
 .. link: 
 .. description: Adding custom SPI slave device connected to SPI0 via EMIO
 .. type: text

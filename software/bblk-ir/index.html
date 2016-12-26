@@ -136,24 +136,24 @@ First thing I need to do is to redo pinmux for <em>T17</em> (Table 4.1, page 29)
 This is the pin for UART4_RXD. For this pin to function as UART4_RXD, it needs to be muxed to mode 6 of operation.
 To pinmux, I need to edit the device tree source, am335x-boneblack.dts, and add to '&amp;am33xx_pinmux' block to override their default settings.
 I do not need TX operation of this UART since it is only for RX operation.</p>
-<pre class="code text"><a name="rest_code_025d4def474149aea137d2974b73e388-1"></a>&amp;am33xx_pinmux {
-<a name="rest_code_025d4def474149aea137d2974b73e388-2"></a>         ..
-<a name="rest_code_025d4def474149aea137d2974b73e388-3"></a>
-<a name="rest_code_025d4def474149aea137d2974b73e388-4"></a>         uart4_pins: pinmux_uart4_pins {
-<a name="rest_code_025d4def474149aea137d2974b73e388-5"></a>         pinctrl-single,pins = &lt;
-<a name="rest_code_025d4def474149aea137d2974b73e388-6"></a>                 0x70 (PIN_INPUT_PULLUP | MUX_MODE6)     /* uart4_rxd.uart4_rxd*/
-<a name="rest_code_025d4def474149aea137d2974b73e388-7"></a>         &gt;;
-<a name="rest_code_025d4def474149aea137d2974b73e388-8"></a>        };
-<a name="rest_code_025d4def474149aea137d2974b73e388-9"></a> };
+<pre class="code text"><a name="rest_code_21f5381d448d4f3783e8f8a684f2ea82-1"></a>&amp;am33xx_pinmux {
+<a name="rest_code_21f5381d448d4f3783e8f8a684f2ea82-2"></a>         ..
+<a name="rest_code_21f5381d448d4f3783e8f8a684f2ea82-3"></a>
+<a name="rest_code_21f5381d448d4f3783e8f8a684f2ea82-4"></a>         uart4_pins: pinmux_uart4_pins {
+<a name="rest_code_21f5381d448d4f3783e8f8a684f2ea82-5"></a>         pinctrl-single,pins = &lt;
+<a name="rest_code_21f5381d448d4f3783e8f8a684f2ea82-6"></a>                 0x70 (PIN_INPUT_PULLUP | MUX_MODE6)     /* uart4_rxd.uart4_rxd*/
+<a name="rest_code_21f5381d448d4f3783e8f8a684f2ea82-7"></a>         &gt;;
+<a name="rest_code_21f5381d448d4f3783e8f8a684f2ea82-8"></a>        };
+<a name="rest_code_21f5381d448d4f3783e8f8a684f2ea82-9"></a> };
 </pre>
 <p>I also need to enable UART4 that was defined, but was marked disabled otherwise I will not be able to use it. I can override this setting by
 adding the following to the dts file,</p>
-<pre class="code text"><a name="rest_code_2ff8f3dfb35e45babb9f8051a81de5b9-1"></a>&amp;uart4 {
-<a name="rest_code_2ff8f3dfb35e45babb9f8051a81de5b9-2"></a>        pinctrl-names = "default";
-<a name="rest_code_2ff8f3dfb35e45babb9f8051a81de5b9-3"></a>        pinctrl-0 = &lt;&amp;uart4_pins&gt;;
-<a name="rest_code_2ff8f3dfb35e45babb9f8051a81de5b9-4"></a>        compatible = "cir-uart";
-<a name="rest_code_2ff8f3dfb35e45babb9f8051a81de5b9-5"></a>        status = "okay";
-<a name="rest_code_2ff8f3dfb35e45babb9f8051a81de5b9-6"></a>};
+<pre class="code text"><a name="rest_code_4973d713afd24eb49a881679eecfe8ac-1"></a>&amp;uart4 {
+<a name="rest_code_4973d713afd24eb49a881679eecfe8ac-2"></a>        pinctrl-names = "default";
+<a name="rest_code_4973d713afd24eb49a881679eecfe8ac-3"></a>        pinctrl-0 = &lt;&amp;uart4_pins&gt;;
+<a name="rest_code_4973d713afd24eb49a881679eecfe8ac-4"></a>        compatible = "cir-uart";
+<a name="rest_code_4973d713afd24eb49a881679eecfe8ac-5"></a>        status = "okay";
+<a name="rest_code_4973d713afd24eb49a881679eecfe8ac-6"></a>};
 </pre>
 <p>So I add the block shown above just below '&amp;mcasp0' block. This is to set 'uart4' to use the pinmux that I define and set its status to be okay (enable).
 I also set the platform driver compatibilty to 'cir-uart'. This is going to be my new IR driver. The platform driver will invoke my driver upon
@@ -166,69 +166,69 @@ The simple part is done, now come the hard part. Getting the UART4 to work the w
 <p>In reference to TI's AM335x <a class="footnote-reference" href="#id7" id="id4">[1]</a>, chapter 19, Universal Receiver/Transmitter, the clock for this UART is the external <em>PER_CLKOUTM2</em> <em>PRCM / 4</em> that feeds the UART's <em>fclk</em>.  The UART has to be clocked for the driver to be able to access its registers and configure it for use.</p>
 <p>The first thing this driver does is to register with the kernel platform framework having this <em>platform_driver</em> table,</p>
 <table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_14ff59d42cd7430497f4ee1731256455-1">1</a>
-<a href="#rest_code_14ff59d42cd7430497f4ee1731256455-2">2</a>
-<a href="#rest_code_14ff59d42cd7430497f4ee1731256455-3">3</a>
-<a href="#rest_code_14ff59d42cd7430497f4ee1731256455-4">4</a>
-<a href="#rest_code_14ff59d42cd7430497f4ee1731256455-5">5</a>
-<a href="#rest_code_14ff59d42cd7430497f4ee1731256455-6">6</a>
-<a href="#rest_code_14ff59d42cd7430497f4ee1731256455-7">7</a>
-<a href="#rest_code_14ff59d42cd7430497f4ee1731256455-8">8</a></pre></div></td>
-<td class="code"><pre class="code c"><a name="rest_code_14ff59d42cd7430497f4ee1731256455-1"></a>       <span class="k">static</span> <span class="k">struct</span> <span class="n">platform_driver</span> <span class="n">cir_platform_driver</span> <span class="o">=</span> <span class="p">{</span>
-<a name="rest_code_14ff59d42cd7430497f4ee1731256455-2"></a>               <span class="p">.</span><span class="n">driver</span> <span class="o">=</span> <span class="p">{</span>
-<a name="rest_code_14ff59d42cd7430497f4ee1731256455-3"></a>               <span class="p">.</span><span class="n">name</span>           <span class="o">=</span> <span class="s">"cir-uart"</span><span class="p">,</span>
-<a name="rest_code_14ff59d42cd7430497f4ee1731256455-4"></a>               <span class="p">.</span><span class="n">of_match_table</span> <span class="o">=</span> <span class="n">cir_dt_ids</span><span class="p">,</span>
-<a name="rest_code_14ff59d42cd7430497f4ee1731256455-5"></a>               <span class="p">},</span>
-<a name="rest_code_14ff59d42cd7430497f4ee1731256455-6"></a>               <span class="p">.</span><span class="n">probe</span>                  <span class="o">=</span> <span class="n">cir_probe</span><span class="p">,</span>
-<a name="rest_code_14ff59d42cd7430497f4ee1731256455-7"></a>               <span class="p">.</span><span class="n">remove</span>                 <span class="o">=</span> <span class="n">cir_remove</span><span class="p">,</span>
-<a name="rest_code_14ff59d42cd7430497f4ee1731256455-8"></a>       <span class="p">};</span>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_8377130364264583aa039b70772cfb4b-1">1</a>
+<a href="#rest_code_8377130364264583aa039b70772cfb4b-2">2</a>
+<a href="#rest_code_8377130364264583aa039b70772cfb4b-3">3</a>
+<a href="#rest_code_8377130364264583aa039b70772cfb4b-4">4</a>
+<a href="#rest_code_8377130364264583aa039b70772cfb4b-5">5</a>
+<a href="#rest_code_8377130364264583aa039b70772cfb4b-6">6</a>
+<a href="#rest_code_8377130364264583aa039b70772cfb4b-7">7</a>
+<a href="#rest_code_8377130364264583aa039b70772cfb4b-8">8</a></pre></div></td>
+<td class="code"><pre class="code c"><a name="rest_code_8377130364264583aa039b70772cfb4b-1"></a>       <span class="k">static</span> <span class="k">struct</span> <span class="n">platform_driver</span> <span class="n">cir_platform_driver</span> <span class="o">=</span> <span class="p">{</span>
+<a name="rest_code_8377130364264583aa039b70772cfb4b-2"></a>               <span class="p">.</span><span class="n">driver</span> <span class="o">=</span> <span class="p">{</span>
+<a name="rest_code_8377130364264583aa039b70772cfb4b-3"></a>               <span class="p">.</span><span class="n">name</span>           <span class="o">=</span> <span class="s">"cir-uart"</span><span class="p">,</span>
+<a name="rest_code_8377130364264583aa039b70772cfb4b-4"></a>               <span class="p">.</span><span class="n">of_match_table</span> <span class="o">=</span> <span class="n">cir_dt_ids</span><span class="p">,</span>
+<a name="rest_code_8377130364264583aa039b70772cfb4b-5"></a>               <span class="p">},</span>
+<a name="rest_code_8377130364264583aa039b70772cfb4b-6"></a>               <span class="p">.</span><span class="n">probe</span>                  <span class="o">=</span> <span class="n">cir_probe</span><span class="p">,</span>
+<a name="rest_code_8377130364264583aa039b70772cfb4b-7"></a>               <span class="p">.</span><span class="n">remove</span>                 <span class="o">=</span> <span class="n">cir_remove</span><span class="p">,</span>
+<a name="rest_code_8377130364264583aa039b70772cfb4b-8"></a>       <span class="p">};</span>
 </pre></td>
 </tr></table>
 <p>The <em>cir-uart</em> matches to what I defined in the device tree earlier. The will enable the platform driver framework to call
 its <em>cir_probe</em> for device probing and initializing the device.</p>
 <table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_444ddb52a3364f6d89cdb2bc99c2f202-1"> 1</a>
-<a href="#rest_code_444ddb52a3364f6d89cdb2bc99c2f202-2"> 2</a>
-<a href="#rest_code_444ddb52a3364f6d89cdb2bc99c2f202-3"> 3</a>
-<a href="#rest_code_444ddb52a3364f6d89cdb2bc99c2f202-4"> 4</a>
-<a href="#rest_code_444ddb52a3364f6d89cdb2bc99c2f202-5"> 5</a>
-<a href="#rest_code_444ddb52a3364f6d89cdb2bc99c2f202-6"> 6</a>
-<a href="#rest_code_444ddb52a3364f6d89cdb2bc99c2f202-7"> 7</a>
-<a href="#rest_code_444ddb52a3364f6d89cdb2bc99c2f202-8"> 8</a>
-<a href="#rest_code_444ddb52a3364f6d89cdb2bc99c2f202-9"> 9</a>
-<a href="#rest_code_444ddb52a3364f6d89cdb2bc99c2f202-10">10</a>
-<a href="#rest_code_444ddb52a3364f6d89cdb2bc99c2f202-11">11</a>
-<a href="#rest_code_444ddb52a3364f6d89cdb2bc99c2f202-12">12</a>
-<a href="#rest_code_444ddb52a3364f6d89cdb2bc99c2f202-13">13</a>
-<a href="#rest_code_444ddb52a3364f6d89cdb2bc99c2f202-14">14</a>
-<a href="#rest_code_444ddb52a3364f6d89cdb2bc99c2f202-15">15</a>
-<a href="#rest_code_444ddb52a3364f6d89cdb2bc99c2f202-16">16</a>
-<a href="#rest_code_444ddb52a3364f6d89cdb2bc99c2f202-17">17</a>
-<a href="#rest_code_444ddb52a3364f6d89cdb2bc99c2f202-18">18</a>
-<a href="#rest_code_444ddb52a3364f6d89cdb2bc99c2f202-19">19</a>
-<a href="#rest_code_444ddb52a3364f6d89cdb2bc99c2f202-20">20</a>
-<a href="#rest_code_444ddb52a3364f6d89cdb2bc99c2f202-21">21</a></pre></div></td>
-<td class="code"><pre class="code c"><a name="rest_code_444ddb52a3364f6d89cdb2bc99c2f202-1"></a>       <span class="k">static</span> <span class="kt">int</span> <span class="nf">cir_probe</span><span class="p">(</span><span class="k">struct</span> <span class="n">platform_device</span> <span class="o">*</span> <span class="n">pdev</span><span class="p">)</span>
-<a name="rest_code_444ddb52a3364f6d89cdb2bc99c2f202-2"></a>       <span class="p">{</span>
-<a name="rest_code_444ddb52a3364f6d89cdb2bc99c2f202-3"></a>               <span class="p">...</span>
-<a name="rest_code_444ddb52a3364f6d89cdb2bc99c2f202-4"></a>
-<a name="rest_code_444ddb52a3364f6d89cdb2bc99c2f202-5"></a>               <span class="k">struct</span> <span class="n">resource</span> <span class="o">*</span> <span class="n">regs</span> <span class="o">=</span> <span class="n">platform_get_resource</span><span class="p">(</span><span class="n">pdev</span><span class="p">,</span> <span class="n">IORESOURCE_MEM</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-<a name="rest_code_444ddb52a3364f6d89cdb2bc99c2f202-6"></a>               <span class="k">struct</span> <span class="n">resource</span> <span class="o">*</span> <span class="n">irq</span> <span class="o">=</span> <span class="n">platform_get_resource</span><span class="p">(</span><span class="n">pdev</span><span class="p">,</span> <span class="n">IORESOURCE_IRQ</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-<a name="rest_code_444ddb52a3364f6d89cdb2bc99c2f202-7"></a>               <span class="p">...</span>
-<a name="rest_code_444ddb52a3364f6d89cdb2bc99c2f202-8"></a>               <span class="cm">/* use uart4_fck*/</span>
-<a name="rest_code_444ddb52a3364f6d89cdb2bc99c2f202-9"></a>               <span class="n">clk</span> <span class="o">=</span> <span class="n">clk_get</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pdev</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">,</span><span class="s">"dpll_per_m2_div4_ck"</span><span class="p">);</span> <span class="c1">//expect 48MHZ clock feed</span>
-<a name="rest_code_444ddb52a3364f6d89cdb2bc99c2f202-10"></a>               <span class="p">..</span>
-<a name="rest_code_444ddb52a3364f6d89cdb2bc99c2f202-11"></a>
-<a name="rest_code_444ddb52a3364f6d89cdb2bc99c2f202-12"></a>               <span class="n">device_init_wakeup</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pdev</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
-<a name="rest_code_444ddb52a3364f6d89cdb2bc99c2f202-13"></a>               <span class="n">pm_runtime_use_autosuspend</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pdev</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">);</span>
-<a name="rest_code_444ddb52a3364f6d89cdb2bc99c2f202-14"></a>               <span class="n">pm_runtime_set_autosuspend_delay</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pdev</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
-<a name="rest_code_444ddb52a3364f6d89cdb2bc99c2f202-15"></a>               <span class="n">pm_runtime_irq_safe</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pdev</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">);</span>
-<a name="rest_code_444ddb52a3364f6d89cdb2bc99c2f202-16"></a>               <span class="n">pm_runtime_enable</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pdev</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">);</span>
-<a name="rest_code_444ddb52a3364f6d89cdb2bc99c2f202-17"></a>
-<a name="rest_code_444ddb52a3364f6d89cdb2bc99c2f202-18"></a>               <span class="n">pm_runtime_get_sync</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pdev</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">);</span>
-<a name="rest_code_444ddb52a3364f6d89cdb2bc99c2f202-19"></a>
-<a name="rest_code_444ddb52a3364f6d89cdb2bc99c2f202-20"></a>               <span class="n">cirdev</span><span class="o">-&gt;</span><span class="n">clk</span> <span class="o">=</span> <span class="n">clk</span><span class="p">;</span>
-<a name="rest_code_444ddb52a3364f6d89cdb2bc99c2f202-21"></a>               <span class="n">clk_prepare_enable</span><span class="p">(</span><span class="n">clk</span><span class="p">);</span>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_41ec0e38dce346d083a29857ff0b6656-1"> 1</a>
+<a href="#rest_code_41ec0e38dce346d083a29857ff0b6656-2"> 2</a>
+<a href="#rest_code_41ec0e38dce346d083a29857ff0b6656-3"> 3</a>
+<a href="#rest_code_41ec0e38dce346d083a29857ff0b6656-4"> 4</a>
+<a href="#rest_code_41ec0e38dce346d083a29857ff0b6656-5"> 5</a>
+<a href="#rest_code_41ec0e38dce346d083a29857ff0b6656-6"> 6</a>
+<a href="#rest_code_41ec0e38dce346d083a29857ff0b6656-7"> 7</a>
+<a href="#rest_code_41ec0e38dce346d083a29857ff0b6656-8"> 8</a>
+<a href="#rest_code_41ec0e38dce346d083a29857ff0b6656-9"> 9</a>
+<a href="#rest_code_41ec0e38dce346d083a29857ff0b6656-10">10</a>
+<a href="#rest_code_41ec0e38dce346d083a29857ff0b6656-11">11</a>
+<a href="#rest_code_41ec0e38dce346d083a29857ff0b6656-12">12</a>
+<a href="#rest_code_41ec0e38dce346d083a29857ff0b6656-13">13</a>
+<a href="#rest_code_41ec0e38dce346d083a29857ff0b6656-14">14</a>
+<a href="#rest_code_41ec0e38dce346d083a29857ff0b6656-15">15</a>
+<a href="#rest_code_41ec0e38dce346d083a29857ff0b6656-16">16</a>
+<a href="#rest_code_41ec0e38dce346d083a29857ff0b6656-17">17</a>
+<a href="#rest_code_41ec0e38dce346d083a29857ff0b6656-18">18</a>
+<a href="#rest_code_41ec0e38dce346d083a29857ff0b6656-19">19</a>
+<a href="#rest_code_41ec0e38dce346d083a29857ff0b6656-20">20</a>
+<a href="#rest_code_41ec0e38dce346d083a29857ff0b6656-21">21</a></pre></div></td>
+<td class="code"><pre class="code c"><a name="rest_code_41ec0e38dce346d083a29857ff0b6656-1"></a>       <span class="k">static</span> <span class="kt">int</span> <span class="nf">cir_probe</span><span class="p">(</span><span class="k">struct</span> <span class="n">platform_device</span> <span class="o">*</span> <span class="n">pdev</span><span class="p">)</span>
+<a name="rest_code_41ec0e38dce346d083a29857ff0b6656-2"></a>       <span class="p">{</span>
+<a name="rest_code_41ec0e38dce346d083a29857ff0b6656-3"></a>               <span class="p">...</span>
+<a name="rest_code_41ec0e38dce346d083a29857ff0b6656-4"></a>
+<a name="rest_code_41ec0e38dce346d083a29857ff0b6656-5"></a>               <span class="k">struct</span> <span class="n">resource</span> <span class="o">*</span> <span class="n">regs</span> <span class="o">=</span> <span class="n">platform_get_resource</span><span class="p">(</span><span class="n">pdev</span><span class="p">,</span> <span class="n">IORESOURCE_MEM</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<a name="rest_code_41ec0e38dce346d083a29857ff0b6656-6"></a>               <span class="k">struct</span> <span class="n">resource</span> <span class="o">*</span> <span class="n">irq</span> <span class="o">=</span> <span class="n">platform_get_resource</span><span class="p">(</span><span class="n">pdev</span><span class="p">,</span> <span class="n">IORESOURCE_IRQ</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<a name="rest_code_41ec0e38dce346d083a29857ff0b6656-7"></a>               <span class="p">...</span>
+<a name="rest_code_41ec0e38dce346d083a29857ff0b6656-8"></a>               <span class="cm">/* use uart4_fck*/</span>
+<a name="rest_code_41ec0e38dce346d083a29857ff0b6656-9"></a>               <span class="n">clk</span> <span class="o">=</span> <span class="n">clk_get</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pdev</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">,</span><span class="s">"dpll_per_m2_div4_ck"</span><span class="p">);</span> <span class="c1">//expect 48MHZ clock feed</span>
+<a name="rest_code_41ec0e38dce346d083a29857ff0b6656-10"></a>               <span class="p">..</span>
+<a name="rest_code_41ec0e38dce346d083a29857ff0b6656-11"></a>
+<a name="rest_code_41ec0e38dce346d083a29857ff0b6656-12"></a>               <span class="n">device_init_wakeup</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pdev</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+<a name="rest_code_41ec0e38dce346d083a29857ff0b6656-13"></a>               <span class="n">pm_runtime_use_autosuspend</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pdev</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">);</span>
+<a name="rest_code_41ec0e38dce346d083a29857ff0b6656-14"></a>               <span class="n">pm_runtime_set_autosuspend_delay</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pdev</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+<a name="rest_code_41ec0e38dce346d083a29857ff0b6656-15"></a>               <span class="n">pm_runtime_irq_safe</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pdev</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">);</span>
+<a name="rest_code_41ec0e38dce346d083a29857ff0b6656-16"></a>               <span class="n">pm_runtime_enable</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pdev</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">);</span>
+<a name="rest_code_41ec0e38dce346d083a29857ff0b6656-17"></a>
+<a name="rest_code_41ec0e38dce346d083a29857ff0b6656-18"></a>               <span class="n">pm_runtime_get_sync</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pdev</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">);</span>
+<a name="rest_code_41ec0e38dce346d083a29857ff0b6656-19"></a>
+<a name="rest_code_41ec0e38dce346d083a29857ff0b6656-20"></a>               <span class="n">cirdev</span><span class="o">-&gt;</span><span class="n">clk</span> <span class="o">=</span> <span class="n">clk</span><span class="p">;</span>
+<a name="rest_code_41ec0e38dce346d083a29857ff0b6656-21"></a>               <span class="n">clk_prepare_enable</span><span class="p">(</span><span class="n">clk</span><span class="p">);</span>
 </pre></td>
 </tr></table>
 <p>The device probe get the device resource information from the platfrom framework. I look up the source
@@ -242,36 +242,36 @@ defined since the device does not need special handling. It is only for the form
 <em>RC_MAP_RC6_MCE</em>, but it can be changed at run-time. Work queue is also used for this
 driver for input event processing as the BH portion of interrupt handling.</p>
 <table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_28cb4c8c0fbd45449643aa811108ab51-1"> 1</a>
-<a href="#rest_code_28cb4c8c0fbd45449643aa811108ab51-2"> 2</a>
-<a href="#rest_code_28cb4c8c0fbd45449643aa811108ab51-3"> 3</a>
-<a href="#rest_code_28cb4c8c0fbd45449643aa811108ab51-4"> 4</a>
-<a href="#rest_code_28cb4c8c0fbd45449643aa811108ab51-5"> 5</a>
-<a href="#rest_code_28cb4c8c0fbd45449643aa811108ab51-6"> 6</a>
-<a href="#rest_code_28cb4c8c0fbd45449643aa811108ab51-7"> 7</a>
-<a href="#rest_code_28cb4c8c0fbd45449643aa811108ab51-8"> 8</a>
-<a href="#rest_code_28cb4c8c0fbd45449643aa811108ab51-9"> 9</a>
-<a href="#rest_code_28cb4c8c0fbd45449643aa811108ab51-10">10</a>
-<a href="#rest_code_28cb4c8c0fbd45449643aa811108ab51-11">11</a>
-<a href="#rest_code_28cb4c8c0fbd45449643aa811108ab51-12">12</a>
-<a href="#rest_code_28cb4c8c0fbd45449643aa811108ab51-13">13</a>
-<a href="#rest_code_28cb4c8c0fbd45449643aa811108ab51-14">14</a>
-<a href="#rest_code_28cb4c8c0fbd45449643aa811108ab51-15">15</a></pre></div></td>
-<td class="code"><pre class="code c"><a name="rest_code_28cb4c8c0fbd45449643aa811108ab51-1"></a>       <span class="n">ir_props</span> <span class="o">=</span> <span class="n">rc_allocate_device</span><span class="p">();</span>
-<a name="rest_code_28cb4c8c0fbd45449643aa811108ab51-2"></a>       <span class="p">..</span>
-<a name="rest_code_28cb4c8c0fbd45449643aa811108ab51-3"></a>       <span class="n">ir_props</span><span class="o">-&gt;</span><span class="n">driver_type</span> <span class="o">=</span> <span class="n">RC_DRIVER_IR_RAW</span><span class="p">;</span>
-<a name="rest_code_28cb4c8c0fbd45449643aa811108ab51-4"></a>       <span class="n">ir_props</span><span class="o">-&gt;</span><span class="n">allowed_protocols</span> <span class="o">=</span> <span class="n">RC_BIT_ALL</span><span class="p">;</span>
-<a name="rest_code_28cb4c8c0fbd45449643aa811108ab51-5"></a>       <span class="n">ir_props</span><span class="o">-&gt;</span><span class="n">priv</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span> <span class="p">)</span><span class="n">cirdev</span><span class="p">;</span>
-<a name="rest_code_28cb4c8c0fbd45449643aa811108ab51-6"></a>       <span class="n">ir_props</span><span class="o">-&gt;</span><span class="n">s_idle</span> <span class="o">=</span> <span class="n">cir_set_idle</span><span class="p">;</span>
-<a name="rest_code_28cb4c8c0fbd45449643aa811108ab51-7"></a>       <span class="n">ir_props</span><span class="o">-&gt;</span><span class="n">open</span> <span class="o">=</span> <span class="n">cir_open</span><span class="p">;</span>
-<a name="rest_code_28cb4c8c0fbd45449643aa811108ab51-8"></a>       <span class="n">ir_props</span><span class="o">-&gt;</span><span class="n">close</span> <span class="o">=</span> <span class="n">cir_close</span><span class="p">;</span>
-<a name="rest_code_28cb4c8c0fbd45449643aa811108ab51-9"></a>       <span class="p">..</span>
-<a name="rest_code_28cb4c8c0fbd45449643aa811108ab51-10"></a>       <span class="n">ir_props</span><span class="o">-&gt;</span><span class="n">map_name</span> <span class="o">=</span> <span class="n">RC_MAP_RC6_MCE</span><span class="p">;</span>
-<a name="rest_code_28cb4c8c0fbd45449643aa811108ab51-11"></a>       <span class="p">..</span>
-<a name="rest_code_28cb4c8c0fbd45449643aa811108ab51-12"></a>       <span class="n">INIT_WORK</span><span class="p">((</span><span class="k">struct</span> <span class="n">work_struct</span> <span class="o">*</span> <span class="p">)</span><span class="o">&amp;</span><span class="n">cirdev</span><span class="o">-&gt;</span><span class="n">bh</span><span class="p">,</span><span class="n">irevent_bh</span><span class="p">);</span>
-<a name="rest_code_28cb4c8c0fbd45449643aa811108ab51-13"></a>       <span class="n">INIT_LIST_HEAD</span><span class="p">((</span><span class="k">struct</span> <span class="n">list_head</span> <span class="o">*</span> <span class="p">)</span><span class="o">&amp;</span><span class="n">cirdev</span><span class="o">-&gt;</span><span class="n">head</span><span class="p">);</span>
-<a name="rest_code_28cb4c8c0fbd45449643aa811108ab51-14"></a>
-<a name="rest_code_28cb4c8c0fbd45449643aa811108ab51-15"></a>       <span class="n">err</span> <span class="o">=</span> <span class="n">rc_register_device</span><span class="p">(</span><span class="n">cirdev</span><span class="o">-&gt;</span><span class="n">irprops</span><span class="p">);</span>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_6b8232dd0585472fb25a0662247de30c-1"> 1</a>
+<a href="#rest_code_6b8232dd0585472fb25a0662247de30c-2"> 2</a>
+<a href="#rest_code_6b8232dd0585472fb25a0662247de30c-3"> 3</a>
+<a href="#rest_code_6b8232dd0585472fb25a0662247de30c-4"> 4</a>
+<a href="#rest_code_6b8232dd0585472fb25a0662247de30c-5"> 5</a>
+<a href="#rest_code_6b8232dd0585472fb25a0662247de30c-6"> 6</a>
+<a href="#rest_code_6b8232dd0585472fb25a0662247de30c-7"> 7</a>
+<a href="#rest_code_6b8232dd0585472fb25a0662247de30c-8"> 8</a>
+<a href="#rest_code_6b8232dd0585472fb25a0662247de30c-9"> 9</a>
+<a href="#rest_code_6b8232dd0585472fb25a0662247de30c-10">10</a>
+<a href="#rest_code_6b8232dd0585472fb25a0662247de30c-11">11</a>
+<a href="#rest_code_6b8232dd0585472fb25a0662247de30c-12">12</a>
+<a href="#rest_code_6b8232dd0585472fb25a0662247de30c-13">13</a>
+<a href="#rest_code_6b8232dd0585472fb25a0662247de30c-14">14</a>
+<a href="#rest_code_6b8232dd0585472fb25a0662247de30c-15">15</a></pre></div></td>
+<td class="code"><pre class="code c"><a name="rest_code_6b8232dd0585472fb25a0662247de30c-1"></a>       <span class="n">ir_props</span> <span class="o">=</span> <span class="n">rc_allocate_device</span><span class="p">();</span>
+<a name="rest_code_6b8232dd0585472fb25a0662247de30c-2"></a>       <span class="p">..</span>
+<a name="rest_code_6b8232dd0585472fb25a0662247de30c-3"></a>       <span class="n">ir_props</span><span class="o">-&gt;</span><span class="n">driver_type</span> <span class="o">=</span> <span class="n">RC_DRIVER_IR_RAW</span><span class="p">;</span>
+<a name="rest_code_6b8232dd0585472fb25a0662247de30c-4"></a>       <span class="n">ir_props</span><span class="o">-&gt;</span><span class="n">allowed_protocols</span> <span class="o">=</span> <span class="n">RC_BIT_ALL</span><span class="p">;</span>
+<a name="rest_code_6b8232dd0585472fb25a0662247de30c-5"></a>       <span class="n">ir_props</span><span class="o">-&gt;</span><span class="n">priv</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span> <span class="p">)</span><span class="n">cirdev</span><span class="p">;</span>
+<a name="rest_code_6b8232dd0585472fb25a0662247de30c-6"></a>       <span class="n">ir_props</span><span class="o">-&gt;</span><span class="n">s_idle</span> <span class="o">=</span> <span class="n">cir_set_idle</span><span class="p">;</span>
+<a name="rest_code_6b8232dd0585472fb25a0662247de30c-7"></a>       <span class="n">ir_props</span><span class="o">-&gt;</span><span class="n">open</span> <span class="o">=</span> <span class="n">cir_open</span><span class="p">;</span>
+<a name="rest_code_6b8232dd0585472fb25a0662247de30c-8"></a>       <span class="n">ir_props</span><span class="o">-&gt;</span><span class="n">close</span> <span class="o">=</span> <span class="n">cir_close</span><span class="p">;</span>
+<a name="rest_code_6b8232dd0585472fb25a0662247de30c-9"></a>       <span class="p">..</span>
+<a name="rest_code_6b8232dd0585472fb25a0662247de30c-10"></a>       <span class="n">ir_props</span><span class="o">-&gt;</span><span class="n">map_name</span> <span class="o">=</span> <span class="n">RC_MAP_RC6_MCE</span><span class="p">;</span>
+<a name="rest_code_6b8232dd0585472fb25a0662247de30c-11"></a>       <span class="p">..</span>
+<a name="rest_code_6b8232dd0585472fb25a0662247de30c-12"></a>       <span class="n">INIT_WORK</span><span class="p">((</span><span class="k">struct</span> <span class="n">work_struct</span> <span class="o">*</span> <span class="p">)</span><span class="o">&amp;</span><span class="n">cirdev</span><span class="o">-&gt;</span><span class="n">bh</span><span class="p">,</span><span class="n">irevent_bh</span><span class="p">);</span>
+<a name="rest_code_6b8232dd0585472fb25a0662247de30c-13"></a>       <span class="n">INIT_LIST_HEAD</span><span class="p">((</span><span class="k">struct</span> <span class="n">list_head</span> <span class="o">*</span> <span class="p">)</span><span class="o">&amp;</span><span class="n">cirdev</span><span class="o">-&gt;</span><span class="n">head</span><span class="p">);</span>
+<a name="rest_code_6b8232dd0585472fb25a0662247de30c-14"></a>
+<a name="rest_code_6b8232dd0585472fb25a0662247de30c-15"></a>       <span class="n">err</span> <span class="o">=</span> <span class="n">rc_register_device</span><span class="p">(</span><span class="n">cirdev</span><span class="o">-&gt;</span><span class="n">irprops</span><span class="p">);</span>
 </pre></td>
 </tr></table>
 <p>The UART is at the reset state and won't get initialized until the RC called its <em>cir_open()</em> operation. This will happen
@@ -280,202 +280,202 @@ when <em>/dev/input/eventx</em> is opened by external application to make use of
 by <em>cir_irq_handler</em> interrupt handler. The handler put the received byte into the buffer and schedule the BH workqueue.
 The BH handler then takes the byte off from the buffer and pushes it upstream to the IR core driver.</p>
 <table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_02cc2cf5934d48f6bef0ada3350494ce-1"> 1</a>
-<a href="#rest_code_02cc2cf5934d48f6bef0ada3350494ce-2"> 2</a>
-<a href="#rest_code_02cc2cf5934d48f6bef0ada3350494ce-3"> 3</a>
-<a href="#rest_code_02cc2cf5934d48f6bef0ada3350494ce-4"> 4</a>
-<a href="#rest_code_02cc2cf5934d48f6bef0ada3350494ce-5"> 5</a>
-<a href="#rest_code_02cc2cf5934d48f6bef0ada3350494ce-6"> 6</a>
-<a href="#rest_code_02cc2cf5934d48f6bef0ada3350494ce-7"> 7</a>
-<a href="#rest_code_02cc2cf5934d48f6bef0ada3350494ce-8"> 8</a>
-<a href="#rest_code_02cc2cf5934d48f6bef0ada3350494ce-9"> 9</a>
-<a href="#rest_code_02cc2cf5934d48f6bef0ada3350494ce-10">10</a>
-<a href="#rest_code_02cc2cf5934d48f6bef0ada3350494ce-11">11</a>
-<a href="#rest_code_02cc2cf5934d48f6bef0ada3350494ce-12">12</a>
-<a href="#rest_code_02cc2cf5934d48f6bef0ada3350494ce-13">13</a>
-<a href="#rest_code_02cc2cf5934d48f6bef0ada3350494ce-14">14</a>
-<a href="#rest_code_02cc2cf5934d48f6bef0ada3350494ce-15">15</a>
-<a href="#rest_code_02cc2cf5934d48f6bef0ada3350494ce-16">16</a>
-<a href="#rest_code_02cc2cf5934d48f6bef0ada3350494ce-17">17</a>
-<a href="#rest_code_02cc2cf5934d48f6bef0ada3350494ce-18">18</a>
-<a href="#rest_code_02cc2cf5934d48f6bef0ada3350494ce-19">19</a>
-<a href="#rest_code_02cc2cf5934d48f6bef0ada3350494ce-20">20</a></pre></div></td>
-<td class="code"><pre class="code c"><a name="rest_code_02cc2cf5934d48f6bef0ada3350494ce-1"></a>       <span class="p">..</span>
-<a name="rest_code_02cc2cf5934d48f6bef0ada3350494ce-2"></a>       <span class="k">if</span> <span class="p">(</span> <span class="p">(</span><span class="n">pulse</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">pulse</span> <span class="o">==</span> <span class="mh">0xff</span><span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
-<a name="rest_code_02cc2cf5934d48f6bef0ada3350494ce-3"></a>               <span class="n">ev</span><span class="p">.</span><span class="n">pulse</span> <span class="o">=</span> <span class="n">pulse</span> <span class="o">?</span> <span class="mi">1</span> <span class="o">:</span> <span class="mi">0</span> <span class="p">;</span>
-<a name="rest_code_02cc2cf5934d48f6bef0ada3350494ce-4"></a>               <span class="n">ev</span><span class="p">.</span><span class="n">duration</span> <span class="o">=</span> <span class="p">(</span><span class="n">protocol</span> <span class="o">==</span> <span class="n">RC_TYPE_SONY12</span> <span class="p">)</span> <span class="o">?</span> <span class="mi">600000</span> <span class="o">*</span> <span class="mi">8</span><span class="o">:</span> <span class="mi">562500</span> <span class="o">*</span> <span class="mi">8</span> <span class="p">;</span>
-<a name="rest_code_02cc2cf5934d48f6bef0ada3350494ce-5"></a>               <span class="n">ir_raw_event_store_with_filter</span><span class="p">(</span><span class="n">cirdev</span><span class="o">-&gt;</span><span class="n">irprops</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ev</span><span class="p">);</span>
-<a name="rest_code_02cc2cf5934d48f6bef0ada3350494ce-6"></a>               <span class="k">continue</span><span class="p">;</span>
-<a name="rest_code_02cc2cf5934d48f6bef0ada3350494ce-7"></a>       <span class="p">}</span>
-<a name="rest_code_02cc2cf5934d48f6bef0ada3350494ce-8"></a>
-<a name="rest_code_02cc2cf5934d48f6bef0ada3350494ce-9"></a>       <span class="k">for</span> <span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-<a name="rest_code_02cc2cf5934d48f6bef0ada3350494ce-10"></a>               <span class="n">ev</span><span class="p">.</span><span class="n">pulse</span> <span class="o">=</span> <span class="n">pulse</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">;</span>
-<a name="rest_code_02cc2cf5934d48f6bef0ada3350494ce-11"></a>               <span class="n">pulse</span> <span class="o">=</span> <span class="n">pulse</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">;</span>
-<a name="rest_code_02cc2cf5934d48f6bef0ada3350494ce-12"></a>               <span class="k">if</span> <span class="p">(</span><span class="n">protocol</span> <span class="o">==</span> <span class="n">RC_TYPE_SONY12</span><span class="p">)</span> <span class="p">{</span>
-<a name="rest_code_02cc2cf5934d48f6bef0ada3350494ce-13"></a>                       <span class="n">ev</span><span class="p">.</span><span class="n">duration</span> <span class="o">=</span> <span class="mi">600000</span> <span class="p">;</span> <span class="c1">//duration * 1000; //in ns</span>
-<a name="rest_code_02cc2cf5934d48f6bef0ada3350494ce-14"></a>               <span class="p">}</span>
-<a name="rest_code_02cc2cf5934d48f6bef0ada3350494ce-15"></a>               <span class="k">else</span>
-<a name="rest_code_02cc2cf5934d48f6bef0ada3350494ce-16"></a>                       <span class="n">ev</span><span class="p">.</span><span class="n">duration</span> <span class="o">=</span> <span class="mi">562500</span><span class="p">;</span> <span class="c1">//duration * 1000; //in ns</span>
-<a name="rest_code_02cc2cf5934d48f6bef0ada3350494ce-17"></a>                       <span class="n">ir_raw_event_store_with_filter</span><span class="p">(</span><span class="n">cirdev</span><span class="o">-&gt;</span><span class="n">irprops</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ev</span><span class="p">);</span>
-<a name="rest_code_02cc2cf5934d48f6bef0ada3350494ce-18"></a>               <span class="p">}</span>
-<a name="rest_code_02cc2cf5934d48f6bef0ada3350494ce-19"></a>                <span class="p">..</span>
-<a name="rest_code_02cc2cf5934d48f6bef0ada3350494ce-20"></a>       <span class="n">ir_raw_event_handle</span><span class="p">(</span><span class="n">cirdev</span><span class="o">-&gt;</span><span class="n">irprops</span><span class="p">);</span>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_49101eddfe744b29b444e65e16a23281-1"> 1</a>
+<a href="#rest_code_49101eddfe744b29b444e65e16a23281-2"> 2</a>
+<a href="#rest_code_49101eddfe744b29b444e65e16a23281-3"> 3</a>
+<a href="#rest_code_49101eddfe744b29b444e65e16a23281-4"> 4</a>
+<a href="#rest_code_49101eddfe744b29b444e65e16a23281-5"> 5</a>
+<a href="#rest_code_49101eddfe744b29b444e65e16a23281-6"> 6</a>
+<a href="#rest_code_49101eddfe744b29b444e65e16a23281-7"> 7</a>
+<a href="#rest_code_49101eddfe744b29b444e65e16a23281-8"> 8</a>
+<a href="#rest_code_49101eddfe744b29b444e65e16a23281-9"> 9</a>
+<a href="#rest_code_49101eddfe744b29b444e65e16a23281-10">10</a>
+<a href="#rest_code_49101eddfe744b29b444e65e16a23281-11">11</a>
+<a href="#rest_code_49101eddfe744b29b444e65e16a23281-12">12</a>
+<a href="#rest_code_49101eddfe744b29b444e65e16a23281-13">13</a>
+<a href="#rest_code_49101eddfe744b29b444e65e16a23281-14">14</a>
+<a href="#rest_code_49101eddfe744b29b444e65e16a23281-15">15</a>
+<a href="#rest_code_49101eddfe744b29b444e65e16a23281-16">16</a>
+<a href="#rest_code_49101eddfe744b29b444e65e16a23281-17">17</a>
+<a href="#rest_code_49101eddfe744b29b444e65e16a23281-18">18</a>
+<a href="#rest_code_49101eddfe744b29b444e65e16a23281-19">19</a>
+<a href="#rest_code_49101eddfe744b29b444e65e16a23281-20">20</a></pre></div></td>
+<td class="code"><pre class="code c"><a name="rest_code_49101eddfe744b29b444e65e16a23281-1"></a>       <span class="p">..</span>
+<a name="rest_code_49101eddfe744b29b444e65e16a23281-2"></a>       <span class="k">if</span> <span class="p">(</span> <span class="p">(</span><span class="n">pulse</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">pulse</span> <span class="o">==</span> <span class="mh">0xff</span><span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+<a name="rest_code_49101eddfe744b29b444e65e16a23281-3"></a>               <span class="n">ev</span><span class="p">.</span><span class="n">pulse</span> <span class="o">=</span> <span class="n">pulse</span> <span class="o">?</span> <span class="mi">1</span> <span class="o">:</span> <span class="mi">0</span> <span class="p">;</span>
+<a name="rest_code_49101eddfe744b29b444e65e16a23281-4"></a>               <span class="n">ev</span><span class="p">.</span><span class="n">duration</span> <span class="o">=</span> <span class="p">(</span><span class="n">protocol</span> <span class="o">==</span> <span class="n">RC_TYPE_SONY12</span> <span class="p">)</span> <span class="o">?</span> <span class="mi">600000</span> <span class="o">*</span> <span class="mi">8</span><span class="o">:</span> <span class="mi">562500</span> <span class="o">*</span> <span class="mi">8</span> <span class="p">;</span>
+<a name="rest_code_49101eddfe744b29b444e65e16a23281-5"></a>               <span class="n">ir_raw_event_store_with_filter</span><span class="p">(</span><span class="n">cirdev</span><span class="o">-&gt;</span><span class="n">irprops</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ev</span><span class="p">);</span>
+<a name="rest_code_49101eddfe744b29b444e65e16a23281-6"></a>               <span class="k">continue</span><span class="p">;</span>
+<a name="rest_code_49101eddfe744b29b444e65e16a23281-7"></a>       <span class="p">}</span>
+<a name="rest_code_49101eddfe744b29b444e65e16a23281-8"></a>
+<a name="rest_code_49101eddfe744b29b444e65e16a23281-9"></a>       <span class="k">for</span> <span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+<a name="rest_code_49101eddfe744b29b444e65e16a23281-10"></a>               <span class="n">ev</span><span class="p">.</span><span class="n">pulse</span> <span class="o">=</span> <span class="n">pulse</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">;</span>
+<a name="rest_code_49101eddfe744b29b444e65e16a23281-11"></a>               <span class="n">pulse</span> <span class="o">=</span> <span class="n">pulse</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">;</span>
+<a name="rest_code_49101eddfe744b29b444e65e16a23281-12"></a>               <span class="k">if</span> <span class="p">(</span><span class="n">protocol</span> <span class="o">==</span> <span class="n">RC_TYPE_SONY12</span><span class="p">)</span> <span class="p">{</span>
+<a name="rest_code_49101eddfe744b29b444e65e16a23281-13"></a>                       <span class="n">ev</span><span class="p">.</span><span class="n">duration</span> <span class="o">=</span> <span class="mi">600000</span> <span class="p">;</span> <span class="c1">//duration * 1000; //in ns</span>
+<a name="rest_code_49101eddfe744b29b444e65e16a23281-14"></a>               <span class="p">}</span>
+<a name="rest_code_49101eddfe744b29b444e65e16a23281-15"></a>               <span class="k">else</span>
+<a name="rest_code_49101eddfe744b29b444e65e16a23281-16"></a>                       <span class="n">ev</span><span class="p">.</span><span class="n">duration</span> <span class="o">=</span> <span class="mi">562500</span><span class="p">;</span> <span class="c1">//duration * 1000; //in ns</span>
+<a name="rest_code_49101eddfe744b29b444e65e16a23281-17"></a>                       <span class="n">ir_raw_event_store_with_filter</span><span class="p">(</span><span class="n">cirdev</span><span class="o">-&gt;</span><span class="n">irprops</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ev</span><span class="p">);</span>
+<a name="rest_code_49101eddfe744b29b444e65e16a23281-18"></a>               <span class="p">}</span>
+<a name="rest_code_49101eddfe744b29b444e65e16a23281-19"></a>                <span class="p">..</span>
+<a name="rest_code_49101eddfe744b29b444e65e16a23281-20"></a>       <span class="n">ir_raw_event_handle</span><span class="p">(</span><span class="n">cirdev</span><span class="o">-&gt;</span><span class="n">irprops</span><span class="p">);</span>
 </pre></td>
 </tr></table>
 <p>For simplicity, I omit the sleep/wakeup support in the driver, instead I add proc file interface for
 debugging purpose. The proc file is a simple registers dump using sequential file mechanism.</p>
 <table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_634d46a296984771a03ab3c84f2732b7-1"> 1</a>
-<a href="#rest_code_634d46a296984771a03ab3c84f2732b7-2"> 2</a>
-<a href="#rest_code_634d46a296984771a03ab3c84f2732b7-3"> 3</a>
-<a href="#rest_code_634d46a296984771a03ab3c84f2732b7-4"> 4</a>
-<a href="#rest_code_634d46a296984771a03ab3c84f2732b7-5"> 5</a>
-<a href="#rest_code_634d46a296984771a03ab3c84f2732b7-6"> 6</a>
-<a href="#rest_code_634d46a296984771a03ab3c84f2732b7-7"> 7</a>
-<a href="#rest_code_634d46a296984771a03ab3c84f2732b7-8"> 8</a>
-<a href="#rest_code_634d46a296984771a03ab3c84f2732b7-9"> 9</a>
-<a href="#rest_code_634d46a296984771a03ab3c84f2732b7-10">10</a>
-<a href="#rest_code_634d46a296984771a03ab3c84f2732b7-11">11</a>
-<a href="#rest_code_634d46a296984771a03ab3c84f2732b7-12">12</a>
-<a href="#rest_code_634d46a296984771a03ab3c84f2732b7-13">13</a>
-<a href="#rest_code_634d46a296984771a03ab3c84f2732b7-14">14</a>
-<a href="#rest_code_634d46a296984771a03ab3c84f2732b7-15">15</a>
-<a href="#rest_code_634d46a296984771a03ab3c84f2732b7-16">16</a>
-<a href="#rest_code_634d46a296984771a03ab3c84f2732b7-17">17</a></pre></div></td>
-<td class="code"><pre class="code c"><a name="rest_code_634d46a296984771a03ab3c84f2732b7-1"></a>       <span class="k">struct</span> <span class="n">file_operations</span> <span class="n">proc_regs_fops</span> <span class="o">=</span> <span class="p">{</span>
-<a name="rest_code_634d46a296984771a03ab3c84f2732b7-2"></a>               <span class="p">.</span><span class="n">open</span> <span class="o">=</span>  <span class="n">proc_seq_open</span><span class="p">,</span>
-<a name="rest_code_634d46a296984771a03ab3c84f2732b7-3"></a>               <span class="p">.</span><span class="n">read</span> <span class="o">=</span> <span class="n">seq_read</span><span class="p">,</span>
-<a name="rest_code_634d46a296984771a03ab3c84f2732b7-4"></a>               <span class="p">.</span><span class="n">llseek</span> <span class="o">=</span> <span class="n">seq_lseek</span><span class="p">,</span>
-<a name="rest_code_634d46a296984771a03ab3c84f2732b7-5"></a>               <span class="p">.</span><span class="n">write</span> <span class="o">=</span> <span class="n">proc_reg_write</span><span class="p">,</span>
-<a name="rest_code_634d46a296984771a03ab3c84f2732b7-6"></a>               <span class="p">.</span><span class="n">owner</span> <span class="o">=</span> <span class="n">THIS_MODULE</span><span class="p">,</span>
-<a name="rest_code_634d46a296984771a03ab3c84f2732b7-7"></a>       <span class="p">};</span>
-<a name="rest_code_634d46a296984771a03ab3c84f2732b7-8"></a>       <span class="p">..</span>
-<a name="rest_code_634d46a296984771a03ab3c84f2732b7-9"></a>
-<a name="rest_code_634d46a296984771a03ab3c84f2732b7-10"></a>       <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">cir_procdir_entry</span> <span class="o">=</span> <span class="n">proc_mkdir</span><span class="p">(</span><span class="s">"cir"</span><span class="p">,</span><span class="nb">NULL</span><span class="p">)))</span> <span class="p">{</span>
-<a name="rest_code_634d46a296984771a03ab3c84f2732b7-11"></a>               <span class="k">goto</span> <span class="n">exit_free_data</span><span class="p">;</span>
-<a name="rest_code_634d46a296984771a03ab3c84f2732b7-12"></a>       <span class="p">}</span>
-<a name="rest_code_634d46a296984771a03ab3c84f2732b7-13"></a>       <span class="n">cirdev</span><span class="o">-&gt;</span><span class="n">proc_entry</span> <span class="o">=</span> <span class="n">cir_procdir_entry</span><span class="p">;</span>
-<a name="rest_code_634d46a296984771a03ab3c84f2732b7-14"></a>       <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">entry</span> <span class="o">=</span> <span class="n">proc_create_data</span><span class="p">(</span><span class="s">"regs"</span><span class="p">,</span><span class="n">S_IFREG</span> <span class="o">|</span> <span class="n">S_IRUGO</span> <span class="o">|</span> <span class="n">S_IWUSR</span><span class="p">,</span>
-<a name="rest_code_634d46a296984771a03ab3c84f2732b7-15"></a>                                                                  <span class="n">cirdev</span><span class="o">-&gt;</span><span class="n">proc_entry</span><span class="p">,</span>
-<a name="rest_code_634d46a296984771a03ab3c84f2732b7-16"></a>                                                                  <span class="o">&amp;</span><span class="n">proc_regs_fops</span><span class="p">,</span>
-<a name="rest_code_634d46a296984771a03ab3c84f2732b7-17"></a>                                                                  <span class="nb">NULL</span><span class="p">))</span> <span class="p">)</span> <span class="p">{</span>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_ed5234904b7243bc920f0e3fc5d3cccf-1"> 1</a>
+<a href="#rest_code_ed5234904b7243bc920f0e3fc5d3cccf-2"> 2</a>
+<a href="#rest_code_ed5234904b7243bc920f0e3fc5d3cccf-3"> 3</a>
+<a href="#rest_code_ed5234904b7243bc920f0e3fc5d3cccf-4"> 4</a>
+<a href="#rest_code_ed5234904b7243bc920f0e3fc5d3cccf-5"> 5</a>
+<a href="#rest_code_ed5234904b7243bc920f0e3fc5d3cccf-6"> 6</a>
+<a href="#rest_code_ed5234904b7243bc920f0e3fc5d3cccf-7"> 7</a>
+<a href="#rest_code_ed5234904b7243bc920f0e3fc5d3cccf-8"> 8</a>
+<a href="#rest_code_ed5234904b7243bc920f0e3fc5d3cccf-9"> 9</a>
+<a href="#rest_code_ed5234904b7243bc920f0e3fc5d3cccf-10">10</a>
+<a href="#rest_code_ed5234904b7243bc920f0e3fc5d3cccf-11">11</a>
+<a href="#rest_code_ed5234904b7243bc920f0e3fc5d3cccf-12">12</a>
+<a href="#rest_code_ed5234904b7243bc920f0e3fc5d3cccf-13">13</a>
+<a href="#rest_code_ed5234904b7243bc920f0e3fc5d3cccf-14">14</a>
+<a href="#rest_code_ed5234904b7243bc920f0e3fc5d3cccf-15">15</a>
+<a href="#rest_code_ed5234904b7243bc920f0e3fc5d3cccf-16">16</a>
+<a href="#rest_code_ed5234904b7243bc920f0e3fc5d3cccf-17">17</a></pre></div></td>
+<td class="code"><pre class="code c"><a name="rest_code_ed5234904b7243bc920f0e3fc5d3cccf-1"></a>       <span class="k">struct</span> <span class="n">file_operations</span> <span class="n">proc_regs_fops</span> <span class="o">=</span> <span class="p">{</span>
+<a name="rest_code_ed5234904b7243bc920f0e3fc5d3cccf-2"></a>               <span class="p">.</span><span class="n">open</span> <span class="o">=</span>  <span class="n">proc_seq_open</span><span class="p">,</span>
+<a name="rest_code_ed5234904b7243bc920f0e3fc5d3cccf-3"></a>               <span class="p">.</span><span class="n">read</span> <span class="o">=</span> <span class="n">seq_read</span><span class="p">,</span>
+<a name="rest_code_ed5234904b7243bc920f0e3fc5d3cccf-4"></a>               <span class="p">.</span><span class="n">llseek</span> <span class="o">=</span> <span class="n">seq_lseek</span><span class="p">,</span>
+<a name="rest_code_ed5234904b7243bc920f0e3fc5d3cccf-5"></a>               <span class="p">.</span><span class="n">write</span> <span class="o">=</span> <span class="n">proc_reg_write</span><span class="p">,</span>
+<a name="rest_code_ed5234904b7243bc920f0e3fc5d3cccf-6"></a>               <span class="p">.</span><span class="n">owner</span> <span class="o">=</span> <span class="n">THIS_MODULE</span><span class="p">,</span>
+<a name="rest_code_ed5234904b7243bc920f0e3fc5d3cccf-7"></a>       <span class="p">};</span>
+<a name="rest_code_ed5234904b7243bc920f0e3fc5d3cccf-8"></a>       <span class="p">..</span>
+<a name="rest_code_ed5234904b7243bc920f0e3fc5d3cccf-9"></a>
+<a name="rest_code_ed5234904b7243bc920f0e3fc5d3cccf-10"></a>       <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">cir_procdir_entry</span> <span class="o">=</span> <span class="n">proc_mkdir</span><span class="p">(</span><span class="s">"cir"</span><span class="p">,</span><span class="nb">NULL</span><span class="p">)))</span> <span class="p">{</span>
+<a name="rest_code_ed5234904b7243bc920f0e3fc5d3cccf-11"></a>               <span class="k">goto</span> <span class="n">exit_free_data</span><span class="p">;</span>
+<a name="rest_code_ed5234904b7243bc920f0e3fc5d3cccf-12"></a>       <span class="p">}</span>
+<a name="rest_code_ed5234904b7243bc920f0e3fc5d3cccf-13"></a>       <span class="n">cirdev</span><span class="o">-&gt;</span><span class="n">proc_entry</span> <span class="o">=</span> <span class="n">cir_procdir_entry</span><span class="p">;</span>
+<a name="rest_code_ed5234904b7243bc920f0e3fc5d3cccf-14"></a>       <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">entry</span> <span class="o">=</span> <span class="n">proc_create_data</span><span class="p">(</span><span class="s">"regs"</span><span class="p">,</span><span class="n">S_IFREG</span> <span class="o">|</span> <span class="n">S_IRUGO</span> <span class="o">|</span> <span class="n">S_IWUSR</span><span class="p">,</span>
+<a name="rest_code_ed5234904b7243bc920f0e3fc5d3cccf-15"></a>                                                                  <span class="n">cirdev</span><span class="o">-&gt;</span><span class="n">proc_entry</span><span class="p">,</span>
+<a name="rest_code_ed5234904b7243bc920f0e3fc5d3cccf-16"></a>                                                                  <span class="o">&amp;</span><span class="n">proc_regs_fops</span><span class="p">,</span>
+<a name="rest_code_ed5234904b7243bc920f0e3fc5d3cccf-17"></a>                                                                  <span class="nb">NULL</span><span class="p">))</span> <span class="p">)</span> <span class="p">{</span>
 </pre></td>
 </tr></table>
 <p>Once I compile the driver, <em>cir.ko</em>, I can load and test it. As part of input event, the input event driver, <em>evdev</em> is also used.</p>
-<pre class="code console"><a name="rest_code_3fd10d9896014a3684239cfcf988a3c1-1"></a><span class="gp">#</span> modprobe evdev
-<a name="rest_code_3fd10d9896014a3684239cfcf988a3c1-2"></a><span class="gp">#</span> insmod cir.ko
+<pre class="code console"><a name="rest_code_866d7043704b470d9c6158035f1c8ef7-1"></a><span class="gp">#</span> modprobe evdev
+<a name="rest_code_866d7043704b470d9c6158035f1c8ef7-2"></a><span class="gp">#</span> insmod cir.ko
 </pre>
 </div>
 </div>
 <div class="section" id="testing">
 <h2>Testing</h2>
 <p>Having the debug code, upon driver loading I can see that the platform framework call it with,</p>
-<pre class="code console"><a name="rest_code_0f215183e009440e8c0a17a19fa1cc83-1"></a><span class="gp">#</span> insmod ci# insmod cir.ko
-<a name="rest_code_0f215183e009440e8c0a17a19fa1cc83-2"></a><span class="go">[   40.972690] cir_probe: entering with regs start 0x481a8000, size 0x2000, irq 156</span>
-<a name="rest_code_0f215183e009440e8c0a17a19fa1cc83-3"></a><span class="go">[   40.980266] cir_probe:uartclk 48000000, wakeirq 0, id   (null), sbase 0xfa1a8000, mapbase 481a8000</span>
-<a name="rest_code_0f215183e009440e8c0a17a19fa1cc83-4"></a><span class="go">[   40.990945] cir_probe: fck rate 48000000</span>
+<pre class="code console"><a name="rest_code_4caf020585524a049c9c60ff4b4861b8-1"></a><span class="gp">#</span> insmod ci# insmod cir.ko
+<a name="rest_code_4caf020585524a049c9c60ff4b4861b8-2"></a><span class="go">[   40.972690] cir_probe: entering with regs start 0x481a8000, size 0x2000, irq 156</span>
+<a name="rest_code_4caf020585524a049c9c60ff4b4861b8-3"></a><span class="go">[   40.980266] cir_probe:uartclk 48000000, wakeirq 0, id   (null), sbase 0xfa1a8000, mapbase 481a8000</span>
+<a name="rest_code_4caf020585524a049c9c60ff4b4861b8-4"></a><span class="go">[   40.990945] cir_probe: fck rate 48000000</span>
 </pre>
 <p>So far so good. My debugging messages indicate that I get the UART4 resource information correctly.To make sure I get what
 I think I really get is to add few extra debug code to actually read the AM3358 registers <a class="footnote-reference" href="#id7" id="id5">[1]</a> just to verify the setting.</p>
-<pre class="code console"><a name="rest_code_2465b09d2c7e4e9382b258f4b626e24e-1"></a><span class="go">[   99.034228] get_uart_clock, CM_PER_L4LS_CLKCTRL=0x4502</span>
-<a name="rest_code_2465b09d2c7e4e9382b258f4b626e24e-2"></a><span class="go">[   99.039409] get_uart_clock, CM_PER_UART4_CLKCTRL=0x2</span>
-<a name="rest_code_2465b09d2c7e4e9382b258f4b626e24e-3"></a><span class="go">[   99.045336] get_uart_clock: MDR1 reg = 0x7, CFPS 0x69</span>
+<pre class="code console"><a name="rest_code_46a440396f1d462da862326b7400a3e3-1"></a><span class="go">[   99.034228] get_uart_clock, CM_PER_L4LS_CLKCTRL=0x4502</span>
+<a name="rest_code_46a440396f1d462da862326b7400a3e3-2"></a><span class="go">[   99.039409] get_uart_clock, CM_PER_UART4_CLKCTRL=0x2</span>
+<a name="rest_code_46a440396f1d462da862326b7400a3e3-3"></a><span class="go">[   99.045336] get_uart_clock: MDR1 reg = 0x7, CFPS 0x69</span>
 </pre>
 <p>The first two lines is the value of <em>CM_PER_L4LS_CLKCTRL</em> <a class="footnote-reference" href="#id7" id="id6">[1]</a> and <em>CM_PER_UART4_CLKCTRL</em> respectively. This is the
 indication that clock line is activated correctly. The last line is to read two UART registers, <em>MDR1</em> and
 <em>CFPS</em>. If clock line is not activated, reading the two UART registers would have resulted in kernel crash
 because the IO bus would be stuck and cause I/O fault to happen. It is the painful way to know something is wrong.</p>
 <p>I can check IRQ45 of UART4 is registered with the kernel correctly.</p>
-<pre class="code console"><a name="rest_code_7f66410c25eb4d94b78d0de0dbf64055-1"></a><span class="gp">#</span> cat /proc/interrupts
-<a name="rest_code_7f66410c25eb4d94b78d0de0dbf64055-2"></a><span class="go">           CPU0</span>
-<a name="rest_code_7f66410c25eb4d94b78d0de0dbf64055-3"></a><span class="go"> 16:       3050      INTC  68 Level     gp_timer</span>
-<a name="rest_code_7f66410c25eb4d94b78d0de0dbf64055-4"></a><span class="go"> ...</span>
-<a name="rest_code_7f66410c25eb4d94b78d0de0dbf64055-5"></a><span class="go">156:          0      INTC  45 Level     cir</span>
-<a name="rest_code_7f66410c25eb4d94b78d0de0dbf64055-6"></a><span class="go">...</span>
+<pre class="code console"><a name="rest_code_985ab0b3eb46471eaa651ebade94b514-1"></a><span class="gp">#</span> cat /proc/interrupts
+<a name="rest_code_985ab0b3eb46471eaa651ebade94b514-2"></a><span class="go">           CPU0</span>
+<a name="rest_code_985ab0b3eb46471eaa651ebade94b514-3"></a><span class="go"> 16:       3050      INTC  68 Level     gp_timer</span>
+<a name="rest_code_985ab0b3eb46471eaa651ebade94b514-4"></a><span class="go"> ...</span>
+<a name="rest_code_985ab0b3eb46471eaa651ebade94b514-5"></a><span class="go">156:          0      INTC  45 Level     cir</span>
+<a name="rest_code_985ab0b3eb46471eaa651ebade94b514-6"></a><span class="go">...</span>
 </pre>
 <p>There is my interrupt handler and current count is at 0. While at it I can check my proc file for registers dump at
 the device's idle state.</p>
-<pre class="code console"><a name="rest_code_b703d46f6f5e41ef928d014f16b6432d-1"></a><span class="gp">#</span> cat /proc/cir/regs
-<a name="rest_code_b703d46f6f5e41ef928d014f16b6432d-2"></a><span class="go">rhr                      0x44</span>
-<a name="rest_code_b703d46f6f5e41ef928d014f16b6432d-3"></a><span class="go">acreg                    0x10</span>
-<a name="rest_code_b703d46f6f5e41ef928d014f16b6432d-4"></a><span class="go">..</span>
+<pre class="code console"><a name="rest_code_6a66c20da2394f02879fdf7a58a596ab-1"></a><span class="gp">#</span> cat /proc/cir/regs
+<a name="rest_code_6a66c20da2394f02879fdf7a58a596ab-2"></a><span class="go">rhr                      0x44</span>
+<a name="rest_code_6a66c20da2394f02879fdf7a58a596ab-3"></a><span class="go">acreg                    0x10</span>
+<a name="rest_code_6a66c20da2394f02879fdf7a58a596ab-4"></a><span class="go">..</span>
 </pre>
 <p>Having verify the information that I expect, I have more confident to do further test. The next step is to
 test with <em>ir-keytable</em> utility.</p>
-<pre class="code console"><a name="rest_code_6e2fe738c1984812af4d76900ee98dd6-1"></a><span class="gp">#</span> ir-keytable
-<a name="rest_code_6e2fe738c1984812af4d76900ee98dd6-2"></a><span class="go">Found /sys/class/rc/rc0/ (/dev/input/event0) with:</span>
-<a name="rest_code_6e2fe738c1984812af4d76900ee98dd6-3"></a><span class="go">        Driver (null), table rc-rc6-mce</span>
-<a name="rest_code_6e2fe738c1984812af4d76900ee98dd6-4"></a><span class="go">        Supported protocols: unknown other lirc rc-5 jvc sony nec sanyo mce-kbd rc-6 sharp xmp</span>
-<a name="rest_code_6e2fe738c1984812af4d76900ee98dd6-5"></a><span class="go">        Enabled protocols: lirc rc-6</span>
-<a name="rest_code_6e2fe738c1984812af4d76900ee98dd6-6"></a><span class="go">        Name: CIR Infrared Remote Receiver</span>
-<a name="rest_code_6e2fe738c1984812af4d76900ee98dd6-7"></a><span class="go">        bus: 0, vendor/product: 0000:0000, version: 0x0000</span>
-<a name="rest_code_6e2fe738c1984812af4d76900ee98dd6-8"></a><span class="go">        Repeat delay = 500 ms, repeat period = 125 ms</span>
+<pre class="code console"><a name="rest_code_12d493f539134cfe8567524dd4fd85ca-1"></a><span class="gp">#</span> ir-keytable
+<a name="rest_code_12d493f539134cfe8567524dd4fd85ca-2"></a><span class="go">Found /sys/class/rc/rc0/ (/dev/input/event0) with:</span>
+<a name="rest_code_12d493f539134cfe8567524dd4fd85ca-3"></a><span class="go">        Driver (null), table rc-rc6-mce</span>
+<a name="rest_code_12d493f539134cfe8567524dd4fd85ca-4"></a><span class="go">        Supported protocols: unknown other lirc rc-5 jvc sony nec sanyo mce-kbd rc-6 sharp xmp</span>
+<a name="rest_code_12d493f539134cfe8567524dd4fd85ca-5"></a><span class="go">        Enabled protocols: lirc rc-6</span>
+<a name="rest_code_12d493f539134cfe8567524dd4fd85ca-6"></a><span class="go">        Name: CIR Infrared Remote Receiver</span>
+<a name="rest_code_12d493f539134cfe8567524dd4fd85ca-7"></a><span class="go">        bus: 0, vendor/product: 0000:0000, version: 0x0000</span>
+<a name="rest_code_12d493f539134cfe8567524dd4fd85ca-8"></a><span class="go">        Repeat delay = 500 ms, repeat period = 125 ms</span>
 </pre>
 <p>Looks like the tool recognize the registered IR device. I will change to use SONY protocol instead of
 <em>lirc rc-6</em> so I issue this command,</p>
-<pre class="code console"><a name="rest_code_8b713414d1924dcaae990ba94d38e6e1-1"></a><span class="gp">#</span> ir-keytable -c -p SONY
-<a name="rest_code_8b713414d1924dcaae990ba94d38e6e1-2"></a><span class="go">Old keytable cleared</span>
-<a name="rest_code_8b713414d1924dcaae990ba94d38e6e1-3"></a><span class="go">Protocols changed to sony</span>
-<a name="rest_code_8b713414d1924dcaae990ba94d38e6e1-4"></a><span class="gp">#</span> ir-keytable
-<a name="rest_code_8b713414d1924dcaae990ba94d38e6e1-5"></a><span class="go">Found /sys/class/rc/rc0/ (/dev/input/event0) with:</span>
-<a name="rest_code_8b713414d1924dcaae990ba94d38e6e1-6"></a><span class="go">        Driver (null), table rc-rc6-mce</span>
-<a name="rest_code_8b713414d1924dcaae990ba94d38e6e1-7"></a><span class="go">        Supported protocols: unknown other lirc rc-5 jvc sony nec sanyo mce-kbd rc-6 sharp xmp</span>
-<a name="rest_code_8b713414d1924dcaae990ba94d38e6e1-8"></a><span class="go">        Enabled protocols: sony</span>
-<a name="rest_code_8b713414d1924dcaae990ba94d38e6e1-9"></a><span class="go">        Name: CIR Infrared Remote Receiver</span>
-<a name="rest_code_8b713414d1924dcaae990ba94d38e6e1-10"></a><span class="go">        bus: 0, vendor/product: 0000:0000, version: 0x0000</span>
-<a name="rest_code_8b713414d1924dcaae990ba94d38e6e1-11"></a><span class="go">        Repeat delay = 500 ms, repeat period = 125 ms</span>
+<pre class="code console"><a name="rest_code_a9df3eb69212446ba43de7178eeaa19a-1"></a><span class="gp">#</span> ir-keytable -c -p SONY
+<a name="rest_code_a9df3eb69212446ba43de7178eeaa19a-2"></a><span class="go">Old keytable cleared</span>
+<a name="rest_code_a9df3eb69212446ba43de7178eeaa19a-3"></a><span class="go">Protocols changed to sony</span>
+<a name="rest_code_a9df3eb69212446ba43de7178eeaa19a-4"></a><span class="gp">#</span> ir-keytable
+<a name="rest_code_a9df3eb69212446ba43de7178eeaa19a-5"></a><span class="go">Found /sys/class/rc/rc0/ (/dev/input/event0) with:</span>
+<a name="rest_code_a9df3eb69212446ba43de7178eeaa19a-6"></a><span class="go">        Driver (null), table rc-rc6-mce</span>
+<a name="rest_code_a9df3eb69212446ba43de7178eeaa19a-7"></a><span class="go">        Supported protocols: unknown other lirc rc-5 jvc sony nec sanyo mce-kbd rc-6 sharp xmp</span>
+<a name="rest_code_a9df3eb69212446ba43de7178eeaa19a-8"></a><span class="go">        Enabled protocols: sony</span>
+<a name="rest_code_a9df3eb69212446ba43de7178eeaa19a-9"></a><span class="go">        Name: CIR Infrared Remote Receiver</span>
+<a name="rest_code_a9df3eb69212446ba43de7178eeaa19a-10"></a><span class="go">        bus: 0, vendor/product: 0000:0000, version: 0x0000</span>
+<a name="rest_code_a9df3eb69212446ba43de7178eeaa19a-11"></a><span class="go">        Repeat delay = 500 ms, repeat period = 125 ms</span>
 </pre>
 <p>So far so good. Next is to run the test with the IR receiver and SONY based remote control I found
 in my junk box.</p>
-<pre class="code console"><a name="rest_code_d602ab89cffa432db7039fee95ea27b9-1"></a><span class="gp">#</span> ir-keytable -t
-<a name="rest_code_d602ab89cffa432db7039fee95ea27b9-2"></a><span class="go">Testing events. Please, press CTRL-C to abort.</span>
-<a name="rest_code_d602ab89cffa432db7039fee95ea27b9-3"></a><span class="go">1214.743017: event type EV_MSC(0x04): scancode = 0x19000a</span>
-<a name="rest_code_d602ab89cffa432db7039fee95ea27b9-4"></a><span class="go">1214.743017: event type EV_SYN(0x00).</span>
-<a name="rest_code_d602ab89cffa432db7039fee95ea27b9-5"></a><span class="go">...</span>
-<a name="rest_code_d602ab89cffa432db7039fee95ea27b9-6"></a><span class="go">218.540761: event type EV_MSC(0x04): scancode = 0x19000b</span>
-<a name="rest_code_d602ab89cffa432db7039fee95ea27b9-7"></a><span class="go">1218.540761: event type EV_SYN(0x00).</span>
-<a name="rest_code_d602ab89cffa432db7039fee95ea27b9-8"></a><span class="go">1218.585536: event type EV_MSC(0x04): scancode = 0x19000b</span>
+<pre class="code console"><a name="rest_code_68f14a64daf84697a47ae1f3ae28119b-1"></a><span class="gp">#</span> ir-keytable -t
+<a name="rest_code_68f14a64daf84697a47ae1f3ae28119b-2"></a><span class="go">Testing events. Please, press CTRL-C to abort.</span>
+<a name="rest_code_68f14a64daf84697a47ae1f3ae28119b-3"></a><span class="go">1214.743017: event type EV_MSC(0x04): scancode = 0x19000a</span>
+<a name="rest_code_68f14a64daf84697a47ae1f3ae28119b-4"></a><span class="go">1214.743017: event type EV_SYN(0x00).</span>
+<a name="rest_code_68f14a64daf84697a47ae1f3ae28119b-5"></a><span class="go">...</span>
+<a name="rest_code_68f14a64daf84697a47ae1f3ae28119b-6"></a><span class="go">218.540761: event type EV_MSC(0x04): scancode = 0x19000b</span>
+<a name="rest_code_68f14a64daf84697a47ae1f3ae28119b-7"></a><span class="go">1218.540761: event type EV_SYN(0x00).</span>
+<a name="rest_code_68f14a64daf84697a47ae1f3ae28119b-8"></a><span class="go">1218.585536: event type EV_MSC(0x04): scancode = 0x19000b</span>
 </pre>
 <p>Scan code of SONY remote control is detected and decoded. For <em>power</em> button it is 0x1900a and for <em>menu</em>
 button it is 0x19000b. With this information, I can create the keymaps for it. Luckily this remote control
 has only a small number of buttons so it is created quickly. I store this keymap file as <em>sony</em> in
 <em>/etc/rc_keymaps</em>.</p>
-<pre class="code console"><a name="rest_code_26990c1dd45341e6a7c59390f510a00c-1"></a><span class="gp">#</span> cat /etc/rc_keymaps/sony
-<a name="rest_code_26990c1dd45341e6a7c59390f510a00c-2"></a><span class="go">0x19000a KEY_POWER</span>
-<a name="rest_code_26990c1dd45341e6a7c59390f510a00c-3"></a><span class="go">0x19000b KEY_MENU</span>
-<a name="rest_code_26990c1dd45341e6a7c59390f510a00c-4"></a><span class="go">0x19000c KEY_UP</span>
-<a name="rest_code_26990c1dd45341e6a7c59390f510a00c-5"></a><span class="go">0x19000d KEY_REWIND</span>
-<a name="rest_code_26990c1dd45341e6a7c59390f510a00c-6"></a><span class="go">0x19000e KEY_ENTER</span>
-<a name="rest_code_26990c1dd45341e6a7c59390f510a00c-7"></a><span class="go">0x19000f KEY_FORWARD</span>
-<a name="rest_code_26990c1dd45341e6a7c59390f510a00c-8"></a><span class="go">0x190010 KEY_DOWN</span>
+<pre class="code console"><a name="rest_code_a6708462b56d46cba0a0b1a7b6151981-1"></a><span class="gp">#</span> cat /etc/rc_keymaps/sony
+<a name="rest_code_a6708462b56d46cba0a0b1a7b6151981-2"></a><span class="go">0x19000a KEY_POWER</span>
+<a name="rest_code_a6708462b56d46cba0a0b1a7b6151981-3"></a><span class="go">0x19000b KEY_MENU</span>
+<a name="rest_code_a6708462b56d46cba0a0b1a7b6151981-4"></a><span class="go">0x19000c KEY_UP</span>
+<a name="rest_code_a6708462b56d46cba0a0b1a7b6151981-5"></a><span class="go">0x19000d KEY_REWIND</span>
+<a name="rest_code_a6708462b56d46cba0a0b1a7b6151981-6"></a><span class="go">0x19000e KEY_ENTER</span>
+<a name="rest_code_a6708462b56d46cba0a0b1a7b6151981-7"></a><span class="go">0x19000f KEY_FORWARD</span>
+<a name="rest_code_a6708462b56d46cba0a0b1a7b6151981-8"></a><span class="go">0x190010 KEY_DOWN</span>
 </pre>
 <p>Next I load the keymap mapping for the next test.</p>
-<pre class="code console"><a name="rest_code_bcc397777d494bb79c6a4ab2fe9c5c0f-1"></a><span class="gp">#</span> ir-keytable -c -p sony -w /etc/rc_keymaps/sony
-<a name="rest_code_bcc397777d494bb79c6a4ab2fe9c5c0f-2"></a><span class="go">Old keytable cleared</span>
-<a name="rest_code_bcc397777d494bb79c6a4ab2fe9c5c0f-3"></a><span class="go">Wrote 7 keycode(s) to driver</span>
-<a name="rest_code_bcc397777d494bb79c6a4ab2fe9c5c0f-4"></a><span class="go">Protocols changed to sony</span>
-<a name="rest_code_bcc397777d494bb79c6a4ab2fe9c5c0f-5"></a><span class="gp">#</span> ir-keytable -t
-<a name="rest_code_bcc397777d494bb79c6a4ab2fe9c5c0f-6"></a><span class="go">Testing events. Please, press CTRL-C to abort.</span>
-<a name="rest_code_bcc397777d494bb79c6a4ab2fe9c5c0f-7"></a><span class="go">1608.313105: event type EV_MSC(0x04): scancode = 0x19000a</span>
-<a name="rest_code_bcc397777d494bb79c6a4ab2fe9c5c0f-8"></a><span class="go">1608.313105: event type EV_KEY(0x01) key_down: KEY_POWER(0x0001)</span>
-<a name="rest_code_bcc397777d494bb79c6a4ab2fe9c5c0f-9"></a><span class="go">1608.313105: event type EV_SYN(0x00).</span>
-<a name="rest_code_bcc397777d494bb79c6a4ab2fe9c5c0f-10"></a><span class="go">...</span>
-<a name="rest_code_bcc397777d494bb79c6a4ab2fe9c5c0f-11"></a><span class="go">1613.269840: event type EV_MSC(0x04): scancode = 0x190010</span>
-<a name="rest_code_bcc397777d494bb79c6a4ab2fe9c5c0f-12"></a><span class="go">1613.269840: event type EV_KEY(0x01) key_down: KEY_DOWN(0x0001)</span>
-<a name="rest_code_bcc397777d494bb79c6a4ab2fe9c5c0f-13"></a><span class="go">1613.269840: event type EV_SYN(0x00).</span>
+<pre class="code console"><a name="rest_code_63cc7844585649d6b5645bbdc1a4863e-1"></a><span class="gp">#</span> ir-keytable -c -p sony -w /etc/rc_keymaps/sony
+<a name="rest_code_63cc7844585649d6b5645bbdc1a4863e-2"></a><span class="go">Old keytable cleared</span>
+<a name="rest_code_63cc7844585649d6b5645bbdc1a4863e-3"></a><span class="go">Wrote 7 keycode(s) to driver</span>
+<a name="rest_code_63cc7844585649d6b5645bbdc1a4863e-4"></a><span class="go">Protocols changed to sony</span>
+<a name="rest_code_63cc7844585649d6b5645bbdc1a4863e-5"></a><span class="gp">#</span> ir-keytable -t
+<a name="rest_code_63cc7844585649d6b5645bbdc1a4863e-6"></a><span class="go">Testing events. Please, press CTRL-C to abort.</span>
+<a name="rest_code_63cc7844585649d6b5645bbdc1a4863e-7"></a><span class="go">1608.313105: event type EV_MSC(0x04): scancode = 0x19000a</span>
+<a name="rest_code_63cc7844585649d6b5645bbdc1a4863e-8"></a><span class="go">1608.313105: event type EV_KEY(0x01) key_down: KEY_POWER(0x0001)</span>
+<a name="rest_code_63cc7844585649d6b5645bbdc1a4863e-9"></a><span class="go">1608.313105: event type EV_SYN(0x00).</span>
+<a name="rest_code_63cc7844585649d6b5645bbdc1a4863e-10"></a><span class="go">...</span>
+<a name="rest_code_63cc7844585649d6b5645bbdc1a4863e-11"></a><span class="go">1613.269840: event type EV_MSC(0x04): scancode = 0x190010</span>
+<a name="rest_code_63cc7844585649d6b5645bbdc1a4863e-12"></a><span class="go">1613.269840: event type EV_KEY(0x01) key_down: KEY_DOWN(0x0001)</span>
+<a name="rest_code_63cc7844585649d6b5645bbdc1a4863e-13"></a><span class="go">1613.269840: event type EV_SYN(0x00).</span>
 </pre>
 <p>Now that I can see that the key events are generated with respect to their scancodes. Changing
 protocol to match the type of remote control is also flexible, for example, I can change
 protocol to NEC, <em>nec</em> to use with an old TV remote control that uses NEC protocol,</p>
-<pre class="code console"><a name="rest_code_0facfbdbd3c5409796b7d03556352329-1"></a><span class="gp">#</span> ir-keytable -c -p nec
-<a name="rest_code_0facfbdbd3c5409796b7d03556352329-2"></a><span class="go">Old keytable cleared</span>
-<a name="rest_code_0facfbdbd3c5409796b7d03556352329-3"></a><span class="go">Protocols changed to nec</span>
-<a name="rest_code_0facfbdbd3c5409796b7d03556352329-4"></a><span class="gp">#</span> ir-keytable -t
-<a name="rest_code_0facfbdbd3c5409796b7d03556352329-5"></a><span class="go">Testing events. Please, press CTRL-C to abort.</span>
-<a name="rest_code_0facfbdbd3c5409796b7d03556352329-6"></a><span class="go">2280.369927: event type EV_MSC(0x04): scancode = 0x847904</span>
-<a name="rest_code_0facfbdbd3c5409796b7d03556352329-7"></a><span class="go">2280.369927: event type EV_SYN(0x00).</span>
-<a name="rest_code_0facfbdbd3c5409796b7d03556352329-8"></a><span class="go">2285.859057: event type EV_MSC(0x04): scancode = 0x84790a</span>
-<a name="rest_code_0facfbdbd3c5409796b7d03556352329-9"></a><span class="go">2285.859057: event type EV_SYN(0x00).</span>
+<pre class="code console"><a name="rest_code_828c72fc04e848f78c0ec93af55ab5bb-1"></a><span class="gp">#</span> ir-keytable -c -p nec
+<a name="rest_code_828c72fc04e848f78c0ec93af55ab5bb-2"></a><span class="go">Old keytable cleared</span>
+<a name="rest_code_828c72fc04e848f78c0ec93af55ab5bb-3"></a><span class="go">Protocols changed to nec</span>
+<a name="rest_code_828c72fc04e848f78c0ec93af55ab5bb-4"></a><span class="gp">#</span> ir-keytable -t
+<a name="rest_code_828c72fc04e848f78c0ec93af55ab5bb-5"></a><span class="go">Testing events. Please, press CTRL-C to abort.</span>
+<a name="rest_code_828c72fc04e848f78c0ec93af55ab5bb-6"></a><span class="go">2280.369927: event type EV_MSC(0x04): scancode = 0x847904</span>
+<a name="rest_code_828c72fc04e848f78c0ec93af55ab5bb-7"></a><span class="go">2280.369927: event type EV_SYN(0x00).</span>
+<a name="rest_code_828c72fc04e848f78c0ec93af55ab5bb-8"></a><span class="go">2285.859057: event type EV_MSC(0x04): scancode = 0x84790a</span>
+<a name="rest_code_828c72fc04e848f78c0ec93af55ab5bb-9"></a><span class="go">2285.859057: event type EV_SYN(0x00).</span>
 </pre>
 <p>Should I need to use this remote control, I would want to create the keymap for its scancodes; however,
 this remote control has too many buttons, I will not create keymap for it for the time being. The scancodes

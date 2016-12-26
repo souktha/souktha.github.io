@@ -78,7 +78,39 @@
 
     
 <div class="postindex">
-    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../software/zynq_spi_stepper_sw/" class="u-url">Zynq SPI slave stepper motor driver</a></h1>
+    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../hardware/cyclic_1_x_x4_hw/" class="u-url">Simple Cyclic Hamming (15,11,3) FEC</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="../hardware/cyclic_1_x_x4_hw/" rel="bookmark"><time class="published dt-published" datetime="2016-12-22T00:17:42Z" title="2016-12-22 00:17">2016-12-22 00:17</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<p>This post is the implementation part of the my post on "simple cyclic Hamming code"__</p>
+<p>where I did some math workout on this type of forward error-correction code (FEC). I am doing
+it for fun since I think it is simple enough to implement it in FPGA. The generator
+for this exercise is <span class="math">\(g(x)=1+x+x4\)</span> for an <span class="math">\((n,k,d) \equiv (15,11,3)\)</span> code.</p>
+<p class="more"><a href="../hardware/cyclic_1_x_x4_hw/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../misc/cyclic_1_x_x4/" class="u-url">Simple Cyclic Hamming codes</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="../misc/cyclic_1_x_x4/" rel="bookmark"><time class="published dt-published" datetime="2016-12-10T22:46:19Z" title="2016-12-10 22:46">2016-12-10 22:46</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<p>This is a math workout problem that accompanied my FPGA implementation of forward error correction code (FEC). I choose to
+make a simple implementation of <span class="math">\((n,k,d)=(15,11,1)\)</span> code using the primitive polynomial <span class="math">\(h(x)=1+x+x^4\)</span>.
+This FEC will have be able to correct 1 bit error based on its minimum distance of 3. It is simple because it can be worked
+out by hand and it would not take too long to implement in hardware.</p>
+<p class="more"><a href="../misc/cyclic_1_x_x4/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../software/zynq_spi_stepper_sw/" class="u-url">Zynq SPI slave stepper motor driver</a></h1>
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn">
                 Soukthavy
@@ -209,38 +241,6 @@ This blog is to follow on with that exercise, but using the actual sampled data 
 <p class="more"><a href="../hardware/vga-display-xadc/">Read more…</a></p>
 </div>
     </div>
-    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../software/bblk-ir/" class="u-url">Creating an IR receiver on AM335x BeagleBone Black</a></h1>
-        <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn">
-                Soukthavy
-            </span></p>
-            <p class="dateline"><a href="../software/bblk-ir/" rel="bookmark"><time class="published dt-published" datetime="2016-04-02T15:39:02Z" title="2016-04-02 15:39">2016-04-02 15:39</time></a></p>
-        </div>
-    </header><div class="p-summary entry-summary">
-    <div>
-<p>What I like about working with TI based platform is their easily accessible documentations. It is by far the most
-developers friendly unlike other chip vendors. This accessibility has enable me to experiment with the on-chip I/O
-subsystem components.</p>
-<p class="more"><a href="../software/bblk-ir/">Read more…</a></p>
-</div>
-    </div>
-    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../hardware/runlenth/" class="u-url">Run-length encoding with FPGA</a></h1>
-        <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn">
-                Soukthavy
-            </span></p>
-            <p class="dateline"><a href="../hardware/runlenth/" rel="bookmark"><time class="published dt-published" datetime="2016-03-26T18:40:58Z" title="2016-03-26 18:40">2016-03-26 18:40</time></a></p>
-        </div>
-    </header><div class="p-summary entry-summary">
-    <div>
-<p>Run-length encoding is one simple encoding, if not the simplest form of data compression. The more repetition in the
-data stream the better it is. For example, if input data stream is 'A2.A2.C1.C2.B4.B4.B4.B4.B4.B4.B4.B4' the output
-would be '02.A2.01.C1.01.C2.08.B4'. If there are 258 bytes of B4, then output would be '...FF.B4.03.B4'.
-In this experiment I simulated the flow of data stream and the encoding with verilog on the Nexys4DDR board, but first
-I should specify the specification of the implementation.</p>
-<p class="more"><a href="../hardware/runlenth/">Read more…</a></p>
-</div>
-    </div>
     </article>
 </div>
 
@@ -248,7 +248,9 @@ I should specify the specification of the implementation.</p>
 <li class="next">
                 <a href="index-1.html" rel="next">Older posts</a>
             </li>
-        </ul></nav>
+        </ul></nav><script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> </script><script type="text/x-mathjax-config">
+            MathJax.Hub.Config({tex2jax: {inlineMath: [['$latex ','$'], ['\\(','\\)']]}});
+            </script>
 </div>
         <!--End of body content-->
 

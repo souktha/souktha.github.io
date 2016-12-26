@@ -2,7 +2,7 @@
 .. slug: dm814x_pcie
 .. date: 2016-06-11 22:18:26 UTC
 .. tags: software
-.. category: 
+.. category: U-Boot
 .. link: 
 .. description: PCIe support and splash screen for DM814x U-Boot
 .. type: text

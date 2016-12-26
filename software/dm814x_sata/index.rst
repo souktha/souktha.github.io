@@ -2,7 +2,7 @@
 .. slug: dm814x_sata
 .. date: 2016-05-09 20:13:36 UTC
 .. tags: software
-.. category: 
+.. category: U-Boot
 .. link: 
 .. description: SATA support for DM814x U-Boot
 .. type: text

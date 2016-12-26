@@ -6,20 +6,40 @@
     xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <sitemap>
+  <loc>http://souktha.github.io/categories/cat_fpga-linux.xml</loc>
+  <lastmod>2016-12-14T15:49:00Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>http://souktha.github.io/categories/cat_fpga.xml</loc>
+  <lastmod>2016-12-26T23:00:00Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>http://souktha.github.io/categories/cat_linux.xml</loc>
+  <lastmod>2016-12-26T23:00:00Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>http://souktha.github.io/categories/cat_math.xml</loc>
+  <lastmod>2016-12-26T23:00:00Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>http://souktha.github.io/categories/cat_u-boot.xml</loc>
+  <lastmod>2016-12-26T23:00:00Z</lastmod>
+ </sitemap>
+ <sitemap>
   <loc>http://souktha.github.io/categories/hardware.xml</loc>
-  <lastmod>2016-11-20T23:05:00Z</lastmod>
+  <lastmod>2016-12-26T23:00:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/categories/latex.xml</loc>
-  <lastmod>2016-11-20T23:05:00Z</lastmod>
+  <lastmod>2016-12-26T23:00:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/categories/mathjax.xml</loc>
-  <lastmod>2016-11-20T23:05:00Z</lastmod>
+  <lastmod>2016-12-26T23:00:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/categories/misc.xml</loc>
-  <lastmod>2016-11-20T23:05:00Z</lastmod>
+  <lastmod>2016-12-26T23:00:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/categories/software-hardware.xml</loc>
@@ -27,18 +47,18 @@
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/categories/software.xml</loc>
-  <lastmod>2016-11-20T23:05:00Z</lastmod>
+  <lastmod>2016-12-26T23:00:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/galleries/rss.xml</loc>
-  <lastmod>2016-11-20T23:05:00Z</lastmod>
+  <lastmod>2016-12-26T23:00:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/rss.xml</loc>
-  <lastmod>2016-11-20T23:05:00Z</lastmod>
+  <lastmod>2016-12-26T23:00:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/sitemap.xml</loc>
-  <lastmod>2016-11-20T23:05:00Z</lastmod>
+  <lastmod>2016-12-26T23:00:00Z</lastmod>
  </sitemap>
 </sitemapindex>

@@ -2,7 +2,7 @@
 .. slug: tty2comport
 .. date: 2016-03-18 03:15:48 UTC
 .. tags: software
-.. category: 
+.. category: Linux
 .. link: 
 .. description: 
 .. type: text

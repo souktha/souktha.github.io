@@ -51,7 +51,7 @@ Convert a small LaTeX file to mathjax supported format
 .. TEASER_END
 
 .. meta::
-        :keywords: arimoto-balhut, arimoto, channel
+        :keywords: arimoto-blahut, arimoto, channel
         :description lang=en: A demonstration of converted a small LaTex document.
 
 .. section-numbering:: 
@@ -66,7 +66,7 @@ For the discrete memoryless channel, Shannon's maximum channel capacity is:
 
          C = max_{p_1 \cdots p_n} I(X,Y)
          
-where X and Y are random variable representing the input and output respectively. The optimization is
+where X and Y are random variables representing the input and output respectively. The optimization is
 taken all over the input probability distribution :math:`p = (p_1 \cdots p_n)` with the constraints :math:`p_i \ge 0, \sum_{j=1}^{n}p_j = 1` and the mutual information is defined as:
 
 .. math::
