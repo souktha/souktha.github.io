@@ -1,0 +1,4 @@
+Sitemap: http://souktha.github.io/sitemapindex.xml
+
+User-Agent: *
+Host: souktha.github.io

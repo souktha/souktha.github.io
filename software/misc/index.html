@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<head>
+<meta charset="utf-8">
+<base href="http://souktha.github.io/misc/">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Misc | Soukthavy Sopha</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<meta content="#5670d4" name="theme-color">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../rss.xml">
+<link rel="canonical" href="http://souktha.github.io/misc/">
+<!--[if lt IE 9]><script src="../assets/js/html5.js"></script><![endif]-->
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-inverse navbar-static-top"><div class="container">
+<!-- This keeps the margins nice -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://souktha.github.io/">
+
+                <span id="blog-title">Soukthavy Sopha</span>
+            </a>
+        </div>
+<!-- /.navbar-header -->
+        <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
+            <ul class="nav navbar-nav">
+<li>
+<a href="../archive.html">Archive</a>
+                </li>
+<li>
+<a href="../categories/">Tags</a>
+                </li>
+<li>
+<a href="../rss.xml">RSS feed</a>
+            </li>
+<li class="dropdown">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Blog <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+<li>
+<a href="../software">Sofware</a>
+                    </li>
+<li>
+<a href="../hardware">Hardware</a>
+                    </li>
+<li>
+<a href="../misc">Misc</a>
+            </li>
+</ul>
+</li>
+<li>
+<a href="https://github.com/souktha">My Github</a>
+
+                
+            </li>
+</ul>
+<ul class="nav navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        <div class="row">
+            
+            
+<div class="sectionindex">
+    <header><h2><a href=".">Misc</a></h2>
+    </header><div class="postindex">
+    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="cyclic_1_x_x4/" class="u-url">Simple Cyclic Hamming codes</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="cyclic_1_x_x4/" rel="bookmark"><time class="published dt-published" datetime="2016-12-10T22:46:19Z" title="2016-12-10 22:46">2016-12-10 22:46</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<p>This is a math workout problem that accompanied my FPGA implementation of forward error correction code (FEC). I choose to
+make a simple implementation of <span class="math">\((n,k,d)=(15,11,1)\)</span> code using the primitive polynomial <span class="math">\(h(x)=1+x+x^4\)</span>.
+This FEC will have be able to correct 1 bit error based on its minimum distance of 3. It is simple because it can be worked
+out by hand and it would not take too long to implement in hardware.</p>
+<p class="more"><a href="cyclic_1_x_x4/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="squashfs-ubi/" class="u-url">UBI block and read-only NAND FS</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="squashfs-ubi/" rel="bookmark"><time class="published dt-published" datetime="2016-04-09T01:44:47Z" title="2016-04-09 01:44">2016-04-09 01:44</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<p>There are many NAND Flash file systems available in Linux distribution that are suitable for deployment
+in various Linux embedded products. Every FS has their strengths and weeknesses and they are not
+perfect for every type of applications. The debate will be endless as to which is better than the others.</p>
+<p class="more"><a href="squashfs-ubi/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="repartition-boneblk/" class="u-url">Repartitioning 4GB Beaglebone Black eMMC flash</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="repartition-boneblk/" rel="bookmark"><time class="published dt-published" datetime="2016-03-20T01:26:53Z" title="2016-03-20 01:26">2016-03-20 01:26</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<!-- $LastChangeDate$ -->
+<!-- $Rev$ -->
+<!-- $Author$ -->
+<p>I bought the Beaglebone Black Rev C nearly two years ago. When I received it, I powered it up and
+saw that everything appeared to be functional, put it back in the box and never had the chance
+to work with it again until now. It looks like it was preloaded with Debian (I am not sure). There
+must have been a lot of updates ever since.</p>
+<p class="more"><a href="repartition-boneblk/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="class_report_503/" class="u-url">LaTeX conversion</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="class_report_503/" rel="bookmark"><time class="published dt-published" datetime="2016-03-06T15:56:21Z" title="2016-03-06 15:56">2016-03-06 15:56</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name">
+<col class="docinfo-content">
+<tbody valign="top">
+<tr>
+<th class="docinfo-name">Author:</th>
+<td>Soukthavy Sopha</td>
+</tr>
+<tr>
+<th class="docinfo-name">Contact:</th>
+<td><a class="first last reference external" href="mailto:soukthavy@yahoo.com">soukthavy@yahoo.com</a></td>
+</tr>
+<tr>
+<th class="docinfo-name">Organization:</th>
+<td>self</td>
+</tr>
+<tr>
+<th class="docinfo-name">Status:</th>
+<td>Lean to convert the LaTex of IEEE format to reST using my old class homework.</td>
+</tr>
+<tr>
+<th class="docinfo-name">Revision:</th>
+<td>0.1</td>
+</tr>
+<tr>
+<th class="docinfo-name">Copyright:</th>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+<div class="abstract topic">
+<p class="topic-title first">Abstract</p>
+<p>The Arimoto-Blahut algorithm is the algorithm used to solve the convex optimization problem
+for the maximum capacity of a discrete memoryless channel. We will implement their algorithm with
+MATLAB script to solve the given problem.</p>
+</div>
+<!-- Converting my old LaTeX file to reST format requires a bit of editing. Unless I did something wrong, cut-n-paste mode is not working, for example, I cannot get this to work, -->
+<!-- .. code-block:: -->
+<!-- .. raw: latex -->
+<!-- \begin{equation} -->
+<!-- \phi(y_j,x_i)  = \frac{p(x_i|y_j)p(y_j)}{\sum_{k=1}^{n}p(x_i|y_k)p(y_k)} -->
+<!-- \end{equation} -->
+<!-- instead, -->
+<!-- .. code-block:: -->
+<!-- .. math:: -->
+<!-- \phi(y_j,x_i)  = \frac{p(x_i|y_j)p(y_j)}{\sum_{k=1}^{n}p(x_i|y_k)p(y_k)} -->
+<!-- works. Most of editing involves deleting and indenting. Later I will figure out how to do multi columns in IEEE format. -->
+<p class="more"><a href="class_report_503/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="restructuredtext-demo-import-from-demotxt/" class="u-url">ReStructuredText Demo (import from demo.txt)</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="restructuredtext-demo-import-from-demotxt/" rel="bookmark"><time class="published dt-published" datetime="2016-03-04T22:47:22Z" title="2016-03-04 22:47">2016-03-04 22:47</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name">
+<col class="docinfo-content">
+<tbody valign="top">
+<tr>
+<th class="docinfo-name">Author:</th>
+<td>David Goodger</td>
+</tr>
+<tr>
+<th class="docinfo-name">Address:</th>
+<td>
+<pre class="address">
+123 Example Street
+Example, EX  Canada
+A1B 2C3
+</pre>
+</td>
+</tr>
+<tr>
+<th class="docinfo-name">Contact:</th>
+<td><a class="first last reference external" href="mailto:docutils-develop@lists.sourceforge.net">docutils-develop@lists.sourceforge.net</a></td>
+</tr>
+<tr>
+<th class="docinfo-name">Authors:</th>
+<td>Me
+<br>Myself
+<br>I</td>
+</tr>
+<tr>
+<th class="docinfo-name">Organization:</th>
+<td>humankind</td>
+</tr>
+<tr>
+<th class="docinfo-name">Date:</th>
+<td>2012-01-03</td>
+</tr>
+<tr>
+<th class="docinfo-name">Status:</th>
+<td>This is a "work in progress"</td>
+</tr>
+<tr>
+<th class="docinfo-name">Revision:</th>
+<td>7302</td>
+</tr>
+<tr>
+<th class="docinfo-name">Version:</th>
+<td>1</td>
+</tr>
+<tr>
+<th class="docinfo-name">Copyright:</th>
+<td>This document has been placed in the public domain. You
+may do with it as you wish. You may copy, modify,
+redistribute, reattribute, sell, buy, rent, lease,
+destroy, or improve it, quote it at length, excerpt,
+incorporate, collate, fold, staple, or mutilate it, or do
+anything else to it that your or anyone else's heart
+desires.</td>
+</tr>
+<tr class="field">
+<th class="docinfo-name">field name:</th>
+<td class="field-body">This is a generic bibliographic field.</td>
+</tr>
+<tr class="field">
+<th class="docinfo-name">field name 2:</th>
+<td class="field-body">
+<p class="first">Generic bibliographic fields may contain multiple body elements.</p>
+<p class="last">Like this.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="dedication topic">
+<p class="topic-title first">Dedication</p>
+<p>For Docutils users &amp; co-developers.</p>
+</div>
+<div class="abstract topic">
+<p class="topic-title first">Abstract</p>
+<p>This document is a demonstration of the reStructuredText markup
+language, containing examples of all basic reStructuredText
+constructs and many advanced constructs.</p>
+</div>
+<!-- This is a comment. Note how any initial comments are moved by
+transforms to after the document title, subtitle, and docinfo. -->
+<!-- Above is the document title, and below is the subtitle.
+They are transformed from section titles after parsing. -->
+<!-- bibliographic fields (which also require a transform): -->
+<p class="more"><a href="restructuredtext-demo-import-from-demotxt/">Read more…</a></p>
+</div>
+    </div>
+    </article>
+</div>
+
+
+
+
+
+            <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> </script><script type="text/x-mathjax-config">
+            MathJax.Hub.Config({tex2jax: {inlineMath: [['$latex ','$'], ['\\(','\\)']]}});
+            </script>
+</div>
+
+        </div>
+        <!--End of body content-->
+
+        <footer id="footer">
+            Contents © 2016         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+        </footer>
+</div>
+</div>
+
+
+            <script src="../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+    moment.locale("en");
+    fancydates(0, "YYYY-MM-DD HH:mm");
+    </script><!-- end fancy dates -->
+</body>
+</html>

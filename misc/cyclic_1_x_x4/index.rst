@@ -20,7 +20,7 @@ Some field algebra
 A polynomial of degree :math:`n` is said to be *primitive* (over GF) if it is an *irreducible* polynomial that is not a 
 divisor of :math:`1+x^m`, for any :math:`m < 2^n - 1`. An irreducible polynomial always divides :math:`1+x^m` for
 :math:`m = 2^n - 1` (exact). For this exercise, :math:`h(x)=1+x+x^4`, does not divide :math:`(1+x^m)` for any
-:math:`m < 2^4 -1 ( m < 15)`. It will divide :math:`(1+x^{15})` though. I can use MATLAB to verify this,
+:math:`m < 2^4 -1 ( m < 15)`. It will divide :math:`(1+x^{15})` though (is factor). I can use MATLAB to verify this,
 
 .. code-block:: 
 
@@ -138,7 +138,7 @@ Note that :math:`\beta^{15} = \beta^0 = 1`. This will give me the cyclic Hamming
         \right]
 
 If I sum row 1, 4 and 5 together (modulo 2), I get zeros. There is no two rows that forms
-the third row or sum to zeros so it takes three or more to do that. By definition,
+the third row or sum to zeros so it takes three or more to do that. By definition, it takes
 :math:`d-1` rows of :math:`H^t` matrix to show linear independency; therefore, 
 I can verify that its minimum distance is :math:`d-1=2 \Rightarrow d=3`.
 
@@ -326,7 +326,12 @@ to put the encoded data bits :math:`u` is in its systematic form where its row v
         \right]
 
 
-The encoded words are the contatenation of the input word and the parity bits.       
+The encoded words are the contatenation of the input word and the parity bits. The HDL implementation
+of this FEC exercise is `Simple Cyclic Hamming FEC`_
+
+.. _Simple Cyclic Hamming FEC: http://souktha.github.io/hardware/cyclic_1_x_x4_hw
+.. _link: `Simple Cyclic Hamming FEC`_
+
 
 Reference
 ===========

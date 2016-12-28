@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/"><channel><title>Soukthavy Sopha (latex)</title><link>http://souktha.github.io/</link><description></description><atom:link type="application/rss+xml" rel="self" href="http://souktha.github.io/categories/latex.xml"></atom:link><language>en</language><lastBuildDate>Mon, 26 Dec 2016 23:09:03 GMT</lastBuildDate><generator>https://getnikola.com/</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Simple Cyclic Hamming (15,11,3) FEC</title><link>http://souktha.github.io/hardware/cyclic_1_x_x4_hw/</link><dc:creator>Soukthavy</dc:creator><description>&lt;div&gt;&lt;p&gt;This post is the implementation part of the my post on "simple cyclic Hamming code"__&lt;/p&gt;
+&lt;p&gt;where I did some math workout on this type of forward error-correction code (FEC). I am doing
+it for fun since I think it is simple enough to implement it in FPGA. The generator
+for this exercise is &lt;span class="math"&gt;\(g(x)=1+x+x4\)&lt;/span&gt; for an &lt;span class="math"&gt;\((n,k,d) \equiv (15,11,3)\)&lt;/span&gt; code.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://souktha.github.io/hardware/cyclic_1_x_x4_hw/"&gt;Read more…&lt;/a&gt; (1 min remaining to read)&lt;/p&gt;&lt;/div&gt;</description><category>hardware</category><category>latex</category><category>mathjax</category><guid>http://souktha.github.io/hardware/cyclic_1_x_x4_hw/</guid><pubDate>Thu, 22 Dec 2016 00:17:42 GMT</pubDate></item><item><title>Simple Cyclic Hamming codes</title><link>http://souktha.github.io/misc/cyclic_1_x_x4/</link><dc:creator>Soukthavy</dc:creator><description>&lt;div&gt;&lt;p&gt;This is a math workout problem that accompanied my FPGA implementation of forward error correction code (FEC). I choose to
+make a simple implementation of &lt;span class="math"&gt;\((n,k,d)=(15,11,1)\)&lt;/span&gt; code using the primitive polynomial &lt;span class="math"&gt;\(h(x)=1+x+x^4\)&lt;/span&gt;.
+This FEC will have be able to correct 1 bit error based on its minimum distance of 3. It is simple because it can be worked
+out by hand and it would not take too long to implement in hardware.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://souktha.github.io/misc/cyclic_1_x_x4/"&gt;Read more…&lt;/a&gt; (7 min remaining to read)&lt;/p&gt;&lt;/div&gt;</description><category>latex</category><category>mathjax</category><category>misc</category><guid>http://souktha.github.io/misc/cyclic_1_x_x4/</guid><pubDate>Sat, 10 Dec 2016 22:46:19 GMT</pubDate></item><item><title>LaTeX conversion</title><link>http://souktha.github.io/misc/class_report_503/</link><dc:creator>Soukthavy</dc:creator><description>&lt;div&gt;&lt;table class="docinfo" frame="void" rules="none"&gt;
+&lt;col class="docinfo-name"&gt;
+&lt;col class="docinfo-content"&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;th class="docinfo-name"&gt;Author:&lt;/th&gt;
+&lt;td&gt;Soukthavy Sopha&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th class="docinfo-name"&gt;Contact:&lt;/th&gt;
+&lt;td&gt;&lt;a class="first last reference external" href="mailto:soukthavy@yahoo.com"&gt;soukthavy@yahoo.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th class="docinfo-name"&gt;Organization:&lt;/th&gt;
+&lt;td&gt;self&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th class="docinfo-name"&gt;Status:&lt;/th&gt;
+&lt;td&gt;Lean to convert the LaTex of IEEE format to reST using my old class homework.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th class="docinfo-name"&gt;Revision:&lt;/th&gt;
+&lt;td&gt;0.1&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th class="docinfo-name"&gt;Copyright:&lt;/th&gt;
+&lt;td&gt;None&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class="abstract topic"&gt;
+&lt;p class="topic-title first"&gt;Abstract&lt;/p&gt;
+&lt;p&gt;The Arimoto-Blahut algorithm is the algorithm used to solve the convex optimization problem
+for the maximum capacity of a discrete memoryless channel. We will implement their algorithm with
+MATLAB script to solve the given problem.&lt;/p&gt;
+&lt;/div&gt;
+&lt;!-- Converting my old LaTeX file to reST format requires a bit of editing. Unless I did something wrong, cut-n-paste mode is not working, for example, I cannot get this to work, --&gt;
+&lt;!-- .. code-block:: --&gt;
+&lt;!-- .. raw: latex --&gt;
+&lt;!-- \begin{equation} --&gt;
+&lt;!-- \phi(y_j,x_i)  = \frac{p(x_i|y_j)p(y_j)}{\sum_{k=1}^{n}p(x_i|y_k)p(y_k)} --&gt;
+&lt;!-- \end{equation} --&gt;
+&lt;!-- instead, --&gt;
+&lt;!-- .. code-block:: --&gt;
+&lt;!-- .. math:: --&gt;
+&lt;!-- \phi(y_j,x_i)  = \frac{p(x_i|y_j)p(y_j)}{\sum_{k=1}^{n}p(x_i|y_k)p(y_k)} --&gt;
+&lt;!-- works. Most of editing involves deleting and indenting. Later I will figure out how to do multi columns in IEEE format. --&gt;
+&lt;p&gt;&lt;a href="http://souktha.github.io/misc/class_report_503/"&gt;Read more…&lt;/a&gt; (3 min remaining to read)&lt;/p&gt;&lt;/div&gt;</description><category>latex</category><category>mathjax</category><category>misc</category><guid>http://souktha.github.io/misc/class_report_503/</guid><pubDate>Sun, 06 Mar 2016 15:56:21 GMT</pubDate></item></channel></rss>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<head>
+<meta charset="utf-8">
+<base href="http://souktha.github.io/software/">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Software | Soukthavy Sopha</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<meta content="#5670d4" name="theme-color">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../rss.xml">
+<link rel="canonical" href="http://souktha.github.io/software/">
+<!--[if lt IE 9]><script src="../assets/js/html5.js"></script><![endif]-->
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-inverse navbar-static-top"><div class="container">
+<!-- This keeps the margins nice -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://souktha.github.io/">
+
+                <span id="blog-title">Soukthavy Sopha</span>
+            </a>
+        </div>
+<!-- /.navbar-header -->
+        <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
+            <ul class="nav navbar-nav">
+<li>
+<a href="../archive.html">Archive</a>
+                </li>
+<li>
+<a href="../categories/">Tags</a>
+                </li>
+<li>
+<a href="../rss.xml">RSS feed</a>
+            </li>
+<li class="dropdown">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Blog <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+<li>
+<a href="../software">Sofware</a>
+                    </li>
+<li>
+<a href="../hardware">Hardware</a>
+                    </li>
+<li>
+<a href="../misc">Misc</a>
+            </li>
+</ul>
+</li>
+<li>
+<a href="https://github.com/souktha">My Github</a>
+
+                
+            </li>
+</ul>
+<ul class="nav navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        <div class="row">
+            
+            
+<div class="sectionindex">
+    <header><h2><a href=".">Software</a></h2>
+    </header><div class="postindex">
+    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="zynq_spi_stepper_sw/" class="u-url">Zynq SPI slave stepper motor driver</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="zynq_spi_stepper_sw/" rel="bookmark"><time class="published dt-published" datetime="2016-11-17T00:40:47Z" title="2016-11-17 00:40">2016-11-17 00:40</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<p>The Linux SPI slave device driver is to enable user access to SPI slave stepper motor FPGA design in my other post
+<a class="reference external" href="http://souktha.github.io/hardware/zybo-spi-stepper">http://souktha.github.io/hardware/zybo-spi-stepper</a> . This is the software part of that implementation on the Zybo Zynq7000.
+I reuse the original SPI slave I wrote earlier and expand its functionality a little bit more so that I can send
+the step count to the stepper motor.</p>
+<p class="more"><a href="zynq_spi_stepper_sw/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="dm814x_pcie/" class="u-url">Adding PCIe support and bring up the boot splash screen to DM814x U-Boot</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="dm814x_pcie/" rel="bookmark"><time class="published dt-published" datetime="2016-06-11T22:18:26Z" title="2016-06-11 22:18">2016-06-11 22:18</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<p>It is desirable to have some visual feedback to user during system boot up process especially if the system takes more
+than few seconds to boot. For the Linux based set-top box that boot to the main GUI menu may take considerable
+amount of time depending on the number of processes it needs to start. Some system may need to program the FPGA bitmask,
+bring up the networking processes or bring up some externally connected devices. These steps add up to the total system boot up
+time. For system with video support, it is a good practice to have video up as soon as possible so that the user
+would know that the system is working and it is in the process of booting up the system. This is commonly known as
+putting the boot splash screen during boot process.</p>
+<p class="more"><a href="dm814x_pcie/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="dm814x_sata/" class="u-url">Adding SATA HD boot support to DM814x U-Boot</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="dm814x_sata/" rel="bookmark"><time class="published dt-published" datetime="2016-05-09T20:13:36Z" title="2016-05-09 20:13">2016-05-09 20:13</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<p>TI DM814x/AM287x evaluation platform (TI8148 EVM) can boot from various connected devices depending on the setting
+of the BTMode[4-0] pins as described in chapter 4.5.2.1 of its respective technical reference manual [<a class="reference internal" href="dm814x_sata/#id1">1</a>]. Typically
+the EVM boot its first stage of u-boot as the minimum boot loaders. TI calls it <em>min-nand</em> boot loader
+configuration. This minimum boot then bootstraps a secondary boot phase which is a
+a full featured u-boot for this platform.
+The EV platform has SATA H/W support where I will bring up the SATA HDD in the second phase of booting so that I can load the
+Linux kernel image from HDD instead of loading it from NAND device.</p>
+<p class="more"><a href="dm814x_sata/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="zybo-quickstart/" class="u-url">Decoupling Xilinx Zynq PS and PL on Linux for Digilent Zybo</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="zybo-quickstart/" rel="bookmark"><time class="published dt-published" datetime="2016-04-23T19:08:20Z" title="2016-04-23 19:08">2016-04-23 19:08</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<p>Digilent Zybo board is built around Xilinx Zynq-7000 family [<a class="reference internal" href="zybo-quickstart/#id1">1</a>]. This Zynq-7000 is integrated with a dual-core
+ARM Cortex-A9 processor that has Linux support for it. In addition to this PS unit, the Xilinx 7-series
+FPGA is also integrated as the PL component of this SoC [<a class="reference internal" href="zybo-quickstart/#id2">2</a>]. This demonstation will show how easy it is
+to decouple PS and PL components.</p>
+<p class="more"><a href="zybo-quickstart/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="bblk-ir/" class="u-url">Creating an IR receiver on AM335x BeagleBone Black</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="bblk-ir/" rel="bookmark"><time class="published dt-published" datetime="2016-04-02T15:39:02Z" title="2016-04-02 15:39">2016-04-02 15:39</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<p>What I like about working with TI based platform is their easily accessible documentations. It is by far the most
+developers friendly unlike other chip vendors. This accessibility has enable me to experiment with the on-chip I/O
+subsystem components.</p>
+<p class="more"><a href="bblk-ir/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="tty2comport/" class="u-url">Redirect tty login from ssh to UART port</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="tty2comport/" rel="bookmark"><time class="published dt-published" datetime="2016-03-18T03:15:48Z" title="2016-03-18 03:15">2016-03-18 03:15</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div class="section" id="objective">
+<h2>Objective</h2>
+<p>When I ssh from remote host machine to my local machine, say from outside place to host machine at home, I would
+like to directly access a device that is connected by serial console to my local machine, for example, a beaglebone black
+board that is connected to my home PC serial console ttyUSB0. I implemented a simple console server for this purpose.</p>
+<p class="more"><a href="tty2comport/">Read more…</a></p>
+</div>
+    </div>
+    </article>
+</div>
+
+
+
+
+
+
+
+</div>
+
+        </div>
+        <!--End of body content-->
+
+        <footer id="footer">
+            Contents © 2016         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+        </footer>
+</div>
+</div>
+
+
+            <script src="../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+    moment.locale("en");
+    fancydates(0, "YYYY-MM-DD HH:mm");
+    </script><!-- end fancy dates -->
+</body>
+</html>

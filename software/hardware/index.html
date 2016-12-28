@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<head>
+<meta charset="utf-8">
+<base href="http://souktha.github.io/hardware/">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hardware | Soukthavy Sopha</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<meta content="#5670d4" name="theme-color">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../rss.xml">
+<link rel="canonical" href="http://souktha.github.io/hardware/">
+<!--[if lt IE 9]><script src="../assets/js/html5.js"></script><![endif]-->
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-inverse navbar-static-top"><div class="container">
+<!-- This keeps the margins nice -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://souktha.github.io/">
+
+                <span id="blog-title">Soukthavy Sopha</span>
+            </a>
+        </div>
+<!-- /.navbar-header -->
+        <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
+            <ul class="nav navbar-nav">
+<li>
+<a href="../archive.html">Archive</a>
+                </li>
+<li>
+<a href="../categories/">Tags</a>
+                </li>
+<li>
+<a href="../rss.xml">RSS feed</a>
+            </li>
+<li class="dropdown">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Blog <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+<li>
+<a href="../software">Sofware</a>
+                    </li>
+<li>
+<a href="../hardware">Hardware</a>
+                    </li>
+<li>
+<a href="../misc">Misc</a>
+            </li>
+</ul>
+</li>
+<li>
+<a href="https://github.com/souktha">My Github</a>
+
+                
+            </li>
+</ul>
+<ul class="nav navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        <div class="row">
+            
+            
+<div class="sectionindex">
+    <header><h2><a href=".">Hardware</a></h2>
+    </header><div class="postindex">
+    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="cyclic_1_x_x4_hw/" class="u-url">Simple Cyclic Hamming (15,11,3) FEC</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="cyclic_1_x_x4_hw/" rel="bookmark"><time class="published dt-published" datetime="2016-12-22T00:17:42Z" title="2016-12-22 00:17">2016-12-22 00:17</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<p>This post is the implementation part of the my post on "simple cyclic Hamming code"__</p>
+<p>where I did some math workout on this type of forward error-correction code (FEC). I am doing
+it for fun since I think it is simple enough to implement it in FPGA. The generator
+for this exercise is <span class="math">\(g(x)=1+x+x4\)</span> for an <span class="math">\((n,k,d) \equiv (15,11,3)\)</span> code.</p>
+<p class="more"><a href="cyclic_1_x_x4_hw/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="zybo-spi-stepper/" class="u-url">SPI slave stepper motor with Zybo</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="zybo-spi-stepper/" rel="bookmark"><time class="published dt-published" datetime="2016-11-12T15:38:09Z" title="2016-11-12 15:38">2016-11-12 15:38</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<p>My previous blog was to create the SPI slave device on Programmable Logic (PL) side of the Zynq7000 where it
+can be interconnected and can be accessible by the Processing System (PS) side of this SoC and I achieved the
+result I expected. Since that blog was only for validating my SPI slave design to be coherent with the rest of the
+system without doing much useful work, I would like to extend it so that I can make it do a bit more useful work.</p>
+<p class="more"><a href="zybo-spi-stepper/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="zybo-spi-slave/" class="u-url">Zynq Zybo SPI slave via EMIO</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="zybo-spi-slave/" rel="bookmark"><time class="published dt-published" datetime="2016-07-17T18:10:54Z" title="2016-07-17 18:10">2016-07-17 18:10</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<p>I would like to add a simple IO peripheral device to the Zynq Zybo board and I would like to learn how much
+effort I need to get PS-PL interconnected and can be used by high level OS such as Linux.
+For this exercise, I choose to create a simplest device for the Zynq PL that interface with its PS. My choice
+is to create a SPI slave device (PL) that will interconnect to the SPI master of the Zynq (PS).</p>
+<p class="more"><a href="zybo-spi-slave/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="vga-display-xadc/" class="u-url">Displaying Xilinx XADC on VGA</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="vga-display-xadc/" rel="bookmark"><time class="published dt-published" datetime="2016-04-03T21:10:14Z" title="2016-04-03 21:10">2016-04-03 21:10</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<p>My previous blog was about displaying simple bar graph on a standard VGA <a class="reference external" href="mailto:640x480@60HZ">640x480@60HZ</a> monitor using synthesized Verilog code.
+This blog is to follow on with that exercise, but using the actual sampled data from the Xilinx XADC instead.</p>
+<p class="more"><a href="vga-display-xadc/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="runlenth/" class="u-url">Run-length encoding with FPGA</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="runlenth/" rel="bookmark"><time class="published dt-published" datetime="2016-03-26T18:40:58Z" title="2016-03-26 18:40">2016-03-26 18:40</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<p>Run-length encoding is one simple encoding, if not the simplest form of data compression. The more repetition in the
+data stream the better it is. For example, if input data stream is 'A2.A2.C1.C2.B4.B4.B4.B4.B4.B4.B4.B4' the output
+would be '02.A2.01.C1.01.C2.08.B4'. If there are 258 bytes of B4, then output would be '...FF.B4.03.B4'.
+In this experiment I simulated the flow of data stream and the encoding with verilog on the Nexys4DDR board, but first
+I should specify the specification of the implementation.</p>
+<p class="more"><a href="runlenth/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="vga_draw_graph/" class="u-url">Drawing bargraph on VGA with Nexys4DDR</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="vga_draw_graph/" rel="bookmark"><time class="published dt-published" datetime="2016-03-19T19:52:20Z" title="2016-03-19 19:52">2016-03-19 19:52</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<!-- $Author: ssop $ -->
+<!-- $LastChangeDate$ -->
+<!-- $Rev$ -->
+<p>The Digilent Nexys4DDR has only one video port which is a VGA port. With a small set of verilog code, I can synthesize a simple circuit to
+draw some bar graph having each line with a width of one pixel. To achieve this I need to create the HSYNC and VSYNC for the
+desired output of <a class="reference external" href="mailto:640x480@60HZ">640x480@60HZ</a>.
+The standard VGA of 640x480 is meant for its displayable area while it actually has 800x525 of total area. This makes the
+required pixel clock frequency of 800 * 60 * 525 = 25.200MHZ.</p>
+<p class="more"><a href="vga_draw_graph/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="servo/" class="u-url">servo driver</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="servo/" rel="bookmark"><time class="published dt-published" datetime="2016-03-12T05:25:40Z" title="2016-03-12 05:25">2016-03-12 05:25</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<p>Servo motor is an electromechanical drive that is relatively simple to operate. A
+typically servo motor has relatively few movements, namely left, right and center.
+Controlling its movement is to send the periodic pulse width of about 1.5ms, 1ms or 2ms for
+the center, left, and the right movement respectively.
+In this demo, I use a very simple verilog code to control its movement.</p>
+<p class="more"><a href="servo/">Read more…</a></p>
+</div>
+    </div>
+    </article>
+</div>
+
+
+
+
+
+            <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> </script><script type="text/x-mathjax-config">
+            MathJax.Hub.Config({tex2jax: {inlineMath: [['$latex ','$'], ['\\(','\\)']]}});
+            </script>
+</div>
+
+        </div>
+        <!--End of body content-->
+
+        <footer id="footer">
+            Contents © 2016         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+        </footer>
+</div>
+</div>
+
+
+            <script src="../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+    moment.locale("en");
+    fancydates(0, "YYYY-MM-DD HH:mm");
+    </script><!-- end fancy dates -->
+</body>
+</html>
