@@ -59,35 +59,9 @@ ready indicator so that the 15-bit encoded message can be read.
             output [OWIDTH-1:0] codeword
             );
 
-            reg [OWIDTH-1:0] cw = 15'h0;
-            reg [3:0] q, r; //quotient and remainder
-            reg [5:0] count = 4'h0;
-
-            reg busy = 1'b1;
-            reg ready = 1'b0;
-            wire fbypass;
-
-            assign rdy = ready;
-            assign bsy = busy;
-
-            assign codeword = cw;
-
-            initial begin
-                q = 4'b0000;
-                r = 4'b0000;
-                end
-
-            /*start bit counting process if busy*/
-            always@(posedge clk)
-                if ( !enc_enable )
-                    count <= 5'h0;
-                else begin
-                if (count <= `NSHIFTS )
-                    count <= count + 1'b1;
-                else
-                    count <= 5'h0;
-                end
-
+            ..
+            ..
+            
             assign fbypass = (count <= `KBITS);
 
             always@(posedge clk ) begin
@@ -98,7 +72,7 @@ ready indicator so that the 15-bit encoded message can be read.
                     end
                     else begin
                         if ( fbypass  ) begin
-					/*pass through k bits of message*/
+			   /*pass through k bits of message*/
                             busy <= #1 1'b1;
                             ready <= #1 1'b0;
                             cw <= {cw[OWIDTH-2:0],ibit}; //left shift to MSB begin with 1st bit
@@ -144,8 +118,8 @@ ready indicator so that the 15-bit encoded message can be read.
         endmodule
 
 
-The interface part of this module is between line 44-72. The divider circuit that forms the :math:`P_i` bits is between line 75-93.
-The lines that forms the output coded word are at line 55 and 58. The sample simulation below shows one of the encoded message.
+Th encoder part of this module is between line 16-46. The divider circuit that forms the :math:`P_i` bits is between line 49-67.
+The lines that forms the output coded word are at line 29 and 32. The sample simulation below shows one of the encoded message.
 Any :math:`2^{11}` input message words can be encoded by this circuit and matches with the multiplication of the
 :math:`G` matrix. This is how I know that the divider circuit works.
 
@@ -157,4 +131,148 @@ Any :math:`2^{11}` input message words can be encoded by this circuit and matche
 The decoder and FEC 
 -------------------
 
-*to be completed*
+The FEC decoder is the reverse of the encoder where it takes in the serial 15-bit code word, computes
+the syndrome and if any 1-bit error is detected, the instantiated lookup bit correction will return
+the correctable bit position. This completed the FEC process.
+
+.. code-block:: verilog
+   :linenos:
+
+        module cyclic_1_x_x4_decode #(parameter IWIDTH=15, OWIDTH=11) (
+            input clk,
+            input dec_enable, //enable decoder
+            input  ibit, //serialize input bit input code word
+
+            output bsy, // state of decoder
+            output rdy, // 1 when decoded data is ready for reading.
+        	output err, // error if undecodable
+
+            output [OWIDTH-1:0] outw //11 bit output decoded word
+        );
+
+        ..
+        ..
+
+	assign outw = cw[IWIDTH-1:`PBITS] ^ bit_correction[IWIDTH-1:`PBITS]; //bit 4 to 14 for this case
+
+        always@(posedge clk ) begin
+		if (dec_enable ) begin
+			if ( count == 5'h0 ) begin
+				busy <= #1 1'b0;
+				ready <= #1 1'b0;
+			end
+			else begin
+				if (count < `NBITS) begin
+					/*This is to output data long enough to be read.*/
+					busy <= #1 1'b1;
+					ready <= #1 1'b0;
+					end
+				else begin
+					busy <= #1 1'b0;
+					ready <= #1 1'b1;
+					end
+                                quotient <= #1 {quotient[IWIDTH-2:0],r[3]}; //shift in MSB
+			end
+		end
+		else begin
+                    busy <= #1 1'b0;
+                    ready <= #1 1'b0;
+		end
+            end
+
+    /*dvivider for g(x) = 1 + x + x**4*/
+    always@(posedge clk) begin
+	if (dec_enable ) begin
+                if ( count == 5'h0 ) begin
+                    r <= 4'b0000;
+                    ierr <= 1'b0;
+		end
+                else if ( count <= `NBITS ) begin
+			r[3] <= r[2];
+			r[2] <= r[1];
+			r[1] <= r[3] ^ r[0];
+			r[0] <= ibit ^ r[3];
+                        cw <= {cw[IWIDTH-2:0],ibit};
+                        if (r != 4'h0 ) begin
+                                ierr <= 1'b1;
+                        end
+                end
+		end
+		else begin
+	            r <= 4'h0;
+                    ierr <= 1'b0;
+                end
+    end
+
+    assign lookup_en = ierr;
+
+    lookup11 correct(
+        .en(lookup_en),
+        .syndrome(r), //the remainder of division
+        .errbits(bit_correction)
+        );
+
+    endmodule
+
+The divider circuit (line 44-65) for the decoder is similar to that of the encoder, but it performs syndrome computation 
+by taking all the input bits having the remainder shifted into the decoded output word. If the remainder is non-zero,
+it set *ierr* bit as an enabler for *lookup11* module (line 67-73). The table lookup module returns the corresponding bit
+error, *bit_correction*, where it does the modulo-2 sum to the decoded word (line 16). This is the FEC. 
+
+The lookup module is a simple ROM type lookup table using the 4-bit syndrome as the index to the correction bit. It
+returns non-zeros for *errbits* on any error, zeros otherwise. It covers both message bits and parity bits.
+
+.. code-block::
+   :linenos:
+
+        module lookup11 #(parameter WIDTH=15) (
+            input en,
+            input [3:0] syndrome,
+            output [WIDTH-1:0] errbits
+            );
+            reg [WIDTH-1:0] bitpos;
+    
+            assign errbits = bitpos;
+    
+            always@(*) begin
+                if (!en) bitpos = 15'h0;
+            else
+            case (syndrome)
+                4'h0: bitpos = 15'h0;
+                4'h1: bitpos = 15'h1;
+                4'h2: bitpos = 15'h2;
+                4'h4: bitpos = 15'h4;
+                4'h8: bitpos = 15'h8;
+                4'h3: bitpos = 15'h10;
+                4'h6: bitpos = 15'h20;
+                4'hc: bitpos = 15'h40;
+                4'hb: bitpos = 15'h80;
+                4'h5: bitpos = 15'h100;
+                4'ha: bitpos = 15'h200;
+                4'h7: bitpos = 15'h400;
+                4'he: bitpos = 15'h800;
+                4'hf: bitpos = 15'h1000;
+                4'hd: bitpos = 15'h2000;
+                4'h9: bitpos = 15'h4000;
+            endcase
+            end
+        endmodule
+
+.. figure:: ../../images/hardware/decode_73d.jpg
+
+        Fig1: decoded non-error message 0x73d for 0x73
+
+I test the FEC logic with random test vector for several coded words out of :math:`2^{11}` possible coded words
+and I can verify that any single bit error is corrected as it is a :math:`t=1` FEC. The code rate for this
+implentation is :math:`\frac{k}{n} = \frac{11}{15}`
+
+.. figure:: ../../images/hardware/decoded_33d.jpg
+
+        Fig1: FEC 1-bit error (bit 6) in coded word. Decoded and Corrected 0x33d for 0x73
+
+Conclusion
+----------
+
+Cyclic code FEC of this type can be easily implemented with shift registers to perform modulo
+division. The FEC in this exercise may not be efficient, but if it requires that the FEC be 
+implemented with minimal gates then it would be practical.

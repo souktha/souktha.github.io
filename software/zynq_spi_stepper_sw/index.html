@@ -112,156 +112,156 @@ writing step counts and <em>/proc/stepper/status</em> for reading the status of 
 </li>
 </ul>
 <table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_472d2d5b3b94400eac18f194488d66f4-1"> 1</a>
-<a href="#rest_code_472d2d5b3b94400eac18f194488d66f4-2"> 2</a>
-<a href="#rest_code_472d2d5b3b94400eac18f194488d66f4-3"> 3</a>
-<a href="#rest_code_472d2d5b3b94400eac18f194488d66f4-4"> 4</a>
-<a href="#rest_code_472d2d5b3b94400eac18f194488d66f4-5"> 5</a>
-<a href="#rest_code_472d2d5b3b94400eac18f194488d66f4-6"> 6</a>
-<a href="#rest_code_472d2d5b3b94400eac18f194488d66f4-7"> 7</a>
-<a href="#rest_code_472d2d5b3b94400eac18f194488d66f4-8"> 8</a>
-<a href="#rest_code_472d2d5b3b94400eac18f194488d66f4-9"> 9</a>
-<a href="#rest_code_472d2d5b3b94400eac18f194488d66f4-10">10</a>
-<a href="#rest_code_472d2d5b3b94400eac18f194488d66f4-11">11</a>
-<a href="#rest_code_472d2d5b3b94400eac18f194488d66f4-12">12</a>
-<a href="#rest_code_472d2d5b3b94400eac18f194488d66f4-13">13</a>
-<a href="#rest_code_472d2d5b3b94400eac18f194488d66f4-14">14</a>
-<a href="#rest_code_472d2d5b3b94400eac18f194488d66f4-15">15</a>
-<a href="#rest_code_472d2d5b3b94400eac18f194488d66f4-16">16</a>
-<a href="#rest_code_472d2d5b3b94400eac18f194488d66f4-17">17</a>
-<a href="#rest_code_472d2d5b3b94400eac18f194488d66f4-18">18</a>
-<a href="#rest_code_472d2d5b3b94400eac18f194488d66f4-19">19</a>
-<a href="#rest_code_472d2d5b3b94400eac18f194488d66f4-20">20</a>
-<a href="#rest_code_472d2d5b3b94400eac18f194488d66f4-21">21</a>
-<a href="#rest_code_472d2d5b3b94400eac18f194488d66f4-22">22</a>
-<a href="#rest_code_472d2d5b3b94400eac18f194488d66f4-23">23</a>
-<a href="#rest_code_472d2d5b3b94400eac18f194488d66f4-24">24</a>
-<a href="#rest_code_472d2d5b3b94400eac18f194488d66f4-25">25</a>
-<a href="#rest_code_472d2d5b3b94400eac18f194488d66f4-26">26</a>
-<a href="#rest_code_472d2d5b3b94400eac18f194488d66f4-27">27</a></pre></div></td>
-<td class="code"><pre class="code C"><a name="rest_code_472d2d5b3b94400eac18f194488d66f4-1"></a><span class="p">..</span>
-<a name="rest_code_472d2d5b3b94400eac18f194488d66f4-2"></a>
-<a name="rest_code_472d2d5b3b94400eac18f194488d66f4-3"></a><span class="c1">//adding proc directory and proc entries</span>
-<a name="rest_code_472d2d5b3b94400eac18f194488d66f4-4"></a>
-<a name="rest_code_472d2d5b3b94400eac18f194488d66f4-5"></a><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">stepper_procdir_entry</span> <span class="o">=</span> <span class="n">proc_mkdir</span><span class="p">(</span><span class="s">"stepper"</span><span class="p">,</span><span class="nb">NULL</span><span class="p">)))</span>
-<a name="rest_code_472d2d5b3b94400eac18f194488d66f4-6"></a>        <span class="k">goto</span> <span class="n">exit_free_data</span><span class="p">;</span>
-<a name="rest_code_472d2d5b3b94400eac18f194488d66f4-7"></a>
-<a name="rest_code_472d2d5b3b94400eac18f194488d66f4-8"></a><span class="n">spi5a</span><span class="o">-&gt;</span><span class="n">proc_entry</span> <span class="o">=</span> <span class="n">stepper_procdir_entry</span><span class="p">;</span>
-<a name="rest_code_472d2d5b3b94400eac18f194488d66f4-9"></a><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">entry</span> <span class="o">=</span> <span class="n">proc_create_data</span><span class="p">(</span><span class="s">"steps"</span><span class="p">,</span>
-<a name="rest_code_472d2d5b3b94400eac18f194488d66f4-10"></a>                        <span class="n">S_IFREG</span> <span class="o">|</span> <span class="n">S_IRUGO</span> <span class="o">|</span> <span class="n">S_IWUSR</span><span class="p">,</span>
-<a name="rest_code_472d2d5b3b94400eac18f194488d66f4-11"></a>                        <span class="n">spi5a</span><span class="o">-&gt;</span><span class="n">proc_entry</span><span class="p">,</span>
-<a name="rest_code_472d2d5b3b94400eac18f194488d66f4-12"></a>                        <span class="o">&amp;</span><span class="n">proc_stepper_fops</span><span class="p">,</span>
-<a name="rest_code_472d2d5b3b94400eac18f194488d66f4-13"></a>                        <span class="nb">NULL</span><span class="p">))</span> <span class="p">)</span> <span class="p">{</span>
-<a name="rest_code_472d2d5b3b94400eac18f194488d66f4-14"></a>
-<a name="rest_code_472d2d5b3b94400eac18f194488d66f4-15"></a>        <span class="k">goto</span> <span class="n">exit_free_data</span><span class="p">;</span>
-<a name="rest_code_472d2d5b3b94400eac18f194488d66f4-16"></a><span class="p">}</span>
-<a name="rest_code_472d2d5b3b94400eac18f194488d66f4-17"></a><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">entry</span> <span class="o">=</span> <span class="n">proc_create_data</span><span class="p">(</span><span class="s">"status"</span><span class="p">,</span>
-<a name="rest_code_472d2d5b3b94400eac18f194488d66f4-18"></a>                        <span class="n">S_IFREG</span> <span class="o">|</span> <span class="n">S_IRUGO</span> <span class="o">|</span> <span class="n">S_IWUSR</span><span class="p">,</span>
-<a name="rest_code_472d2d5b3b94400eac18f194488d66f4-19"></a>                        <span class="n">spi5a</span><span class="o">-&gt;</span><span class="n">proc_entry</span><span class="p">,</span>
-<a name="rest_code_472d2d5b3b94400eac18f194488d66f4-20"></a>                        <span class="o">&amp;</span><span class="n">proc_stepper_status_fops</span><span class="p">,</span>
-<a name="rest_code_472d2d5b3b94400eac18f194488d66f4-21"></a>                        <span class="nb">NULL</span><span class="p">))</span> <span class="p">)</span> <span class="p">{</span>
-<a name="rest_code_472d2d5b3b94400eac18f194488d66f4-22"></a>
-<a name="rest_code_472d2d5b3b94400eac18f194488d66f4-23"></a>        <span class="n">remove_proc_entry</span><span class="p">(</span><span class="s">"steps"</span><span class="p">,</span><span class="n">spi5a</span><span class="o">-&gt;</span><span class="n">proc_entry</span><span class="p">);</span>
-<a name="rest_code_472d2d5b3b94400eac18f194488d66f4-24"></a>        <span class="k">goto</span> <span class="n">exit_free_data</span><span class="p">;</span>
-<a name="rest_code_472d2d5b3b94400eac18f194488d66f4-25"></a><span class="p">}</span>
-<a name="rest_code_472d2d5b3b94400eac18f194488d66f4-26"></a>
-<a name="rest_code_472d2d5b3b94400eac18f194488d66f4-27"></a><span class="p">..</span>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-1"> 1</a>
+<a href="#rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-2"> 2</a>
+<a href="#rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-3"> 3</a>
+<a href="#rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-4"> 4</a>
+<a href="#rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-5"> 5</a>
+<a href="#rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-6"> 6</a>
+<a href="#rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-7"> 7</a>
+<a href="#rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-8"> 8</a>
+<a href="#rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-9"> 9</a>
+<a href="#rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-10">10</a>
+<a href="#rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-11">11</a>
+<a href="#rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-12">12</a>
+<a href="#rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-13">13</a>
+<a href="#rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-14">14</a>
+<a href="#rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-15">15</a>
+<a href="#rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-16">16</a>
+<a href="#rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-17">17</a>
+<a href="#rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-18">18</a>
+<a href="#rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-19">19</a>
+<a href="#rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-20">20</a>
+<a href="#rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-21">21</a>
+<a href="#rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-22">22</a>
+<a href="#rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-23">23</a>
+<a href="#rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-24">24</a>
+<a href="#rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-25">25</a>
+<a href="#rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-26">26</a>
+<a href="#rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-27">27</a></pre></div></td>
+<td class="code"><pre class="code C"><a name="rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-1"></a><span class="p">..</span>
+<a name="rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-2"></a>
+<a name="rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-3"></a><span class="c1">//adding proc directory and proc entries</span>
+<a name="rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-4"></a>
+<a name="rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-5"></a><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">stepper_procdir_entry</span> <span class="o">=</span> <span class="n">proc_mkdir</span><span class="p">(</span><span class="s">"stepper"</span><span class="p">,</span><span class="nb">NULL</span><span class="p">)))</span>
+<a name="rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-6"></a>        <span class="k">goto</span> <span class="n">exit_free_data</span><span class="p">;</span>
+<a name="rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-7"></a>
+<a name="rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-8"></a><span class="n">spi5a</span><span class="o">-&gt;</span><span class="n">proc_entry</span> <span class="o">=</span> <span class="n">stepper_procdir_entry</span><span class="p">;</span>
+<a name="rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-9"></a><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">entry</span> <span class="o">=</span> <span class="n">proc_create_data</span><span class="p">(</span><span class="s">"steps"</span><span class="p">,</span>
+<a name="rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-10"></a>                        <span class="n">S_IFREG</span> <span class="o">|</span> <span class="n">S_IRUGO</span> <span class="o">|</span> <span class="n">S_IWUSR</span><span class="p">,</span>
+<a name="rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-11"></a>                        <span class="n">spi5a</span><span class="o">-&gt;</span><span class="n">proc_entry</span><span class="p">,</span>
+<a name="rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-12"></a>                        <span class="o">&amp;</span><span class="n">proc_stepper_fops</span><span class="p">,</span>
+<a name="rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-13"></a>                        <span class="nb">NULL</span><span class="p">))</span> <span class="p">)</span> <span class="p">{</span>
+<a name="rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-14"></a>
+<a name="rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-15"></a>        <span class="k">goto</span> <span class="n">exit_free_data</span><span class="p">;</span>
+<a name="rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-16"></a><span class="p">}</span>
+<a name="rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-17"></a><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">entry</span> <span class="o">=</span> <span class="n">proc_create_data</span><span class="p">(</span><span class="s">"status"</span><span class="p">,</span>
+<a name="rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-18"></a>                        <span class="n">S_IFREG</span> <span class="o">|</span> <span class="n">S_IRUGO</span> <span class="o">|</span> <span class="n">S_IWUSR</span><span class="p">,</span>
+<a name="rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-19"></a>                        <span class="n">spi5a</span><span class="o">-&gt;</span><span class="n">proc_entry</span><span class="p">,</span>
+<a name="rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-20"></a>                        <span class="o">&amp;</span><span class="n">proc_stepper_status_fops</span><span class="p">,</span>
+<a name="rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-21"></a>                        <span class="nb">NULL</span><span class="p">))</span> <span class="p">)</span> <span class="p">{</span>
+<a name="rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-22"></a>
+<a name="rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-23"></a>        <span class="n">remove_proc_entry</span><span class="p">(</span><span class="s">"steps"</span><span class="p">,</span><span class="n">spi5a</span><span class="o">-&gt;</span><span class="n">proc_entry</span><span class="p">);</span>
+<a name="rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-24"></a>        <span class="k">goto</span> <span class="n">exit_free_data</span><span class="p">;</span>
+<a name="rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-25"></a><span class="p">}</span>
+<a name="rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-26"></a>
+<a name="rest_code_31cc4eaeb25146a08ad7b2fe8d2d85dd-27"></a><span class="p">..</span>
 </pre></td>
 </tr></table>
 <p>On handling the step count write operation, the proc write handler takes the step count input from user
 and send it out to Zynq SPI master (PS) to the SPI slave stepper hardware (PL).</p>
 <table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_7ce17c07085043438a007226c00675b1-1"> 1</a>
-<a href="#rest_code_7ce17c07085043438a007226c00675b1-2"> 2</a>
-<a href="#rest_code_7ce17c07085043438a007226c00675b1-3"> 3</a>
-<a href="#rest_code_7ce17c07085043438a007226c00675b1-4"> 4</a>
-<a href="#rest_code_7ce17c07085043438a007226c00675b1-5"> 5</a>
-<a href="#rest_code_7ce17c07085043438a007226c00675b1-6"> 6</a>
-<a href="#rest_code_7ce17c07085043438a007226c00675b1-7"> 7</a>
-<a href="#rest_code_7ce17c07085043438a007226c00675b1-8"> 8</a>
-<a href="#rest_code_7ce17c07085043438a007226c00675b1-9"> 9</a>
-<a href="#rest_code_7ce17c07085043438a007226c00675b1-10">10</a>
-<a href="#rest_code_7ce17c07085043438a007226c00675b1-11">11</a>
-<a href="#rest_code_7ce17c07085043438a007226c00675b1-12">12</a>
-<a href="#rest_code_7ce17c07085043438a007226c00675b1-13">13</a>
-<a href="#rest_code_7ce17c07085043438a007226c00675b1-14">14</a>
-<a href="#rest_code_7ce17c07085043438a007226c00675b1-15">15</a>
-<a href="#rest_code_7ce17c07085043438a007226c00675b1-16">16</a>
-<a href="#rest_code_7ce17c07085043438a007226c00675b1-17">17</a>
-<a href="#rest_code_7ce17c07085043438a007226c00675b1-18">18</a></pre></div></td>
-<td class="code"><pre class="code C"><a name="rest_code_7ce17c07085043438a007226c00675b1-1"></a>     <span class="p">...</span>
-<a name="rest_code_7ce17c07085043438a007226c00675b1-2"></a>     <span class="p">..</span>
-<a name="rest_code_7ce17c07085043438a007226c00675b1-3"></a>     <span class="k">if</span> <span class="p">(</span> <span class="n">copy_from_user</span><span class="p">((</span><span class="kt">void</span> <span class="o">*</span> <span class="p">)</span><span class="o">&amp;</span><span class="n">sbuf</span><span class="p">,</span><span class="n">buf</span><span class="p">,</span><span class="n">cnt</span><span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
-<a name="rest_code_7ce17c07085043438a007226c00675b1-4"></a>             <span class="n">up</span><span class="p">(</span><span class="o">&amp;</span><span class="n">priv</span><span class="o">-&gt;</span><span class="n">sem</span><span class="p">);</span>
-<a name="rest_code_7ce17c07085043438a007226c00675b1-5"></a>             <span class="k">return</span> <span class="o">-</span><span class="n">EFAULT</span><span class="p">;</span>
-<a name="rest_code_7ce17c07085043438a007226c00675b1-6"></a>     <span class="p">}</span>
-<a name="rest_code_7ce17c07085043438a007226c00675b1-7"></a>     <span class="n">priv</span><span class="o">-&gt;</span><span class="n">spidev</span><span class="o">-&gt;</span><span class="n">bits_per_word</span> <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>
-<a name="rest_code_7ce17c07085043438a007226c00675b1-8"></a>     <span class="n">priv</span><span class="o">-&gt;</span><span class="n">spidev</span><span class="o">-&gt;</span><span class="n">mode</span> <span class="o">=</span> <span class="n">SPI_MODE_0</span><span class="p">;</span>
-<a name="rest_code_7ce17c07085043438a007226c00675b1-9"></a>     <span class="n">spi_setup</span><span class="p">(</span><span class="n">priv</span><span class="o">-&gt;</span><span class="n">spidev</span><span class="p">);</span>
-<a name="rest_code_7ce17c07085043438a007226c00675b1-10"></a>
-<a name="rest_code_7ce17c07085043438a007226c00675b1-11"></a>     <span class="n">byte</span>  <span class="o">=</span>  <span class="p">(</span><span class="kt">char</span> <span class="p">)</span><span class="n">simple_strtol</span><span class="p">(</span><span class="n">sbuf</span><span class="p">,</span><span class="nb">NULL</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
-<a name="rest_code_7ce17c07085043438a007226c00675b1-12"></a>             <span class="n">sbuf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">STEPPER_WRITE_COUNT</span><span class="p">;</span>
-<a name="rest_code_7ce17c07085043438a007226c00675b1-13"></a>             <span class="n">sbuf</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">byte</span><span class="p">;</span>
-<a name="rest_code_7ce17c07085043438a007226c00675b1-14"></a>             <span class="n">ret</span> <span class="o">=</span> <span class="n">spi_write</span><span class="p">(</span><span class="n">priv</span><span class="o">-&gt;</span><span class="n">spidev</span><span class="p">,</span><span class="n">sbuf</span><span class="p">,</span><span class="mi">2</span><span class="p">);</span> <span class="c1">//send write command and data</span>
-<a name="rest_code_7ce17c07085043438a007226c00675b1-15"></a>
-<a name="rest_code_7ce17c07085043438a007226c00675b1-16"></a>
-<a name="rest_code_7ce17c07085043438a007226c00675b1-17"></a>     <span class="k">return</span> <span class="n">cnt</span><span class="p">;</span>
-<a name="rest_code_7ce17c07085043438a007226c00675b1-18"></a>     <span class="p">}</span>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_ea34fc1363704875a9dd22de97b220c1-1"> 1</a>
+<a href="#rest_code_ea34fc1363704875a9dd22de97b220c1-2"> 2</a>
+<a href="#rest_code_ea34fc1363704875a9dd22de97b220c1-3"> 3</a>
+<a href="#rest_code_ea34fc1363704875a9dd22de97b220c1-4"> 4</a>
+<a href="#rest_code_ea34fc1363704875a9dd22de97b220c1-5"> 5</a>
+<a href="#rest_code_ea34fc1363704875a9dd22de97b220c1-6"> 6</a>
+<a href="#rest_code_ea34fc1363704875a9dd22de97b220c1-7"> 7</a>
+<a href="#rest_code_ea34fc1363704875a9dd22de97b220c1-8"> 8</a>
+<a href="#rest_code_ea34fc1363704875a9dd22de97b220c1-9"> 9</a>
+<a href="#rest_code_ea34fc1363704875a9dd22de97b220c1-10">10</a>
+<a href="#rest_code_ea34fc1363704875a9dd22de97b220c1-11">11</a>
+<a href="#rest_code_ea34fc1363704875a9dd22de97b220c1-12">12</a>
+<a href="#rest_code_ea34fc1363704875a9dd22de97b220c1-13">13</a>
+<a href="#rest_code_ea34fc1363704875a9dd22de97b220c1-14">14</a>
+<a href="#rest_code_ea34fc1363704875a9dd22de97b220c1-15">15</a>
+<a href="#rest_code_ea34fc1363704875a9dd22de97b220c1-16">16</a>
+<a href="#rest_code_ea34fc1363704875a9dd22de97b220c1-17">17</a>
+<a href="#rest_code_ea34fc1363704875a9dd22de97b220c1-18">18</a></pre></div></td>
+<td class="code"><pre class="code C"><a name="rest_code_ea34fc1363704875a9dd22de97b220c1-1"></a>     <span class="p">...</span>
+<a name="rest_code_ea34fc1363704875a9dd22de97b220c1-2"></a>     <span class="p">..</span>
+<a name="rest_code_ea34fc1363704875a9dd22de97b220c1-3"></a>     <span class="k">if</span> <span class="p">(</span> <span class="n">copy_from_user</span><span class="p">((</span><span class="kt">void</span> <span class="o">*</span> <span class="p">)</span><span class="o">&amp;</span><span class="n">sbuf</span><span class="p">,</span><span class="n">buf</span><span class="p">,</span><span class="n">cnt</span><span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+<a name="rest_code_ea34fc1363704875a9dd22de97b220c1-4"></a>             <span class="n">up</span><span class="p">(</span><span class="o">&amp;</span><span class="n">priv</span><span class="o">-&gt;</span><span class="n">sem</span><span class="p">);</span>
+<a name="rest_code_ea34fc1363704875a9dd22de97b220c1-5"></a>             <span class="k">return</span> <span class="o">-</span><span class="n">EFAULT</span><span class="p">;</span>
+<a name="rest_code_ea34fc1363704875a9dd22de97b220c1-6"></a>     <span class="p">}</span>
+<a name="rest_code_ea34fc1363704875a9dd22de97b220c1-7"></a>     <span class="n">priv</span><span class="o">-&gt;</span><span class="n">spidev</span><span class="o">-&gt;</span><span class="n">bits_per_word</span> <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>
+<a name="rest_code_ea34fc1363704875a9dd22de97b220c1-8"></a>     <span class="n">priv</span><span class="o">-&gt;</span><span class="n">spidev</span><span class="o">-&gt;</span><span class="n">mode</span> <span class="o">=</span> <span class="n">SPI_MODE_0</span><span class="p">;</span>
+<a name="rest_code_ea34fc1363704875a9dd22de97b220c1-9"></a>     <span class="n">spi_setup</span><span class="p">(</span><span class="n">priv</span><span class="o">-&gt;</span><span class="n">spidev</span><span class="p">);</span>
+<a name="rest_code_ea34fc1363704875a9dd22de97b220c1-10"></a>
+<a name="rest_code_ea34fc1363704875a9dd22de97b220c1-11"></a>     <span class="n">byte</span>  <span class="o">=</span>  <span class="p">(</span><span class="kt">char</span> <span class="p">)</span><span class="n">simple_strtol</span><span class="p">(</span><span class="n">sbuf</span><span class="p">,</span><span class="nb">NULL</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+<a name="rest_code_ea34fc1363704875a9dd22de97b220c1-12"></a>             <span class="n">sbuf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">STEPPER_WRITE_COUNT</span><span class="p">;</span>
+<a name="rest_code_ea34fc1363704875a9dd22de97b220c1-13"></a>             <span class="n">sbuf</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">byte</span><span class="p">;</span>
+<a name="rest_code_ea34fc1363704875a9dd22de97b220c1-14"></a>             <span class="n">ret</span> <span class="o">=</span> <span class="n">spi_write</span><span class="p">(</span><span class="n">priv</span><span class="o">-&gt;</span><span class="n">spidev</span><span class="p">,</span><span class="n">sbuf</span><span class="p">,</span><span class="mi">2</span><span class="p">);</span> <span class="c1">//send write command and data</span>
+<a name="rest_code_ea34fc1363704875a9dd22de97b220c1-15"></a>
+<a name="rest_code_ea34fc1363704875a9dd22de97b220c1-16"></a>
+<a name="rest_code_ea34fc1363704875a9dd22de97b220c1-17"></a>     <span class="k">return</span> <span class="n">cnt</span><span class="p">;</span>
+<a name="rest_code_ea34fc1363704875a9dd22de97b220c1-18"></a>     <span class="p">}</span>
 </pre></td>
 </tr></table>
 <p>I use Linux sequential file as an interface for reading the status of the stepper motor operation. This is to
 capitalize on the existing <em>proc</em> file interface.</p>
 <table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-1"> 1</a>
-<a href="#rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-2"> 2</a>
-<a href="#rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-3"> 3</a>
-<a href="#rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-4"> 4</a>
-<a href="#rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-5"> 5</a>
-<a href="#rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-6"> 6</a>
-<a href="#rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-7"> 7</a>
-<a href="#rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-8"> 8</a>
-<a href="#rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-9"> 9</a>
-<a href="#rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-10">10</a>
-<a href="#rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-11">11</a>
-<a href="#rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-12">12</a>
-<a href="#rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-13">13</a>
-<a href="#rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-14">14</a>
-<a href="#rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-15">15</a>
-<a href="#rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-16">16</a>
-<a href="#rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-17">17</a>
-<a href="#rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-18">18</a>
-<a href="#rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-19">19</a>
-<a href="#rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-20">20</a>
-<a href="#rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-21">21</a>
-<a href="#rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-22">22</a>
-<a href="#rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-23">23</a>
-<a href="#rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-24">24</a>
-<a href="#rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-25">25</a></pre></div></td>
-<td class="code"><pre class="code c"><a name="rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-1"></a><span class="p">...</span>
-<a name="rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-2"></a>
-<a name="rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-3"></a><span class="k">static</span> <span class="kt">int</span> <span class="n">stepper_status_show</span><span class="p">(</span><span class="k">struct</span> <span class="n">seq_file</span> <span class="o">*</span> <span class="n">seq_file</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span> <span class="n">arg</span><span class="p">)</span>
-<a name="rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-4"></a><span class="p">{</span>
-<a name="rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-5"></a>        <span class="n">u8</span> <span class="n">ret</span><span class="p">;</span>
-<a name="rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-6"></a>        <span class="k">struct</span> <span class="n">spi5a_dev</span> <span class="err">\</span><span class="o">*</span><span class="n">priv</span>  <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">spi5a_dev</span> <span class="o">*</span> <span class="p">)</span><span class="n">seq_file</span><span class="o">-&gt;</span><span class="n">private</span><span class="p">;</span>
-<a name="rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-7"></a>
-<a name="rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-8"></a>        <span class="n">priv</span><span class="o">-&gt;</span><span class="n">spidev</span><span class="o">-&gt;</span><span class="n">bits_per_word</span> <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>
-<a name="rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-9"></a>        <span class="n">priv</span><span class="o">-&gt;</span><span class="n">spidev</span><span class="o">-&gt;</span><span class="n">mode</span> <span class="o">=</span> <span class="n">SPI_MODE_0</span><span class="p">;</span>
-<a name="rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-10"></a>        <span class="n">spi_setup</span><span class="p">(</span><span class="n">priv</span><span class="o">-&gt;</span><span class="n">spidev</span><span class="p">);</span>
-<a name="rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-11"></a>
-<a name="rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-12"></a>        <span class="n">ret</span> <span class="o">=</span> <span class="n">spi_w8r8</span><span class="p">(</span><span class="n">priv</span><span class="o">-&gt;</span><span class="n">spidev</span><span class="p">,</span> <span class="n">STEPPER_READ_STAT</span><span class="p">);</span>
-<a name="rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-13"></a>        <span class="n">seq_printf</span><span class="p">(</span><span class="n">seq_file</span><span class="p">,</span><span class="s">"0x%x</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">ret</span><span class="p">);</span> <span class="c1">//read</span>
-<a name="rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-14"></a>        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<a name="rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-15"></a><span class="p">}</span>
-<a name="rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-16"></a><span class="p">...</span>
-<a name="rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-17"></a>
-<a name="rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-18"></a>
-<a name="rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-19"></a><span class="k">struct</span> <span class="n">file_operations</span> <span class="n">proc_stepper_status_fops</span> <span class="o">=</span> <span class="p">{</span>
-<a name="rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-20"></a>        <span class="p">.</span><span class="n">owner</span> <span class="o">=</span> <span class="n">THIS_MODULE</span><span class="p">,</span>
-<a name="rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-21"></a>        <span class="p">.</span><span class="n">open</span> <span class="o">=</span> <span class="n">proc_stepper_status_open</span><span class="p">,</span>
-<a name="rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-22"></a>        <span class="p">.</span><span class="n">read</span> <span class="o">=</span> <span class="n">seq_read</span><span class="p">,</span>
-<a name="rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-23"></a>        <span class="p">.</span><span class="n">llseek</span> <span class="o">=</span> <span class="n">seq_lseek</span><span class="p">,</span>
-<a name="rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-24"></a>        <span class="p">.</span><span class="n">release</span> <span class="o">=</span> <span class="n">single_release</span><span class="p">,</span>
-<a name="rest_code_52a4eada2b72483ca62c4cc3c6cf8fbc-25"></a><span class="p">};</span>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_330bc78c694e4438bf1db68bd8f3feea-1"> 1</a>
+<a href="#rest_code_330bc78c694e4438bf1db68bd8f3feea-2"> 2</a>
+<a href="#rest_code_330bc78c694e4438bf1db68bd8f3feea-3"> 3</a>
+<a href="#rest_code_330bc78c694e4438bf1db68bd8f3feea-4"> 4</a>
+<a href="#rest_code_330bc78c694e4438bf1db68bd8f3feea-5"> 5</a>
+<a href="#rest_code_330bc78c694e4438bf1db68bd8f3feea-6"> 6</a>
+<a href="#rest_code_330bc78c694e4438bf1db68bd8f3feea-7"> 7</a>
+<a href="#rest_code_330bc78c694e4438bf1db68bd8f3feea-8"> 8</a>
+<a href="#rest_code_330bc78c694e4438bf1db68bd8f3feea-9"> 9</a>
+<a href="#rest_code_330bc78c694e4438bf1db68bd8f3feea-10">10</a>
+<a href="#rest_code_330bc78c694e4438bf1db68bd8f3feea-11">11</a>
+<a href="#rest_code_330bc78c694e4438bf1db68bd8f3feea-12">12</a>
+<a href="#rest_code_330bc78c694e4438bf1db68bd8f3feea-13">13</a>
+<a href="#rest_code_330bc78c694e4438bf1db68bd8f3feea-14">14</a>
+<a href="#rest_code_330bc78c694e4438bf1db68bd8f3feea-15">15</a>
+<a href="#rest_code_330bc78c694e4438bf1db68bd8f3feea-16">16</a>
+<a href="#rest_code_330bc78c694e4438bf1db68bd8f3feea-17">17</a>
+<a href="#rest_code_330bc78c694e4438bf1db68bd8f3feea-18">18</a>
+<a href="#rest_code_330bc78c694e4438bf1db68bd8f3feea-19">19</a>
+<a href="#rest_code_330bc78c694e4438bf1db68bd8f3feea-20">20</a>
+<a href="#rest_code_330bc78c694e4438bf1db68bd8f3feea-21">21</a>
+<a href="#rest_code_330bc78c694e4438bf1db68bd8f3feea-22">22</a>
+<a href="#rest_code_330bc78c694e4438bf1db68bd8f3feea-23">23</a>
+<a href="#rest_code_330bc78c694e4438bf1db68bd8f3feea-24">24</a>
+<a href="#rest_code_330bc78c694e4438bf1db68bd8f3feea-25">25</a></pre></div></td>
+<td class="code"><pre class="code c"><a name="rest_code_330bc78c694e4438bf1db68bd8f3feea-1"></a><span class="p">...</span>
+<a name="rest_code_330bc78c694e4438bf1db68bd8f3feea-2"></a>
+<a name="rest_code_330bc78c694e4438bf1db68bd8f3feea-3"></a><span class="k">static</span> <span class="kt">int</span> <span class="n">stepper_status_show</span><span class="p">(</span><span class="k">struct</span> <span class="n">seq_file</span> <span class="o">*</span> <span class="n">seq_file</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span> <span class="n">arg</span><span class="p">)</span>
+<a name="rest_code_330bc78c694e4438bf1db68bd8f3feea-4"></a><span class="p">{</span>
+<a name="rest_code_330bc78c694e4438bf1db68bd8f3feea-5"></a>        <span class="n">u8</span> <span class="n">ret</span><span class="p">;</span>
+<a name="rest_code_330bc78c694e4438bf1db68bd8f3feea-6"></a>        <span class="k">struct</span> <span class="n">spi5a_dev</span> <span class="err">\</span><span class="o">*</span><span class="n">priv</span>  <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">spi5a_dev</span> <span class="o">*</span> <span class="p">)</span><span class="n">seq_file</span><span class="o">-&gt;</span><span class="n">private</span><span class="p">;</span>
+<a name="rest_code_330bc78c694e4438bf1db68bd8f3feea-7"></a>
+<a name="rest_code_330bc78c694e4438bf1db68bd8f3feea-8"></a>        <span class="n">priv</span><span class="o">-&gt;</span><span class="n">spidev</span><span class="o">-&gt;</span><span class="n">bits_per_word</span> <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>
+<a name="rest_code_330bc78c694e4438bf1db68bd8f3feea-9"></a>        <span class="n">priv</span><span class="o">-&gt;</span><span class="n">spidev</span><span class="o">-&gt;</span><span class="n">mode</span> <span class="o">=</span> <span class="n">SPI_MODE_0</span><span class="p">;</span>
+<a name="rest_code_330bc78c694e4438bf1db68bd8f3feea-10"></a>        <span class="n">spi_setup</span><span class="p">(</span><span class="n">priv</span><span class="o">-&gt;</span><span class="n">spidev</span><span class="p">);</span>
+<a name="rest_code_330bc78c694e4438bf1db68bd8f3feea-11"></a>
+<a name="rest_code_330bc78c694e4438bf1db68bd8f3feea-12"></a>        <span class="n">ret</span> <span class="o">=</span> <span class="n">spi_w8r8</span><span class="p">(</span><span class="n">priv</span><span class="o">-&gt;</span><span class="n">spidev</span><span class="p">,</span> <span class="n">STEPPER_READ_STAT</span><span class="p">);</span>
+<a name="rest_code_330bc78c694e4438bf1db68bd8f3feea-13"></a>        <span class="n">seq_printf</span><span class="p">(</span><span class="n">seq_file</span><span class="p">,</span><span class="s">"0x%x</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">ret</span><span class="p">);</span> <span class="c1">//read</span>
+<a name="rest_code_330bc78c694e4438bf1db68bd8f3feea-14"></a>        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<a name="rest_code_330bc78c694e4438bf1db68bd8f3feea-15"></a><span class="p">}</span>
+<a name="rest_code_330bc78c694e4438bf1db68bd8f3feea-16"></a><span class="p">...</span>
+<a name="rest_code_330bc78c694e4438bf1db68bd8f3feea-17"></a>
+<a name="rest_code_330bc78c694e4438bf1db68bd8f3feea-18"></a>
+<a name="rest_code_330bc78c694e4438bf1db68bd8f3feea-19"></a><span class="k">struct</span> <span class="n">file_operations</span> <span class="n">proc_stepper_status_fops</span> <span class="o">=</span> <span class="p">{</span>
+<a name="rest_code_330bc78c694e4438bf1db68bd8f3feea-20"></a>        <span class="p">.</span><span class="n">owner</span> <span class="o">=</span> <span class="n">THIS_MODULE</span><span class="p">,</span>
+<a name="rest_code_330bc78c694e4438bf1db68bd8f3feea-21"></a>        <span class="p">.</span><span class="n">open</span> <span class="o">=</span> <span class="n">proc_stepper_status_open</span><span class="p">,</span>
+<a name="rest_code_330bc78c694e4438bf1db68bd8f3feea-22"></a>        <span class="p">.</span><span class="n">read</span> <span class="o">=</span> <span class="n">seq_read</span><span class="p">,</span>
+<a name="rest_code_330bc78c694e4438bf1db68bd8f3feea-23"></a>        <span class="p">.</span><span class="n">llseek</span> <span class="o">=</span> <span class="n">seq_lseek</span><span class="p">,</span>
+<a name="rest_code_330bc78c694e4438bf1db68bd8f3feea-24"></a>        <span class="p">.</span><span class="n">release</span> <span class="o">=</span> <span class="n">single_release</span><span class="p">,</span>
+<a name="rest_code_330bc78c694e4438bf1db68bd8f3feea-25"></a><span class="p">};</span>
 </pre></td>
 </tr></table>
 </div>
@@ -278,30 +278,30 @@ count is for the opposite direction. The step count is 8bit signed integer. The 
 in the LSB of the <em>read status (0xea)</em> command.</p>
 <blockquote>
 <table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_1c6740c2b9dc48d387440677a88163ed-1"> 1</a>
-<a href="#rest_code_1c6740c2b9dc48d387440677a88163ed-2"> 2</a>
-<a href="#rest_code_1c6740c2b9dc48d387440677a88163ed-3"> 3</a>
-<a href="#rest_code_1c6740c2b9dc48d387440677a88163ed-4"> 4</a>
-<a href="#rest_code_1c6740c2b9dc48d387440677a88163ed-5"> 5</a>
-<a href="#rest_code_1c6740c2b9dc48d387440677a88163ed-6"> 6</a>
-<a href="#rest_code_1c6740c2b9dc48d387440677a88163ed-7"> 7</a>
-<a href="#rest_code_1c6740c2b9dc48d387440677a88163ed-8"> 8</a>
-<a href="#rest_code_1c6740c2b9dc48d387440677a88163ed-9"> 9</a>
-<a href="#rest_code_1c6740c2b9dc48d387440677a88163ed-10">10</a>
-<a href="#rest_code_1c6740c2b9dc48d387440677a88163ed-11">11</a>
-<a href="#rest_code_1c6740c2b9dc48d387440677a88163ed-12">12</a></pre></div></td>
-<td class="code"><pre class="code text"><a name="rest_code_1c6740c2b9dc48d387440677a88163ed-1"></a># cat design_3_wrapper.bit &gt;/dev/xdevcfg
-<a name="rest_code_1c6740c2b9dc48d387440677a88163ed-2"></a># insmod spi5a.ko
-<a name="rest_code_1c6740c2b9dc48d387440677a88163ed-3"></a>spi max speed HZ: 1000000
-<a name="rest_code_1c6740c2b9dc48d387440677a88163ed-4"></a>spi read ID for cs 0, mode 0, bpw 8
-<a name="rest_code_1c6740c2b9dc48d387440677a88163ed-5"></a>Detected SPI Stepper ID 0x5a
-<a name="rest_code_1c6740c2b9dc48d387440677a88163ed-6"></a>spi5a_probe read(ea) returns 0xc4
-<a name="rest_code_1c6740c2b9dc48d387440677a88163ed-7"></a># cat /proc/stepper/status
-<a name="rest_code_1c6740c2b9dc48d387440677a88163ed-8"></a>0xc4
-<a name="rest_code_1c6740c2b9dc48d387440677a88163ed-9"></a># echo '0x44'&gt;/proc/stepper/steps &amp;&amp; cat /proc/stepper/status
-<a name="rest_code_1c6740c2b9dc48d387440677a88163ed-10"></a>proc_stepcount_write: sbuf dd9b5e50, wrote step count 0x44, status 0
-<a name="rest_code_1c6740c2b9dc48d387440677a88163ed-11"></a>0xc5
-<a name="rest_code_1c6740c2b9dc48d387440677a88163ed-12"></a>#
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_cb8a55c8f85c477cbe180b068241a63c-1"> 1</a>
+<a href="#rest_code_cb8a55c8f85c477cbe180b068241a63c-2"> 2</a>
+<a href="#rest_code_cb8a55c8f85c477cbe180b068241a63c-3"> 3</a>
+<a href="#rest_code_cb8a55c8f85c477cbe180b068241a63c-4"> 4</a>
+<a href="#rest_code_cb8a55c8f85c477cbe180b068241a63c-5"> 5</a>
+<a href="#rest_code_cb8a55c8f85c477cbe180b068241a63c-6"> 6</a>
+<a href="#rest_code_cb8a55c8f85c477cbe180b068241a63c-7"> 7</a>
+<a href="#rest_code_cb8a55c8f85c477cbe180b068241a63c-8"> 8</a>
+<a href="#rest_code_cb8a55c8f85c477cbe180b068241a63c-9"> 9</a>
+<a href="#rest_code_cb8a55c8f85c477cbe180b068241a63c-10">10</a>
+<a href="#rest_code_cb8a55c8f85c477cbe180b068241a63c-11">11</a>
+<a href="#rest_code_cb8a55c8f85c477cbe180b068241a63c-12">12</a></pre></div></td>
+<td class="code"><pre class="code text"><a name="rest_code_cb8a55c8f85c477cbe180b068241a63c-1"></a># cat design_3_wrapper.bit &gt;/dev/xdevcfg
+<a name="rest_code_cb8a55c8f85c477cbe180b068241a63c-2"></a># insmod spi5a.ko
+<a name="rest_code_cb8a55c8f85c477cbe180b068241a63c-3"></a>spi max speed HZ: 1000000
+<a name="rest_code_cb8a55c8f85c477cbe180b068241a63c-4"></a>spi read ID for cs 0, mode 0, bpw 8
+<a name="rest_code_cb8a55c8f85c477cbe180b068241a63c-5"></a>Detected SPI Stepper ID 0x5a
+<a name="rest_code_cb8a55c8f85c477cbe180b068241a63c-6"></a>spi5a_probe read(ea) returns 0xc4
+<a name="rest_code_cb8a55c8f85c477cbe180b068241a63c-7"></a># cat /proc/stepper/status
+<a name="rest_code_cb8a55c8f85c477cbe180b068241a63c-8"></a>0xc4
+<a name="rest_code_cb8a55c8f85c477cbe180b068241a63c-9"></a># echo '0x44'&gt;/proc/stepper/steps &amp;&amp; cat /proc/stepper/status
+<a name="rest_code_cb8a55c8f85c477cbe180b068241a63c-10"></a>proc_stepcount_write: sbuf dd9b5e50, wrote step count 0x44, status 0
+<a name="rest_code_cb8a55c8f85c477cbe180b068241a63c-11"></a>0xc5
+<a name="rest_code_cb8a55c8f85c477cbe180b068241a63c-12"></a>#
 </pre></td>
 </tr></table>
 </blockquote>
