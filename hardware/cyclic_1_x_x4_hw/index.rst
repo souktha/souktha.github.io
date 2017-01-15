@@ -268,13 +268,18 @@ implentation is :math:`\frac{k}{n} = \frac{11}{15}`
 
 What is really needed for this FEC is only to correct the message error bit, any bit of the 11-bit. The *err* bit
 can be used as a request for retransmission if the error bit falls into the parity area. This means that 
-certain syndrome in the look up table will be partially used. Shortened code :math:`(12,8,3)` can also 
-be obtained using this exact scheme with minimal change to the logic because it is more practical to
-do it in 8-bit rather than 11-bit. 
+certain syndrome in the look up table will be partially used. 
+
+Shortened code :math:`(n-l,k-l,d)=(12,8,3)` can also be obtained using this exact scheme with minimal change to 
+the logic because it is more practical to do it in 8-bit rather than 11-bit. It is no longer cyclic, but it
+offers the same error-correcting capability as its normal version.
 
 .. figure:: ../../images/hardware/decoded_33d.jpg
 
         Fig1: FEC 1-bit error (bit 6) in coded word. Decoded and Corrected 0x33d for 0x73
+
+I believe that my implementation is what is called Meggitt decoder. Since I do not take into account the error
+confinement, it has certain restriction such as *error trapping* so future improvement is needed.
 
 Conclusion
 ----------

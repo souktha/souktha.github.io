@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<head>
+<meta charset="utf-8">
+<base href="http://souktha.github.io/misc/bch_1_x_x4/">
+<meta name="description" content="BCH code based on g(x)=1+x+x**4">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BCH, an example of linear cyclic code | Soukthavy Sopha</title>
+<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<meta content="#5670d4" name="theme-color">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
+<link rel="canonical" href="http://souktha.github.io/misc/bch_1_x_x4/">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="description" itemprop="description" content="BCH code based on g(x)=1+x+x**4">
+<meta name="author" content="Soukthavy">
+<link rel="prev" href="../../hardware/cyclic_1_x_x4_hw/" title="Simple Cyclic Hamming (15,11,3) FEC" type="text/html">
+<meta property="og:site_name" content="Soukthavy Sopha">
+<meta property="og:title" content="BCH, an example of linear cyclic code">
+<meta property="og:url" content="http://souktha.github.io/misc/bch_1_x_x4/">
+<meta property="og:description" content="BCH code based on g(x)=1+x+x**4">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2017-01-08T23:39:17Z">
+<meta property="article:tag" content="latex">
+<meta property="article:tag" content="mathjax">
+<meta property="article:tag" content="misc">
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-inverse navbar-static-top"><div class="container">
+<!-- This keeps the margins nice -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://souktha.github.io/">
+
+                <span id="blog-title">Soukthavy Sopha</span>
+            </a>
+        </div>
+<!-- /.navbar-header -->
+        <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
+            <ul class="nav navbar-nav">
+<li>
+<a href="../../archive.html">Archive</a>
+                </li>
+<li>
+<a href="../../categories/">Tags</a>
+                </li>
+<li>
+<a href="../../rss.xml">RSS feed</a>
+            </li>
+<li class="dropdown">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Blog <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+<li>
+<a href="../../software">Sofware</a>
+                    </li>
+<li>
+<a href="../../hardware">Hardware</a>
+                    </li>
+<li>
+<a href="../../misc">Misc</a>
+            </li>
+</ul>
+</li>
+<li>
+<a href="https://github.com/souktha">My Github</a>
+
+                
+            </li>
+</ul>
+<ul class="nav navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        <div class="row">
+            
+            
+<article class="storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">BCH, an example of linear cyclic code</a></h1>
+
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>Building on my last post on the simple Hamming linear cyclic code, I decide to push on for a little bit
+more usefull class of cyclic code, the BCH code. This will be based on the same generator polynomial,
+<span class="math">\(h(x)=1+x+x^4\)</span> using the powers of <span class="math">\(\beta\)</span> as worked out in the last post.</p>
+<!-- TEASER_END -->
+<p>One important class of cyclic codes is BCH codes. It is quite extensive and easy to decode and
+because of that it is quite practical for its use in real-life application. By definition,
+any <span class="math">\(r, t \leq 2^{r-1}-1\)</span> there exists BCH error-correcting codes of length <span class="math">\(n=2^r -1\)</span>
+having dimension <span class="math">\(k \geq n-rt\)</span>.</p>
+<div class="section" id="some-more-field-algebra">
+<h2>Some more field algebra</h2>
+<p>The <em>minimal polynomial</em> of <span class="math">\(\alpha\)</span>, <span class="math">\(m_{\alpha}(x)\)</span> is the smallest polynomial in
+<span class="math">\(K[x]\)</span> of smallest degree having <span class="math">\(\alpha\)</span> as a root, that is, if <span class="math">\(f(x)=a_0+
+a_1x+a_2x^2+..+a_kx^k\)</span>, then <span class="math">\(f(\alpha)=a_0+a_1\alpha+a_2\alpha^2+..+a_k\alpha^k = 0\)</span></p>
+<p>The order of nonzero element <span class="math">\(\alpha\)</span> in <span class="math">\(GF(2^r)\)</span> is the smallest positive <span class="math">\(m\)</span>
+such that <span class="math">\(\alpha^m = 1\)</span>. If <span class="math">\(\alpha\)</span> is of order <span class="math">\(2^r-1\)</span> then it is a <em>primitive</em>
+element. If <span class="math">\(\alpha\)</span> has order <span class="math">\(m\)</span>, then <span class="math">\(\alpha\)</span> is a root of <span class="math">\(1+x^m\)</span>.
+Relative to my previous post, defining <span class="math">\(\beta\)</span> as primitive element, <span class="math">\(\alpha=\beta^i\)</span>,
+then <span class="math">\(\alpha^{2r-1}=(\beta^i)^{2r-1}= (\beta^{2r-1})^i = 1^i = 1\)</span>. <span class="math">\(\alpha\)</span> is therefore
+a root of <span class="math">\(1+x^{2r-1}\)</span> and <span class="math">\(m_\alpha(x)\)</span> is a factor of <span class="math">\(1+x^{2r-1}\)</span>. This
+explains <span class="math">\(g(x) | (1+x^{15})\)</span> in the last post.</p>
+<p>Base on the theorem that the set of all roots of <span class="math">\(m_\alpha(x)\)</span> is
+<span class="math">\(\{\alpha,\alpha^2,\alpha^4,..,\alpha^{2r-1}\}\)</span>, the</p>
+</div>
+</div>
+    </div>
+    
+            <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> </script><script type="text/x-mathjax-config">
+            MathJax.Hub.Config({tex2jax: {inlineMath: [['$latex ','$'], ['\\(','\\)']]}});
+            </script></article>
+</div>
+        <!--End of body content-->
+
+        <footer id="footer">
+            Contents © 2017         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+        </footer>
+</div>
+</div>
+
+
+            <script src="../../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+    moment.locale("en");
+    fancydates(0, "YYYY-MM-DD HH:mm");
+    </script><!-- end fancy dates -->
+</body>
+</html>

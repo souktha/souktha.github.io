@@ -18,17 +18,19 @@ Some field algebra
 ----------------------------
 
 A polynomial of degree :math:`n` is said to be *primitive* (over GF) if it is an *irreducible* polynomial that is not a 
-divisor of :math:`1+x^m`, for any :math:`m < 2^n - 1`. An irreducible polynomial always divides :math:`1+x^m` for
+divisor of :math:`1+x^m`, for any :math:`m < 2^n - 1`. Every finite field has a primitive element. In Galois
+field (GF), :math:`GF(q)`, if :math:`a` is a non-zero element, it is a primitive if its order is :math:`q-1`.
+An irreducible polynomial always divides :math:`1+x^m` for
 :math:`m = 2^n - 1` (exact). For this exercise, :math:`h(x)=1+x+x^4`, does not divide :math:`(1+x^m)` for any
-:math:`m < 2^4 -1 ( m < 15)`. It will divide :math:`(1+x^{15})` though (is factor). I can use MATLAB to verify this,
+:math:`m < 2^4 -1 ( m < 15)`. It will divide :math:`(1+x^{15})` though (is a factor). I can use MATLAB to verify this,
 
 .. code-block:: 
 
-    >> h=[1 0 0 0 1];
+    >> h=[ 0 0 0 1];
     >> test=[1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1];
-    >> [q,r] = deconv(test,h);
+    >> [qr] = deconv(test,h);
     >> mod(r,2)
-    >> ans = 
+    >> s = 
      0 0 .... 0 
 
 The remainder from the division over *Galois* field (GF) yields zeros vector from the MATHLAB operations.
@@ -102,7 +104,8 @@ word     :math:`x^i mod (1+x+x^4)`            power of :math:`\beta`
 
 =====   =================================  ============================
 
-Note that :math:`\beta^{15} = \beta^0 = 1`. This will give me the cyclic Hamming code of length :math:`n = 2^r - 1` 
+Note that :math:`\beta^{15} = \beta^0 = 1` (Theorem 2.4 of [CIT003]_). This will give me the cyclic Hamming 
+codes of length :math:`n = 2^r - 1` 
 (15) base on the the degree of :math:`h(x)` where its parity check matrix is,
 
 
@@ -333,6 +336,10 @@ of this FEC exercise is `Simple Cyclic Hamming FEC`_
 .. _link: `Simple Cyclic Hamming FEC`_
 
 
+There are many excellent text books and articles on this subject. Listed in the reference
+are only a few that I have. For EE, [CIT003]_ is a very well known text book on this
+subject.
+
 Reference
 ===========
 .. all the references books, articles etc
@@ -340,3 +347,5 @@ Reference
 .. [CIT001] Digital Communications Fundamentals and Applications, 2nd Ed, Bernard Sklar.
 
 .. [CIT002] Coding Theory The Essentials, D.G Hoffman, 1991.
+
+.. [CIT003] Error Control Coding Fundamental And Applications, Shu Lin, Daniel J. Costello Jr, 1983

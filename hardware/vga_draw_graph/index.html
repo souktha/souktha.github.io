@@ -104,8 +104,8 @@ can lock to the sync signals quite easily. There are some website to visit with 
 <h2>Implementation</h2>
 <p>Divide 100 MHZ  down to 25MHZ as pixel tick and have two counters to keep track of horizontal and vertical pixel counts. The counters will
 then be compared to horizontal retrace value and vertical retrace value. The horizontal end value and the vertical end value would be,</p>
-<pre class="code verilog"><a name="rest_code_6cfce8af6bf04a149fc99719680bf934-1"></a><span class="k">assign</span> <span class="n">h_end</span> <span class="o">=</span> <span class="p">(</span><span class="n">hcnt</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="no">HD</span> <span class="o">+</span> <span class="no">HF</span> <span class="o">+</span> <span class="no">HB</span> <span class="o">+</span> <span class="no">HR</span> <span class="o">-</span> <span class="mh">1</span> <span class="p">));</span>
-<a name="rest_code_6cfce8af6bf04a149fc99719680bf934-2"></a><span class="k">assign</span> <span class="n">v_end</span> <span class="o">=</span> <span class="p">(</span><span class="n">vcnt</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="no">VD</span> <span class="o">+</span> <span class="no">VF</span> <span class="o">+</span> <span class="no">VB</span> <span class="o">+</span> <span class="no">VR</span><span class="p">));</span>
+<pre class="code verilog"><a name="rest_code_1958f996fb8e4ecc9e134b5a734f364e-1"></a><span class="k">assign</span> <span class="n">h_end</span> <span class="o">=</span> <span class="p">(</span><span class="n">hcnt</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="no">HD</span> <span class="o">+</span> <span class="no">HF</span> <span class="o">+</span> <span class="no">HB</span> <span class="o">+</span> <span class="no">HR</span> <span class="o">-</span> <span class="mh">1</span> <span class="p">));</span>
+<a name="rest_code_1958f996fb8e4ecc9e134b5a734f364e-2"></a><span class="k">assign</span> <span class="n">v_end</span> <span class="o">=</span> <span class="p">(</span><span class="n">vcnt</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="no">VD</span> <span class="o">+</span> <span class="no">VF</span> <span class="o">+</span> <span class="no">VB</span> <span class="o">+</span> <span class="no">VR</span><span class="p">));</span>
 </pre>
 <p>where HD = 640 (displayable Horizontal), HB = 48 (Horiz back porch), HF = 16 (Horz front porch), HR = 96 (Horz retrace). These are all in
 pixels. Because the pixel counter is clocked by the pixel clock, p_tick, their values also represent time. The similar description goes
@@ -115,17 +115,17 @@ board is programmed with the bitmask, these will be the data to display. The 10-
 area beyond 640 will not be used. This is rom_lookup.v content.</p>
 <p>Next comes the top module that instanstiates these simple modules to draw the graph from top of the screen down until it hits the center
 of the screen. Where it places each pixel is determined by rom_data.</p>
-<pre class="code verilog"><a name="rest_code_cc9f2cf9df054803b470b4b8c16842a9-1"></a><span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">p_tick</span><span class="p">)</span>
-<a name="rest_code_cc9f2cf9df054803b470b4b8c16842a9-2"></a>    <span class="k">if</span> <span class="p">(</span><span class="n">video_on</span> <span class="p">)</span> <span class="k">begin</span>
-<a name="rest_code_cc9f2cf9df054803b470b4b8c16842a9-3"></a><span class="k">if</span> <span class="p">(</span> <span class="p">(</span><span class="n">y</span> <span class="o">&gt;=</span> <span class="mh">10</span><span class="mi">'d239</span><span class="o">-</span><span class="n">data</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">y</span> <span class="o">&lt;</span> <span class="mh">10</span><span class="mi">'d239</span><span class="p">)</span> <span class="p">)</span>
-<a name="rest_code_cc9f2cf9df054803b470b4b8c16842a9-4"></a>    <span class="n">rgb</span> <span class="o">&lt;=</span> <span class="mh">12'hf00</span><span class="p">;</span>
-<a name="rest_code_cc9f2cf9df054803b470b4b8c16842a9-5"></a><span class="k">else</span>
-<a name="rest_code_cc9f2cf9df054803b470b4b8c16842a9-6"></a>    <span class="k">if</span> <span class="p">(</span> <span class="n">y</span> <span class="o">==</span> <span class="mh">10</span><span class="mi">'d239</span> <span class="p">)</span> <span class="c1">//middle screen horizontal line (x,239)</span>
-<a name="rest_code_cc9f2cf9df054803b470b4b8c16842a9-7"></a>        <span class="n">rgb</span> <span class="o">&lt;=</span> <span class="mh">12'h0f0</span><span class="p">;</span>
-<a name="rest_code_cc9f2cf9df054803b470b4b8c16842a9-8"></a>    <span class="k">else</span>
-<a name="rest_code_cc9f2cf9df054803b470b4b8c16842a9-9"></a>        <span class="n">rgb</span> <span class="o">&lt;=</span> <span class="mh">12'h0</span><span class="p">;</span> <span class="c1">//nothing pass horizontal line</span>
-<a name="rest_code_cc9f2cf9df054803b470b4b8c16842a9-10"></a>    <span class="k">end</span> <span class="k">else</span>
-<a name="rest_code_cc9f2cf9df054803b470b4b8c16842a9-11"></a>            <span class="n">rgb</span> <span class="o">&lt;=</span> <span class="mh">12'h0</span><span class="p">;</span>
+<pre class="code verilog"><a name="rest_code_a0d08dec33004f4792de74d1535b30b1-1"></a><span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">p_tick</span><span class="p">)</span>
+<a name="rest_code_a0d08dec33004f4792de74d1535b30b1-2"></a>    <span class="k">if</span> <span class="p">(</span><span class="n">video_on</span> <span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_a0d08dec33004f4792de74d1535b30b1-3"></a><span class="k">if</span> <span class="p">(</span> <span class="p">(</span><span class="n">y</span> <span class="o">&gt;=</span> <span class="mh">10</span><span class="mi">'d239</span><span class="o">-</span><span class="n">data</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">y</span> <span class="o">&lt;</span> <span class="mh">10</span><span class="mi">'d239</span><span class="p">)</span> <span class="p">)</span>
+<a name="rest_code_a0d08dec33004f4792de74d1535b30b1-4"></a>    <span class="n">rgb</span> <span class="o">&lt;=</span> <span class="mh">12'hf00</span><span class="p">;</span>
+<a name="rest_code_a0d08dec33004f4792de74d1535b30b1-5"></a><span class="k">else</span>
+<a name="rest_code_a0d08dec33004f4792de74d1535b30b1-6"></a>    <span class="k">if</span> <span class="p">(</span> <span class="n">y</span> <span class="o">==</span> <span class="mh">10</span><span class="mi">'d239</span> <span class="p">)</span> <span class="c1">//middle screen horizontal line (x,239)</span>
+<a name="rest_code_a0d08dec33004f4792de74d1535b30b1-7"></a>        <span class="n">rgb</span> <span class="o">&lt;=</span> <span class="mh">12'h0f0</span><span class="p">;</span>
+<a name="rest_code_a0d08dec33004f4792de74d1535b30b1-8"></a>    <span class="k">else</span>
+<a name="rest_code_a0d08dec33004f4792de74d1535b30b1-9"></a>        <span class="n">rgb</span> <span class="o">&lt;=</span> <span class="mh">12'h0</span><span class="p">;</span> <span class="c1">//nothing pass horizontal line</span>
+<a name="rest_code_a0d08dec33004f4792de74d1535b30b1-10"></a>    <span class="k">end</span> <span class="k">else</span>
+<a name="rest_code_a0d08dec33004f4792de74d1535b30b1-11"></a>            <span class="n">rgb</span> <span class="o">&lt;=</span> <span class="mh">12'h0</span><span class="p">;</span>
 </pre>
 </div>
 <div class="section" id="tools-used">
@@ -198,7 +198,7 @@ to me as well as I make more progress.</p>
         <!--End of body content-->
 
         <footer id="footer">
-            Contents © 2016         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            Contents © 2017         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
             
         </footer>
 </div>

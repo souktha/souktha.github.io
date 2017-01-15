@@ -137,27 +137,27 @@ is also provided to set up the simulation (<a class="reference external" href="h
 <h2>Simulation result</h2>
 <p>The following figures show the result of my simulation. Fig 1 is the response of non repeated stream of
 charater bytes.</p>
-<pre class="code text"><a name="rest_code_209379451f654b4392c5586246500591-1"></a>wait(cts)@(posedge fast_ck) begin
-<a name="rest_code_209379451f654b4392c5586246500591-2"></a>    #1 din = 8'hAD;
-<a name="rest_code_209379451f654b4392c5586246500591-3"></a>    #5 data_ck = 1'b1;
-<a name="rest_code_209379451f654b4392c5586246500591-4"></a>    end
-<a name="rest_code_209379451f654b4392c5586246500591-5"></a>wait(cts)@(posedge fast_ck) begin
-<a name="rest_code_209379451f654b4392c5586246500591-6"></a>#5 data_ck = 1'b0;
-<a name="rest_code_209379451f654b4392c5586246500591-7"></a>    #1 din = 8'h5E;
-<a name="rest_code_209379451f654b4392c5586246500591-8"></a>    #5 data_ck = 1'b1;
-<a name="rest_code_209379451f654b4392c5586246500591-9"></a>    end
+<pre class="code text"><a name="rest_code_7340a41736a74c0eb4dfcb82de7d223e-1"></a>wait(cts)@(posedge fast_ck) begin
+<a name="rest_code_7340a41736a74c0eb4dfcb82de7d223e-2"></a>    #1 din = 8'hAD;
+<a name="rest_code_7340a41736a74c0eb4dfcb82de7d223e-3"></a>    #5 data_ck = 1'b1;
+<a name="rest_code_7340a41736a74c0eb4dfcb82de7d223e-4"></a>    end
+<a name="rest_code_7340a41736a74c0eb4dfcb82de7d223e-5"></a>wait(cts)@(posedge fast_ck) begin
+<a name="rest_code_7340a41736a74c0eb4dfcb82de7d223e-6"></a>#5 data_ck = 1'b0;
+<a name="rest_code_7340a41736a74c0eb4dfcb82de7d223e-7"></a>    #1 din = 8'h5E;
+<a name="rest_code_7340a41736a74c0eb4dfcb82de7d223e-8"></a>    #5 data_ck = 1'b1;
+<a name="rest_code_7340a41736a74c0eb4dfcb82de7d223e-9"></a>    end
 </pre>
 <div class="figure">
 <img alt="../../images/hardware/case1.png" src="../../images/hardware/case1.png"><p class="caption">Fig1: input ad.5e output 01.ad</p>
 </div>
 <p>and the case where maximum bytes count per transaction is reached. In this case the host send 258 bytes, Fig2.</p>
-<pre class="code text"><a name="rest_code_7ddf32616d0b4ec0a91fcae82bb4ec3f-1"></a>for (i = 0; i &lt; 258; i = i+1 ) begin
-<a name="rest_code_7ddf32616d0b4ec0a91fcae82bb4ec3f-2"></a>    #5 data_ck = 1'b0;
-<a name="rest_code_7ddf32616d0b4ec0a91fcae82bb4ec3f-3"></a>    wait(cts) @(posedge fast_ck) begin
-<a name="rest_code_7ddf32616d0b4ec0a91fcae82bb4ec3f-4"></a>         #1 din = 8'h77;
-<a name="rest_code_7ddf32616d0b4ec0a91fcae82bb4ec3f-5"></a>        #5 data_ck = 1'b1;
-<a name="rest_code_7ddf32616d0b4ec0a91fcae82bb4ec3f-6"></a>        end
-<a name="rest_code_7ddf32616d0b4ec0a91fcae82bb4ec3f-7"></a>    end
+<pre class="code text"><a name="rest_code_a94026c74f9d4e759ae3030372779438-1"></a>for (i = 0; i &lt; 258; i = i+1 ) begin
+<a name="rest_code_a94026c74f9d4e759ae3030372779438-2"></a>    #5 data_ck = 1'b0;
+<a name="rest_code_a94026c74f9d4e759ae3030372779438-3"></a>    wait(cts) @(posedge fast_ck) begin
+<a name="rest_code_a94026c74f9d4e759ae3030372779438-4"></a>         #1 din = 8'h77;
+<a name="rest_code_a94026c74f9d4e759ae3030372779438-5"></a>        #5 data_ck = 1'b1;
+<a name="rest_code_a94026c74f9d4e759ae3030372779438-6"></a>        end
+<a name="rest_code_a94026c74f9d4e759ae3030372779438-7"></a>    end
 </pre>
 <div class="figure">
 <img alt="../../images/hardware/case4.png" src="../../images/hardware/case4.png"><p class="caption">Fig2: 258 bytes breaks out with 254 bytes</p>
@@ -188,7 +188,7 @@ can do so in hardware. To me, this is the added benefit.</p>
         <!--End of body content-->
 
         <footer id="footer">
-            Contents © 2016         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            Contents © 2017         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
             
         </footer>
 </div>
