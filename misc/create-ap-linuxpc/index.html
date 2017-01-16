@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<head>
+<meta charset="utf-8">
+<base href="http://souktha.github.io/misc/create-ap-linuxpc/">
+<meta name="description" content="Creating wireless access point on linux PC">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Create Wireless AP on Linux PC in 10 minutes | Soukthavy Sopha</title>
+<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<meta content="#5670d4" name="theme-color">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
+<link rel="canonical" href="http://souktha.github.io/misc/create-ap-linuxpc/">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="description" itemprop="description" content="Creating wireless access point on linux PC">
+<meta name="author" content="Soukthavy">
+<link rel="prev" href="../../hardware/cyclic_1_x_x4_hw/" title="Simple Cyclic Hamming (15,11,3) FEC" type="text/html">
+<meta property="og:site_name" content="Soukthavy Sopha">
+<meta property="og:title" content="Create Wireless AP on Linux PC in 10 minutes">
+<meta property="og:url" content="http://souktha.github.io/misc/create-ap-linuxpc/">
+<meta property="og:description" content="Creating wireless access point on linux PC">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2017-01-15T19:14:05Z">
+<meta property="article:tag" content="misc">
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-inverse navbar-static-top"><div class="container">
+<!-- This keeps the margins nice -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://souktha.github.io/">
+
+                <span id="blog-title">Soukthavy Sopha</span>
+            </a>
+        </div>
+<!-- /.navbar-header -->
+        <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
+            <ul class="nav navbar-nav">
+<li>
+<a href="../../archive.html">Archive</a>
+                </li>
+<li>
+<a href="../../categories/">Tags</a>
+                </li>
+<li>
+<a href="../../rss.xml">RSS feed</a>
+            </li>
+<li class="dropdown">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Blog <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+<li>
+<a href="../../software">Sofware</a>
+                    </li>
+<li>
+<a href="../../hardware">Hardware</a>
+                    </li>
+<li>
+<a href="../../misc">Misc</a>
+            </li>
+</ul>
+</li>
+<li>
+<a href="https://github.com/souktha">My Github</a>
+
+                
+            </li>
+</ul>
+<ul class="nav navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        <div class="row">
+            
+            
+<article class="storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Create Wireless AP on Linux PC in 10 minutes</a></h1>
+
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>Creating a wireless access point aka WiFi AP is relatively easy. A typical PC
+usually has at least one networking device or maybe two. One would be an Ethernet
+device while the other would be a WiFi device. If the ethernet device is tethered
+into the router already, this leaves WiFi device unused as in my case. Instead of
+leaving it in a useless state, I choose to create a WiFi AP out of it.</p>
+<!-- TEASER_END -->
+<p>Okay, maybe I lie. It might take more than 10 minutes for somebody else because
+it all depends on whether or not they have the software tools that are needed for
+this process. Adding time to build the tools will certainly makes it longer than
+10 minutes mark. All the tools needed are readily available in the OpenSource
+community.</p>
+<div class="section" id="hardware-requirment">
+<h2>Hardware requirment</h2>
+<ul class="simple">
+<li>An ethernet device. 10/100/1000Mbps is common.</li>
+<li>A wireless device. Verify with command <em>iw list</em> that <em>AP</em> mode is supported.
+The faster WiFi chip, the better.</li>
+<li>A router that connects to service provider for internet access. This will use to
+verify the internet access of the wireless AP later. This router is normally
+connected to DSL modem or Cable modem in a typical home environment.</li>
+<li>A Linux PC, of course. This is the base platform to host this process.</li>
+</ul>
+</div>
+<div class="section" id="linux-kernel-requirement">
+<h2>Linux Kernel requirement</h2>
+<p>Most of the stock Linux distribution will have ethernet bridging and netfilter already built
+and installed. If this is not the case, these configurations need to be enable. I enable
+these features since I build and customize my own Linux PC. For this exercise I use
+the released distribution Slackware 14.2 (linux-4.4.14) that has all the pre-built kernel
+features.</p>
+</div>
+<div class="section" id="required-software-packages">
+<h2>Required software packages</h2>
+<p>Aside from the kernel requirements, these are the required software packages:</p>
+<ul class="simple">
+<li>Bridge utility, <em>bridge-utils</em>. This package offers <em>brctl</em> utility to create networked bridge
+devices. I use <em>bridge-utils-1.5</em> for this process.</li>
+<li>dnsmasq utility, <em>dnsmasq</em>. This package offers DHCP,DNS service to the small network infrastructure.
+Only DHCP feature is needed for this process. I use <em>dnsmasq-2.76</em> for this process.</li>
+<li>hostapd utility, <em>hostapd</em>. This package is an access point daemon, <em>hostapd</em>. It offers authentication
+services between host PC and wireless clients. I use <em>hostapd-2.4</em> for this process.</li>
+<li>iptables utility, <em>iptables</em>, a netfilter utility. Most usually included in the distribution.
+<em>iptables-1.6.0</em> is included in my distribution.</li>
+<li>wifi utility, <em>iw</em>, to set/get wifi networking device. <em>iw-4.3</em> is included in my distribution.</li>
+</ul>
+<p>Bridge utility, dnsmasq, hostapd are not usually included with the distribution. In that case
+they needed to be downloaded and be built for this process.</p>
+</div>
+<div class="section" id="the-configuration-of-my-network">
+<h2>The configuration of my network</h2>
+<ul class="simple">
+<li>
+<em>eth0</em>, an Intel E1000e Ethernet of my PC connects to the router that connects to the DSL modem which gives me
+the internet access.</li>
+<li>
+<em>wlan0</em>, an Atheros AR9300 Rev:3 (TP-LINK). Not used before, but it is to be made into a wireless AP. This is
+a PCIe HBA that I added to my desktop PC. I do not remember how long ago I had it in the PC. It
+must be at least 4-5 years old or more. I think it is an 80211n HBA, definitely not an 11ac.</li>
+</ul>
+</div>
+<div class="section" id="summary-of-process">
+<h2>Summary of process</h2>
+<ul class="simple">
+<li>Create a bridging device, say <em>br0</em> (or any name). I prefer bridge device option since it
+is extensible, for example, if I have a second ethernet card, say, <em>eth1</em>, I can
+bond it to the bridge and become part of the AP network and governed by the same IP tables
+rules, less headache later.</li>
+<li>Bond wifi device, <em>wlan0</em> to the <em>br0</em> bridge device.</li>
+<li>Verify to make sure that the WiFi device, <em>wlan0</em>, is at the right regulatory domain. My
+<em>wlan0</em> comes up in what I think is Australia domain (AU). I need to set it to US-FCC domain.
+This is important or the WiFi may not work correctly due to its frequency assignments and
+its Tx/Rx power settings that vary by region of the world.</li>
+<li>Enable IP forward. Usually this is off by default.</li>
+<li>Enable bridge device.</li>
+<li>Run dnsmasq daemon to service DHCP/DNS with the right configuration.</li>
+<li>Run hostapd with the right configuration ie.. authentication security settings.</li>
+<li>Set up IP tables for devices forwarding and masquerading.</li>
+</ul>
+</div>
+<div class="section" id="details-in-step-by-step">
+<h2>Details in step-by-step</h2>
+<p>It is better to login as root to do this as I am doing it manually instead of putting it
+in a shell script. Once I login as root,</p>
+<ul>
+<li>
+<p class="first">First this is my network devices. Wireless device would not show up if Linux kernel
+is not supported it. In that case, the vendor's driver will need to ported, compiled, and
+loaded.</p>
+<pre class="code text"><a name="rest_code_7dee33fa205248228c577fb5412e6dbb-1"></a>cat /proc/net/dev
+<a name="rest_code_7dee33fa205248228c577fb5412e6dbb-2"></a>Inter-|   Receive                                                |  Transmit
+<a name="rest_code_7dee33fa205248228c577fb5412e6dbb-3"></a> face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed
+<a name="rest_code_7dee33fa205248228c577fb5412e6dbb-4"></a>    lo:    1504      22    0    0    0     0          0         0     1504      22    0    0    0     0       0          0
+<a name="rest_code_7dee33fa205248228c577fb5412e6dbb-5"></a> wlan0:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0
+<a name="rest_code_7dee33fa205248228c577fb5412e6dbb-6"></a>  eth0:  364234    2479    0    0    0     0          0         0   350453    3161    0    0    0     0       0          0
+</pre>
+</li>
+<li>
+<p class="first">Set regulatory domain of <em>wlan0</em> to meet US FCC regulation (in my case) and set WDS mode,</p>
+<pre class="code text"><a name="rest_code_ddb91bcdc4314752a13ed31200b2a907-1"></a>#iw reg set US
+<a name="rest_code_ddb91bcdc4314752a13ed31200b2a907-2"></a>#iw dev wlan0 set 4addr on
+</pre>
+</li>
+</ul>
+<p>The regulatory domain is important because it is used for the setting of radio frequency
+allowed in the host country. WiFi driver or firmware will use it for radio calibration settings
+that is needed for Tx/Rx power limit, frequency channels allowed (carrier and subcarriers etc).
+The first line above makes the driver use the US look-up table for its operational settings.</p>
+<ul>
+<li>
+<p class="first">Create bridge <em>br0</em>, and add <em>wlan0</em> interface to bridge,</p>
+<pre class="code text"><a name="rest_code_3f995d7b4779487d9d36b7733f39a509-1"></a>#brctl addbr br0
+<a name="rest_code_3f995d7b4779487d9d36b7733f39a509-2"></a>#brctl addif br0 wlan0
+<a name="rest_code_3f995d7b4779487d9d36b7733f39a509-3"></a>#
+<a name="rest_code_3f995d7b4779487d9d36b7733f39a509-4"></a>#brctl show
+<a name="rest_code_3f995d7b4779487d9d36b7733f39a509-5"></a>bridge name     bridge id               STP enabled     interfaces
+<a name="rest_code_3f995d7b4779487d9d36b7733f39a509-6"></a>br0             8000.e8de27191e83       no              wlan0
+</pre>
+</li>
+</ul>
+<p>Only <em>wlan0</em> need to be added. If extra <em>eth</em> device is available and wish to be bonded
+as part of the new network, it  can be added as well (as LAN segment), but not <em>eth0</em> since it is
+considered to be <em>WAN</em> for this setting. In another word, do not bond eth0 to bridge !</p>
+<ul class="simple">
+<li>Enable IP forwarding,</li>
+</ul>
+<blockquote>
+<pre class="code text"><a name="rest_code_0167f7b832cd49578221f3483a694dc4-1"></a># sysctl -w net.ipv4.ip_forward=1
+<a name="rest_code_0167f7b832cd49578221f3483a694dc4-2"></a>net.ipv4.ip_forward = 1
+</pre>
+</blockquote>
+<ul>
+<li>
+<p class="first">Assign IP address to <em>br0</em> device. I choose 192.168.11.1 for my WiFi AP.</p>
+<pre class="code text"><a name="rest_code_c39eb47ea06d4fe6b09ea06908dd328e-1"></a>#ifconfig br0 192.168.11.1 up
+</pre>
+</li>
+</ul>
+<p>All the routing will be shared with the <em>eth0</em> and will be netfiltered into it next.
+The IP network address 192.168.11.1 is my new bridged WiFi network.</p>
+<ul>
+<li>
+<p class="first">Start dnsmasq,</p>
+<pre class="code text"><a name="rest_code_aebe845def4d43a9aa5679a57cf0b343-1"></a>#dnsmasq -C dnsmasq.conf
+</pre>
+</li>
+</ul>
+<p>The <em>dnsmasq.conf</em> is a configuration file for dnsmasq in my current directory where I start it,</p>
+<blockquote>
+<table class="codetable"><tr>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_d9752cb690844d308526e76514f4a4be-1">1</a>
+<a href="#rest_code_d9752cb690844d308526e76514f4a4be-2">2</a>
+<a href="#rest_code_d9752cb690844d308526e76514f4a4be-3">3</a>
+<a href="#rest_code_d9752cb690844d308526e76514f4a4be-4">4</a>
+<a href="#rest_code_d9752cb690844d308526e76514f4a4be-5">5</a>
+<a href="#rest_code_d9752cb690844d308526e76514f4a4be-6">6</a>
+<a href="#rest_code_d9752cb690844d308526e76514f4a4be-7">7</a>
+<a href="#rest_code_d9752cb690844d308526e76514f4a4be-8">8</a></pre></div></td>
+<td class="code"><pre class="code text"><a name="rest_code_d9752cb690844d308526e76514f4a4be-1"></a>domain-needed
+<a name="rest_code_d9752cb690844d308526e76514f4a4be-2"></a>bogus-priv
+<a name="rest_code_d9752cb690844d308526e76514f4a4be-3"></a>resolv-file=/etc/resolv.conf
+<a name="rest_code_d9752cb690844d308526e76514f4a4be-4"></a>interface=br0
+<a name="rest_code_d9752cb690844d308526e76514f4a4be-5"></a>expand-hosts
+<a name="rest_code_d9752cb690844d308526e76514f4a4be-6"></a>dhcp-range=set:br0,192.168.11.100,192.168.11.199,255.255.255.0,86400
+<a name="rest_code_d9752cb690844d308526e76514f4a4be-7"></a>dhcp-lease-max=160
+<a name="rest_code_d9752cb690844d308526e76514f4a4be-8"></a>address=/souktha.github.io/192.168.11.1
+</pre></td>
+</tr></table>
+</blockquote>
+<p>dnsmasq will serve DHCP to all WiFi clients by assigning them with network IP address <a class="reference internal" href="#x">192.168.11.x</a> .
+The interface for the bridge is <em>br0</em> (line 4). This has to match the name of the bridge
+I created earlier. The DHCP address range it will give to clients will be in the range
+of x.100 - x.199 (line 6).</p>
+<ul class="simple">
+<li>Start hostapd using hostapd.conf file which is also in my current directory. I can set up IP tables rules
+later. hostapd will set <em>wlan0</em> to AP mode.</li>
+</ul>
+<blockquote>
+<pre class="code text"><a name="rest_code_ca3eb7da86364445a564a5f3a871a6c4-1"></a>#hostapd hostapd.conf
+<a name="rest_code_ca3eb7da86364445a564a5f3a871a6c4-2"></a>Configuration file: hostapd-sedone.conf
+<a name="rest_code_ca3eb7da86364445a564a5f3a871a6c4-3"></a>wlan0: interface state UNINITIALIZED-&gt;COUNTRY_UPDATE
+<a name="rest_code_ca3eb7da86364445a564a5f3a871a6c4-4"></a>wlan0: interface state COUNTRY_UPDATE-&gt;HT_SCAN
+<a name="rest_code_ca3eb7da86364445a564a5f3a871a6c4-5"></a>20/40 MHz operation not permitted on channel pri=6 sec=10 based on overlapping BSSes
+<a name="rest_code_ca3eb7da86364445a564a5f3a871a6c4-6"></a>Using interface wlan0 with hwaddr e8:de:27:19:1e:83 and ssid "sedone3"
+<a name="rest_code_ca3eb7da86364445a564a5f3a871a6c4-7"></a>wlan0: interface state HT_SCAN-&gt;ENABLED
+<a name="rest_code_ca3eb7da86364445a564a5f3a871a6c4-8"></a>wlan0: AP-ENABLED
+</pre>
+</blockquote>
+<p>For this test, I do not run hostapd in background (-B) mode so I can debug if I need to.
+This is <em>hostapd.conf</em> file,</p>
+<blockquote>
+<table class="codetable"><tr>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-1"> 1</a>
+<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-2"> 2</a>
+<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-3"> 3</a>
+<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-4"> 4</a>
+<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-5"> 5</a>
+<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-6"> 6</a>
+<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-7"> 7</a>
+<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-8"> 8</a>
+<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-9"> 9</a>
+<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-10">10</a>
+<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-11">11</a>
+<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-12">12</a>
+<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-13">13</a>
+<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-14">14</a>
+<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-15">15</a>
+<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-16">16</a>
+<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-17">17</a>
+<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-18">18</a>
+<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-19">19</a>
+<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-20">20</a>
+<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-21">21</a>
+<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-22">22</a>
+<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-23">23</a>
+<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-24">24</a>
+<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-25">25</a>
+<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-26">26</a>
+<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-27">27</a>
+<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-28">28</a>
+<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-29">29</a>
+<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-30">30</a>
+<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-31">31</a></pre></div></td>
+<td class="code"><pre class="code text"><a name="rest_code_40538135ed2c4a59a02ec6b9974da892-1"></a>interface=wlan0
+<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-2"></a>bridge=br0
+<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-3"></a>logger_syslog=127
+<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-4"></a>logger_syslog_level=2
+<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-5"></a>logger_stdout=127
+<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-6"></a>logger_stdout_level=2
+<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-7"></a>ctrl_interface=/var/run/hostapd
+<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-8"></a>ctrl_interface_group=0
+<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-9"></a>ssid=sedone3
+<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-10"></a>hw_mode=g
+<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-11"></a>macaddr_acl=0
+<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-12"></a>auth_algs=1
+<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-13"></a>ieee8021x=1
+<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-14"></a>eapol_key_index_workaround=0
+<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-15"></a>eap_server=1
+<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-16"></a>country_code=US
+<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-17"></a>channel=6
+<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-18"></a>beacon_int=100
+<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-19"></a>hw_mode=g
+<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-20"></a>wpa=2
+<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-21"></a>ieee80211n=1
+<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-22"></a>wme_enabled=1
+<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-23"></a>ht_capab=[SHORT-GI-20][SHORT-GI-40][HT40+]
+<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-24"></a>wpa_key_mgmt=WPA-PSK
+<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-25"></a>wpa_pairwise=CCMP
+<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-26"></a>max_num_sta=8
+<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-27"></a>wpa_group_rekey=86400
+<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-28"></a>wpa_passphrase=87654321
+<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-29"></a>upnp_iface=br0
+<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-30"></a>friendly_name=sedone3
+<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-31"></a>model_description=Slackware WiFi AP
+</pre></td>
+</tr></table>
+</blockquote>
+<p>Line 9 is my AP's SSID, <em>sedone3</em>. The authentication password is at line 28. Basically from line 20 down
+(minus a few), are the settings for security features such as key exchange, authentication mode etc..</p>
+<p>At this point I can browse/scan the WiFi AP and I will see <em>sedone3</em> as its SSID, but
+packets are not yet routed; however, my android tablet can connect to it.</p>
+<div class="figure">
+<img alt="../../images/misc/sedone3-ssid.jpg" src="../../images/misc/sedone3-ssid.jpg"><p class="caption">Fig1: <em>sedone3</em> is SSID of my router</p>
+</div>
+<div class="figure">
+<img alt="../../images/misc/sedone3-passwd.jpg" src="../../images/misc/sedone3-passwd.jpg"><p class="caption">Fig2: <em>sedone3</em> password prompt</p>
+</div>
+<div class="figure" id="x">
+<img alt="../../images/misc/sedone3-connected.jpg" src="../../images/misc/sedone3-connected.jpg"><p class="caption">Fig3: <em>sedone3</em> connected</p>
+</div>
+<ul class="simple">
+<li>Now set the IP tables rules for package forwarding,masquerading. This is essential to
+get network properly covered.</li>
+</ul>
+<pre class="code text"><a name="rest_code_18868e3ff48e4188ac920ef687533bca-1"></a># iptables -A INPUT -i br0 -j ACCEPT
+<a name="rest_code_18868e3ff48e4188ac920ef687533bca-2"></a># iptables -A FORWARD -i br0 -o eth0 -j ACCEPT
+<a name="rest_code_18868e3ff48e4188ac920ef687533bca-3"></a># iptables -A FORWARD -o br0 -i eth0 -j ACCEPT
+<a name="rest_code_18868e3ff48e4188ac920ef687533bca-4"></a># iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+<a name="rest_code_18868e3ff48e4188ac920ef687533bca-5"></a># iptables -A FORWARD -o br0 -i eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+</pre>
+<div class="figure">
+<img alt="../../images/misc/sedone3-browse.jpg" src="../../images/misc/sedone3-browse.jpg"><p class="caption">Fig4: Internet access after IP netfilter forwarding,masquerading.</p>
+</div>
+<p>The setting above is to add bridge device to the rule and forward packets between
+bridge device and the main ethernet device (WAN or eth0) with masquerading.</p>
+<p>Route for the new network is shared with <em>eth0</em>'s default gateway. There is
+no special setting for the route. Here is my route,</p>
+<pre class="code text"><a name="rest_code_c8909fa32d8e47a7a9d36e7536cfcec6-1"></a>#route
+<a name="rest_code_c8909fa32d8e47a7a9d36e7536cfcec6-2"></a>Kernel IP routing table
+<a name="rest_code_c8909fa32d8e47a7a9d36e7536cfcec6-3"></a>Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+<a name="rest_code_c8909fa32d8e47a7a9d36e7536cfcec6-4"></a>default         netrouter       0.0.0.0         UG    1      0        0 eth0
+<a name="rest_code_c8909fa32d8e47a7a9d36e7536cfcec6-5"></a>loopback        *               255.0.0.0       U     0      0        0 lo
+<a name="rest_code_c8909fa32d8e47a7a9d36e7536cfcec6-6"></a>192.168.10.0    *               255.255.255.0   U     0      0        0 eth0
+<a name="rest_code_c8909fa32d8e47a7a9d36e7536cfcec6-7"></a>192.168.11.0    *               255.255.255.0   U     0      0        0 br0
+</pre>
+<p>The IP netfilter rules added are the rules
+added on top of what I already have for my local <em>eth0</em> network. I did not flush my
+host IP tables so whatever rules I have I still keep them, just the new rules for
+the WiFi bridge are added.
+More IP filter rules can be added specifically for this network if needed.</p>
+<p>I am not sure how many Mbps my <em>wlan0</em> can reach so I leave it at default of 72Mbps.
+Most newer PCIe WiFi card will probably reach Gbps speed, but mine is relatively old. Perhaps
+it can reach in the hundreds Mbps.</p>
+</div>
+<div class="section" id="conclusion">
+<h2>Conclusion</h2>
+<p><em>dnsmasq</em> and <em>hostapd</em> do all the magic here. Unlike my other posts, I do not write
+a single line of code. I do not debug, perform timing closure (FPGA) or do any frustrated things.
+Is it hard ? Well, It takes me a lot longer to write this post than to set up the
+WiFi AP on my host PC. It really take 10-15 minutes to set it up since I did not
+spend time building the needed packages.
+For most Linux distribution, one can download/install the pre-built binary packages with the
+host package manager software, for example, Ubuntu's apt-get install &lt;package&gt; command. It
+is not necessary to build everything like I did.</p>
+<p>There are many choices of WiFi routers out there in the store shelves; however, regardless of how
+expensive they are, their set up to make a WiFi router is almost identical to this post. More than
+that are just bell and whistle to turn simple thing into deep shit.
+How fast and how far is all about the WiFi chip set in that box.</p>
+</div>
+</div>
+    </div>
+    
+
+</article>
+</div>
+        <!--End of body content-->
+
+        <footer id="footer">
+            Contents © 2017         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+        </footer>
+</div>
+</div>
+
+
+            <script src="../../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+    moment.locale("en");
+    fancydates(0, "YYYY-MM-DD HH:mm");
+    </script><!-- end fancy dates -->
+</body>
+</html>

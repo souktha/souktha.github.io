@@ -128,15 +128,15 @@ mountable root FS.</p>
 <div class="section" id="kernel-configuration-and-s-w-utilities">
 <h3>Kernel configuration and s/w utilities</h3>
 <p>For kernel, I need to make sure I build MTD driver with NAND support, so I configure my kernel with the needed options,</p>
-<pre class="code text"><a name="rest_code_b3c1684aa03f4a8ba2d6e7bc129a1d03-1"></a>Device Drivers -&gt;
-<a name="rest_code_b3c1684aa03f4a8ba2d6e7bc129a1d03-2"></a>   Memory Technology Device (MTD) support -&gt;
-<a name="rest_code_b3c1684aa03f4a8ba2d6e7bc129a1d03-3"></a>      NAND Device Support -&gt; Support for NAND Flash Simulator
+<pre class="code text"><a name="rest_code_f6a7548a6dbe4c62a9176e8f7b846181-1"></a>Device Drivers -&gt;
+<a name="rest_code_f6a7548a6dbe4c62a9176e8f7b846181-2"></a>   Memory Technology Device (MTD) support -&gt;
+<a name="rest_code_f6a7548a6dbe4c62a9176e8f7b846181-3"></a>      NAND Device Support -&gt; Support for NAND Flash Simulator
 </pre>
 <p>As part of MTD Support, I also configure the kernel to enabled UBI - Unsorted block images</p>
-<pre class="code text"><a name="rest_code_9e81b8a15a814eba8c5f8a8561d31e8e-1"></a>Device Drivers -&gt;
-<a name="rest_code_9e81b8a15a814eba8c5f8a8561d31e8e-2"></a>   Memory Technology Device (MTD) Support -&gt;
-<a name="rest_code_9e81b8a15a814eba8c5f8a8561d31e8e-3"></a>      Enable UBI - Unsorted block images -&gt;
-<a name="rest_code_9e81b8a15a814eba8c5f8a8561d31e8e-4"></a>         Read-only block devices on top of UBI volumes
+<pre class="code text"><a name="rest_code_b4423ce89b584ac8a5fc6189f53ae092-1"></a>Device Drivers -&gt;
+<a name="rest_code_b4423ce89b584ac8a5fc6189f53ae092-2"></a>   Memory Technology Device (MTD) Support -&gt;
+<a name="rest_code_b4423ce89b584ac8a5fc6189f53ae092-3"></a>      Enable UBI - Unsorted block images -&gt;
+<a name="rest_code_b4423ce89b584ac8a5fc6189f53ae092-4"></a>         Read-only block devices on top of UBI volumes
 </pre>
 <p>I am done as far as kernel configuration is concerned. Just build it and have it ready to use. In addition to having the
 needed support in the Linux kernel, I also need some external applications/utilities.</p>
@@ -150,70 +150,70 @@ The configuration I made above is for the target device where I intend to put th
 <div class="section" id="creating-squashfs">
 <h3>Creating SquashFS</h3>
 <p>Using <em>mksquashfs</em> from SquashFS utilities on my PC, I create a SquashFS <a class="footnote-reference" href="#id8" id="id2">[4]</a> rootfs as a test rootfs with xz compression,</p>
-<pre class="code text"><a name="rest_code_de923c0d60af490d961e3e75d041adfe-1"></a>mksquashfs rootfs rootfs.squashfs -nopad -noappend -root-owned -b 256k -comp xz -processors 2
-<a name="rest_code_de923c0d60af490d961e3e75d041adfe-2"></a>
-<a name="rest_code_de923c0d60af490d961e3e75d041adfe-3"></a>Parallel mksquashfs: Using 2 processors
-<a name="rest_code_de923c0d60af490d961e3e75d041adfe-4"></a> Creating 4.0 filesystem on rootfs.squashfs, block size 262144.
-<a name="rest_code_de923c0d60af490d961e3e75d041adfe-5"></a> [==============================================================================================-] 1249/1249 100%
-<a name="rest_code_de923c0d60af490d961e3e75d041adfe-6"></a> Exportable Squashfs 4.0 filesystem, xz compressed, data block size 262144
-<a name="rest_code_de923c0d60af490d961e3e75d041adfe-7"></a>         compressed data, compressed metadata, compressed fragments, compressed xattrs
-<a name="rest_code_de923c0d60af490d961e3e75d041adfe-8"></a>         duplicates are removed
-<a name="rest_code_de923c0d60af490d961e3e75d041adfe-9"></a> Filesystem size 12103.20 Kbytes (11.82 Mbytes)
-<a name="rest_code_de923c0d60af490d961e3e75d041adfe-10"></a>         26.72% of uncompressed filesystem size (45288.55 Kbytes)
-<a name="rest_code_de923c0d60af490d961e3e75d041adfe-11"></a> Inode table size 14744 bytes (14.40 Kbytes)
-<a name="rest_code_de923c0d60af490d961e3e75d041adfe-12"></a>         23.13% of uncompressed inode table size (63749 bytes)
-<a name="rest_code_de923c0d60af490d961e3e75d041adfe-13"></a> Directory table size 17646 bytes (17.23 Kbytes)
-<a name="rest_code_de923c0d60af490d961e3e75d041adfe-14"></a>         46.33% of uncompressed directory table size (38087 bytes)
-<a name="rest_code_de923c0d60af490d961e3e75d041adfe-15"></a> Number of duplicate files found 8
-<a name="rest_code_de923c0d60af490d961e3e75d041adfe-16"></a> Number of inodes 1901
-<a name="rest_code_de923c0d60af490d961e3e75d041adfe-17"></a> Number of files 1192
-<a name="rest_code_de923c0d60af490d961e3e75d041adfe-18"></a> Number of fragments 120
-<a name="rest_code_de923c0d60af490d961e3e75d041adfe-19"></a> Number of symbolic links  393
-<a name="rest_code_de923c0d60af490d961e3e75d041adfe-20"></a> Number of device nodes 0
-<a name="rest_code_de923c0d60af490d961e3e75d041adfe-21"></a> Number of fifo nodes 0
-<a name="rest_code_de923c0d60af490d961e3e75d041adfe-22"></a> Number of socket nodes 0
-<a name="rest_code_de923c0d60af490d961e3e75d041adfe-23"></a> Number of directories 316
-<a name="rest_code_de923c0d60af490d961e3e75d041adfe-24"></a> Number of ids (unique uids + gids) 1
-<a name="rest_code_de923c0d60af490d961e3e75d041adfe-25"></a> Number of uids 1
-<a name="rest_code_de923c0d60af490d961e3e75d041adfe-26"></a> root (0)
-<a name="rest_code_de923c0d60af490d961e3e75d041adfe-27"></a> Number of gids 1
-<a name="rest_code_de923c0d60af490d961e3e75d041adfe-28"></a> root (0)
+<pre class="code text"><a name="rest_code_dec76d558c814f9c98a4e1cc16900dc9-1"></a>mksquashfs rootfs rootfs.squashfs -nopad -noappend -root-owned -b 256k -comp xz -processors 2
+<a name="rest_code_dec76d558c814f9c98a4e1cc16900dc9-2"></a>
+<a name="rest_code_dec76d558c814f9c98a4e1cc16900dc9-3"></a>Parallel mksquashfs: Using 2 processors
+<a name="rest_code_dec76d558c814f9c98a4e1cc16900dc9-4"></a> Creating 4.0 filesystem on rootfs.squashfs, block size 262144.
+<a name="rest_code_dec76d558c814f9c98a4e1cc16900dc9-5"></a> [==============================================================================================-] 1249/1249 100%
+<a name="rest_code_dec76d558c814f9c98a4e1cc16900dc9-6"></a> Exportable Squashfs 4.0 filesystem, xz compressed, data block size 262144
+<a name="rest_code_dec76d558c814f9c98a4e1cc16900dc9-7"></a>         compressed data, compressed metadata, compressed fragments, compressed xattrs
+<a name="rest_code_dec76d558c814f9c98a4e1cc16900dc9-8"></a>         duplicates are removed
+<a name="rest_code_dec76d558c814f9c98a4e1cc16900dc9-9"></a> Filesystem size 12103.20 Kbytes (11.82 Mbytes)
+<a name="rest_code_dec76d558c814f9c98a4e1cc16900dc9-10"></a>         26.72% of uncompressed filesystem size (45288.55 Kbytes)
+<a name="rest_code_dec76d558c814f9c98a4e1cc16900dc9-11"></a> Inode table size 14744 bytes (14.40 Kbytes)
+<a name="rest_code_dec76d558c814f9c98a4e1cc16900dc9-12"></a>         23.13% of uncompressed inode table size (63749 bytes)
+<a name="rest_code_dec76d558c814f9c98a4e1cc16900dc9-13"></a> Directory table size 17646 bytes (17.23 Kbytes)
+<a name="rest_code_dec76d558c814f9c98a4e1cc16900dc9-14"></a>         46.33% of uncompressed directory table size (38087 bytes)
+<a name="rest_code_dec76d558c814f9c98a4e1cc16900dc9-15"></a> Number of duplicate files found 8
+<a name="rest_code_dec76d558c814f9c98a4e1cc16900dc9-16"></a> Number of inodes 1901
+<a name="rest_code_dec76d558c814f9c98a4e1cc16900dc9-17"></a> Number of files 1192
+<a name="rest_code_dec76d558c814f9c98a4e1cc16900dc9-18"></a> Number of fragments 120
+<a name="rest_code_dec76d558c814f9c98a4e1cc16900dc9-19"></a> Number of symbolic links  393
+<a name="rest_code_dec76d558c814f9c98a4e1cc16900dc9-20"></a> Number of device nodes 0
+<a name="rest_code_dec76d558c814f9c98a4e1cc16900dc9-21"></a> Number of fifo nodes 0
+<a name="rest_code_dec76d558c814f9c98a4e1cc16900dc9-22"></a> Number of socket nodes 0
+<a name="rest_code_dec76d558c814f9c98a4e1cc16900dc9-23"></a> Number of directories 316
+<a name="rest_code_dec76d558c814f9c98a4e1cc16900dc9-24"></a> Number of ids (unique uids + gids) 1
+<a name="rest_code_dec76d558c814f9c98a4e1cc16900dc9-25"></a> Number of uids 1
+<a name="rest_code_dec76d558c814f9c98a4e1cc16900dc9-26"></a> root (0)
+<a name="rest_code_dec76d558c814f9c98a4e1cc16900dc9-27"></a> Number of gids 1
+<a name="rest_code_dec76d558c814f9c98a4e1cc16900dc9-28"></a> root (0)
 </pre>
 <p>From the original 44MB or so, I have a compressed file of about 12MB, which is small enough for my NAND device.</p>
 <p>I then follow the formula <a class="footnote-reference" href="#id6" id="id3">[2]</a> of computing what amount of overhead in terms of reserved blocks that I need to allocate for
 the UBI block so that I will image it into a 32MB partition of the 128MB NAND. My ubinize configuration file, <em>ubinize.cfg</em>,
 will have 28MB declared for <em>vol_size</em> base on my calculation, thus,</p>
-<pre class="code text"><a name="rest_code_abf54c356bae49858a330d6e3ef7e11f-1"></a>[squashfs]
-<a name="rest_code_abf54c356bae49858a330d6e3ef7e11f-2"></a> mode=ubi
-<a name="rest_code_abf54c356bae49858a330d6e3ef7e11f-3"></a> image=rootfs.squashfs
-<a name="rest_code_abf54c356bae49858a330d6e3ef7e11f-4"></a> vol_id=0
-<a name="rest_code_abf54c356bae49858a330d6e3ef7e11f-5"></a> vol_size=28MiB
-<a name="rest_code_abf54c356bae49858a330d6e3ef7e11f-6"></a> vol_type=dynamic
-<a name="rest_code_abf54c356bae49858a330d6e3ef7e11f-7"></a> vol_name=squashfs
-<a name="rest_code_abf54c356bae49858a330d6e3ef7e11f-8"></a> vol_flags=autoresize
+<pre class="code text"><a name="rest_code_5e77a0125c2b488cb356bcd5684ad29c-1"></a>[squashfs]
+<a name="rest_code_5e77a0125c2b488cb356bcd5684ad29c-2"></a> mode=ubi
+<a name="rest_code_5e77a0125c2b488cb356bcd5684ad29c-3"></a> image=rootfs.squashfs
+<a name="rest_code_5e77a0125c2b488cb356bcd5684ad29c-4"></a> vol_id=0
+<a name="rest_code_5e77a0125c2b488cb356bcd5684ad29c-5"></a> vol_size=28MiB
+<a name="rest_code_5e77a0125c2b488cb356bcd5684ad29c-6"></a> vol_type=dynamic
+<a name="rest_code_5e77a0125c2b488cb356bcd5684ad29c-7"></a> vol_name=squashfs
+<a name="rest_code_5e77a0125c2b488cb356bcd5684ad29c-8"></a> vol_flags=autoresize
 </pre>
 <p>is the actual content of my <em>ubinize.cfg</em> file. Then I proceed to create the UBI block on top of the <em>rootfs.squashfs</em> that
 I created in the previous step,</p>
-<pre class="code text"><a name="rest_code_728a69c068c749bcab5a12ceed58326b-1"></a>ubinize -o ubi-rootfs.squashfs -m 2048 -p 128KiB -s 512 -O 2048 ubinize.cfg
+<pre class="code text"><a name="rest_code_5d43b3be1fb34952bdeb398e8452fb35-1"></a>ubinize -o ubi-rootfs.squashfs -m 2048 -p 128KiB -s 512 -O 2048 ubinize.cfg
 </pre>
 <p>my output file from this command is <em>ubi-roots.squashfs</em> and ready to be used for testing.</p>
 <p>Next I am going to use <em>nandsim</em> on the host PC to test it. If this works, the real NAND will work too.
 I will simulate the equivalent <em>Spansion</em> NAND, which is now a <em>Cypress SM34S01G1</em>, 128MB NAND <a class="footnote-reference" href="#id7" id="id4">[3]</a>.
 Its manufacturer's 4 bytes ID as read from <em>READ ID</em> command is <em>0x1,0xa1,0x0,0x15</em>.</p>
-<pre class="code text"><a name="rest_code_3572b786cfb0423990b2e436c727fa1e-1"></a># modprobe nandsim first_id_byte=0x1 second_id_byte=0xa1 third_id_byte=0x0 fourth_id_byte=0x15 parts=24,256,296 badblocks=310,410
-<a name="rest_code_3572b786cfb0423990b2e436c727fa1e-2"></a>
-<a name="rest_code_3572b786cfb0423990b2e436c727fa1e-3"></a>[  793.127308] nand: device found, Manufacturer ID: 0x01, Chip ID: 0xa1
-<a name="rest_code_3572b786cfb0423990b2e436c727fa1e-4"></a>[  793.134397] nand: AMD/Spansion NAND 128MiB 1,8V 8-bit
-<a name="rest_code_3572b786cfb0423990b2e436c727fa1e-5"></a>[  793.139506] nand: 128 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
-<a name="rest_code_3572b786cfb0423990b2e436c727fa1e-6"></a>[  793.147895] flash size: 128 MiB
-<a name="rest_code_3572b786cfb0423990b2e436c727fa1e-7"></a>[  793.151069] page size: 2048 bytes
-<a name="rest_code_3572b786cfb0423990b2e436c727fa1e-8"></a>[  793.155069] OOB area size: 64 bytes
-<a name="rest_code_3572b786cfb0423990b2e436c727fa1e-9"></a>....
-<a name="rest_code_3572b786cfb0423990b2e436c727fa1e-10"></a>  793.234215] Creating 4 MTD partitions on "NAND 128MiB 1,8V 8-bit":
-<a name="rest_code_3572b786cfb0423990b2e436c727fa1e-11"></a>[  793.240475] 0x000000000000-0x000000300000 : "NAND simulator partition 0"
-<a name="rest_code_3572b786cfb0423990b2e436c727fa1e-12"></a>[  793.250553] 0x000000300000-0x000002300000 : "NAND simulator partition 1"
-<a name="rest_code_3572b786cfb0423990b2e436c727fa1e-13"></a>[  793.259978] 0x000002300000-0x000004800000 : "NAND simulator partition 2"
-<a name="rest_code_3572b786cfb0423990b2e436c727fa1e-14"></a>[  793.270224] 0x000004800000-0x000008000000 : "NAND simulator partition 3"
+<pre class="code text"><a name="rest_code_97a4215730dc42259d856adc9a899b36-1"></a># modprobe nandsim first_id_byte=0x1 second_id_byte=0xa1 third_id_byte=0x0 fourth_id_byte=0x15 parts=24,256,296 badblocks=310,410
+<a name="rest_code_97a4215730dc42259d856adc9a899b36-2"></a>
+<a name="rest_code_97a4215730dc42259d856adc9a899b36-3"></a>[  793.127308] nand: device found, Manufacturer ID: 0x01, Chip ID: 0xa1
+<a name="rest_code_97a4215730dc42259d856adc9a899b36-4"></a>[  793.134397] nand: AMD/Spansion NAND 128MiB 1,8V 8-bit
+<a name="rest_code_97a4215730dc42259d856adc9a899b36-5"></a>[  793.139506] nand: 128 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+<a name="rest_code_97a4215730dc42259d856adc9a899b36-6"></a>[  793.147895] flash size: 128 MiB
+<a name="rest_code_97a4215730dc42259d856adc9a899b36-7"></a>[  793.151069] page size: 2048 bytes
+<a name="rest_code_97a4215730dc42259d856adc9a899b36-8"></a>[  793.155069] OOB area size: 64 bytes
+<a name="rest_code_97a4215730dc42259d856adc9a899b36-9"></a>....
+<a name="rest_code_97a4215730dc42259d856adc9a899b36-10"></a>  793.234215] Creating 4 MTD partitions on "NAND 128MiB 1,8V 8-bit":
+<a name="rest_code_97a4215730dc42259d856adc9a899b36-11"></a>[  793.240475] 0x000000000000-0x000000300000 : "NAND simulator partition 0"
+<a name="rest_code_97a4215730dc42259d856adc9a899b36-12"></a>[  793.250553] 0x000000300000-0x000002300000 : "NAND simulator partition 1"
+<a name="rest_code_97a4215730dc42259d856adc9a899b36-13"></a>[  793.259978] 0x000002300000-0x000004800000 : "NAND simulator partition 2"
+<a name="rest_code_97a4215730dc42259d856adc9a899b36-14"></a>[  793.270224] 0x000004800000-0x000008000000 : "NAND simulator partition 3"
 </pre>
 <p>It creates the specified three partitions of 24 blocks (x128KB), 256 blocks and 296 blocks. Partition 3 is
 the remaining size. Here I have, 3MB, 32MB, 37MB, 56MB. I will use only partition 1,2 for this exercise.
@@ -225,58 +225,58 @@ Two bad blocks are also specified in the command above. These blocks fall into p
 <p>First try the pure SquashFS on partition 1,2. For me to do that, first I need to erase these <em>simulated</em> NAND
 before I flash them. Eventhough it is a simuted NAND resides in memory, it acts just like real NAND. Because
 of this I cannot use <em>dd</em> command to write, so</p>
-<pre class="code text"><a name="rest_code_276de688c7d74c50b1d3507ae9651a65-1"></a># flash_erase /dev/mtd1 0 0
-<a name="rest_code_276de688c7d74c50b1d3507ae9651a65-2"></a># flash_erase /dev/mtd2 0 0
+<pre class="code text"><a name="rest_code_4ef9237544a04977b38aeb3eaa174385-1"></a># flash_erase /dev/mtd1 0 0
+<a name="rest_code_4ef9237544a04977b38aeb3eaa174385-2"></a># flash_erase /dev/mtd2 0 0
 </pre>
 <p><em>flash_erase</em> is the MTD utility command for the job. Next I will flash the <em>rootfs.quashfs</em> with <em>nandwrite</em> which
 is also a MTD NAND utility to <em>mtd1</em> and mount it.</p>
-<pre class="code text"><a name="rest_code_cf97e70f9aed456784ce5da7c006e754-1"></a># nandwrite -p -q /dev/mtd1 rootfs.squashfs
-<a name="rest_code_cf97e70f9aed456784ce5da7c006e754-2"></a># mount /dev/mtdblock1 /mnt
-<a name="rest_code_cf97e70f9aed456784ce5da7c006e754-3"></a># ls /mnt
-<a name="rest_code_cf97e70f9aed456784ce5da7c006e754-4"></a>bin      etc      lib32    linuxrc  mnt      proc     run      sys      usr
-<a name="rest_code_cf97e70f9aed456784ce5da7c006e754-5"></a>dev      lib      libexec  media    opt      root     sbin     tmp      var
+<pre class="code text"><a name="rest_code_70d6cd5a33a84e87b4a9035c61f7dc4f-1"></a># nandwrite -p -q /dev/mtd1 rootfs.squashfs
+<a name="rest_code_70d6cd5a33a84e87b4a9035c61f7dc4f-2"></a># mount /dev/mtdblock1 /mnt
+<a name="rest_code_70d6cd5a33a84e87b4a9035c61f7dc4f-3"></a># ls /mnt
+<a name="rest_code_70d6cd5a33a84e87b4a9035c61f7dc4f-4"></a>bin      etc      lib32    linuxrc  mnt      proc     run      sys      usr
+<a name="rest_code_70d6cd5a33a84e87b4a9035c61f7dc4f-5"></a>dev      lib      libexec  media    opt      root     sbin     tmp      var
 </pre>
 <p><em>rootfs.squashfs</em> mount just fine on mtdblock1 since it has no bad block. Next I try it by imaging
 the rootfs onto the <em>mtd2</em> having simulated bad blocks,</p>
-<pre class="code text"><a name="rest_code_2301629438834e68b887eb28d2caa967-1"></a># nandwrite -p -q /dev/mtd2 rootfs.squashfs
-<a name="rest_code_2301629438834e68b887eb28d2caa967-2"></a># mount /dev/mtdblock2 /mnt
-<a name="rest_code_2301629438834e68b887eb28d2caa967-3"></a>[ 2018.939315] squashfs: SQUASHFS error: unable to read id index table
-<a name="rest_code_2301629438834e68b887eb28d2caa967-4"></a>mount: wrong fs type, bad option, bad superblock on /dev/mtdblock2,
-<a name="rest_code_2301629438834e68b887eb28d2caa967-5"></a>       missing codepage or helper program, or other error
-<a name="rest_code_2301629438834e68b887eb28d2caa967-6"></a>
-<a name="rest_code_2301629438834e68b887eb28d2caa967-7"></a>       In some cases useful info is found in syslog - try
-<a name="rest_code_2301629438834e68b887eb28d2caa967-8"></a>       dmesg | tail or so.
+<pre class="code text"><a name="rest_code_1431d240a041484e88111125c5d69980-1"></a># nandwrite -p -q /dev/mtd2 rootfs.squashfs
+<a name="rest_code_1431d240a041484e88111125c5d69980-2"></a># mount /dev/mtdblock2 /mnt
+<a name="rest_code_1431d240a041484e88111125c5d69980-3"></a>[ 2018.939315] squashfs: SQUASHFS error: unable to read id index table
+<a name="rest_code_1431d240a041484e88111125c5d69980-4"></a>mount: wrong fs type, bad option, bad superblock on /dev/mtdblock2,
+<a name="rest_code_1431d240a041484e88111125c5d69980-5"></a>       missing codepage or helper program, or other error
+<a name="rest_code_1431d240a041484e88111125c5d69980-6"></a>
+<a name="rest_code_1431d240a041484e88111125c5d69980-7"></a>       In some cases useful info is found in syslog - try
+<a name="rest_code_1431d240a041484e88111125c5d69980-8"></a>       dmesg | tail or so.
 </pre>
 <p>As I can see, SquashFS cannot handle the fact that it is residing in the partition with bad blocks and
 that some of its file data is/are relocated elsewhere by <em>nandwrite</em>. It fails when it try to mount it.</p>
 <p>Now, I will use the <em>ubi-rootfs.squashfs</em> that I created earlier, the rootfs with UBI block volume in it
 so I erase <em>mtd2</em> and put this rootfs on it.</p>
-<pre class="code text"><a name="rest_code_39064b0abd4c42c380d546c5330053ff-1"></a># flash_erase /dev/mtd2 0 0
-<a name="rest_code_39064b0abd4c42c380d546c5330053ff-2"></a>Erasing 128 Kibyte @ 3a0000 --  9 % complete flash_erase: Skipping bad block at 003c0000
-<a name="rest_code_39064b0abd4c42c380d546c5330053ff-3"></a>Erasing 128 Kibyte @ 1020000 -- 43 % complete flash_erase: Skipping bad block at 01040000
-<a name="rest_code_39064b0abd4c42c380d546c5330053ff-4"></a>Erasing 128 Kibyte @ 24e0000 -- 100 % complete
-<a name="rest_code_39064b0abd4c42c380d546c5330053ff-5"></a>
-<a name="rest_code_39064b0abd4c42c380d546c5330053ff-6"></a># nandwrite -p -q /dev/mtd2 ubi-rootfs.squashfs
+<pre class="code text"><a name="rest_code_53698d8ab15e40a9a2e2752b3593f5e7-1"></a># flash_erase /dev/mtd2 0 0
+<a name="rest_code_53698d8ab15e40a9a2e2752b3593f5e7-2"></a>Erasing 128 Kibyte @ 3a0000 --  9 % complete flash_erase: Skipping bad block at 003c0000
+<a name="rest_code_53698d8ab15e40a9a2e2752b3593f5e7-3"></a>Erasing 128 Kibyte @ 1020000 -- 43 % complete flash_erase: Skipping bad block at 01040000
+<a name="rest_code_53698d8ab15e40a9a2e2752b3593f5e7-4"></a>Erasing 128 Kibyte @ 24e0000 -- 100 % complete
+<a name="rest_code_53698d8ab15e40a9a2e2752b3593f5e7-5"></a>
+<a name="rest_code_53698d8ab15e40a9a2e2752b3593f5e7-6"></a># nandwrite -p -q /dev/mtd2 ubi-rootfs.squashfs
 </pre>
 <p>In order to use this rootfs, I need to load ubi block device driver that I built as module earlier,</p>
-<pre class="code text"><a name="rest_code_ccde143026a943aa9567277b353965e2-1"></a># modprobe ubi mtd=2,2048 block=0,0
-<a name="rest_code_ccde143026a943aa9567277b353965e2-2"></a>[ 2454.912083] ubi0: attaching mtd2
-<a name="rest_code_ccde143026a943aa9567277b353965e2-3"></a>[ 2454.928459] ubi0: scanning is finished
-<a name="rest_code_ccde143026a943aa9567277b353965e2-4"></a>..
-<a name="rest_code_ccde143026a943aa9567277b353965e2-5"></a> 2455.011158] ubi0: background thread "ubi_bgt0d" started, PID 184
-<a name="rest_code_ccde143026a943aa9567277b353965e2-6"></a>[ 2455.020281] block ubiblock0_0: created from ubi0:0(squashfs)
+<pre class="code text"><a name="rest_code_533dc1fed6e4476887255a4d72b75190-1"></a># modprobe ubi mtd=2,2048 block=0,0
+<a name="rest_code_533dc1fed6e4476887255a4d72b75190-2"></a>[ 2454.912083] ubi0: attaching mtd2
+<a name="rest_code_533dc1fed6e4476887255a4d72b75190-3"></a>[ 2454.928459] ubi0: scanning is finished
+<a name="rest_code_533dc1fed6e4476887255a4d72b75190-4"></a>..
+<a name="rest_code_533dc1fed6e4476887255a4d72b75190-5"></a> 2455.011158] ubi0: background thread "ubi_bgt0d" started, PID 184
+<a name="rest_code_533dc1fed6e4476887255a4d72b75190-6"></a>[ 2455.020281] block ubiblock0_0: created from ubi0:0(squashfs)
 </pre>
 <p>when load, UBI block device will come to existence that I will later mount. The last line above
 indicates that the UBI driver detect the <em>vol_name=squashfs</em> as defined in my <em>ubinize.cfg</em> file, which is
 a good sign.</p>
-<pre class="code text"><a name="rest_code_c464b4465e774599812d18e0a6b898ea-1"></a># ls /dev/ubi
-<a name="rest_code_c464b4465e774599812d18e0a6b898ea-2"></a>ubi0         ubi0_0       ubi_ctrl     ubiblock0_0
+<pre class="code text"><a name="rest_code_18b9bc2bdbe643c79c2a1b6b862a8d90-1"></a># ls /dev/ubi
+<a name="rest_code_18b9bc2bdbe643c79c2a1b6b862a8d90-2"></a>ubi0         ubi0_0       ubi_ctrl     ubiblock0_0
 </pre>
 <p>I verify that <em>ubiblock0_0</em> is available. Now I mount it,</p>
-<pre class="code text"><a name="rest_code_eb958d8aafa1436da6b62d5fe275ea0e-1"></a># mount -t squashfs -r /dev/ubiblock0_0 /mnt
-<a name="rest_code_eb958d8aafa1436da6b62d5fe275ea0e-2"></a># ls /mnt
-<a name="rest_code_eb958d8aafa1436da6b62d5fe275ea0e-3"></a>bin      etc      lib32    linuxrc  mnt      proc     run      sys      usr
-<a name="rest_code_eb958d8aafa1436da6b62d5fe275ea0e-4"></a>dev      lib      libexec  media    opt      root     sbin     tmp      var
+<pre class="code text"><a name="rest_code_7049e9fdb94c416eb8de945a744bc6b8-1"></a># mount -t squashfs -r /dev/ubiblock0_0 /mnt
+<a name="rest_code_7049e9fdb94c416eb8de945a744bc6b8-2"></a># ls /mnt
+<a name="rest_code_7049e9fdb94c416eb8de945a744bc6b8-3"></a>bin      etc      lib32    linuxrc  mnt      proc     run      sys      usr
+<a name="rest_code_7049e9fdb94c416eb8de945a744bc6b8-4"></a>dev      lib      libexec  media    opt      root     sbin     tmp      var
 </pre>
 <p>It is successful. This confirms that having UBI volume on top of SquashFS solves the bad block handling issue.</p>
 <p>Using <em>nandsim</em> gives me the confident that my root file system will work on the real NAND of exact same
@@ -291,23 +291,23 @@ to <em>mtd1</em>, not just erasing only portion that fits the size of the file.<
 not worry whether that partition has any bad block in it or not knowing that
 my UBI wrapped rootfs will work provided that the number of bad blocks is not excessively large such that it
 leaves no room for UBI to relocate/manage those bad blocks.</p>
-<pre class="code text"><a name="rest_code_64b17ebba27a4558958fef141209ad87-1"></a>chosen {
-<a name="rest_code_64b17ebba27a4558958fef141209ad87-2"></a> bootargs-append=" rootfstype=squashfs ubi.mtd=1,2048 root=/dev/ubiblock0_0 rootwait ro ";
-<a name="rest_code_64b17ebba27a4558958fef141209ad87-3"></a> };
-<a name="rest_code_64b17ebba27a4558958fef141209ad87-4"></a>
-<a name="rest_code_64b17ebba27a4558958fef141209ad87-5"></a> /* partition can be defined in dts some where also*/
-<a name="rest_code_64b17ebba27a4558958fef141209ad87-6"></a> ..
-<a name="rest_code_64b17ebba27a4558958fef141209ad87-7"></a> partition@0 {
-<a name="rest_code_64b17ebba27a4558958fef141209ad87-8"></a>   label = "kernel";
-<a name="rest_code_64b17ebba27a4558958fef141209ad87-9"></a>   reg = &lt;0 0x300000&gt;;
-<a name="rest_code_64b17ebba27a4558958fef141209ad87-10"></a>   read-only;
-<a name="rest_code_64b17ebba27a4558958fef141209ad87-11"></a> };
-<a name="rest_code_64b17ebba27a4558958fef141209ad87-12"></a> partition@1 {
-<a name="rest_code_64b17ebba27a4558958fef141209ad87-13"></a>   label = "rootfs";
-<a name="rest_code_64b17ebba27a4558958fef141209ad87-14"></a>   reg = &lt; 0x3000000 0x2000000&gt;;
-<a name="rest_code_64b17ebba27a4558958fef141209ad87-15"></a>   red-only;
-<a name="rest_code_64b17ebba27a4558958fef141209ad87-16"></a> };
-<a name="rest_code_64b17ebba27a4558958fef141209ad87-17"></a> ...
+<pre class="code text"><a name="rest_code_b86e3706772641d19174451e44604351-1"></a>chosen {
+<a name="rest_code_b86e3706772641d19174451e44604351-2"></a> bootargs-append=" rootfstype=squashfs ubi.mtd=1,2048 root=/dev/ubiblock0_0 rootwait ro ";
+<a name="rest_code_b86e3706772641d19174451e44604351-3"></a> };
+<a name="rest_code_b86e3706772641d19174451e44604351-4"></a>
+<a name="rest_code_b86e3706772641d19174451e44604351-5"></a> /* partition can be defined in dts some where also*/
+<a name="rest_code_b86e3706772641d19174451e44604351-6"></a> ..
+<a name="rest_code_b86e3706772641d19174451e44604351-7"></a> partition@0 {
+<a name="rest_code_b86e3706772641d19174451e44604351-8"></a>   label = "kernel";
+<a name="rest_code_b86e3706772641d19174451e44604351-9"></a>   reg = &lt;0 0x300000&gt;;
+<a name="rest_code_b86e3706772641d19174451e44604351-10"></a>   read-only;
+<a name="rest_code_b86e3706772641d19174451e44604351-11"></a> };
+<a name="rest_code_b86e3706772641d19174451e44604351-12"></a> partition@1 {
+<a name="rest_code_b86e3706772641d19174451e44604351-13"></a>   label = "rootfs";
+<a name="rest_code_b86e3706772641d19174451e44604351-14"></a>   reg = &lt; 0x3000000 0x2000000&gt;;
+<a name="rest_code_b86e3706772641d19174451e44604351-15"></a>   red-only;
+<a name="rest_code_b86e3706772641d19174451e44604351-16"></a> };
+<a name="rest_code_b86e3706772641d19174451e44604351-17"></a> ...
 </pre>
 <p>If it is too much to deal with dts file, the boot argument can also be passed to Linux by the bootloader, u-boot.</p>
 </div>

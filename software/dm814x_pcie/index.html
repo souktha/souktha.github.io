@@ -118,13 +118,13 @@ was using it. Since I will be using it, this function need to be enable to confi
 (section 3 and 19.2.1 of [<a class="reference internal" href="#id1">1</a>]). The registers to be configured are PLLCFG0 to PLLCFG4 of the PCIe control
 module (base offset is 4814_0000). I made some minor change for the board I am using, enabling MEAS
 and enabling latch (50%).</p>
-<pre class="code c"><a name="rest_code_90162ac5c0d148f3b71ab12877839123-1"></a><span class="k">static</span> <span class="kt">void</span> <span class="nf">pcie_pll_config</span><span class="p">()</span>
-<a name="rest_code_90162ac5c0d148f3b71ab12877839123-2"></a><span class="p">{</span>
-<a name="rest_code_90162ac5c0d148f3b71ab12877839123-3"></a>        <span class="p">..</span>
-<a name="rest_code_90162ac5c0d148f3b71ab12877839123-4"></a>        <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x70007017</span><span class="p">,</span> <span class="n">PCIE_PLLCFG0</span><span class="p">);</span> <span class="c1">//per 19.3.1.1.1 sprugz8b.pdf manual.</span>
-<a name="rest_code_90162ac5c0d148f3b71ab12877839123-5"></a>        <span class="cm">/*wait for ADPLL lock*/</span>
-<a name="rest_code_90162ac5c0d148f3b71ab12877839123-6"></a>        <span class="p">..</span>
-<a name="rest_code_90162ac5c0d148f3b71ab12877839123-7"></a><span class="p">}</span>
+<pre class="code c"><a name="rest_code_0d27f599afea46a2abcf7cc814400081-1"></a><span class="k">static</span> <span class="kt">void</span> <span class="nf">pcie_pll_config</span><span class="p">()</span>
+<a name="rest_code_0d27f599afea46a2abcf7cc814400081-2"></a><span class="p">{</span>
+<a name="rest_code_0d27f599afea46a2abcf7cc814400081-3"></a>        <span class="p">..</span>
+<a name="rest_code_0d27f599afea46a2abcf7cc814400081-4"></a>        <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x70007017</span><span class="p">,</span> <span class="n">PCIE_PLLCFG0</span><span class="p">);</span> <span class="c1">//per 19.3.1.1.1 sprugz8b.pdf manual.</span>
+<a name="rest_code_0d27f599afea46a2abcf7cc814400081-5"></a>        <span class="cm">/*wait for ADPLL lock*/</span>
+<a name="rest_code_0d27f599afea46a2abcf7cc814400081-6"></a>        <span class="p">..</span>
+<a name="rest_code_0d27f599afea46a2abcf7cc814400081-7"></a><span class="p">}</span>
 </pre>
 <p>at the end of <em>pcie_pll_config()</em>, wait for PLL to phase-lock by polling PLLSTATUS bit 1. Also a call to the function should
 be made in <em>prcm_init()</em>. This portion of code is only to
@@ -143,292 +143,292 @@ set-up. Because the PCIe module of this SoC is single lane (x1), the PCIe is con
 is initiated. When link training is completed, the PCIe is configured as bridge device with outbound transaction
 set for base address 2000_0000 (refers to 2.12.1 of [<a class="reference internal" href="#id4">4</a>]). Some part of the code,</p>
 <table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-1">  1</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-2">  2</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-3">  3</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-4">  4</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-5">  5</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-6">  6</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-7">  7</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-8">  8</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-9">  9</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-10"> 10</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-11"> 11</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-12"> 12</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-13"> 13</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-14"> 14</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-15"> 15</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-16"> 16</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-17"> 17</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-18"> 18</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-19"> 19</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-20"> 20</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-21"> 21</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-22"> 22</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-23"> 23</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-24"> 24</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-25"> 25</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-26"> 26</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-27"> 27</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-28"> 28</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-29"> 29</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-30"> 30</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-31"> 31</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-32"> 32</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-33"> 33</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-34"> 34</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-35"> 35</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-36"> 36</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-37"> 37</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-38"> 38</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-39"> 39</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-40"> 40</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-41"> 41</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-42"> 42</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-43"> 43</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-44"> 44</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-45"> 45</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-46"> 46</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-47"> 47</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-48"> 48</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-49"> 49</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-50"> 50</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-51"> 51</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-52"> 52</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-53"> 53</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-54"> 54</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-55"> 55</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-56"> 56</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-57"> 57</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-58"> 58</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-59"> 59</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-60"> 60</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-61"> 61</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-62"> 62</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-63"> 63</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-64"> 64</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-65"> 65</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-66"> 66</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-67"> 67</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-68"> 68</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-69"> 69</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-70"> 70</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-71"> 71</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-72"> 72</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-73"> 73</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-74"> 74</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-75"> 75</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-76"> 76</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-77"> 77</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-78"> 78</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-79"> 79</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-80"> 80</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-81"> 81</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-82"> 82</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-83"> 83</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-84"> 84</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-85"> 85</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-86"> 86</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-87"> 87</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-88"> 88</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-89"> 89</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-90"> 90</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-91"> 91</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-92"> 92</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-93"> 93</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-94"> 94</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-95"> 95</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-96"> 96</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-97"> 97</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-98"> 98</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-99"> 99</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-100">100</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-101">101</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-102">102</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-103">103</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-104">104</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-105">105</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-106">106</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-107">107</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-108">108</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-109">109</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-110">110</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-111">111</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-112">112</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-113">113</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-114">114</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-115">115</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-116">116</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-117">117</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-118">118</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-119">119</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-120">120</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-121">121</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-122">122</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-123">123</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-124">124</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-125">125</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-126">126</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-127">127</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-128">128</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-129">129</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-130">130</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-131">131</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-132">132</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-133">133</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-134">134</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-135">135</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-136">136</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-137">137</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-138">138</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-139">139</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-140">140</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-141">141</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-142">142</a>
-<a href="#rest_code_91472d5c441e4456a15d0f3f3c93f4ad-143">143</a></pre></div></td>
-<td class="code"><pre class="code c"><a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-1"></a>       <span class="cm">/*Various regions in PCIESS address space, sprugz8d document section 19.2.4.1, fig 19.2*/</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-2"></a>       <span class="p">..</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-3"></a>       <span class="cp">#define SPACE0_LOCAL_CFG_OFFSET         0x1000  </span><span class="cm">/*local config space*/</span><span class="cp"></span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-4"></a>       <span class="cp">#define SPACE0_REMOTE_CFG_OFFSET        0x2000  </span><span class="cm">/*remote config space*/</span><span class="cp"></span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-5"></a>       <span class="cp">#define SPACE0_IO_OFFSET                0x3000  </span><span class="cm">/*remote device IO space*/</span><span class="cp"></span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-6"></a>       <span class="cp">#define PCIE_CONFIG_BASE                0x51000000</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-7"></a>       <span class="p">..</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-8"></a>       <span class="p">..</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-9"></a>       <span class="k">static</span> <span class="kt">void</span> <span class="n">set_outbound_trans</span><span class="p">(</span><span class="n">u32</span> <span class="n">start</span><span class="p">,</span> <span class="n">u32</span> <span class="n">end</span><span class="p">)</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-10"></a>       <span class="p">{</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-11"></a>       <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">tr_size</span><span class="p">;</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-12"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-13"></a>       <span class="cm">/*Set outbound translation size per window division*/</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-14"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">CFG_PCIM_WIN_SZ_IDX</span> <span class="o">&amp;</span> <span class="mh">0x7</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">OB_SIZE</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-15"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-16"></a>       <span class="n">tr_size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">CFG_PCIM_WIN_SZ_IDX</span> <span class="o">&amp;</span> <span class="mh">0x7</span><span class="p">))</span> <span class="o">*</span> <span class="n">SZ_1M</span><span class="p">;</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-17"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-18"></a>       <span class="cm">/*Direct 1:1 mapping of RC &lt;-&gt; PCI memory space*/</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-19"></a>       <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">CFG_PCIM_WIN_CNT</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">start</span> <span class="o">&lt;</span> <span class="n">end</span><span class="p">);</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-20"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="n">start</span> <span class="o">|</span> <span class="mi">1</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">OB_OFFSET_INDEX</span><span class="p">(</span><span class="n">i</span><span class="p">));</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-21"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">OB_OFFSET_HI</span><span class="p">(</span><span class="n">i</span><span class="p">));</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-22"></a>               <span class="n">start</span> <span class="o">+=</span> <span class="n">tr_size</span><span class="p">;</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-23"></a>       <span class="p">}</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-24"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-25"></a>       <span class="cm">/*Enable OB translation*/</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-26"></a>        <span class="n">__raw_writel</span><span class="p">(</span><span class="n">OB_XLAT_EN_VAL</span> <span class="o">|</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">CMD_STATUS</span><span class="p">),</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-27"></a>                        <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">CMD_STATUS</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-28"></a>       <span class="p">}</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-29"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-30"></a>       <span class="p">..</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-31"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-32"></a>       <span class="k">static</span> <span class="kt">void</span> <span class="n">set_inbound_trans</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-33"></a>       <span class="p">{</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-34"></a>       <span class="cm">/*Configure and set up BAR0*/</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-35"></a>       <span class="n">set_dbi_mode</span><span class="p">();</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-36"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-37"></a>       <span class="cm">/*Enable BAR0*/</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-38"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-39"></a>                       <span class="n">PCI_BASE_ADDRESS_0</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-40"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-41"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">SZ_4K</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-42"></a>                       <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_BASE_ADDRESS_0</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-43"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-44"></a>       <span class="n">clear_dbi_mode</span><span class="p">();</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-45"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-46"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">reg_phys</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-47"></a>                               <span class="o">+</span> <span class="n">PCI_BASE_ADDRESS_0</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-48"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-49"></a>       <span class="cm">/*Configure BAR1 only if inbound window is specified*/</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-50"></a>       <span class="k">if</span> <span class="p">(</span><span class="n">ram_base</span> <span class="o">!=</span> <span class="n">ram_end</span><span class="p">)</span> <span class="p">{</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-51"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="n">ram_base</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">IB_START0_LO</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-52"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">IB_START0_HI</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-53"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">IB_BAR0</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-54"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="n">ram_base</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">IB_OFFSET0</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-55"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-56"></a>               <span class="n">set_dbi_mode</span><span class="p">();</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-57"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-58"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-59"></a>                               <span class="n">PCI_BASE_ADDRESS_1</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-60"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-61"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="n">ram_end</span> <span class="o">-</span> <span class="n">ram_base</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-62"></a>                       <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_BASE_ADDRESS_1</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-63"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-64"></a>               <span class="n">clear_dbi_mode</span><span class="p">();</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-65"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-66"></a>               <span class="cm">/*Set BAR1 attributes and value in config space*/</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-67"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="n">ram_base</span> <span class="o">|</span> <span class="n">PCI_BASE_ADDRESS_MEM_PREFETCH</span><span class="p">,</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-68"></a>                               <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-69"></a>                               <span class="o">+</span> <span class="n">PCI_BASE_ADDRESS_1</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-70"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-71"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="n">IB_XLAT_EN_VAL</span> <span class="o">|</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-72"></a>                                       <span class="n">CMD_STATUS</span><span class="p">),</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">CMD_STATUS</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-73"></a>               <span class="p">}</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-74"></a>       <span class="p">}</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-75"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-76"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-77"></a>       <span class="k">static</span> <span class="kt">void</span> <span class="n">omap_pcie_setup</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-78"></a>       <span class="p">{</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-79"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-80"></a>         <span class="n">u32</span> <span class="n">val</span><span class="p">;</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-81"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-82"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">CTRL_BASE</span> <span class="o">+</span> <span class="mh">0x480</span><span class="p">);</span> <span class="cm">/*RC mode*/</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-83"></a>       <span class="cm">/*bring PCIE out of reset sequence (PRM_DEFAULT)*/</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-84"></a>       <span class="n">__raw_writel</span><span class="p">(</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0xb10</span><span class="p">)</span> <span class="o">|</span> <span class="mh">0x80</span><span class="p">,</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0xb10</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-85"></a>       <span class="n">udelay</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-86"></a>       <span class="n">__raw_writel</span><span class="p">(</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0xb10</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">~</span><span class="mh">0x80</span><span class="p">,</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0xb10</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-87"></a>       <span class="n">delay</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-88"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">__raw_readl</span><span class="p">(</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0xb14</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x80</span><span class="p">,</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0xb14</span><span class="p">);</span> <span class="c1">//clear this bit</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-89"></a>       <span class="n">delay</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-90"></a>       <span class="cm">/*enable PCIE clock (CM_DEFAULT)*/</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-91"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0x578</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-92"></a>       <span class="n">udelay</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-93"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-94"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0x510</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-95"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0x578</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-96"></a>       <span class="k">while</span> <span class="p">(</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0x578</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x70000</span> <span class="p">)</span><span class="n">delay</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-97"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">DIR_SPD</span> <span class="o">|</span> <span class="n">__raw_readl</span><span class="p">(</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-98"></a>                               <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PL_GEN2</span><span class="p">),</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-99"></a>                       <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PL_GEN2</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-100"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-101"></a>       <span class="cm">/*set x1*/</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-102"></a>       <span class="n">val</span> <span class="o">=</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-103"></a>                       <span class="n">LINK_CAP</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-104"></a>       <span class="n">val</span> <span class="o">=</span> <span class="p">(</span><span class="n">val</span> <span class="o">&amp;</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x3f</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-105"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-106"></a>                       <span class="n">LINK_CAP</span><span class="p">);</span> <span class="cm">/*not to confuse, this is PCIESS local config reg, not PCIe config reg which is RO*/</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-107"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-108"></a>       <span class="n">val</span> <span class="o">=</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PL_GEN2</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-109"></a>       <span class="n">val</span> <span class="o">=</span> <span class="p">(</span><span class="n">val</span> <span class="o">&amp;</span> <span class="o">~</span><span class="p">(</span><span class="mh">0xff</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-110"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PL_GEN2</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-111"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-112"></a>       <span class="n">val</span> <span class="o">=</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-113"></a>                       <span class="n">PL_LINK_CTRL</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-114"></a>       <span class="n">val</span> <span class="o">=</span> <span class="p">(</span><span class="n">val</span> <span class="o">&amp;</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x3F</span> <span class="o">&lt;&lt;</span> <span class="mi">16</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">16</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-115"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-116"></a>                               <span class="n">PL_LINK_CTRL</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-117"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-118"></a>       <span class="cm">/*Initiate Link Trainin*/</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-119"></a>        <span class="n">__raw_writel</span><span class="p">(</span><span class="n">LTSSM_EN_VAL</span> <span class="o">|</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">CMD_STATUS</span><span class="p">),</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-120"></a>                        <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">CMD_STATUS</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-121"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-122"></a>       <span class="n">udelay</span><span class="p">(</span><span class="mi">100000</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-123"></a>       <span class="cm">/*set up as bridge*/</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-124"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-125"></a>       <span class="n">__raw_writew</span><span class="p">(</span><span class="n">PCI_CLASS_BRIDGE_PCI</span><span class="p">,</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-126"></a>                       <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_CLASS_DEVICE</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-127"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-128"></a>       <span class="n">disable_bars</span><span class="p">();</span> <span class="c1">//for now</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-129"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-130"></a>       <span class="n">set_outbound_trans</span><span class="p">(</span><span class="mh">0x20000000</span><span class="p">,</span> <span class="mh">0x30000000</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span> <span class="c1">//non-prefetch mem area</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-131"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-132"></a>       <span class="cm">/*Enable 32-bit IO addressing support*/</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-133"></a>       <span class="n">__raw_writew</span><span class="p">(</span><span class="n">PCI_IO_RANGE_TYPE_32</span> <span class="o">|</span> <span class="p">(</span><span class="n">PCI_IO_RANGE_TYPE_32</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">),</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-134"></a>                       <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_IO_BASE</span><span class="p">);</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-135"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-136"></a>       <span class="cm">/*not plan to use interrupt*/</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-137"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0xf</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">IRQ_ENABLE_CLR</span><span class="p">);</span> <span class="c1">//not enable irq</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-138"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-139"></a>       <span class="cm">/*skip MSI interrupt chain setup*/</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-140"></a>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-141"></a>       <span class="n">get_and_clear_err</span><span class="p">();</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-142"></a>       <span class="p">}</span>
-<a name="rest_code_91472d5c441e4456a15d0f3f3c93f4ad-143"></a>       <span class="p">..</span>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_d598210e92054830810c5a63137e7fe4-1">  1</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-2">  2</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-3">  3</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-4">  4</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-5">  5</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-6">  6</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-7">  7</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-8">  8</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-9">  9</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-10"> 10</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-11"> 11</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-12"> 12</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-13"> 13</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-14"> 14</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-15"> 15</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-16"> 16</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-17"> 17</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-18"> 18</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-19"> 19</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-20"> 20</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-21"> 21</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-22"> 22</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-23"> 23</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-24"> 24</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-25"> 25</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-26"> 26</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-27"> 27</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-28"> 28</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-29"> 29</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-30"> 30</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-31"> 31</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-32"> 32</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-33"> 33</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-34"> 34</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-35"> 35</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-36"> 36</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-37"> 37</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-38"> 38</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-39"> 39</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-40"> 40</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-41"> 41</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-42"> 42</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-43"> 43</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-44"> 44</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-45"> 45</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-46"> 46</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-47"> 47</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-48"> 48</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-49"> 49</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-50"> 50</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-51"> 51</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-52"> 52</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-53"> 53</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-54"> 54</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-55"> 55</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-56"> 56</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-57"> 57</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-58"> 58</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-59"> 59</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-60"> 60</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-61"> 61</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-62"> 62</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-63"> 63</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-64"> 64</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-65"> 65</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-66"> 66</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-67"> 67</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-68"> 68</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-69"> 69</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-70"> 70</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-71"> 71</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-72"> 72</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-73"> 73</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-74"> 74</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-75"> 75</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-76"> 76</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-77"> 77</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-78"> 78</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-79"> 79</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-80"> 80</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-81"> 81</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-82"> 82</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-83"> 83</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-84"> 84</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-85"> 85</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-86"> 86</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-87"> 87</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-88"> 88</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-89"> 89</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-90"> 90</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-91"> 91</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-92"> 92</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-93"> 93</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-94"> 94</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-95"> 95</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-96"> 96</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-97"> 97</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-98"> 98</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-99"> 99</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-100">100</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-101">101</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-102">102</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-103">103</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-104">104</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-105">105</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-106">106</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-107">107</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-108">108</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-109">109</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-110">110</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-111">111</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-112">112</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-113">113</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-114">114</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-115">115</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-116">116</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-117">117</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-118">118</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-119">119</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-120">120</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-121">121</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-122">122</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-123">123</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-124">124</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-125">125</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-126">126</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-127">127</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-128">128</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-129">129</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-130">130</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-131">131</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-132">132</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-133">133</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-134">134</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-135">135</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-136">136</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-137">137</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-138">138</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-139">139</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-140">140</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-141">141</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-142">142</a>
+<a href="#rest_code_d598210e92054830810c5a63137e7fe4-143">143</a></pre></div></td>
+<td class="code"><pre class="code c"><a name="rest_code_d598210e92054830810c5a63137e7fe4-1"></a>       <span class="cm">/*Various regions in PCIESS address space, sprugz8d document section 19.2.4.1, fig 19.2*/</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-2"></a>       <span class="p">..</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-3"></a>       <span class="cp">#define SPACE0_LOCAL_CFG_OFFSET         0x1000  </span><span class="cm">/*local config space*/</span><span class="cp"></span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-4"></a>       <span class="cp">#define SPACE0_REMOTE_CFG_OFFSET        0x2000  </span><span class="cm">/*remote config space*/</span><span class="cp"></span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-5"></a>       <span class="cp">#define SPACE0_IO_OFFSET                0x3000  </span><span class="cm">/*remote device IO space*/</span><span class="cp"></span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-6"></a>       <span class="cp">#define PCIE_CONFIG_BASE                0x51000000</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-7"></a>       <span class="p">..</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-8"></a>       <span class="p">..</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-9"></a>       <span class="k">static</span> <span class="kt">void</span> <span class="n">set_outbound_trans</span><span class="p">(</span><span class="n">u32</span> <span class="n">start</span><span class="p">,</span> <span class="n">u32</span> <span class="n">end</span><span class="p">)</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-10"></a>       <span class="p">{</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-11"></a>       <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">tr_size</span><span class="p">;</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-12"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-13"></a>       <span class="cm">/*Set outbound translation size per window division*/</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-14"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">CFG_PCIM_WIN_SZ_IDX</span> <span class="o">&amp;</span> <span class="mh">0x7</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">OB_SIZE</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-15"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-16"></a>       <span class="n">tr_size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">CFG_PCIM_WIN_SZ_IDX</span> <span class="o">&amp;</span> <span class="mh">0x7</span><span class="p">))</span> <span class="o">*</span> <span class="n">SZ_1M</span><span class="p">;</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-17"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-18"></a>       <span class="cm">/*Direct 1:1 mapping of RC &lt;-&gt; PCI memory space*/</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-19"></a>       <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">CFG_PCIM_WIN_CNT</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">start</span> <span class="o">&lt;</span> <span class="n">end</span><span class="p">);</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-20"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="n">start</span> <span class="o">|</span> <span class="mi">1</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">OB_OFFSET_INDEX</span><span class="p">(</span><span class="n">i</span><span class="p">));</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-21"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">OB_OFFSET_HI</span><span class="p">(</span><span class="n">i</span><span class="p">));</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-22"></a>               <span class="n">start</span> <span class="o">+=</span> <span class="n">tr_size</span><span class="p">;</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-23"></a>       <span class="p">}</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-24"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-25"></a>       <span class="cm">/*Enable OB translation*/</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-26"></a>        <span class="n">__raw_writel</span><span class="p">(</span><span class="n">OB_XLAT_EN_VAL</span> <span class="o">|</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">CMD_STATUS</span><span class="p">),</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-27"></a>                        <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">CMD_STATUS</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-28"></a>       <span class="p">}</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-29"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-30"></a>       <span class="p">..</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-31"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-32"></a>       <span class="k">static</span> <span class="kt">void</span> <span class="n">set_inbound_trans</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-33"></a>       <span class="p">{</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-34"></a>       <span class="cm">/*Configure and set up BAR0*/</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-35"></a>       <span class="n">set_dbi_mode</span><span class="p">();</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-36"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-37"></a>       <span class="cm">/*Enable BAR0*/</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-38"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-39"></a>                       <span class="n">PCI_BASE_ADDRESS_0</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-40"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-41"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">SZ_4K</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-42"></a>                       <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_BASE_ADDRESS_0</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-43"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-44"></a>       <span class="n">clear_dbi_mode</span><span class="p">();</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-45"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-46"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">reg_phys</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-47"></a>                               <span class="o">+</span> <span class="n">PCI_BASE_ADDRESS_0</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-48"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-49"></a>       <span class="cm">/*Configure BAR1 only if inbound window is specified*/</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-50"></a>       <span class="k">if</span> <span class="p">(</span><span class="n">ram_base</span> <span class="o">!=</span> <span class="n">ram_end</span><span class="p">)</span> <span class="p">{</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-51"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="n">ram_base</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">IB_START0_LO</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-52"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">IB_START0_HI</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-53"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">IB_BAR0</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-54"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="n">ram_base</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">IB_OFFSET0</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-55"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-56"></a>               <span class="n">set_dbi_mode</span><span class="p">();</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-57"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-58"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-59"></a>                               <span class="n">PCI_BASE_ADDRESS_1</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-60"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-61"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="n">ram_end</span> <span class="o">-</span> <span class="n">ram_base</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-62"></a>                       <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_BASE_ADDRESS_1</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-63"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-64"></a>               <span class="n">clear_dbi_mode</span><span class="p">();</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-65"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-66"></a>               <span class="cm">/*Set BAR1 attributes and value in config space*/</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-67"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="n">ram_base</span> <span class="o">|</span> <span class="n">PCI_BASE_ADDRESS_MEM_PREFETCH</span><span class="p">,</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-68"></a>                               <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-69"></a>                               <span class="o">+</span> <span class="n">PCI_BASE_ADDRESS_1</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-70"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-71"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="n">IB_XLAT_EN_VAL</span> <span class="o">|</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-72"></a>                                       <span class="n">CMD_STATUS</span><span class="p">),</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">CMD_STATUS</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-73"></a>               <span class="p">}</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-74"></a>       <span class="p">}</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-75"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-76"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-77"></a>       <span class="k">static</span> <span class="kt">void</span> <span class="n">omap_pcie_setup</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-78"></a>       <span class="p">{</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-79"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-80"></a>         <span class="n">u32</span> <span class="n">val</span><span class="p">;</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-81"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-82"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">CTRL_BASE</span> <span class="o">+</span> <span class="mh">0x480</span><span class="p">);</span> <span class="cm">/*RC mode*/</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-83"></a>       <span class="cm">/*bring PCIE out of reset sequence (PRM_DEFAULT)*/</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-84"></a>       <span class="n">__raw_writel</span><span class="p">(</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0xb10</span><span class="p">)</span> <span class="o">|</span> <span class="mh">0x80</span><span class="p">,</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0xb10</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-85"></a>       <span class="n">udelay</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-86"></a>       <span class="n">__raw_writel</span><span class="p">(</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0xb10</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">~</span><span class="mh">0x80</span><span class="p">,</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0xb10</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-87"></a>       <span class="n">delay</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-88"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">__raw_readl</span><span class="p">(</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0xb14</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x80</span><span class="p">,</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0xb14</span><span class="p">);</span> <span class="c1">//clear this bit</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-89"></a>       <span class="n">delay</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-90"></a>       <span class="cm">/*enable PCIE clock (CM_DEFAULT)*/</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-91"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0x578</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-92"></a>       <span class="n">udelay</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-93"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-94"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0x510</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-95"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0x578</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-96"></a>       <span class="k">while</span> <span class="p">(</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0x578</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x70000</span> <span class="p">)</span><span class="n">delay</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-97"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">DIR_SPD</span> <span class="o">|</span> <span class="n">__raw_readl</span><span class="p">(</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-98"></a>                               <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PL_GEN2</span><span class="p">),</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-99"></a>                       <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PL_GEN2</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-100"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-101"></a>       <span class="cm">/*set x1*/</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-102"></a>       <span class="n">val</span> <span class="o">=</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-103"></a>                       <span class="n">LINK_CAP</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-104"></a>       <span class="n">val</span> <span class="o">=</span> <span class="p">(</span><span class="n">val</span> <span class="o">&amp;</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x3f</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-105"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-106"></a>                       <span class="n">LINK_CAP</span><span class="p">);</span> <span class="cm">/*not to confuse, this is PCIESS local config reg, not PCIe config reg which is RO*/</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-107"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-108"></a>       <span class="n">val</span> <span class="o">=</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PL_GEN2</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-109"></a>       <span class="n">val</span> <span class="o">=</span> <span class="p">(</span><span class="n">val</span> <span class="o">&amp;</span> <span class="o">~</span><span class="p">(</span><span class="mh">0xff</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-110"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PL_GEN2</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-111"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-112"></a>       <span class="n">val</span> <span class="o">=</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-113"></a>                       <span class="n">PL_LINK_CTRL</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-114"></a>       <span class="n">val</span> <span class="o">=</span> <span class="p">(</span><span class="n">val</span> <span class="o">&amp;</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x3F</span> <span class="o">&lt;&lt;</span> <span class="mi">16</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">16</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-115"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-116"></a>                               <span class="n">PL_LINK_CTRL</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-117"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-118"></a>       <span class="cm">/*Initiate Link Trainin*/</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-119"></a>        <span class="n">__raw_writel</span><span class="p">(</span><span class="n">LTSSM_EN_VAL</span> <span class="o">|</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">CMD_STATUS</span><span class="p">),</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-120"></a>                        <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">CMD_STATUS</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-121"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-122"></a>       <span class="n">udelay</span><span class="p">(</span><span class="mi">100000</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-123"></a>       <span class="cm">/*set up as bridge*/</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-124"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-125"></a>       <span class="n">__raw_writew</span><span class="p">(</span><span class="n">PCI_CLASS_BRIDGE_PCI</span><span class="p">,</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-126"></a>                       <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_CLASS_DEVICE</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-127"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-128"></a>       <span class="n">disable_bars</span><span class="p">();</span> <span class="c1">//for now</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-129"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-130"></a>       <span class="n">set_outbound_trans</span><span class="p">(</span><span class="mh">0x20000000</span><span class="p">,</span> <span class="mh">0x30000000</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span> <span class="c1">//non-prefetch mem area</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-131"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-132"></a>       <span class="cm">/*Enable 32-bit IO addressing support*/</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-133"></a>       <span class="n">__raw_writew</span><span class="p">(</span><span class="n">PCI_IO_RANGE_TYPE_32</span> <span class="o">|</span> <span class="p">(</span><span class="n">PCI_IO_RANGE_TYPE_32</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">),</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-134"></a>                       <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_IO_BASE</span><span class="p">);</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-135"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-136"></a>       <span class="cm">/*not plan to use interrupt*/</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-137"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0xf</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">IRQ_ENABLE_CLR</span><span class="p">);</span> <span class="c1">//not enable irq</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-138"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-139"></a>       <span class="cm">/*skip MSI interrupt chain setup*/</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-140"></a>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-141"></a>       <span class="n">get_and_clear_err</span><span class="p">();</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-142"></a>       <span class="p">}</span>
+<a name="rest_code_d598210e92054830810c5a63137e7fe4-143"></a>       <span class="p">..</span>
 </pre></td>
 </tr></table>
 <p>The mapped BAR, 2000_0000 is the 256MB address space set aside for PCIe device's use [<a class="reference internal" href="#id4">4</a>].
@@ -437,192 +437,192 @@ This is corresponded to the  address of the downstream PCIe video chip. Accessin
 includes registering PCI device, its respective read/write configuration space handlers etc..
 Post enumeration is to set up the inbound transaction address space which is the local system memory space of the system.</p>
 <table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-1"> 1</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-2"> 2</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-3"> 3</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-4"> 4</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-5"> 5</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-6"> 6</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-7"> 7</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-8"> 8</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-9"> 9</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-10">10</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-11">11</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-12">12</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-13">13</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-14">14</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-15">15</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-16">16</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-17">17</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-18">18</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-19">19</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-20">20</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-21">21</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-22">22</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-23">23</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-24">24</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-25">25</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-26">26</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-27">27</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-28">28</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-29">29</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-30">30</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-31">31</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-32">32</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-33">33</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-34">34</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-35">35</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-36">36</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-37">37</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-38">38</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-39">39</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-40">40</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-41">41</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-42">42</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-43">43</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-44">44</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-45">45</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-46">46</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-47">47</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-48">48</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-49">49</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-50">50</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-51">51</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-52">52</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-53">53</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-54">54</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-55">55</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-56">56</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-57">57</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-58">58</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-59">59</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-60">60</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-61">61</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-62">62</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-63">63</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-64">64</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-65">65</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-66">66</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-67">67</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-68">68</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-69">69</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-70">70</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-71">71</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-72">72</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-73">73</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-74">74</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-75">75</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-76">76</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-77">77</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-78">78</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-79">79</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-80">80</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-81">81</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-82">82</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-83">83</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-84">84</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-85">85</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-86">86</a>
-<a href="#rest_code_9ec7f815d0814ac8ac115e5bac6988b5-87">87</a></pre></div></td>
-<td class="code"><pre class="code c"><a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-1"></a>       <span class="k">static</span> <span class="k">struct</span> <span class="n">pci_config_table</span> <span class="n">pci_redray_config_table</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-2"></a>       <span class="cm">/*104c,8888 - TI host bridge*/</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-3"></a>               <span class="p">{</span><span class="mh">0x104c</span><span class="p">,</span> <span class="mh">0x8888</span><span class="p">,</span> <span class="n">PCI_CLASS_BRIDGE_HOST</span><span class="p">,</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-4"></a>                <span class="n">PCI_ANY_ID</span><span class="p">,</span> <span class="n">PCI_ANY_ID</span><span class="p">,</span> <span class="n">PCI_ANY_ID</span><span class="p">,</span> <span class="n">pci_setup_ti_bridge</span><span class="p">},</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-5"></a>               <span class="p">{</span><span class="mi">0</span><span class="n">x</span><span class="p">...,</span> <span class="mi">0</span><span class="n">x</span><span class="p">...,</span> <span class="mh">0x11</span><span class="p">,</span> <span class="cm">/*note: omit proprieatary info here*/</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-6"></a>                <span class="n">PCI_ANY_ID</span><span class="p">,</span> <span class="n">PCI_ANY_ID</span><span class="p">,</span> <span class="n">PCI_ANY_ID</span><span class="p">,</span> <span class="n">pci_setup_vp</span><span class="p">},</span> <span class="cm">/*pci_setup_vp is to set up this proprietary video processor chip*/</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-7"></a>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-8"></a>       <span class="p">{</span> <span class="p">}</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-9"></a>       <span class="p">};</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-10"></a>       <span class="p">..</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-11"></a>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-12"></a>       <span class="k">struct</span> <span class="n">pci_controller</span> <span class="n">hose</span> <span class="o">=</span> <span class="p">{</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-13"></a>               <span class="nl">config_table</span><span class="p">:</span> <span class="n">pci_vp_config_table</span><span class="p">,</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-14"></a>       <span class="p">};</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-15"></a>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-16"></a>       <span class="p">..</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-17"></a>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-18"></a>       <span class="kt">void</span> <span class="n">omap_pci_init</span><span class="p">(</span><span class="k">struct</span> <span class="n">pci_controller</span><span class="o">*</span> <span class="n">hose</span><span class="p">)</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-19"></a>       <span class="p">{</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-20"></a>       <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">val</span><span class="p">,</span><span class="n">offset</span><span class="p">;</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-21"></a>       <span class="n">pci_dev_t</span> <span class="n">dev</span><span class="p">;</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-22"></a>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-23"></a>       <span class="n">omap_pcie_setup</span><span class="p">();</span><span class="c1">//as shown above</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-24"></a>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-25"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">first_busno</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-26"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">last_busno</span> <span class="o">=</span> <span class="mh">0x1f</span><span class="p">;</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-27"></a>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-28"></a>       <span class="cm">/*memory space*/</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-29"></a>       <span class="n">pci_set_region</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">regions</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-30"></a>                       <span class="mh">0x20000000</span><span class="p">,</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-31"></a>                       <span class="mi">0</span><span class="p">,</span> <span class="mh">0x1900000</span><span class="p">,</span> <span class="n">PCI_REGION_MEM</span><span class="p">);</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-32"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">pci_mem</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">regions</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-33"></a>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-34"></a>       <span class="cm">/*PCI memory space*/</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-35"></a>       <span class="n">pci_set_region</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">regions</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-36"></a>                       <span class="mh">0x20b00000</span><span class="p">,</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-37"></a>                       <span class="mi">0</span><span class="p">,</span> <span class="mh">0x100000</span><span class="p">,</span> <span class="n">PCI_REGION_PREFETCH</span><span class="p">);</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-38"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">pci_prefetch</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">regions</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-39"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">pci_io</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-40"></a>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-41"></a>       <span class="cm">/*PCI I/O space*/</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-42"></a>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-43"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">region_count</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-44"></a>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-45"></a>       <span class="n">pci_register_hose</span> <span class="p">(</span><span class="n">hose</span><span class="p">);</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-46"></a>       <span class="n">pci_set_ops</span><span class="p">(</span><span class="n">hose</span><span class="p">,</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-47"></a>                   <span class="n">pci_hose_read_config_byte_via_dword</span><span class="p">,</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-48"></a>                   <span class="n">pci_hose_read_config_word_via_dword</span><span class="p">,</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-49"></a>                   <span class="n">ti81xx_pci_read_config</span><span class="p">,</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-50"></a>                   <span class="n">pci_hose_write_config_byte_via_dword</span><span class="p">,</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-51"></a>                   <span class="n">pci_hose_write_config_word_via_dword</span><span class="p">,</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-52"></a>                   <span class="n">ti81xx_pci_write_config</span> <span class="p">);</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-53"></a>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-54"></a>       <span class="n">pciauto_config_init</span><span class="p">(</span><span class="n">hose</span><span class="p">);</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-55"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">current_busno</span> <span class="o">=</span> <span class="n">hose</span><span class="o">-&gt;</span><span class="n">first_busno</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-56"></a>       <span class="n">dev</span> <span class="o">=</span> <span class="n">PCI_BDF</span><span class="p">(</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">first_busno</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-57"></a>       <span class="n">pciauto_prescan_setup_bridge</span><span class="p">(</span><span class="n">hose</span><span class="p">,</span><span class="n">dev</span><span class="p">,</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">current_busno</span><span class="p">);</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-58"></a>       <span class="n">pciauto_setup_device</span><span class="p">(</span><span class="n">hose</span><span class="p">,</span><span class="n">dev</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">pci_mem</span><span class="p">,</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">pci_prefetch</span><span class="p">,</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">pci_io</span><span class="p">);</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-59"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">last_busno</span> <span class="o">=</span> <span class="n">pci_hose_scan</span><span class="p">(</span><span class="n">hose</span><span class="p">);</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-60"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">last_busno</span> <span class="o">=</span> <span class="n">hose</span><span class="o">-&gt;</span><span class="n">current_busno</span><span class="p">;</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-61"></a>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-62"></a>       <span class="cm">/*fix up*/</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-63"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x20800000</span><span class="p">,</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_REMOTE_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_BASE_ADDRESS_0</span><span class="p">);</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-64"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x20000000</span><span class="p">,</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_REMOTE_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_BASE_ADDRESS_1</span><span class="p">);</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-65"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x010130</span><span class="p">,</span>  <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_REMOTE_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_INTERRUPT_LINE</span><span class="p">);</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-66"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x100546</span><span class="p">,</span>  <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_REMOTE_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_COMMAND</span><span class="p">);</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-67"></a>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-68"></a>       <span class="cm">/*fix up max read request*/</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-69"></a>       <span class="n">offset</span> <span class="o">=</span>  <span class="n">__raw_readl</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_REMOTE_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_CAPABILITY_LIST</span><span class="p">);</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-70"></a>       <span class="n">val</span> <span class="o">=</span>  <span class="n">__raw_readl</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_REMOTE_CFG_OFFSET</span> <span class="o">+</span> <span class="n">offset</span> <span class="o">+</span> <span class="mi">8</span><span class="p">);</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-71"></a>       <span class="n">val</span> <span class="o">=</span> <span class="p">(</span><span class="n">val</span> <span class="o">&amp;</span> <span class="o">~</span><span class="p">(</span><span class="mi">3</span> <span class="o">&lt;&lt;</span> <span class="mi">12</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">12</span><span class="p">);</span> <span class="cm">/*max read requst mask is 256bytes/read*/</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-72"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">val</span><span class="p">,</span>  <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_REMOTE_CFG_OFFSET</span> <span class="o">+</span> <span class="n">offset</span> <span class="o">+</span> <span class="mi">8</span> <span class="p">);</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-73"></a>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-74"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x100147</span><span class="p">,</span>  <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_REMOTE_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_COMMAND</span><span class="p">);</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-75"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x100147</span><span class="p">,</span>  <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_COMMAND</span><span class="p">);</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-76"></a>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-77"></a>       <span class="n">ram_base</span> <span class="o">=</span> <span class="mh">0x80000000</span><span class="p">;</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-78"></a>       <span class="n">ram_end</span> <span class="o">=</span> <span class="n">ram_base</span> <span class="o">+</span> <span class="mh">0x7fffffff</span><span class="p">;</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-79"></a>       <span class="cm">/*Post enumeration fixups*/</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-80"></a>       <span class="n">set_inbound_trans</span><span class="p">();</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-81"></a>       <span class="n">__raw_writew</span><span class="p">(</span><span class="n">__raw_readw</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-82"></a>                               <span class="n">PCI_IO_BASE</span><span class="p">)</span> <span class="o">|</span> <span class="n">PCI_IO_RANGE_TYPE_32</span> <span class="o">|</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-83"></a>                               <span class="p">(</span><span class="n">PCI_IO_RANGE_TYPE_32</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">),</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-84"></a>                               <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-85"></a>                               <span class="n">PCI_IO_BASE</span><span class="p">);</span>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-86"></a>
-<a name="rest_code_9ec7f815d0814ac8ac115e5bac6988b5-87"></a>       <span class="p">}</span>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-1"> 1</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-2"> 2</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-3"> 3</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-4"> 4</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-5"> 5</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-6"> 6</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-7"> 7</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-8"> 8</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-9"> 9</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-10">10</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-11">11</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-12">12</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-13">13</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-14">14</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-15">15</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-16">16</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-17">17</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-18">18</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-19">19</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-20">20</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-21">21</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-22">22</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-23">23</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-24">24</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-25">25</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-26">26</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-27">27</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-28">28</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-29">29</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-30">30</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-31">31</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-32">32</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-33">33</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-34">34</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-35">35</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-36">36</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-37">37</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-38">38</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-39">39</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-40">40</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-41">41</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-42">42</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-43">43</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-44">44</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-45">45</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-46">46</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-47">47</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-48">48</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-49">49</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-50">50</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-51">51</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-52">52</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-53">53</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-54">54</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-55">55</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-56">56</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-57">57</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-58">58</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-59">59</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-60">60</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-61">61</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-62">62</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-63">63</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-64">64</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-65">65</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-66">66</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-67">67</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-68">68</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-69">69</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-70">70</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-71">71</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-72">72</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-73">73</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-74">74</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-75">75</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-76">76</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-77">77</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-78">78</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-79">79</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-80">80</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-81">81</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-82">82</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-83">83</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-84">84</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-85">85</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-86">86</a>
+<a href="#rest_code_af5012b1e7944ef092db87be7dc6f6f9-87">87</a></pre></div></td>
+<td class="code"><pre class="code c"><a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-1"></a>       <span class="k">static</span> <span class="k">struct</span> <span class="n">pci_config_table</span> <span class="n">pci_redray_config_table</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-2"></a>       <span class="cm">/*104c,8888 - TI host bridge*/</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-3"></a>               <span class="p">{</span><span class="mh">0x104c</span><span class="p">,</span> <span class="mh">0x8888</span><span class="p">,</span> <span class="n">PCI_CLASS_BRIDGE_HOST</span><span class="p">,</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-4"></a>                <span class="n">PCI_ANY_ID</span><span class="p">,</span> <span class="n">PCI_ANY_ID</span><span class="p">,</span> <span class="n">PCI_ANY_ID</span><span class="p">,</span> <span class="n">pci_setup_ti_bridge</span><span class="p">},</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-5"></a>               <span class="p">{</span><span class="mi">0</span><span class="n">x</span><span class="p">...,</span> <span class="mi">0</span><span class="n">x</span><span class="p">...,</span> <span class="mh">0x11</span><span class="p">,</span> <span class="cm">/*note: omit proprieatary info here*/</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-6"></a>                <span class="n">PCI_ANY_ID</span><span class="p">,</span> <span class="n">PCI_ANY_ID</span><span class="p">,</span> <span class="n">PCI_ANY_ID</span><span class="p">,</span> <span class="n">pci_setup_vp</span><span class="p">},</span> <span class="cm">/*pci_setup_vp is to set up this proprietary video processor chip*/</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-7"></a>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-8"></a>       <span class="p">{</span> <span class="p">}</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-9"></a>       <span class="p">};</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-10"></a>       <span class="p">..</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-11"></a>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-12"></a>       <span class="k">struct</span> <span class="n">pci_controller</span> <span class="n">hose</span> <span class="o">=</span> <span class="p">{</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-13"></a>               <span class="nl">config_table</span><span class="p">:</span> <span class="n">pci_vp_config_table</span><span class="p">,</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-14"></a>       <span class="p">};</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-15"></a>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-16"></a>       <span class="p">..</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-17"></a>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-18"></a>       <span class="kt">void</span> <span class="n">omap_pci_init</span><span class="p">(</span><span class="k">struct</span> <span class="n">pci_controller</span><span class="o">*</span> <span class="n">hose</span><span class="p">)</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-19"></a>       <span class="p">{</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-20"></a>       <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">val</span><span class="p">,</span><span class="n">offset</span><span class="p">;</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-21"></a>       <span class="n">pci_dev_t</span> <span class="n">dev</span><span class="p">;</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-22"></a>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-23"></a>       <span class="n">omap_pcie_setup</span><span class="p">();</span><span class="c1">//as shown above</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-24"></a>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-25"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">first_busno</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-26"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">last_busno</span> <span class="o">=</span> <span class="mh">0x1f</span><span class="p">;</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-27"></a>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-28"></a>       <span class="cm">/*memory space*/</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-29"></a>       <span class="n">pci_set_region</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">regions</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-30"></a>                       <span class="mh">0x20000000</span><span class="p">,</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-31"></a>                       <span class="mi">0</span><span class="p">,</span> <span class="mh">0x1900000</span><span class="p">,</span> <span class="n">PCI_REGION_MEM</span><span class="p">);</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-32"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">pci_mem</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">regions</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-33"></a>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-34"></a>       <span class="cm">/*PCI memory space*/</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-35"></a>       <span class="n">pci_set_region</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">regions</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-36"></a>                       <span class="mh">0x20b00000</span><span class="p">,</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-37"></a>                       <span class="mi">0</span><span class="p">,</span> <span class="mh">0x100000</span><span class="p">,</span> <span class="n">PCI_REGION_PREFETCH</span><span class="p">);</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-38"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">pci_prefetch</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">regions</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-39"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">pci_io</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-40"></a>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-41"></a>       <span class="cm">/*PCI I/O space*/</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-42"></a>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-43"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">region_count</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-44"></a>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-45"></a>       <span class="n">pci_register_hose</span> <span class="p">(</span><span class="n">hose</span><span class="p">);</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-46"></a>       <span class="n">pci_set_ops</span><span class="p">(</span><span class="n">hose</span><span class="p">,</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-47"></a>                   <span class="n">pci_hose_read_config_byte_via_dword</span><span class="p">,</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-48"></a>                   <span class="n">pci_hose_read_config_word_via_dword</span><span class="p">,</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-49"></a>                   <span class="n">ti81xx_pci_read_config</span><span class="p">,</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-50"></a>                   <span class="n">pci_hose_write_config_byte_via_dword</span><span class="p">,</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-51"></a>                   <span class="n">pci_hose_write_config_word_via_dword</span><span class="p">,</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-52"></a>                   <span class="n">ti81xx_pci_write_config</span> <span class="p">);</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-53"></a>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-54"></a>       <span class="n">pciauto_config_init</span><span class="p">(</span><span class="n">hose</span><span class="p">);</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-55"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">current_busno</span> <span class="o">=</span> <span class="n">hose</span><span class="o">-&gt;</span><span class="n">first_busno</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-56"></a>       <span class="n">dev</span> <span class="o">=</span> <span class="n">PCI_BDF</span><span class="p">(</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">first_busno</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-57"></a>       <span class="n">pciauto_prescan_setup_bridge</span><span class="p">(</span><span class="n">hose</span><span class="p">,</span><span class="n">dev</span><span class="p">,</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">current_busno</span><span class="p">);</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-58"></a>       <span class="n">pciauto_setup_device</span><span class="p">(</span><span class="n">hose</span><span class="p">,</span><span class="n">dev</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">pci_mem</span><span class="p">,</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">pci_prefetch</span><span class="p">,</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">pci_io</span><span class="p">);</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-59"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">last_busno</span> <span class="o">=</span> <span class="n">pci_hose_scan</span><span class="p">(</span><span class="n">hose</span><span class="p">);</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-60"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">last_busno</span> <span class="o">=</span> <span class="n">hose</span><span class="o">-&gt;</span><span class="n">current_busno</span><span class="p">;</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-61"></a>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-62"></a>       <span class="cm">/*fix up*/</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-63"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x20800000</span><span class="p">,</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_REMOTE_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_BASE_ADDRESS_0</span><span class="p">);</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-64"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x20000000</span><span class="p">,</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_REMOTE_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_BASE_ADDRESS_1</span><span class="p">);</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-65"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x010130</span><span class="p">,</span>  <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_REMOTE_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_INTERRUPT_LINE</span><span class="p">);</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-66"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x100546</span><span class="p">,</span>  <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_REMOTE_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_COMMAND</span><span class="p">);</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-67"></a>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-68"></a>       <span class="cm">/*fix up max read request*/</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-69"></a>       <span class="n">offset</span> <span class="o">=</span>  <span class="n">__raw_readl</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_REMOTE_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_CAPABILITY_LIST</span><span class="p">);</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-70"></a>       <span class="n">val</span> <span class="o">=</span>  <span class="n">__raw_readl</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_REMOTE_CFG_OFFSET</span> <span class="o">+</span> <span class="n">offset</span> <span class="o">+</span> <span class="mi">8</span><span class="p">);</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-71"></a>       <span class="n">val</span> <span class="o">=</span> <span class="p">(</span><span class="n">val</span> <span class="o">&amp;</span> <span class="o">~</span><span class="p">(</span><span class="mi">3</span> <span class="o">&lt;&lt;</span> <span class="mi">12</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">12</span><span class="p">);</span> <span class="cm">/*max read requst mask is 256bytes/read*/</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-72"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">val</span><span class="p">,</span>  <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_REMOTE_CFG_OFFSET</span> <span class="o">+</span> <span class="n">offset</span> <span class="o">+</span> <span class="mi">8</span> <span class="p">);</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-73"></a>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-74"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x100147</span><span class="p">,</span>  <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_REMOTE_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_COMMAND</span><span class="p">);</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-75"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x100147</span><span class="p">,</span>  <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_COMMAND</span><span class="p">);</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-76"></a>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-77"></a>       <span class="n">ram_base</span> <span class="o">=</span> <span class="mh">0x80000000</span><span class="p">;</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-78"></a>       <span class="n">ram_end</span> <span class="o">=</span> <span class="n">ram_base</span> <span class="o">+</span> <span class="mh">0x7fffffff</span><span class="p">;</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-79"></a>       <span class="cm">/*Post enumeration fixups*/</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-80"></a>       <span class="n">set_inbound_trans</span><span class="p">();</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-81"></a>       <span class="n">__raw_writew</span><span class="p">(</span><span class="n">__raw_readw</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-82"></a>                               <span class="n">PCI_IO_BASE</span><span class="p">)</span> <span class="o">|</span> <span class="n">PCI_IO_RANGE_TYPE_32</span> <span class="o">|</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-83"></a>                               <span class="p">(</span><span class="n">PCI_IO_RANGE_TYPE_32</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">),</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-84"></a>                               <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-85"></a>                               <span class="n">PCI_IO_BASE</span><span class="p">);</span>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-86"></a>
+<a name="rest_code_af5012b1e7944ef092db87be7dc6f6f9-87"></a>       <span class="p">}</span>
 </pre></td>
 </tr></table>
 <p>When all is done with PCIe device configuration, the device's PCIe memory mapped address space can be dumped with
 u-boot's <em>md</em> command. Sample below is the content of the video processor control registers area.</p>
-<pre class="code console"><a name="rest_code_ada5f8a04ad34cebacbe29e4ee3e5b50-1"></a><span class="go">TI-MIN#md 20000000</span>
-<a name="rest_code_ada5f8a04ad34cebacbe29e4ee3e5b50-2"></a><span class="go">20000000: 00000000 00000000 00000000 00000000    ................</span>
-<a name="rest_code_ada5f8a04ad34cebacbe29e4ee3e5b50-3"></a><span class="go">20000010: 00000000 00000000 00000000 00000000    ................</span>
-<a name="rest_code_ada5f8a04ad34cebacbe29e4ee3e5b50-4"></a><span class="go">20000020: 00000000 00000000 00000000 00000000    ................</span>
-<a name="rest_code_ada5f8a04ad34cebacbe29e4ee3e5b50-5"></a><span class="go">20000030: 00000000 00000000 00000000 00000035    ............5...</span>
-<a name="rest_code_ada5f8a04ad34cebacbe29e4ee3e5b50-6"></a><span class="go">20000040: 000003e7 0000000e 0000000f 00000000    ................</span>
-<a name="rest_code_ada5f8a04ad34cebacbe29e4ee3e5b50-7"></a><span class="go">20000050: 00000000 00000011 00000035 000003e7    ........5.......</span>
-<a name="rest_code_ada5f8a04ad34cebacbe29e4ee3e5b50-8"></a><span class="go">20000060: 0000000e 0000000f 00000000 00000000    ................</span>
+<pre class="code console"><a name="rest_code_95f9fc83f2714feaa75273ff651bc4c3-1"></a><span class="go">TI-MIN#md 20000000</span>
+<a name="rest_code_95f9fc83f2714feaa75273ff651bc4c3-2"></a><span class="go">20000000: 00000000 00000000 00000000 00000000    ................</span>
+<a name="rest_code_95f9fc83f2714feaa75273ff651bc4c3-3"></a><span class="go">20000010: 00000000 00000000 00000000 00000000    ................</span>
+<a name="rest_code_95f9fc83f2714feaa75273ff651bc4c3-4"></a><span class="go">20000020: 00000000 00000000 00000000 00000000    ................</span>
+<a name="rest_code_95f9fc83f2714feaa75273ff651bc4c3-5"></a><span class="go">20000030: 00000000 00000000 00000000 00000035    ............5...</span>
+<a name="rest_code_95f9fc83f2714feaa75273ff651bc4c3-6"></a><span class="go">20000040: 000003e7 0000000e 0000000f 00000000    ................</span>
+<a name="rest_code_95f9fc83f2714feaa75273ff651bc4c3-7"></a><span class="go">20000050: 00000000 00000011 00000035 000003e7    ........5.......</span>
+<a name="rest_code_95f9fc83f2714feaa75273ff651bc4c3-8"></a><span class="go">20000060: 0000000e 0000000f 00000000 00000000    ................</span>
 </pre>
 <p>TI document section 19.3.1 [<a class="reference internal" href="#id1">1</a>] describes all the necessary steps needed to set up the RC mode for this module. Initialization of PCIESS for
 the boot code or the high level kernel OS takes the exact same steps. In fact, I ported part of the code from the linux kernel originally
@@ -637,62 +637,62 @@ PLL clock are set up as part of this initialization. Following this step, the ED
 display device (monitor/tv) so that it can setup the HDMI interface correctly. My board's HDMI is connected to ASUS
 LCD monitor.</p>
 <table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-1"> 1</a>
-<a href="#rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-2"> 2</a>
-<a href="#rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-3"> 3</a>
-<a href="#rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-4"> 4</a>
-<a href="#rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-5"> 5</a>
-<a href="#rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-6"> 6</a>
-<a href="#rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-7"> 7</a>
-<a href="#rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-8"> 8</a>
-<a href="#rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-9"> 9</a>
-<a href="#rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-10">10</a>
-<a href="#rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-11">11</a>
-<a href="#rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-12">12</a>
-<a href="#rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-13">13</a>
-<a href="#rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-14">14</a>
-<a href="#rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-15">15</a>
-<a href="#rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-16">16</a>
-<a href="#rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-17">17</a>
-<a href="#rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-18">18</a>
-<a href="#rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-19">19</a>
-<a href="#rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-20">20</a>
-<a href="#rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-21">21</a>
-<a href="#rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-22">22</a>
-<a href="#rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-23">23</a>
-<a href="#rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-24">24</a>
-<a href="#rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-25">25</a>
-<a href="#rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-26">26</a>
-<a href="#rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-27">27</a>
-<a href="#rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-28">28</a></pre></div></td>
-<td class="code"><pre class="code console"><a name="rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-1"></a><span class="go">       U-Boot 2010.06 (Jul 02 2016 - 17:35:59)</span>
-<a name="rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-2"></a>
-<a name="rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-3"></a><span class="go">       TI8148-GP rev 2.1</span>
-<a name="rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-4"></a>
-<a name="rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-5"></a><span class="go">       ARM clk: 720MHz</span>
-<a name="rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-6"></a><span class="go">       DDR clk: 533MHz</span>
-<a name="rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-7"></a>
-<a name="rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-8"></a><span class="go">       I2C:   ready</span>
-<a name="rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-9"></a><span class="go">       DRAM:  2 GiB</span>
-<a name="rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-10"></a><span class="go">       NAND:  HW ECC BCH8 Selected</span>
-<a name="rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-11"></a><span class="go">       256 MiB</span>
-<a name="rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-12"></a>
-<a name="rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-13"></a><span class="go">       ..</span>
-<a name="rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-14"></a>
-<a name="rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-15"></a><span class="go">       DDR trained (0x80000fff).</span>
-<a name="rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-16"></a>
-<a name="rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-17"></a><span class="go">       Pixel clocks  :148500 KHZ</span>
-<a name="rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-18"></a><span class="go">       Horizontal pix:1920</span>
-<a name="rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-19"></a><span class="go">       Vertical   pix:1080</span>
-<a name="rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-20"></a><span class="go">       Display size H:598 mm</span>
-<a name="rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-21"></a><span class="go">       Display size V:592 mm</span>
-<a name="rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-22"></a><span class="go">       Display Name     : VS278</span>
-<a name="rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-23"></a><span class="go">       Display serial no: D1LMQS148212</span>
-<a name="rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-24"></a>
-<a name="rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-25"></a><span class="go">       MMC:   OMAP SD/MMC: 0</span>
-<a name="rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-26"></a><span class="go">       Net:   Detected MACID:2c:b6:9d:d0:d1:d2</span>
-<a name="rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-27"></a><span class="go">       cpsw</span>
-<a name="rest_code_6b1bf7ba97dc4086a83e4b502a6c0142-28"></a><span class="go">       Hit any key to stop autoboot:  1</span>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_49687ea324b04b2e987cc4dfe7fe178c-1"> 1</a>
+<a href="#rest_code_49687ea324b04b2e987cc4dfe7fe178c-2"> 2</a>
+<a href="#rest_code_49687ea324b04b2e987cc4dfe7fe178c-3"> 3</a>
+<a href="#rest_code_49687ea324b04b2e987cc4dfe7fe178c-4"> 4</a>
+<a href="#rest_code_49687ea324b04b2e987cc4dfe7fe178c-5"> 5</a>
+<a href="#rest_code_49687ea324b04b2e987cc4dfe7fe178c-6"> 6</a>
+<a href="#rest_code_49687ea324b04b2e987cc4dfe7fe178c-7"> 7</a>
+<a href="#rest_code_49687ea324b04b2e987cc4dfe7fe178c-8"> 8</a>
+<a href="#rest_code_49687ea324b04b2e987cc4dfe7fe178c-9"> 9</a>
+<a href="#rest_code_49687ea324b04b2e987cc4dfe7fe178c-10">10</a>
+<a href="#rest_code_49687ea324b04b2e987cc4dfe7fe178c-11">11</a>
+<a href="#rest_code_49687ea324b04b2e987cc4dfe7fe178c-12">12</a>
+<a href="#rest_code_49687ea324b04b2e987cc4dfe7fe178c-13">13</a>
+<a href="#rest_code_49687ea324b04b2e987cc4dfe7fe178c-14">14</a>
+<a href="#rest_code_49687ea324b04b2e987cc4dfe7fe178c-15">15</a>
+<a href="#rest_code_49687ea324b04b2e987cc4dfe7fe178c-16">16</a>
+<a href="#rest_code_49687ea324b04b2e987cc4dfe7fe178c-17">17</a>
+<a href="#rest_code_49687ea324b04b2e987cc4dfe7fe178c-18">18</a>
+<a href="#rest_code_49687ea324b04b2e987cc4dfe7fe178c-19">19</a>
+<a href="#rest_code_49687ea324b04b2e987cc4dfe7fe178c-20">20</a>
+<a href="#rest_code_49687ea324b04b2e987cc4dfe7fe178c-21">21</a>
+<a href="#rest_code_49687ea324b04b2e987cc4dfe7fe178c-22">22</a>
+<a href="#rest_code_49687ea324b04b2e987cc4dfe7fe178c-23">23</a>
+<a href="#rest_code_49687ea324b04b2e987cc4dfe7fe178c-24">24</a>
+<a href="#rest_code_49687ea324b04b2e987cc4dfe7fe178c-25">25</a>
+<a href="#rest_code_49687ea324b04b2e987cc4dfe7fe178c-26">26</a>
+<a href="#rest_code_49687ea324b04b2e987cc4dfe7fe178c-27">27</a>
+<a href="#rest_code_49687ea324b04b2e987cc4dfe7fe178c-28">28</a></pre></div></td>
+<td class="code"><pre class="code console"><a name="rest_code_49687ea324b04b2e987cc4dfe7fe178c-1"></a><span class="go">       U-Boot 2010.06 (Jul 02 2016 - 17:35:59)</span>
+<a name="rest_code_49687ea324b04b2e987cc4dfe7fe178c-2"></a>
+<a name="rest_code_49687ea324b04b2e987cc4dfe7fe178c-3"></a><span class="go">       TI8148-GP rev 2.1</span>
+<a name="rest_code_49687ea324b04b2e987cc4dfe7fe178c-4"></a>
+<a name="rest_code_49687ea324b04b2e987cc4dfe7fe178c-5"></a><span class="go">       ARM clk: 720MHz</span>
+<a name="rest_code_49687ea324b04b2e987cc4dfe7fe178c-6"></a><span class="go">       DDR clk: 533MHz</span>
+<a name="rest_code_49687ea324b04b2e987cc4dfe7fe178c-7"></a>
+<a name="rest_code_49687ea324b04b2e987cc4dfe7fe178c-8"></a><span class="go">       I2C:   ready</span>
+<a name="rest_code_49687ea324b04b2e987cc4dfe7fe178c-9"></a><span class="go">       DRAM:  2 GiB</span>
+<a name="rest_code_49687ea324b04b2e987cc4dfe7fe178c-10"></a><span class="go">       NAND:  HW ECC BCH8 Selected</span>
+<a name="rest_code_49687ea324b04b2e987cc4dfe7fe178c-11"></a><span class="go">       256 MiB</span>
+<a name="rest_code_49687ea324b04b2e987cc4dfe7fe178c-12"></a>
+<a name="rest_code_49687ea324b04b2e987cc4dfe7fe178c-13"></a><span class="go">       ..</span>
+<a name="rest_code_49687ea324b04b2e987cc4dfe7fe178c-14"></a>
+<a name="rest_code_49687ea324b04b2e987cc4dfe7fe178c-15"></a><span class="go">       DDR trained (0x80000fff).</span>
+<a name="rest_code_49687ea324b04b2e987cc4dfe7fe178c-16"></a>
+<a name="rest_code_49687ea324b04b2e987cc4dfe7fe178c-17"></a><span class="go">       Pixel clocks  :148500 KHZ</span>
+<a name="rest_code_49687ea324b04b2e987cc4dfe7fe178c-18"></a><span class="go">       Horizontal pix:1920</span>
+<a name="rest_code_49687ea324b04b2e987cc4dfe7fe178c-19"></a><span class="go">       Vertical   pix:1080</span>
+<a name="rest_code_49687ea324b04b2e987cc4dfe7fe178c-20"></a><span class="go">       Display size H:598 mm</span>
+<a name="rest_code_49687ea324b04b2e987cc4dfe7fe178c-21"></a><span class="go">       Display size V:592 mm</span>
+<a name="rest_code_49687ea324b04b2e987cc4dfe7fe178c-22"></a><span class="go">       Display Name     : VS278</span>
+<a name="rest_code_49687ea324b04b2e987cc4dfe7fe178c-23"></a><span class="go">       Display serial no: D1LMQS148212</span>
+<a name="rest_code_49687ea324b04b2e987cc4dfe7fe178c-24"></a>
+<a name="rest_code_49687ea324b04b2e987cc4dfe7fe178c-25"></a><span class="go">       MMC:   OMAP SD/MMC: 0</span>
+<a name="rest_code_49687ea324b04b2e987cc4dfe7fe178c-26"></a><span class="go">       Net:   Detected MACID:2c:b6:9d:d0:d1:d2</span>
+<a name="rest_code_49687ea324b04b2e987cc4dfe7fe178c-27"></a><span class="go">       cpsw</span>
+<a name="rest_code_49687ea324b04b2e987cc4dfe7fe178c-28"></a><span class="go">       Hit any key to stop autoboot:  1</span>
 </pre></td>
 </tr></table>
 <p>The information from EDID is used for configuring the HDMI [<a class="reference internal" href="#id5">5</a>] to match the capability of the display unit (TV/monitor) so that

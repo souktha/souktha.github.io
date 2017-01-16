@@ -13,6 +13,7 @@
 <!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="description" itemprop="description" content="BCH code based on g(x)=1+x+x**4">
 <meta name="author" content="Soukthavy">
 <link rel="prev" href="../../hardware/cyclic_1_x_x4_hw/" title="Simple Cyclic Hamming (15,11,3) FEC" type="text/html">
+<link rel="next" href="../create-ap-linuxpc/" title="Create Wireless AP on Linux PC in 10 minutes" type="text/html">
 <meta property="og:site_name" content="Soukthavy Sopha">
 <meta property="og:title" content="BCH, an example of linear cyclic code">
 <meta property="og:url" content="http://souktha.github.io/misc/bch_1_x_x4/">
@@ -97,7 +98,8 @@ more usefull class of cyclic code, the BCH code. This will be based on the same 
 <!-- TEASER_END -->
 <p>One important class of cyclic codes is BCH codes. It is quite extensive and easy to decode and
 because of that it is quite practical for its use in real-life application. By definition,
-any <span class="math">\(r, t \leq 2^{r-1}-1\)</span> there exists BCH error-correcting codes of length <span class="math">\(n=2^r -1\)</span>
+any <span class="math">\(r \ge 3, t \leq 2^{r-1}-1\)</span> there exists BCH error-correcting codes of length <span class="math">\(n=2^r -1\)</span>,
+parity check length <span class="math">\((n-k) \le rt\)</span>,  minimum distance <span class="math">\(d \ge 2t + 1\)</span> and
 having dimension <span class="math">\(k \geq n-rt\)</span>.</p>
 <div class="section" id="some-more-field-algebra">
 <h2>Some more field algebra</h2>
@@ -112,7 +114,9 @@ then <span class="math">\(\alpha^{2r-1}=(\beta^i)^{2r-1}= (\beta^{2r-1})^i = 1^i
 a root of <span class="math">\(1+x^{2r-1}\)</span> and <span class="math">\(m_\alpha(x)\)</span> is a factor of <span class="math">\(1+x^{2r-1}\)</span>. This
 explains <span class="math">\(g(x) | (1+x^{15})\)</span> in the last post.</p>
 <p>Base on the theorem that the set of all roots of <span class="math">\(m_\alpha(x)\)</span> is
-<span class="math">\(\{\alpha,\alpha^2,\alpha^4,..,\alpha^{2r-1}\}\)</span>, the</p>
+<span class="math">\(\{\alpha,\alpha^2,\alpha^4,..,\alpha^{2r-1}\}\)</span>, the single error-correcting BCH codes
+will have the generator polynomial, <span class="math">\(g(x) \eq m_\alpha(x)\)</span>. The two error-correcting codes
+will have the generator polynomial, <span class="math">\(g(x) \eq m_\alpha(x)m_{\alpha^3}(x)\)</span>.</p>
 </div>
 </div>
     </div>

@@ -23,7 +23,7 @@ My latest blogs are listed below.
 Thank you for visiting !
 
 .. post-list::
-   :stop: 2
+   :stop: 3
 
 .. .. image:: ../images/under-construction-icon-47228.png
 ..         :width: 100

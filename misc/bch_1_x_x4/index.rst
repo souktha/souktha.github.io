@@ -15,8 +15,9 @@ more usefull class of cyclic code, the BCH code. This will be based on the same 
 
 One important class of cyclic codes is BCH codes. It is quite extensive and easy to decode and
 because of that it is quite practical for its use in real-life application. By definition,
-any :math:`r, t \leq 2^{r-1}-1` there exists BCH error-correcting codes of length :math:`n=2^r -1`
-having dimension :math:`k \geq n-rt`.
+any :math:`r \ge 3, t \leq 2^{r-1}-1` there exists BCH error-correcting codes of length :math:`n=2^r -1`,
+parity check length :math:`(n-k) \le rt`,  minimum distance :math:`d \ge 2t + 1` and
+having dimension :math:`k \geq n-rt`. 
 
 Some more field algebra
 ------------------------
@@ -34,4 +35,6 @@ a root of :math:`1+x^{2r-1}` and :math:`m_\alpha(x)` is a factor of :math:`1+x^{
 explains :math:`g(x) | (1+x^{15})` in the last post.
 
 Base on the theorem that the set of all roots of :math:`m_\alpha(x)` is 
-:math:`\{\alpha,\alpha^2,\alpha^4,..,\alpha^{2r-1}\}`, the
+:math:`\{\alpha,\alpha^2,\alpha^4,..,\alpha^{2r-1}\}`, the single error-correcting BCH codes
+will have the generator polynomial, :math:`g(x) \eq m_\alpha(x)`. The two error-correcting codes
+will have the generator polynomial, :math:`g(x) \eq m_\alpha(x)m_{\alpha^3}(x)`.
