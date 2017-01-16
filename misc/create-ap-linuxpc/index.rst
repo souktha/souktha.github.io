@@ -15,7 +15,7 @@ leaving it in a useless state, I choose to create a WiFi AP out of it.
 
 .. TEASER_END
 
-Okay, maybe I lie. It might take more than 10 minutes for somebody else because 
+Okay, maybe it might take more than 10 minutes for somebody else because 
 it all depends on whether or not they have the software tools that are needed for
 this process. Adding time to build the tools will certainly makes it longer than
 10 minutes mark. All the tools needed are readily available in the OpenSource 
@@ -64,7 +64,8 @@ Aside from the kernel requirements, these are the required software packages:
 * wifi utility, *iw*, to set/get wifi networking device. *iw-4.3* is included in my distribution.
 
 Bridge utility, dnsmasq, hostapd are not usually included with the distribution. In that case 
-they needed to be downloaded and be built for this process.
+they needed to be downloaded then build for this process or just install the binary packages
+if they are available.
 
 The configuration of my network
 -------------------------------
@@ -131,8 +132,7 @@ in a shell script. Once I login as root,
 
 The regulatory domain is important because it is used for the setting of radio frequency
 allowed in the host country. WiFi driver or firmware will use it for radio calibration settings
-that is needed for Tx/Rx power limit, frequency channels allowed (carrier and subcarriers etc).
-The first line above makes the driver use the US look-up table for its operational settings.
+that is needed for Tx/Rx power limit, frequency channels allowed.
 
 * Create bridge *br0*, and add *wlan0* interface to bridge,
 
@@ -173,17 +173,8 @@ The IP network address 192.168.11.1 is my new bridged WiFi network.
 
 The *dnsmasq.conf* is a configuration file for dnsmasq in my current directory where I start it,
 
-  .. code-block::
-        :linenos:
-
-        domain-needed
-        bogus-priv
-        resolv-file=/etc/resolv.conf
-        interface=br0
-        expand-hosts
-        dhcp-range=set:br0,192.168.11.100,192.168.11.199,255.255.255.0,86400
-        dhcp-lease-max=160
-        address=/souktha.github.io/192.168.11.1
+.. listing:: dnsmasq-sedone.conf
+   :linenos:
 
 dnsmasq will serve DHCP to all WiFi clients by assigning them with network IP address `192.168.11.x`_ . 
 The interface for the bridge is *br0* (line 4). This has to match the name of the bridge
@@ -209,40 +200,9 @@ of x.100 - x.199 (line 6).
 For this test, I do not run hostapd in background (-B) mode so I can debug if I need to.
 This is *hostapd.conf* file,
 
-        .. code-block::
-         :linenos:
+.. listing:: hostapd-sedone.conf
+   :linenos:
 
-         interface=wlan0
-         bridge=br0
-         logger_syslog=127
-         logger_syslog_level=2
-         logger_stdout=127
-         logger_stdout_level=2
-         ctrl_interface=/var/run/hostapd
-         ctrl_interface_group=0
-         ssid=sedone3
-         hw_mode=g
-         macaddr_acl=0
-         auth_algs=1
-         ieee8021x=1
-         eapol_key_index_workaround=0
-         eap_server=1
-         country_code=US
-         channel=6
-         beacon_int=100
-         hw_mode=g
-         wpa=2
-         ieee80211n=1
-         wme_enabled=1
-         ht_capab=[SHORT-GI-20][SHORT-GI-40][HT40+]
-         wpa_key_mgmt=WPA-PSK
-         wpa_pairwise=CCMP
-         max_num_sta=8
-         wpa_group_rekey=86400
-         wpa_passphrase=87654321
-         upnp_iface=br0
-         friendly_name=sedone3
-         model_description=Slackware WiFi AP
 
 Line 9 is my AP's SSID, *sedone3*. The authentication password is at line 28. Basically from line 20 down
 (minus a few), are the settings for security features such as key exchange, authentication mode etc..
@@ -307,8 +267,29 @@ I am not sure how many Mbps my *wlan0* can reach so I leave it at default of 72M
 Most newer PCIe WiFi card will probably reach Gbps speed, but mine is relatively old. Perhaps
 it can reach in the hundreds Mbps. 
 
-Conclusion
------------
+The operational state of my *wlan0* devices,
+
+.. code-block::
+        
+        iw dev wlan0 info
+        
+        Interface wlan0
+                ifindex 3 
+                wdev 0x1
+                addr e8:de:27:19:1e:83
+                ssid sedone3
+                type AP
+                wiphy 0
+                channel 6 (2437 MHz), width: 20 MHz, center1: 2437 MHz
+
+        iwconfig wlan0
+                wlan0     IEEE 802.11abgn  Mode:Master  Tx-Power=16 dBm   
+                          Retry short limit:7   RTS thr:off   Fragment thr:off
+                          Power Management:off
+        
+
+Summary
+-------
 
 *dnsmasq* and *hostapd* do all the magic here. Unlike my other posts, I do not write
 a single line of code. I do not debug, perform timing closure (FPGA) or do any frustrated things.
@@ -319,7 +300,3 @@ For most Linux distribution, one can download/install the pre-built binary packa
 host package manager software, for example, Ubuntu's apt-get install <package> command. It 
 is not necessary to build everything like I did.
 
-There are many choices of WiFi routers out there in the store shelves; however, regardless of how 
-expensive they are, their set up to make a WiFi router is almost identical to this post. More than
-that are just bell and whistle to turn simple thing into deep shit.
-How fast and how far is all about the WiFi chip set in that box.

@@ -19,7 +19,7 @@
  </url>
  <url>
   <loc>http://souktha.github.io/archive.html</loc>
-  <lastmod>2017-01-16T00:47:00Z</lastmod>
+  <lastmod>2017-01-16T02:19:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/blog/</loc>
@@ -31,7 +31,7 @@
  </url>
  <url>
   <loc>http://souktha.github.io/blog/index-1.html</loc>
-  <lastmod>2017-01-16T00:47:00Z</lastmod>
+  <lastmod>2017-01-16T02:19:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/blog/restructuredtext-demo-import-from-demotxt/</loc>
@@ -131,7 +131,15 @@
  </url>
  <url>
   <loc>http://souktha.github.io/listings/</loc>
-  <lastmod>2017-01-16T00:47:00Z</lastmod>
+  <lastmod>2017-01-16T16:54:00Z</lastmod>
+ </url>
+ <url>
+  <loc>http://souktha.github.io/listings/dnsmasq-sedone.conf.html</loc>
+  <lastmod>2017-01-16T16:54:00Z</lastmod>
+ </url>
+ <url>
+  <loc>http://souktha.github.io/listings/hostapd-sedone.conf.html</loc>
+  <lastmod>2017-01-16T16:54:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/misc/</loc>

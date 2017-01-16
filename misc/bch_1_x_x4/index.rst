@@ -36,5 +36,5 @@ explains :math:`g(x) | (1+x^{15})` in the last post.
 
 Base on the theorem that the set of all roots of :math:`m_\alpha(x)` is 
 :math:`\{\alpha,\alpha^2,\alpha^4,..,\alpha^{2r-1}\}`, the single error-correcting BCH codes
-will have the generator polynomial, :math:`g(x) \eq m_\alpha(x)`. The two error-correcting codes
-will have the generator polynomial, :math:`g(x) \eq m_\alpha(x)m_{\alpha^3}(x)`.
+will have the generator polynomial, :math:`g(x) = m_\alpha(x)`. The two error-correcting codes
+will have the generator polynomial, :math:`g(x) =  m_\alpha(x)m_{\alpha^3}(x)`.

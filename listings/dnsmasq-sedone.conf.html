@@ -2,14 +2,15 @@
 <html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
 <head>
 <meta charset="utf-8">
-<base href="http://souktha.github.io/categories/mathjax/">
+<base href="http://souktha.github.io/listings/dnsmasq-sedone.conf.html">
+<meta name="description" content="dnsmasq-sedone.conf">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Posts about mathjax | Soukthavy Sopha</title>
-<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<title>dnsmasq-sedone.conf | Soukthavy Sopha</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
 <meta content="#5670d4" name="theme-color">
-<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
-<link rel="canonical" href="http://souktha.github.io/categories/mathjax/">
-<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><link rel="alternate" type="application/rss+xml" title="RSS for tag mathjax" href="../mathjax.xml">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../rss.xml">
+<link rel="canonical" href="http://souktha.github.io/listings/dnsmasq-sedone.conf.html">
+<!--[if lt IE 9]><script src="../assets/js/html5.js"></script><![endif]-->
 </head>
 <body>
 <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
@@ -34,25 +35,25 @@
         <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
             <ul class="nav navbar-nav">
 <li>
-<a href="../../archive.html">Archive</a>
+<a href="../archive.html">Archive</a>
                 </li>
 <li>
-<a href="../">Tags</a>
+<a href="../categories/">Tags</a>
                 </li>
 <li>
-<a href="../../rss.xml">RSS feed</a>
+<a href="../rss.xml">RSS feed</a>
             </li>
 <li class="dropdown">
 <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Blog <b class="caret"></b></a>
             <ul class="dropdown-menu">
 <li>
-<a href="../../software">Sofware</a>
+<a href="../software">Sofware</a>
                     </li>
 <li>
-<a href="../../hardware">Hardware</a>
+<a href="../hardware">Hardware</a>
                     </li>
 <li>
-<a href="../../misc">Misc</a>
+<a href="../misc">Misc</a>
             </li>
 </ul>
 </li>
@@ -73,27 +74,29 @@
         <div class="row">
             
             
-<article class="tagpage"><header><h1>Posts about mathjax</h1>
-        <div class="metadata">
-                <p class="feedlink"><a href="../mathjax.xml" type="application/rss+xml">RSS feed</a></p>
-        </div>
-    </header><ul class="postlist">
-<li>
-<time class="listdate" datetime="2017-01-08T23:39:17Z" title="2017-01-08 23:39">2017-01-08 23:39</time><a href="../../misc/bch_1_x_x4/" class="listtitle">BCH, an example of linear cyclic code</a><a></a>
-</li>
-        <li>
-<time class="listdate" datetime="2016-12-22T00:17:42Z" title="2016-12-22 00:17">2016-12-22 00:17</time><a href="../../hardware/cyclic_1_x_x4_hw/" class="listtitle">Simple Cyclic Hamming (15,11,3) FEC</a><a></a>
-</li>
-        <li>
-<time class="listdate" datetime="2016-12-10T22:46:19Z" title="2016-12-10 22:46">2016-12-10 22:46</time><a href="../../misc/cyclic_1_x_x4/" class="listtitle">Simple Cyclic Hamming codes</a><a></a>
-</li>
-        <li>
-<time class="listdate" datetime="2016-03-06T15:56:21Z" title="2016-03-06 15:56">2016-03-06 15:56</time><a href="../../misc/class_report_503/" class="listtitle">LaTeX conversion</a><a></a>
-</li>
-        <li>
-<time class="listdate" datetime="2016-03-04T22:47:22Z" title="2016-03-04 22:47">2016-03-04 22:47</time><a href="../../misc/restructuredtext-demo-import-from-demotxt/" class="listtitle">ReStructuredText Demo (import from demo.txt)</a><a></a>
-</li>
-    </ul></article>
+
+<nav class="breadcrumbs"><ul class="breadcrumb">
+<li><a href=".">listings</a></li>
+                <li>dnsmasq-sedone.conf</li>
+</ul></nav><table class="codetable"><tr>
+<td class="linenos"><div class="linenodiv"><pre><a href="#listingsdnsmasq-sedoneconf-1">1</a>
+<a href="#listingsdnsmasq-sedoneconf-2">2</a>
+<a href="#listingsdnsmasq-sedoneconf-3">3</a>
+<a href="#listingsdnsmasq-sedoneconf-4">4</a>
+<a href="#listingsdnsmasq-sedoneconf-5">5</a>
+<a href="#listingsdnsmasq-sedoneconf-6">6</a>
+<a href="#listingsdnsmasq-sedoneconf-7">7</a>
+<a href="#listingsdnsmasq-sedoneconf-8">8</a></pre></div></td>
+<td class="code"><pre class="code literal-block"><a name="listingsdnsmasq-sedoneconf-1"></a>domain-needed
+<a name="listingsdnsmasq-sedoneconf-2"></a>bogus-priv
+<a name="listingsdnsmasq-sedoneconf-3"></a>resolv-file=/etc/resolv.conf
+<a name="listingsdnsmasq-sedoneconf-4"></a>interface=br0
+<a name="listingsdnsmasq-sedoneconf-5"></a>expand-hosts
+<a name="listingsdnsmasq-sedoneconf-6"></a>dhcp-range=set:br0,192.168.11.100,192.168.11.199,255.255.255.0,86400
+<a name="listingsdnsmasq-sedoneconf-7"></a>dhcp-lease-max=160
+<a name="listingsdnsmasq-sedoneconf-8"></a>address=/souktha.github.io/192.168.11.1
+</pre></td>
+</tr></table>
 </div>
         <!--End of body content-->
 
@@ -105,7 +108,7 @@
 </div>
 
 
-            <script src="../../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+            <script src="../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
     moment.locale("en");
     fancydates(0, "YYYY-MM-DD HH:mm");
     </script><!-- end fancy dates -->

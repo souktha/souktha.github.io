@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<head>
+<meta charset="utf-8">
+<base href="http://souktha.github.io/listings/hostapd-sedone.conf.html">
+<meta name="description" content="hostapd-sedone.conf">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>hostapd-sedone.conf | Soukthavy Sopha</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<meta content="#5670d4" name="theme-color">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../rss.xml">
+<link rel="canonical" href="http://souktha.github.io/listings/hostapd-sedone.conf.html">
+<!--[if lt IE 9]><script src="../assets/js/html5.js"></script><![endif]-->
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-inverse navbar-static-top"><div class="container">
+<!-- This keeps the margins nice -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://souktha.github.io/">
+
+                <span id="blog-title">Soukthavy Sopha</span>
+            </a>
+        </div>
+<!-- /.navbar-header -->
+        <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
+            <ul class="nav navbar-nav">
+<li>
+<a href="../archive.html">Archive</a>
+                </li>
+<li>
+<a href="../categories/">Tags</a>
+                </li>
+<li>
+<a href="../rss.xml">RSS feed</a>
+            </li>
+<li class="dropdown">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Blog <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+<li>
+<a href="../software">Sofware</a>
+                    </li>
+<li>
+<a href="../hardware">Hardware</a>
+                    </li>
+<li>
+<a href="../misc">Misc</a>
+            </li>
+</ul>
+</li>
+<li>
+<a href="https://github.com/souktha">My Github</a>
+
+                
+            </li>
+</ul>
+<ul class="nav navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        <div class="row">
+            
+            
+
+<nav class="breadcrumbs"><ul class="breadcrumb">
+<li><a href=".">listings</a></li>
+                <li>hostapd-sedone.conf</li>
+</ul></nav><table class="codetable"><tr>
+<td class="linenos"><div class="linenodiv"><pre><a href="#listingshostapd-sedoneconf-1"> 1</a>
+<a href="#listingshostapd-sedoneconf-2"> 2</a>
+<a href="#listingshostapd-sedoneconf-3"> 3</a>
+<a href="#listingshostapd-sedoneconf-4"> 4</a>
+<a href="#listingshostapd-sedoneconf-5"> 5</a>
+<a href="#listingshostapd-sedoneconf-6"> 6</a>
+<a href="#listingshostapd-sedoneconf-7"> 7</a>
+<a href="#listingshostapd-sedoneconf-8"> 8</a>
+<a href="#listingshostapd-sedoneconf-9"> 9</a>
+<a href="#listingshostapd-sedoneconf-10">10</a>
+<a href="#listingshostapd-sedoneconf-11">11</a>
+<a href="#listingshostapd-sedoneconf-12">12</a>
+<a href="#listingshostapd-sedoneconf-13">13</a>
+<a href="#listingshostapd-sedoneconf-14">14</a>
+<a href="#listingshostapd-sedoneconf-15">15</a>
+<a href="#listingshostapd-sedoneconf-16">16</a>
+<a href="#listingshostapd-sedoneconf-17">17</a>
+<a href="#listingshostapd-sedoneconf-18">18</a>
+<a href="#listingshostapd-sedoneconf-19">19</a>
+<a href="#listingshostapd-sedoneconf-20">20</a>
+<a href="#listingshostapd-sedoneconf-21">21</a>
+<a href="#listingshostapd-sedoneconf-22">22</a>
+<a href="#listingshostapd-sedoneconf-23">23</a>
+<a href="#listingshostapd-sedoneconf-24">24</a>
+<a href="#listingshostapd-sedoneconf-25">25</a>
+<a href="#listingshostapd-sedoneconf-26">26</a>
+<a href="#listingshostapd-sedoneconf-27">27</a>
+<a href="#listingshostapd-sedoneconf-28">28</a>
+<a href="#listingshostapd-sedoneconf-29">29</a>
+<a href="#listingshostapd-sedoneconf-30">30</a>
+<a href="#listingshostapd-sedoneconf-31">31</a>
+<a href="#listingshostapd-sedoneconf-32">32</a>
+<a href="#listingshostapd-sedoneconf-33">33</a></pre></div></td>
+<td class="code"><pre class="code literal-block"><a name="listingshostapd-sedoneconf-1"></a>interface=wlan0
+<a name="listingshostapd-sedoneconf-2"></a>bridge=br0
+<a name="listingshostapd-sedoneconf-3"></a>logger_syslog=127
+<a name="listingshostapd-sedoneconf-4"></a>logger_syslog_level=2
+<a name="listingshostapd-sedoneconf-5"></a>logger_stdout=127
+<a name="listingshostapd-sedoneconf-6"></a>logger_stdout_level=2
+<a name="listingshostapd-sedoneconf-7"></a>ctrl_interface=/var/run/hostapd
+<a name="listingshostapd-sedoneconf-8"></a>ctrl_interface_group=0
+<a name="listingshostapd-sedoneconf-9"></a>ssid=sedone3
+<a name="listingshostapd-sedoneconf-10"></a>hw_mode=g
+<a name="listingshostapd-sedoneconf-11"></a>macaddr_acl=0
+<a name="listingshostapd-sedoneconf-12"></a>auth_algs=1
+<a name="listingshostapd-sedoneconf-13"></a>ieee8021x=1
+<a name="listingshostapd-sedoneconf-14"></a>eapol_key_index_workaround=0
+<a name="listingshostapd-sedoneconf-15"></a>eap_server=1
+<a name="listingshostapd-sedoneconf-16"></a>country_code=US
+<a name="listingshostapd-sedoneconf-17"></a>channel=6
+<a name="listingshostapd-sedoneconf-18"></a>
+<a name="listingshostapd-sedoneconf-19"></a>beacon_int=100
+<a name="listingshostapd-sedoneconf-20"></a>hw_mode=g
+<a name="listingshostapd-sedoneconf-21"></a>wpa=2
+<a name="listingshostapd-sedoneconf-22"></a>ieee80211n=1
+<a name="listingshostapd-sedoneconf-23"></a>wme_enabled=1
+<a name="listingshostapd-sedoneconf-24"></a>ht_capab=[SHORT-GI-20][SHORT-GI-40][HT40+]
+<a name="listingshostapd-sedoneconf-25"></a>wpa_key_mgmt=WPA-PSK
+<a name="listingshostapd-sedoneconf-26"></a>wpa_pairwise=CCMP
+<a name="listingshostapd-sedoneconf-27"></a>max_num_sta=8
+<a name="listingshostapd-sedoneconf-28"></a>wpa_group_rekey=86400
+<a name="listingshostapd-sedoneconf-29"></a>wpa_passphrase=87654321
+<a name="listingshostapd-sedoneconf-30"></a>
+<a name="listingshostapd-sedoneconf-31"></a>upnp_iface=br0
+<a name="listingshostapd-sedoneconf-32"></a>friendly_name=sedone3
+<a name="listingshostapd-sedoneconf-33"></a>model_description=Slackware WiFi AP
+</pre></td>
+</tr></table>
+</div>
+        <!--End of body content-->
+
+        <footer id="footer">
+            Contents © 2017         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+        </footer>
+</div>
+</div>
+
+
+            <script src="../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+    moment.locale("en");
+    fancydates(0, "YYYY-MM-DD HH:mm");
+    </script><!-- end fancy dates -->
+</body>
+</html>

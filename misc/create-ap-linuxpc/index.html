@@ -12,7 +12,7 @@
 <link rel="canonical" href="http://souktha.github.io/misc/create-ap-linuxpc/">
 <!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="description" itemprop="description" content="Creating wireless access point on linux PC">
 <meta name="author" content="Soukthavy">
-<link rel="prev" href="../../hardware/cyclic_1_x_x4_hw/" title="Simple Cyclic Hamming (15,11,3) FEC" type="text/html">
+<link rel="prev" href="../bch_1_x_x4/" title="BCH, an example of linear cyclic code" type="text/html">
 <meta property="og:site_name" content="Soukthavy Sopha">
 <meta property="og:title" content="Create Wireless AP on Linux PC in 10 minutes">
 <meta property="og:url" content="http://souktha.github.io/misc/create-ap-linuxpc/">
@@ -95,7 +95,7 @@ device while the other would be a WiFi device. If the ethernet device is tethere
 into the router already, this leaves WiFi device unused as in my case. Instead of
 leaving it in a useless state, I choose to create a WiFi AP out of it.</p>
 <!-- TEASER_END -->
-<p>Okay, maybe I lie. It might take more than 10 minutes for somebody else because
+<p>Okay, maybe it might take more than 10 minutes for somebody else because
 it all depends on whether or not they have the software tools that are needed for
 this process. Adding time to build the tools will certainly makes it longer than
 10 minutes mark. All the tools needed are readily available in the OpenSource
@@ -135,7 +135,8 @@ services between host PC and wireless clients. I use <em>hostapd-2.4</em> for th
 <li>wifi utility, <em>iw</em>, to set/get wifi networking device. <em>iw-4.3</em> is included in my distribution.</li>
 </ul>
 <p>Bridge utility, dnsmasq, hostapd are not usually included with the distribution. In that case
-they needed to be downloaded and be built for this process.</p>
+they needed to be downloaded then build for this process or just install the binary packages
+if they are available.</p>
 </div>
 <div class="section" id="the-configuration-of-my-network">
 <h2>The configuration of my network</h2>
@@ -177,34 +178,33 @@ in a shell script. Once I login as root,</p>
 <p class="first">First this is my network devices. Wireless device would not show up if Linux kernel
 is not supported it. In that case, the vendor's driver will need to ported, compiled, and
 loaded.</p>
-<pre class="code text"><a name="rest_code_7dee33fa205248228c577fb5412e6dbb-1"></a>cat /proc/net/dev
-<a name="rest_code_7dee33fa205248228c577fb5412e6dbb-2"></a>Inter-|   Receive                                                |  Transmit
-<a name="rest_code_7dee33fa205248228c577fb5412e6dbb-3"></a> face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed
-<a name="rest_code_7dee33fa205248228c577fb5412e6dbb-4"></a>    lo:    1504      22    0    0    0     0          0         0     1504      22    0    0    0     0       0          0
-<a name="rest_code_7dee33fa205248228c577fb5412e6dbb-5"></a> wlan0:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0
-<a name="rest_code_7dee33fa205248228c577fb5412e6dbb-6"></a>  eth0:  364234    2479    0    0    0     0          0         0   350453    3161    0    0    0     0       0          0
+<pre class="code text"><a name="rest_code_22e5c15b3bb14ca48e65c58fe52f363b-1"></a>cat /proc/net/dev
+<a name="rest_code_22e5c15b3bb14ca48e65c58fe52f363b-2"></a>Inter-|   Receive                                                |  Transmit
+<a name="rest_code_22e5c15b3bb14ca48e65c58fe52f363b-3"></a> face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed
+<a name="rest_code_22e5c15b3bb14ca48e65c58fe52f363b-4"></a>    lo:    1504      22    0    0    0     0          0         0     1504      22    0    0    0     0       0          0
+<a name="rest_code_22e5c15b3bb14ca48e65c58fe52f363b-5"></a> wlan0:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0
+<a name="rest_code_22e5c15b3bb14ca48e65c58fe52f363b-6"></a>  eth0:  364234    2479    0    0    0     0          0         0   350453    3161    0    0    0     0       0          0
 </pre>
 </li>
 <li>
 <p class="first">Set regulatory domain of <em>wlan0</em> to meet US FCC regulation (in my case) and set WDS mode,</p>
-<pre class="code text"><a name="rest_code_ddb91bcdc4314752a13ed31200b2a907-1"></a>#iw reg set US
-<a name="rest_code_ddb91bcdc4314752a13ed31200b2a907-2"></a>#iw dev wlan0 set 4addr on
+<pre class="code text"><a name="rest_code_73babde6928540b296e93671df0bef02-1"></a>#iw reg set US
+<a name="rest_code_73babde6928540b296e93671df0bef02-2"></a>#iw dev wlan0 set 4addr on
 </pre>
 </li>
 </ul>
 <p>The regulatory domain is important because it is used for the setting of radio frequency
 allowed in the host country. WiFi driver or firmware will use it for radio calibration settings
-that is needed for Tx/Rx power limit, frequency channels allowed (carrier and subcarriers etc).
-The first line above makes the driver use the US look-up table for its operational settings.</p>
+that is needed for Tx/Rx power limit, frequency channels allowed.</p>
 <ul>
 <li>
 <p class="first">Create bridge <em>br0</em>, and add <em>wlan0</em> interface to bridge,</p>
-<pre class="code text"><a name="rest_code_3f995d7b4779487d9d36b7733f39a509-1"></a>#brctl addbr br0
-<a name="rest_code_3f995d7b4779487d9d36b7733f39a509-2"></a>#brctl addif br0 wlan0
-<a name="rest_code_3f995d7b4779487d9d36b7733f39a509-3"></a>#
-<a name="rest_code_3f995d7b4779487d9d36b7733f39a509-4"></a>#brctl show
-<a name="rest_code_3f995d7b4779487d9d36b7733f39a509-5"></a>bridge name     bridge id               STP enabled     interfaces
-<a name="rest_code_3f995d7b4779487d9d36b7733f39a509-6"></a>br0             8000.e8de27191e83       no              wlan0
+<pre class="code text"><a name="rest_code_e0a5b1c66d204229a72e729f67c13970-1"></a>#brctl addbr br0
+<a name="rest_code_e0a5b1c66d204229a72e729f67c13970-2"></a>#brctl addif br0 wlan0
+<a name="rest_code_e0a5b1c66d204229a72e729f67c13970-3"></a>#
+<a name="rest_code_e0a5b1c66d204229a72e729f67c13970-4"></a>#brctl show
+<a name="rest_code_e0a5b1c66d204229a72e729f67c13970-5"></a>bridge name     bridge id               STP enabled     interfaces
+<a name="rest_code_e0a5b1c66d204229a72e729f67c13970-6"></a>br0             8000.e8de27191e83       no              wlan0
 </pre>
 </li>
 </ul>
@@ -215,14 +215,14 @@ considered to be <em>WAN</em> for this setting. In another word, do not bond eth
 <li>Enable IP forwarding,</li>
 </ul>
 <blockquote>
-<pre class="code text"><a name="rest_code_0167f7b832cd49578221f3483a694dc4-1"></a># sysctl -w net.ipv4.ip_forward=1
-<a name="rest_code_0167f7b832cd49578221f3483a694dc4-2"></a>net.ipv4.ip_forward = 1
+<pre class="code text"><a name="rest_code_1710b49abce54a189f95c2561569f57c-1"></a># sysctl -w net.ipv4.ip_forward=1
+<a name="rest_code_1710b49abce54a189f95c2561569f57c-2"></a>net.ipv4.ip_forward = 1
 </pre>
 </blockquote>
 <ul>
 <li>
 <p class="first">Assign IP address to <em>br0</em> device. I choose 192.168.11.1 for my WiFi AP.</p>
-<pre class="code text"><a name="rest_code_c39eb47ea06d4fe6b09ea06908dd328e-1"></a>#ifconfig br0 192.168.11.1 up
+<pre class="code text"><a name="rest_code_0118f3fe772c4c2b8d1151bed237b433-1"></a>#ifconfig br0 192.168.11.1 up
 </pre>
 </li>
 </ul>
@@ -231,32 +231,22 @@ The IP network address 192.168.11.1 is my new bridged WiFi network.</p>
 <ul>
 <li>
 <p class="first">Start dnsmasq,</p>
-<pre class="code text"><a name="rest_code_aebe845def4d43a9aa5679a57cf0b343-1"></a>#dnsmasq -C dnsmasq.conf
+<pre class="code text"><a name="rest_code_70e11ad9654744ffbb11d518ddf3dacc-1"></a>#dnsmasq -C dnsmasq.conf
 </pre>
 </li>
 </ul>
 <p>The <em>dnsmasq.conf</em> is a configuration file for dnsmasq in my current directory where I start it,</p>
-<blockquote>
-<table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_d9752cb690844d308526e76514f4a4be-1">1</a>
-<a href="#rest_code_d9752cb690844d308526e76514f4a4be-2">2</a>
-<a href="#rest_code_d9752cb690844d308526e76514f4a4be-3">3</a>
-<a href="#rest_code_d9752cb690844d308526e76514f4a4be-4">4</a>
-<a href="#rest_code_d9752cb690844d308526e76514f4a4be-5">5</a>
-<a href="#rest_code_d9752cb690844d308526e76514f4a4be-6">6</a>
-<a href="#rest_code_d9752cb690844d308526e76514f4a4be-7">7</a>
-<a href="#rest_code_d9752cb690844d308526e76514f4a4be-8">8</a></pre></div></td>
-<td class="code"><pre class="code text"><a name="rest_code_d9752cb690844d308526e76514f4a4be-1"></a>domain-needed
-<a name="rest_code_d9752cb690844d308526e76514f4a4be-2"></a>bogus-priv
-<a name="rest_code_d9752cb690844d308526e76514f4a4be-3"></a>resolv-file=/etc/resolv.conf
-<a name="rest_code_d9752cb690844d308526e76514f4a4be-4"></a>interface=br0
-<a name="rest_code_d9752cb690844d308526e76514f4a4be-5"></a>expand-hosts
-<a name="rest_code_d9752cb690844d308526e76514f4a4be-6"></a>dhcp-range=set:br0,192.168.11.100,192.168.11.199,255.255.255.0,86400
-<a name="rest_code_d9752cb690844d308526e76514f4a4be-7"></a>dhcp-lease-max=160
-<a name="rest_code_d9752cb690844d308526e76514f4a4be-8"></a>address=/souktha.github.io/192.168.11.1
-</pre></td>
-</tr></table>
-</blockquote>
+<p><a class="reference external" href="../../listings/dnsmasq-sedone.conf.html">dnsmasq-sedone.conf</a></p>
+<pre class="literal-block">
+<span class="ln">1 </span>domain-needed
+<span class="ln">2 </span>bogus-priv
+<span class="ln">3 </span>resolv-file=/etc/resolv.conf
+<span class="ln">4 </span>interface=br0
+<span class="ln">5 </span>expand-hosts
+<span class="ln">6 </span>dhcp-range=set:br0,192.168.11.100,192.168.11.199,255.255.255.0,86400
+<span class="ln">7 </span>dhcp-lease-max=160
+<span class="ln">8 </span>address=/souktha.github.io/192.168.11.1
+</pre>
 <p>dnsmasq will serve DHCP to all WiFi clients by assigning them with network IP address <a class="reference internal" href="#x">192.168.11.x</a> .
 The interface for the bridge is <em>br0</em> (line 4). This has to match the name of the bridge
 I created earlier. The DHCP address range it will give to clients will be in the range
@@ -266,85 +256,54 @@ of x.100 - x.199 (line 6).</p>
 later. hostapd will set <em>wlan0</em> to AP mode.</li>
 </ul>
 <blockquote>
-<pre class="code text"><a name="rest_code_ca3eb7da86364445a564a5f3a871a6c4-1"></a>#hostapd hostapd.conf
-<a name="rest_code_ca3eb7da86364445a564a5f3a871a6c4-2"></a>Configuration file: hostapd-sedone.conf
-<a name="rest_code_ca3eb7da86364445a564a5f3a871a6c4-3"></a>wlan0: interface state UNINITIALIZED-&gt;COUNTRY_UPDATE
-<a name="rest_code_ca3eb7da86364445a564a5f3a871a6c4-4"></a>wlan0: interface state COUNTRY_UPDATE-&gt;HT_SCAN
-<a name="rest_code_ca3eb7da86364445a564a5f3a871a6c4-5"></a>20/40 MHz operation not permitted on channel pri=6 sec=10 based on overlapping BSSes
-<a name="rest_code_ca3eb7da86364445a564a5f3a871a6c4-6"></a>Using interface wlan0 with hwaddr e8:de:27:19:1e:83 and ssid "sedone3"
-<a name="rest_code_ca3eb7da86364445a564a5f3a871a6c4-7"></a>wlan0: interface state HT_SCAN-&gt;ENABLED
-<a name="rest_code_ca3eb7da86364445a564a5f3a871a6c4-8"></a>wlan0: AP-ENABLED
+<pre class="code text"><a name="rest_code_c8d328a5a29541bc9d2184a700c215b6-1"></a>#hostapd hostapd.conf
+<a name="rest_code_c8d328a5a29541bc9d2184a700c215b6-2"></a>Configuration file: hostapd-sedone.conf
+<a name="rest_code_c8d328a5a29541bc9d2184a700c215b6-3"></a>wlan0: interface state UNINITIALIZED-&gt;COUNTRY_UPDATE
+<a name="rest_code_c8d328a5a29541bc9d2184a700c215b6-4"></a>wlan0: interface state COUNTRY_UPDATE-&gt;HT_SCAN
+<a name="rest_code_c8d328a5a29541bc9d2184a700c215b6-5"></a>20/40 MHz operation not permitted on channel pri=6 sec=10 based on overlapping BSSes
+<a name="rest_code_c8d328a5a29541bc9d2184a700c215b6-6"></a>Using interface wlan0 with hwaddr e8:de:27:19:1e:83 and ssid "sedone3"
+<a name="rest_code_c8d328a5a29541bc9d2184a700c215b6-7"></a>wlan0: interface state HT_SCAN-&gt;ENABLED
+<a name="rest_code_c8d328a5a29541bc9d2184a700c215b6-8"></a>wlan0: AP-ENABLED
 </pre>
 </blockquote>
 <p>For this test, I do not run hostapd in background (-B) mode so I can debug if I need to.
 This is <em>hostapd.conf</em> file,</p>
-<blockquote>
-<table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-1"> 1</a>
-<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-2"> 2</a>
-<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-3"> 3</a>
-<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-4"> 4</a>
-<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-5"> 5</a>
-<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-6"> 6</a>
-<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-7"> 7</a>
-<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-8"> 8</a>
-<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-9"> 9</a>
-<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-10">10</a>
-<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-11">11</a>
-<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-12">12</a>
-<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-13">13</a>
-<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-14">14</a>
-<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-15">15</a>
-<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-16">16</a>
-<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-17">17</a>
-<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-18">18</a>
-<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-19">19</a>
-<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-20">20</a>
-<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-21">21</a>
-<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-22">22</a>
-<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-23">23</a>
-<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-24">24</a>
-<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-25">25</a>
-<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-26">26</a>
-<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-27">27</a>
-<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-28">28</a>
-<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-29">29</a>
-<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-30">30</a>
-<a href="#rest_code_40538135ed2c4a59a02ec6b9974da892-31">31</a></pre></div></td>
-<td class="code"><pre class="code text"><a name="rest_code_40538135ed2c4a59a02ec6b9974da892-1"></a>interface=wlan0
-<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-2"></a>bridge=br0
-<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-3"></a>logger_syslog=127
-<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-4"></a>logger_syslog_level=2
-<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-5"></a>logger_stdout=127
-<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-6"></a>logger_stdout_level=2
-<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-7"></a>ctrl_interface=/var/run/hostapd
-<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-8"></a>ctrl_interface_group=0
-<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-9"></a>ssid=sedone3
-<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-10"></a>hw_mode=g
-<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-11"></a>macaddr_acl=0
-<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-12"></a>auth_algs=1
-<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-13"></a>ieee8021x=1
-<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-14"></a>eapol_key_index_workaround=0
-<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-15"></a>eap_server=1
-<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-16"></a>country_code=US
-<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-17"></a>channel=6
-<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-18"></a>beacon_int=100
-<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-19"></a>hw_mode=g
-<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-20"></a>wpa=2
-<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-21"></a>ieee80211n=1
-<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-22"></a>wme_enabled=1
-<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-23"></a>ht_capab=[SHORT-GI-20][SHORT-GI-40][HT40+]
-<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-24"></a>wpa_key_mgmt=WPA-PSK
-<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-25"></a>wpa_pairwise=CCMP
-<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-26"></a>max_num_sta=8
-<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-27"></a>wpa_group_rekey=86400
-<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-28"></a>wpa_passphrase=87654321
-<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-29"></a>upnp_iface=br0
-<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-30"></a>friendly_name=sedone3
-<a name="rest_code_40538135ed2c4a59a02ec6b9974da892-31"></a>model_description=Slackware WiFi AP
-</pre></td>
-</tr></table>
-</blockquote>
+<p><a class="reference external" href="../../listings/hostapd-sedone.conf.html">hostapd-sedone.conf</a></p>
+<pre class="literal-block">
+<span class="ln"> 1 </span>interface=wlan0
+<span class="ln"> 2 </span>bridge=br0
+<span class="ln"> 3 </span>logger_syslog=127
+<span class="ln"> 4 </span>logger_syslog_level=2
+<span class="ln"> 5 </span>logger_stdout=127
+<span class="ln"> 6 </span>logger_stdout_level=2
+<span class="ln"> 7 </span>ctrl_interface=/var/run/hostapd
+<span class="ln"> 8 </span>ctrl_interface_group=0
+<span class="ln"> 9 </span>ssid=sedone3
+<span class="ln">10 </span>hw_mode=g
+<span class="ln">11 </span>macaddr_acl=0
+<span class="ln">12 </span>auth_algs=1
+<span class="ln">13 </span>ieee8021x=1
+<span class="ln">14 </span>eapol_key_index_workaround=0
+<span class="ln">15 </span>eap_server=1
+<span class="ln">16 </span>country_code=US
+<span class="ln">17 </span>channel=6
+<span class="ln">18 </span>
+<span class="ln">19 </span>beacon_int=100
+<span class="ln">20 </span>hw_mode=g
+<span class="ln">21 </span>wpa=2
+<span class="ln">22 </span>ieee80211n=1
+<span class="ln">23 </span>wme_enabled=1
+<span class="ln">24 </span>ht_capab=[SHORT-GI-20][SHORT-GI-40][HT40+]
+<span class="ln">25 </span>wpa_key_mgmt=WPA-PSK
+<span class="ln">26 </span>wpa_pairwise=CCMP
+<span class="ln">27 </span>max_num_sta=8
+<span class="ln">28 </span>wpa_group_rekey=86400
+<span class="ln">29 </span>wpa_passphrase=87654321
+<span class="ln">30 </span>
+<span class="ln">31 </span>upnp_iface=br0
+<span class="ln">32 </span>friendly_name=sedone3
+<span class="ln">33 </span>model_description=Slackware WiFi AP
+</pre>
 <p>Line 9 is my AP's SSID, <em>sedone3</em>. The authentication password is at line 28. Basically from line 20 down
 (minus a few), are the settings for security features such as key exchange, authentication mode etc..</p>
 <p>At this point I can browse/scan the WiFi AP and I will see <em>sedone3</em> as its SSID, but
@@ -362,11 +321,11 @@ packets are not yet routed; however, my android tablet can connect to it.</p>
 <li>Now set the IP tables rules for package forwarding,masquerading. This is essential to
 get network properly covered.</li>
 </ul>
-<pre class="code text"><a name="rest_code_18868e3ff48e4188ac920ef687533bca-1"></a># iptables -A INPUT -i br0 -j ACCEPT
-<a name="rest_code_18868e3ff48e4188ac920ef687533bca-2"></a># iptables -A FORWARD -i br0 -o eth0 -j ACCEPT
-<a name="rest_code_18868e3ff48e4188ac920ef687533bca-3"></a># iptables -A FORWARD -o br0 -i eth0 -j ACCEPT
-<a name="rest_code_18868e3ff48e4188ac920ef687533bca-4"></a># iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-<a name="rest_code_18868e3ff48e4188ac920ef687533bca-5"></a># iptables -A FORWARD -o br0 -i eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+<pre class="code text"><a name="rest_code_636017ac3c42410f840d69f613b92f0a-1"></a># iptables -A INPUT -i br0 -j ACCEPT
+<a name="rest_code_636017ac3c42410f840d69f613b92f0a-2"></a># iptables -A FORWARD -i br0 -o eth0 -j ACCEPT
+<a name="rest_code_636017ac3c42410f840d69f613b92f0a-3"></a># iptables -A FORWARD -o br0 -i eth0 -j ACCEPT
+<a name="rest_code_636017ac3c42410f840d69f613b92f0a-4"></a># iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+<a name="rest_code_636017ac3c42410f840d69f613b92f0a-5"></a># iptables -A FORWARD -o br0 -i eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
 </pre>
 <div class="figure">
 <img alt="../../images/misc/sedone3-browse.jpg" src="../../images/misc/sedone3-browse.jpg"><p class="caption">Fig4: Internet access after IP netfilter forwarding,masquerading.</p>
@@ -375,13 +334,13 @@ get network properly covered.</li>
 bridge device and the main ethernet device (WAN or eth0) with masquerading.</p>
 <p>Route for the new network is shared with <em>eth0</em>'s default gateway. There is
 no special setting for the route. Here is my route,</p>
-<pre class="code text"><a name="rest_code_c8909fa32d8e47a7a9d36e7536cfcec6-1"></a>#route
-<a name="rest_code_c8909fa32d8e47a7a9d36e7536cfcec6-2"></a>Kernel IP routing table
-<a name="rest_code_c8909fa32d8e47a7a9d36e7536cfcec6-3"></a>Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
-<a name="rest_code_c8909fa32d8e47a7a9d36e7536cfcec6-4"></a>default         netrouter       0.0.0.0         UG    1      0        0 eth0
-<a name="rest_code_c8909fa32d8e47a7a9d36e7536cfcec6-5"></a>loopback        *               255.0.0.0       U     0      0        0 lo
-<a name="rest_code_c8909fa32d8e47a7a9d36e7536cfcec6-6"></a>192.168.10.0    *               255.255.255.0   U     0      0        0 eth0
-<a name="rest_code_c8909fa32d8e47a7a9d36e7536cfcec6-7"></a>192.168.11.0    *               255.255.255.0   U     0      0        0 br0
+<pre class="code text"><a name="rest_code_2f0ca9722a5040fe8c6e3f9dbcde9825-1"></a>#route
+<a name="rest_code_2f0ca9722a5040fe8c6e3f9dbcde9825-2"></a>Kernel IP routing table
+<a name="rest_code_2f0ca9722a5040fe8c6e3f9dbcde9825-3"></a>Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+<a name="rest_code_2f0ca9722a5040fe8c6e3f9dbcde9825-4"></a>default         netrouter       0.0.0.0         UG    1      0        0 eth0
+<a name="rest_code_2f0ca9722a5040fe8c6e3f9dbcde9825-5"></a>loopback        *               255.0.0.0       U     0      0        0 lo
+<a name="rest_code_2f0ca9722a5040fe8c6e3f9dbcde9825-6"></a>192.168.10.0    *               255.255.255.0   U     0      0        0 eth0
+<a name="rest_code_2f0ca9722a5040fe8c6e3f9dbcde9825-7"></a>192.168.11.0    *               255.255.255.0   U     0      0        0 br0
 </pre>
 <p>The IP netfilter rules added are the rules
 added on top of what I already have for my local <em>eth0</em> network. I did not flush my
@@ -391,9 +350,26 @@ More IP filter rules can be added specifically for this network if needed.</p>
 <p>I am not sure how many Mbps my <em>wlan0</em> can reach so I leave it at default of 72Mbps.
 Most newer PCIe WiFi card will probably reach Gbps speed, but mine is relatively old. Perhaps
 it can reach in the hundreds Mbps.</p>
+<p>The operational state of my <em>wlan0</em> devices,</p>
+<pre class="code text"><a name="rest_code_afc06e41bdd44a8090deed28d6dec9cd-1"></a>iw dev wlan0 info
+<a name="rest_code_afc06e41bdd44a8090deed28d6dec9cd-2"></a>
+<a name="rest_code_afc06e41bdd44a8090deed28d6dec9cd-3"></a>Interface wlan0
+<a name="rest_code_afc06e41bdd44a8090deed28d6dec9cd-4"></a>        ifindex 3
+<a name="rest_code_afc06e41bdd44a8090deed28d6dec9cd-5"></a>        wdev 0x1
+<a name="rest_code_afc06e41bdd44a8090deed28d6dec9cd-6"></a>        addr e8:de:27:19:1e:83
+<a name="rest_code_afc06e41bdd44a8090deed28d6dec9cd-7"></a>        ssid sedone3
+<a name="rest_code_afc06e41bdd44a8090deed28d6dec9cd-8"></a>        type AP
+<a name="rest_code_afc06e41bdd44a8090deed28d6dec9cd-9"></a>        wiphy 0
+<a name="rest_code_afc06e41bdd44a8090deed28d6dec9cd-10"></a>        channel 6 (2437 MHz), width: 20 MHz, center1: 2437 MHz
+<a name="rest_code_afc06e41bdd44a8090deed28d6dec9cd-11"></a>
+<a name="rest_code_afc06e41bdd44a8090deed28d6dec9cd-12"></a>iwconfig wlan0
+<a name="rest_code_afc06e41bdd44a8090deed28d6dec9cd-13"></a>        wlan0     IEEE 802.11abgn  Mode:Master  Tx-Power=16 dBm
+<a name="rest_code_afc06e41bdd44a8090deed28d6dec9cd-14"></a>                  Retry short limit:7   RTS thr:off   Fragment thr:off
+<a name="rest_code_afc06e41bdd44a8090deed28d6dec9cd-15"></a>                  Power Management:off
+</pre>
 </div>
-<div class="section" id="conclusion">
-<h2>Conclusion</h2>
+<div class="section" id="summary">
+<h2>Summary</h2>
 <p><em>dnsmasq</em> and <em>hostapd</em> do all the magic here. Unlike my other posts, I do not write
 a single line of code. I do not debug, perform timing closure (FPGA) or do any frustrated things.
 Is it hard ? Well, It takes me a lot longer to write this post than to set up the
@@ -402,10 +378,6 @@ spend time building the needed packages.
 For most Linux distribution, one can download/install the pre-built binary packages with the
 host package manager software, for example, Ubuntu's apt-get install &lt;package&gt; command. It
 is not necessary to build everything like I did.</p>
-<p>There are many choices of WiFi routers out there in the store shelves; however, regardless of how
-expensive they are, their set up to make a WiFi router is almost identical to this post. More than
-that are just bell and whistle to turn simple thing into deep shit.
-How fast and how far is all about the WiFi chip set in that box.</p>
 </div>
 </div>
     </div>
