@@ -105,12 +105,12 @@ field (GF), <span class="math">\(GF(q)\)</span>, if <span class="math">\(a\)</sp
 An irreducible polynomial always divides <span class="math">\(1+x^m\)</span> for
 <span class="math">\(m = 2^n - 1\)</span> (exact). For this exercise, <span class="math">\(h(x)=1+x+x^4\)</span>, does not divide <span class="math">\((1+x^m)\)</span> for any
 <span class="math">\(m &lt; 2^4 -1 ( m &lt; 15)\)</span>. It will divide <span class="math">\((1+x^{15})\)</span> though (is a factor). I can use MATLAB to verify this,</p>
-<pre class="code text"><a name="rest_code_224eeabc7cc3428f806022b4d4d97b1c-1"></a>&gt;&gt; h=[ 0 0 0 1];
-<a name="rest_code_224eeabc7cc3428f806022b4d4d97b1c-2"></a>&gt;&gt; test=[1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1];
-<a name="rest_code_224eeabc7cc3428f806022b4d4d97b1c-3"></a>&gt;&gt; [qr] = deconv(test,h);
-<a name="rest_code_224eeabc7cc3428f806022b4d4d97b1c-4"></a>&gt;&gt; mod(r,2)
-<a name="rest_code_224eeabc7cc3428f806022b4d4d97b1c-5"></a>&gt;&gt; s =
-<a name="rest_code_224eeabc7cc3428f806022b4d4d97b1c-6"></a> 0 0 .... 0
+<pre class="code text"><a name="rest_code_64cf203adafd4257af295a52bcf80081-1"></a>&gt;&gt; h=[ 0 0 0 1];
+<a name="rest_code_64cf203adafd4257af295a52bcf80081-2"></a>&gt;&gt; test=[1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1];
+<a name="rest_code_64cf203adafd4257af295a52bcf80081-3"></a>&gt;&gt; [qr] = deconv(test,h);
+<a name="rest_code_64cf203adafd4257af295a52bcf80081-4"></a>&gt;&gt; mod(r,2)
+<a name="rest_code_64cf203adafd4257af295a52bcf80081-5"></a>&gt;&gt; s =
+<a name="rest_code_64cf203adafd4257af295a52bcf80081-6"></a> 0 0 .... 0
 </pre>
 <p>The remainder from the division over <em>Galois</em> field (GF) yields zeros vector from the MATHLAB operations.
 Next is to construct the parity check matrix, <span class="math">\(H^t\)</span> over <span class="math">\(GF(2^r)\)</span>. From parity check matrix, the generator
@@ -118,11 +118,11 @@ matrix for the code can be found. First, let <span class="math">\(\beta\)</span>
 <span class="math">\(x mod h(x)\)</span> so that, <span class="math">\(\beta^i \equiv x^i mod h(x)\)</span>. This means that every non-zero can be represented
 by the power of <span class="math">\(\beta\)</span>, for example, <span class="math">\(\beta^5 \equiv x^5 mod (1+x+x^4) = x+x^2\)</span>.
 Verify it with MATHLAB operation,</p>
-<pre class="code text"><a name="rest_code_8f266b216ef74b4488da65edf22630a8-1"></a>&gt;&gt; beta5=[1 0 0 0 0 0];
-<a name="rest_code_8f266b216ef74b4488da65edf22630a8-2"></a>&gt;&gt; [q,r] = deconv(beta5,h);
-<a name="rest_code_8f266b216ef74b4488da65edf22630a8-3"></a>&gt;&gt; mod(r,2)
-<a name="rest_code_8f266b216ef74b4488da65edf22630a8-4"></a>ans =
-<a name="rest_code_8f266b216ef74b4488da65edf22630a8-5"></a>    0 0 0 1 1 0
+<pre class="code text"><a name="rest_code_8424a1f87224496cb9009deb0675433f-1"></a>&gt;&gt; beta5=[1 0 0 0 0 0];
+<a name="rest_code_8424a1f87224496cb9009deb0675433f-2"></a>&gt;&gt; [q,r] = deconv(beta5,h);
+<a name="rest_code_8424a1f87224496cb9009deb0675433f-3"></a>&gt;&gt; mod(r,2)
+<a name="rest_code_8424a1f87224496cb9009deb0675433f-4"></a>ans =
+<a name="rest_code_8424a1f87224496cb9009deb0675433f-5"></a>    0 0 0 1 1 0
 </pre>
 <p>I need to generate all powers of <span class="math">\(\beta\)</span>, from <span class="math">\(\beta^0\)</span> to <span class="math">\(\beta^{14}\)</span>. I can use MATLAB
 operations to do that.</p>
@@ -316,17 +316,17 @@ u = vG
 </div>
 <p>where <span class="math">\(v\)</span> is the 11-bit source code word to be encoded. I use MATLAB to create the matrices
 for the parity(11x4), parity check(15x4) and generator respectively(11x15).</p>
-<pre class="code text"><a name="rest_code_8fc3cfaaf4854b538169e0f38b48869e-1"></a>&gt;&gt; p=[1 0 0 1;1 1 0 1;1 1 1 1;1 1 1 0;0 1 1 1;1 0 1 0;0 1 0 1;1 0 1 1;1 1 0 0 ;0 1 1 0;0 0 1 1];
-<a name="rest_code_8fc3cfaaf4854b538169e0f38b48869e-2"></a>&gt;&gt; G=[eye(11) p];
-<a name="rest_code_8fc3cfaaf4854b538169e0f38b48869e-3"></a>&gt;&gt; ht=vertcat(eye(4),p);
-<a name="rest_code_8fc3cfaaf4854b538169e0f38b48869e-4"></a>&gt;&gt; mod(G*ht,2)
-<a name="rest_code_8fc3cfaaf4854b538169e0f38b48869e-5"></a>
-<a name="rest_code_8fc3cfaaf4854b538169e0f38b48869e-6"></a>ans =
-<a name="rest_code_8fc3cfaaf4854b538169e0f38b48869e-7"></a>
-<a name="rest_code_8fc3cfaaf4854b538169e0f38b48869e-8"></a>     0     0     0     0
-<a name="rest_code_8fc3cfaaf4854b538169e0f38b48869e-9"></a>     0     0     0     0
-<a name="rest_code_8fc3cfaaf4854b538169e0f38b48869e-10"></a>     ..
-<a name="rest_code_8fc3cfaaf4854b538169e0f38b48869e-11"></a>     0     0     0     0
+<pre class="code text"><a name="rest_code_5227d2d37e214fd9916621ad141f46ab-1"></a>&gt;&gt; p=[1 0 0 1;1 1 0 1;1 1 1 1;1 1 1 0;0 1 1 1;1 0 1 0;0 1 0 1;1 0 1 1;1 1 0 0 ;0 1 1 0;0 0 1 1];
+<a name="rest_code_5227d2d37e214fd9916621ad141f46ab-2"></a>&gt;&gt; G=[eye(11) p];
+<a name="rest_code_5227d2d37e214fd9916621ad141f46ab-3"></a>&gt;&gt; ht=vertcat(eye(4),p);
+<a name="rest_code_5227d2d37e214fd9916621ad141f46ab-4"></a>&gt;&gt; mod(G*ht,2)
+<a name="rest_code_5227d2d37e214fd9916621ad141f46ab-5"></a>
+<a name="rest_code_5227d2d37e214fd9916621ad141f46ab-6"></a>ans =
+<a name="rest_code_5227d2d37e214fd9916621ad141f46ab-7"></a>
+<a name="rest_code_5227d2d37e214fd9916621ad141f46ab-8"></a>     0     0     0     0
+<a name="rest_code_5227d2d37e214fd9916621ad141f46ab-9"></a>     0     0     0     0
+<a name="rest_code_5227d2d37e214fd9916621ad141f46ab-10"></a>     ..
+<a name="rest_code_5227d2d37e214fd9916621ad141f46ab-11"></a>     0     0     0     0
 </pre>
 <p>The error bit syndrome can then be computed for the FEC,</p>
 <!-- fixme: this is the same as I * Ht = Ht !? -->
@@ -366,34 +366,34 @@ The most likely code word with the closest distance would then be the correspond
 exercise, there will be 16 correctable patterns and they are the patterns of the identity matrix.</p>
 <p>Using MATLAB to generate the input words to be encoded for all <span class="math">\(2^{11}\)</span> possible values then
 encoded it with the <span class="math">\(G\)</span> matrix following by 1 bit error simulation for error correction,</p>
-<pre class="code text"><a name="rest_code_d4406c3644714a0c84fab94ddf8119c2-1"></a>&gt;&gt; v=dec2bin(0:2^11-1)-'0';
-<a name="rest_code_d4406c3644714a0c84fab94ddf8119c2-2"></a>&gt;&gt; u=mod(v*G,2);
-<a name="rest_code_d4406c3644714a0c84fab94ddf8119c2-3"></a>&gt;&gt; mod(u(100,:)*ht,2)
-<a name="rest_code_d4406c3644714a0c84fab94ddf8119c2-4"></a>
-<a name="rest_code_d4406c3644714a0c84fab94ddf8119c2-5"></a>ans =
-<a name="rest_code_d4406c3644714a0c84fab94ddf8119c2-6"></a>
-<a name="rest_code_d4406c3644714a0c84fab94ddf8119c2-7"></a>    0     0     0     0
+<pre class="code text"><a name="rest_code_c60cb934b9e94d95b464900092a4227d-1"></a>&gt;&gt; v=dec2bin(0:2^11-1)-'0';
+<a name="rest_code_c60cb934b9e94d95b464900092a4227d-2"></a>&gt;&gt; u=mod(v*G,2);
+<a name="rest_code_c60cb934b9e94d95b464900092a4227d-3"></a>&gt;&gt; mod(u(100,:)*ht,2)
+<a name="rest_code_c60cb934b9e94d95b464900092a4227d-4"></a>
+<a name="rest_code_c60cb934b9e94d95b464900092a4227d-5"></a>ans =
+<a name="rest_code_c60cb934b9e94d95b464900092a4227d-6"></a>
+<a name="rest_code_c60cb934b9e94d95b464900092a4227d-7"></a>    0     0     0     0
 </pre>
 <p>Simulate 1 bit error from one of the encoded words will result in syndrome of,</p>
-<pre class="code text"><a name="rest_code_dcdc6e68fa2c499c906b53a151951ead-1"></a>&gt;&gt; a=u(100,:);
-<a name="rest_code_dcdc6e68fa2c499c906b53a151951ead-2"></a>&gt;&gt; a(1)=1
-<a name="rest_code_dcdc6e68fa2c499c906b53a151951ead-3"></a>
-<a name="rest_code_dcdc6e68fa2c499c906b53a151951ead-4"></a>a =
-<a name="rest_code_dcdc6e68fa2c499c906b53a151951ead-5"></a>
-<a name="rest_code_dcdc6e68fa2c499c906b53a151951ead-6"></a>     1     0     0     0     1     1     0     0     0     1     1     1     0     0     0
-<a name="rest_code_dcdc6e68fa2c499c906b53a151951ead-7"></a>
-<a name="rest_code_dcdc6e68fa2c499c906b53a151951ead-8"></a>&gt;&gt; mod(a*Ht,2)
-<a name="rest_code_dcdc6e68fa2c499c906b53a151951ead-9"></a>
-<a name="rest_code_dcdc6e68fa2c499c906b53a151951ead-10"></a>ans =
-<a name="rest_code_dcdc6e68fa2c499c906b53a151951ead-11"></a>
-<a name="rest_code_dcdc6e68fa2c499c906b53a151951ead-12"></a>    1     0     0     1
+<pre class="code text"><a name="rest_code_200c40ce35aa485abf76ae18e3b25fcf-1"></a>&gt;&gt; a=u(100,:);
+<a name="rest_code_200c40ce35aa485abf76ae18e3b25fcf-2"></a>&gt;&gt; a(1)=1
+<a name="rest_code_200c40ce35aa485abf76ae18e3b25fcf-3"></a>
+<a name="rest_code_200c40ce35aa485abf76ae18e3b25fcf-4"></a>a =
+<a name="rest_code_200c40ce35aa485abf76ae18e3b25fcf-5"></a>
+<a name="rest_code_200c40ce35aa485abf76ae18e3b25fcf-6"></a>     1     0     0     0     1     1     0     0     0     1     1     1     0     0     0
+<a name="rest_code_200c40ce35aa485abf76ae18e3b25fcf-7"></a>
+<a name="rest_code_200c40ce35aa485abf76ae18e3b25fcf-8"></a>&gt;&gt; mod(a*Ht,2)
+<a name="rest_code_200c40ce35aa485abf76ae18e3b25fcf-9"></a>
+<a name="rest_code_200c40ce35aa485abf76ae18e3b25fcf-10"></a>ans =
+<a name="rest_code_200c40ce35aa485abf76ae18e3b25fcf-11"></a>
+<a name="rest_code_200c40ce35aa485abf76ae18e3b25fcf-12"></a>    1     0     0     1
 </pre>
 <p>This syndrome will correspond to the first row of <span class="math">\(I_{15}\)</span>, so the corrected code word would be,</p>
-<pre class="code text"><a name="rest_code_55381c35a5954759b3f0a9608348d9c4-1"></a>&gt;&gt; mod(a(1:11) + I11(1,:),2)
-<a name="rest_code_55381c35a5954759b3f0a9608348d9c4-2"></a>
-<a name="rest_code_55381c35a5954759b3f0a9608348d9c4-3"></a>ans =
-<a name="rest_code_55381c35a5954759b3f0a9608348d9c4-4"></a>
-<a name="rest_code_55381c35a5954759b3f0a9608348d9c4-5"></a>     0     0     0     0     1     1     0     0     0     1     1
+<pre class="code text"><a name="rest_code_14a9012dd9d943488f34466bea2c9980-1"></a>&gt;&gt; mod(a(1:11) + I11(1,:),2)
+<a name="rest_code_14a9012dd9d943488f34466bea2c9980-2"></a>
+<a name="rest_code_14a9012dd9d943488f34466bea2c9980-3"></a>ans =
+<a name="rest_code_14a9012dd9d943488f34466bea2c9980-4"></a>
+<a name="rest_code_14a9012dd9d943488f34466bea2c9980-5"></a>     0     0     0     0     1     1     0     0     0     1     1
 </pre>
 <p>which is the same as the original unaltered test code word. This is also based on the fundamental
 assumption that bit error occurs independently and that the most likely error pattern is the one

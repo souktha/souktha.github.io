@@ -117,79 +117,79 @@ will make use of AHCI driver that is already in place with some modifcation need
 <p>1) Program the PLL for the correct values. I modify <em>sata_pll_config()</em> of <em>board/ti/ti8148/evm.c</em> for the correct
 values that use to configure <em>SATA_PLLCFGx</em> as shown in TI document, section 21.3.1, base on the 100MHZ low-jitter clock.</p>
 <table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_c1c6b22deba241d49105e6bd3b67ccfb-1">1</a>
-<a href="#rest_code_c1c6b22deba241d49105e6bd3b67ccfb-2">2</a>
-<a href="#rest_code_c1c6b22deba241d49105e6bd3b67ccfb-3">3</a>
-<a href="#rest_code_c1c6b22deba241d49105e6bd3b67ccfb-4">4</a>
-<a href="#rest_code_c1c6b22deba241d49105e6bd3b67ccfb-5">5</a>
-<a href="#rest_code_c1c6b22deba241d49105e6bd3b67ccfb-6">6</a>
-<a href="#rest_code_c1c6b22deba241d49105e6bd3b67ccfb-7">7</a>
-<a href="#rest_code_c1c6b22deba241d49105e6bd3b67ccfb-8">8</a>
-<a href="#rest_code_c1c6b22deba241d49105e6bd3b67ccfb-9">9</a></pre></div></td>
-<td class="code"><pre class="code c"><a name="rest_code_c1c6b22deba241d49105e6bd3b67ccfb-1"></a>       <span class="cm">/*use 100MHZ low jitter clock feed*/</span>
-<a name="rest_code_c1c6b22deba241d49105e6bd3b67ccfb-2"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x00000004</span><span class="p">,</span> <span class="n">SATA_PLLCFG0</span><span class="p">);</span>
-<a name="rest_code_c1c6b22deba241d49105e6bd3b67ccfb-3"></a>       <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="n">delay</span><span class="p">(</span><span class="mh">0xFFFF</span><span class="p">);</span>
-<a name="rest_code_c1c6b22deba241d49105e6bd3b67ccfb-4"></a>
-<a name="rest_code_c1c6b22deba241d49105e6bd3b67ccfb-5"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x812C003C</span><span class="p">,</span> <span class="n">SATA_PLLCFG1</span><span class="p">);</span>
-<a name="rest_code_c1c6b22deba241d49105e6bd3b67ccfb-6"></a>       <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="n">delay</span><span class="p">(</span><span class="mh">0xFFFF</span><span class="p">);</span>
-<a name="rest_code_c1c6b22deba241d49105e6bd3b67ccfb-7"></a>       <span class="p">....</span>
-<a name="rest_code_c1c6b22deba241d49105e6bd3b67ccfb-8"></a>       <span class="p">....</span>
-<a name="rest_code_c1c6b22deba241d49105e6bd3b67ccfb-9"></a>       <span class="n">sata_phy_config</span><span class="p">();</span>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_41ca7130ef934000a2d2be2a53bfc894-1">1</a>
+<a href="#rest_code_41ca7130ef934000a2d2be2a53bfc894-2">2</a>
+<a href="#rest_code_41ca7130ef934000a2d2be2a53bfc894-3">3</a>
+<a href="#rest_code_41ca7130ef934000a2d2be2a53bfc894-4">4</a>
+<a href="#rest_code_41ca7130ef934000a2d2be2a53bfc894-5">5</a>
+<a href="#rest_code_41ca7130ef934000a2d2be2a53bfc894-6">6</a>
+<a href="#rest_code_41ca7130ef934000a2d2be2a53bfc894-7">7</a>
+<a href="#rest_code_41ca7130ef934000a2d2be2a53bfc894-8">8</a>
+<a href="#rest_code_41ca7130ef934000a2d2be2a53bfc894-9">9</a></pre></div></td>
+<td class="code"><pre class="code c"><a name="rest_code_41ca7130ef934000a2d2be2a53bfc894-1"></a>       <span class="cm">/*use 100MHZ low jitter clock feed*/</span>
+<a name="rest_code_41ca7130ef934000a2d2be2a53bfc894-2"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x00000004</span><span class="p">,</span> <span class="n">SATA_PLLCFG0</span><span class="p">);</span>
+<a name="rest_code_41ca7130ef934000a2d2be2a53bfc894-3"></a>       <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="n">delay</span><span class="p">(</span><span class="mh">0xFFFF</span><span class="p">);</span>
+<a name="rest_code_41ca7130ef934000a2d2be2a53bfc894-4"></a>
+<a name="rest_code_41ca7130ef934000a2d2be2a53bfc894-5"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x812C003C</span><span class="p">,</span> <span class="n">SATA_PLLCFG1</span><span class="p">);</span>
+<a name="rest_code_41ca7130ef934000a2d2be2a53bfc894-6"></a>       <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="n">delay</span><span class="p">(</span><span class="mh">0xFFFF</span><span class="p">);</span>
+<a name="rest_code_41ca7130ef934000a2d2be2a53bfc894-7"></a>       <span class="p">....</span>
+<a name="rest_code_41ca7130ef934000a2d2be2a53bfc894-8"></a>       <span class="p">....</span>
+<a name="rest_code_41ca7130ef934000a2d2be2a53bfc894-9"></a>       <span class="n">sata_phy_config</span><span class="p">();</span>
 </pre></td>
 </tr></table>
 <ol class="arabic simple" start="2">
 <li>Add small piece of code to program SATA PHY (SERDES) namely the RX and TX configuration registers.</li>
 </ol>
 <table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_2bfcdcf644c04cca9a16c713084e574e-1"> 1</a>
-<a href="#rest_code_2bfcdcf644c04cca9a16c713084e574e-2"> 2</a>
-<a href="#rest_code_2bfcdcf644c04cca9a16c713084e574e-3"> 3</a>
-<a href="#rest_code_2bfcdcf644c04cca9a16c713084e574e-4"> 4</a>
-<a href="#rest_code_2bfcdcf644c04cca9a16c713084e574e-5"> 5</a>
-<a href="#rest_code_2bfcdcf644c04cca9a16c713084e574e-6"> 6</a>
-<a href="#rest_code_2bfcdcf644c04cca9a16c713084e574e-7"> 7</a>
-<a href="#rest_code_2bfcdcf644c04cca9a16c713084e574e-8"> 8</a>
-<a href="#rest_code_2bfcdcf644c04cca9a16c713084e574e-9"> 9</a>
-<a href="#rest_code_2bfcdcf644c04cca9a16c713084e574e-10">10</a>
-<a href="#rest_code_2bfcdcf644c04cca9a16c713084e574e-11">11</a>
-<a href="#rest_code_2bfcdcf644c04cca9a16c713084e574e-12">12</a></pre></div></td>
-<td class="code"><pre class="code c"><a name="rest_code_2bfcdcf644c04cca9a16c713084e574e-1"></a>       <span class="k">static</span> <span class="kt">void</span> <span class="nf">sata_phy_config</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
-<a name="rest_code_2bfcdcf644c04cca9a16c713084e574e-2"></a>       <span class="p">{</span>
-<a name="rest_code_2bfcdcf644c04cca9a16c713084e574e-3"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">TI814X_SATA_PHY_CFGRX0_VAL</span><span class="p">,</span> <span class="n">SATA_PHY_CFGRX0</span><span class="p">);</span>
-<a name="rest_code_2bfcdcf644c04cca9a16c713084e574e-4"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">TI814X_SATA_PHY_CFGRX1_VAL</span><span class="p">,</span> <span class="n">SATA_PHY_CFGRX1</span><span class="p">);</span>
-<a name="rest_code_2bfcdcf644c04cca9a16c713084e574e-5"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">TI814X_SATA_PHY_CFGRX2_VAL</span><span class="p">,</span> <span class="n">SATA_PHY_CFGRX2</span><span class="p">);</span>
-<a name="rest_code_2bfcdcf644c04cca9a16c713084e574e-6"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">TI814X_SATA_PHY_CFGRX3_VAL</span><span class="p">,</span> <span class="n">SATA_PHY_CFGRX3</span><span class="p">);</span>
-<a name="rest_code_2bfcdcf644c04cca9a16c713084e574e-7"></a>
-<a name="rest_code_2bfcdcf644c04cca9a16c713084e574e-8"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">TI814X_SATA_PHY_CFGTX0_VAL</span><span class="p">,</span> <span class="n">SATA_PHY_CFGTX0</span><span class="p">);</span>
-<a name="rest_code_2bfcdcf644c04cca9a16c713084e574e-9"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">TI814X_SATA_PHY_CFGTX1_VAL</span><span class="p">,</span> <span class="n">SATA_PHY_CFGTX1</span><span class="p">);</span>
-<a name="rest_code_2bfcdcf644c04cca9a16c713084e574e-10"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">TI814X_SATA_PHY_CFGTX2_VAL</span><span class="p">,</span> <span class="n">SATA_PHY_CFGTX2</span><span class="p">);</span>
-<a name="rest_code_2bfcdcf644c04cca9a16c713084e574e-11"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">TI814X_SATA_PHY_CFGTX3_VAL</span><span class="p">,</span> <span class="n">SATA_PHY_CFGTX3</span><span class="p">);</span>
-<a name="rest_code_2bfcdcf644c04cca9a16c713084e574e-12"></a>       <span class="p">}</span>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_7557b6c1e078438aae473ca0bfee035b-1"> 1</a>
+<a href="#rest_code_7557b6c1e078438aae473ca0bfee035b-2"> 2</a>
+<a href="#rest_code_7557b6c1e078438aae473ca0bfee035b-3"> 3</a>
+<a href="#rest_code_7557b6c1e078438aae473ca0bfee035b-4"> 4</a>
+<a href="#rest_code_7557b6c1e078438aae473ca0bfee035b-5"> 5</a>
+<a href="#rest_code_7557b6c1e078438aae473ca0bfee035b-6"> 6</a>
+<a href="#rest_code_7557b6c1e078438aae473ca0bfee035b-7"> 7</a>
+<a href="#rest_code_7557b6c1e078438aae473ca0bfee035b-8"> 8</a>
+<a href="#rest_code_7557b6c1e078438aae473ca0bfee035b-9"> 9</a>
+<a href="#rest_code_7557b6c1e078438aae473ca0bfee035b-10">10</a>
+<a href="#rest_code_7557b6c1e078438aae473ca0bfee035b-11">11</a>
+<a href="#rest_code_7557b6c1e078438aae473ca0bfee035b-12">12</a></pre></div></td>
+<td class="code"><pre class="code c"><a name="rest_code_7557b6c1e078438aae473ca0bfee035b-1"></a>       <span class="k">static</span> <span class="kt">void</span> <span class="nf">sata_phy_config</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<a name="rest_code_7557b6c1e078438aae473ca0bfee035b-2"></a>       <span class="p">{</span>
+<a name="rest_code_7557b6c1e078438aae473ca0bfee035b-3"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">TI814X_SATA_PHY_CFGRX0_VAL</span><span class="p">,</span> <span class="n">SATA_PHY_CFGRX0</span><span class="p">);</span>
+<a name="rest_code_7557b6c1e078438aae473ca0bfee035b-4"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">TI814X_SATA_PHY_CFGRX1_VAL</span><span class="p">,</span> <span class="n">SATA_PHY_CFGRX1</span><span class="p">);</span>
+<a name="rest_code_7557b6c1e078438aae473ca0bfee035b-5"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">TI814X_SATA_PHY_CFGRX2_VAL</span><span class="p">,</span> <span class="n">SATA_PHY_CFGRX2</span><span class="p">);</span>
+<a name="rest_code_7557b6c1e078438aae473ca0bfee035b-6"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">TI814X_SATA_PHY_CFGRX3_VAL</span><span class="p">,</span> <span class="n">SATA_PHY_CFGRX3</span><span class="p">);</span>
+<a name="rest_code_7557b6c1e078438aae473ca0bfee035b-7"></a>
+<a name="rest_code_7557b6c1e078438aae473ca0bfee035b-8"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">TI814X_SATA_PHY_CFGTX0_VAL</span><span class="p">,</span> <span class="n">SATA_PHY_CFGTX0</span><span class="p">);</span>
+<a name="rest_code_7557b6c1e078438aae473ca0bfee035b-9"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">TI814X_SATA_PHY_CFGTX1_VAL</span><span class="p">,</span> <span class="n">SATA_PHY_CFGTX1</span><span class="p">);</span>
+<a name="rest_code_7557b6c1e078438aae473ca0bfee035b-10"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">TI814X_SATA_PHY_CFGTX2_VAL</span><span class="p">,</span> <span class="n">SATA_PHY_CFGTX2</span><span class="p">);</span>
+<a name="rest_code_7557b6c1e078438aae473ca0bfee035b-11"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">TI814X_SATA_PHY_CFGTX3_VAL</span><span class="p">,</span> <span class="n">SATA_PHY_CFGTX3</span><span class="p">);</span>
+<a name="rest_code_7557b6c1e078438aae473ca0bfee035b-12"></a>       <span class="p">}</span>
 </pre></td>
 </tr></table>
 <p>3) Modify <em>drivers/block/ahci.c</em> slighty. The AHCI driver code assumes that the controller is connected via
 PCI bus which is not true for this EVM platform. Since the integrated SATA controller is memory mapped to the SoC
 physical address space, the modification is needed. I define <em>CONFIG_SCSI_AHCI_PLAT</em> to disable blocks of code
 that are PCI related, for example,</p>
-<pre class="code c"><a name="rest_code_2cb437037e824c948264a27688d0a389-1"></a><span class="cp">#ifndef CONFIG_SCSI_AHCI_PLAT</span>
-<a name="rest_code_2cb437037e824c948264a27688d0a389-2"></a><span class="n">pci_read_config_word</span><span class="p">(</span><span class="n">pdev</span><span class="p">,</span> <span class="n">PCI_VENDOR_ID</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">vendor</span><span class="p">);</span>
-<a name="rest_code_2cb437037e824c948264a27688d0a389-3"></a><span class="p">...</span>
-<a name="rest_code_2cb437037e824c948264a27688d0a389-4"></a><span class="cp">#endif</span>
+<pre class="code c"><a name="rest_code_5a93c565ccdf45cf8b6f4bd0da054f6b-1"></a><span class="cp">#ifndef CONFIG_SCSI_AHCI_PLAT</span>
+<a name="rest_code_5a93c565ccdf45cf8b6f4bd0da054f6b-2"></a><span class="n">pci_read_config_word</span><span class="p">(</span><span class="n">pdev</span><span class="p">,</span> <span class="n">PCI_VENDOR_ID</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">vendor</span><span class="p">);</span>
+<a name="rest_code_5a93c565ccdf45cf8b6f4bd0da054f6b-3"></a><span class="p">...</span>
+<a name="rest_code_5a93c565ccdf45cf8b6f4bd0da054f6b-4"></a><span class="cp">#endif</span>
 </pre>
 <p>and replace those blocks where memory mapped access is applicable. I also raise command timeout a little
 bit to ensure that it works for slower HDD.</p>
 <p>4) Add <em>CONFIG_SCSI_AHCI_PLAT</em> for AHCI driver and enable SCSI (AHCI) support in u-boot configuration file,
 <em>include/configs/ti8148_evm.h</em> for one SCSI HDD, one SCSI LUN.</p>
-<pre class="code c"><a name="rest_code_11074a70204e40beb2693adaeb3efbcc-1"></a><span class="cp"># define CONFIG_CMD_SCSI        1</span>
-<a name="rest_code_11074a70204e40beb2693adaeb3efbcc-2"></a><span class="p">...</span>
-<a name="rest_code_11074a70204e40beb2693adaeb3efbcc-3"></a>
-<a name="rest_code_11074a70204e40beb2693adaeb3efbcc-4"></a><span class="cp">#ifdef CONFIG_CMD_SCSI</span>
-<a name="rest_code_11074a70204e40beb2693adaeb3efbcc-5"></a>        <span class="cp">#define CONFIG_SCSI_AHCI</span>
-<a name="rest_code_11074a70204e40beb2693adaeb3efbcc-6"></a>        <span class="cp">#define CONFIG_SCSI_AHCI_PLAT</span>
-<a name="rest_code_11074a70204e40beb2693adaeb3efbcc-7"></a>        <span class="cp">#define CONFIG_SYS_SCSI_MAX_DEVICE 1</span>
-<a name="rest_code_11074a70204e40beb2693adaeb3efbcc-8"></a>        <span class="cp">#define CONFIG_SYS_SCSI_MAX_SCSI_ID 1</span>
-<a name="rest_code_11074a70204e40beb2693adaeb3efbcc-9"></a>        <span class="cp">#define CONFIG_SYS_SCSI_MAX_LUN  1</span>
-<a name="rest_code_11074a70204e40beb2693adaeb3efbcc-10"></a><span class="cp">#endif</span>
+<pre class="code c"><a name="rest_code_455fceb757f6450c8695574ecba3cdbd-1"></a><span class="cp"># define CONFIG_CMD_SCSI        1</span>
+<a name="rest_code_455fceb757f6450c8695574ecba3cdbd-2"></a><span class="p">...</span>
+<a name="rest_code_455fceb757f6450c8695574ecba3cdbd-3"></a>
+<a name="rest_code_455fceb757f6450c8695574ecba3cdbd-4"></a><span class="cp">#ifdef CONFIG_CMD_SCSI</span>
+<a name="rest_code_455fceb757f6450c8695574ecba3cdbd-5"></a>        <span class="cp">#define CONFIG_SCSI_AHCI</span>
+<a name="rest_code_455fceb757f6450c8695574ecba3cdbd-6"></a>        <span class="cp">#define CONFIG_SCSI_AHCI_PLAT</span>
+<a name="rest_code_455fceb757f6450c8695574ecba3cdbd-7"></a>        <span class="cp">#define CONFIG_SYS_SCSI_MAX_DEVICE 1</span>
+<a name="rest_code_455fceb757f6450c8695574ecba3cdbd-8"></a>        <span class="cp">#define CONFIG_SYS_SCSI_MAX_SCSI_ID 1</span>
+<a name="rest_code_455fceb757f6450c8695574ecba3cdbd-9"></a>        <span class="cp">#define CONFIG_SYS_SCSI_MAX_LUN  1</span>
+<a name="rest_code_455fceb757f6450c8695574ecba3cdbd-10"></a><span class="cp">#endif</span>
 </pre>
 <p>The complete code change is available in my git repository in the form of patch file where it could be
 patched to the TI's u-boot release directly (<a class="reference external" href="https://github.com/souktha/dm814x-u-boot-psp04.04.01">https://github.com/souktha/dm814x-u-boot-psp04.04.01</a>).
@@ -203,8 +203,8 @@ The patch file will patch four files for this implementation,
 be used when building this platform's u-boot.</p>
 <div class="section" id="building">
 <h3>Building</h3>
-<pre class="code text"><a name="rest_code_b338c859b02840b48841b2d99d66443f-1"></a>$make ARCH=arm ti8148_evm_config_nand
-<a name="rest_code_b338c859b02840b48841b2d99d66443f-2"></a>$make ARCH=arm CROSS_COMPILE=arm-none-linux-gnueabi-
+<pre class="code text"><a name="rest_code_8fd84b7c66504c7499e8b5f9bc4deb66-1"></a>$make ARCH=arm ti8148_evm_config_nand
+<a name="rest_code_8fd84b7c66504c7499e8b5f9bc4deb66-2"></a>$make ARCH=arm CROSS_COMPILE=arm-none-linux-gnueabi-
 </pre>
 <p>are the command lines for configuring and building u-boot. After building is complete, <em>u-boot.bin</em> can be used for
 testing.</p>
@@ -213,219 +213,219 @@ testing.</p>
 <h3>Testing</h3>
 <p>The new u-boot can be tested before flashing to NAND partition. To do this, stop the boot during its
 first stage boot (TI-MIN), then load the code to test it (one HDD connected).</p>
-<pre class="code text"><a name="rest_code_80265246583a4dad97e0e39d211c7a23-1"></a>...
-<a name="rest_code_80265246583a4dad97e0e39d211c7a23-2"></a>The 2nd stage U-Boot will now be auto-loaded
-<a name="rest_code_80265246583a4dad97e0e39d211c7a23-3"></a>Please do not interrupt the countdown till ...
-<a name="rest_code_80265246583a4dad97e0e39d211c7a23-4"></a>Hit any key to stop autoboot:  1
-<a name="rest_code_80265246583a4dad97e0e39d211c7a23-5"></a>TI-MIN#
+<pre class="code text"><a name="rest_code_55076e2a9b3046a8a4f2552da023f26b-1"></a>...
+<a name="rest_code_55076e2a9b3046a8a4f2552da023f26b-2"></a>The 2nd stage U-Boot will now be auto-loaded
+<a name="rest_code_55076e2a9b3046a8a4f2552da023f26b-3"></a>Please do not interrupt the countdown till ...
+<a name="rest_code_55076e2a9b3046a8a4f2552da023f26b-4"></a>Hit any key to stop autoboot:  1
+<a name="rest_code_55076e2a9b3046a8a4f2552da023f26b-5"></a>TI-MIN#
 </pre>
 <p>Use u-boot's <em>loady 0x80800000</em> to download code to memory via UART port using Y-modem protocol. Once downloading is
 completed, just <em>go &lt;load address&gt;</em>,</p>
 <table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_643a647ab9864da686a606b469bf6af6-1"> 1</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-2"> 2</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-3"> 3</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-4"> 4</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-5"> 5</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-6"> 6</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-7"> 7</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-8"> 8</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-9"> 9</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-10">10</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-11">11</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-12">12</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-13">13</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-14">14</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-15">15</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-16">16</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-17">17</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-18">18</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-19">19</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-20">20</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-21">21</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-22">22</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-23">23</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-24">24</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-25">25</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-26">26</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-27">27</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-28">28</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-29">29</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-30">30</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-31">31</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-32">32</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-33">33</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-34">34</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-35">35</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-36">36</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-37">37</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-38">38</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-39">39</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-40">40</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-41">41</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-42">42</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-43">43</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-44">44</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-45">45</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-46">46</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-47">47</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-48">48</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-49">49</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-50">50</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-51">51</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-52">52</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-53">53</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-54">54</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-55">55</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-56">56</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-57">57</a>
-<a href="#rest_code_643a647ab9864da686a606b469bf6af6-58">58</a></pre></div></td>
-<td class="code"><pre class="code console"><a name="rest_code_643a647ab9864da686a606b469bf6af6-1"></a><span class="go">       TI-MIN#loady 80800000</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-2"></a><span class="gp">       #</span><span class="c1"># Ready for binary (ymodem) download to 0x80800000 at 115200 bps...</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-3"></a><span class="go">       Cm - CRC mode, 1700(SOH)/0(STX)/0(CAN) packets, 8 retries</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-4"></a><span class="gp">       #</span><span class="c1"># Total Size      = 0x000350dc = 217308 Bytes</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-5"></a><span class="go">       TI-MIN#go 80800000</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-6"></a><span class="gp">       #</span><span class="c1"># Starting application at 0x80800000 ...</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-7"></a>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-8"></a>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-9"></a><span class="go">       U-Boot 2010.06 (May 09 2016 - 20:09:26)</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-10"></a>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-11"></a><span class="go">       TI8148-GP rev 2.1</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-12"></a>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-13"></a><span class="go">       ARM clk: 600MHz</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-14"></a><span class="go">       DDR clk: 400MHz</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-15"></a>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-16"></a><span class="go">       I2C:   ready</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-17"></a><span class="go">       DRAM:  2 GiB</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-18"></a><span class="go">       NAND:  HW ECC BCH8 Selected</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-19"></a><span class="go">       256 MiB</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-20"></a><span class="go">       MMC:   OMAP SD/MMC: 0</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-21"></a><span class="go">       *** Warning - bad CRC or NAND, using default environment</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-22"></a>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-23"></a><span class="go">                         .:;rrr;;.</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-24"></a><span class="go">                   ,5#@@@@#####@@@@@@#2,</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-25"></a><span class="go">                ,A@@@hi;;;r5;;;;r;rrSG@@@A,</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-26"></a><span class="go">              r@@#i;:;s222hG;rrsrrrrrr;ri#@@r</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-27"></a><span class="go">            :@@hr:r;SG3ssrr2r;rrsrsrsrsrr;rh@@:</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-28"></a><span class="go">           B@H;;rr;3Hs;rrr;sr;;rrsrsrsrsrsr;;H@B</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-29"></a><span class="go">          @@s:rrs;5#;;rrrr;r#@H:;;rrsrsrsrsrr:s@@</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-30"></a><span class="go">         @@;;srs&amp;X#9;r;r;;,2@@@rrr:;;rrsrsrsrr;;@@</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-31"></a><span class="go">        @@;;rrsrrs@MB#@@@@@###@@@@@@#rsrsrsrsrr;;@@</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-32"></a><span class="go">       G@r;rrsrsr;#X;SX25Ss#@@#M@#9H9rrsrsrsrsrs;r@G</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-33"></a><span class="go">       @9:srsrsrs;2@;:;;:.X@@@@@H::;rrsrsrsrsrsrr:3@</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-34"></a><span class="go">      X@;rrsrsrsrr;XAi;;:&amp;@@#@Bs:rrsrsrsrsrsrsrsrr;@X</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-35"></a><span class="go">      @#;rsrsrsrsrr;r2ir@@@###::rrsrsrsrsrsrsrsrsr:@@</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-36"></a><span class="go">      @A:rrsrsrsrr;:2@29@@M@@@;:;rrrrsrsrsrsrsrsrs;H@</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-37"></a><span class="go">      @&amp;;rsrsrsrr;A@@@@@@###@@@s::;:;;rrsrsrsrsrsr;G@</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-38"></a><span class="go">      @#:rrsrsrsr;G@5Hr25@@@#@@@#9XG9s:rrrrsrsrsrs:#@</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-39"></a><span class="go">      M@;rsrsrsrs;r@&amp;#;::S@@@@@@@M@@@@Grr:;rsrsrsr;@#</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-40"></a><span class="go">      :@s;rsrsrsrr:M#Msrr;;&amp;#@@@@@@@@@@H@@5;rsrsr;s@,</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-41"></a><span class="go">       @@:rrsrsrsr;S@rrrsr;:;r3MH@@#@M5,S@@irrsrr:@@</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-42"></a><span class="go">        @A:rrsrsrsrrrrrsrsrrr;::;@##@r:;rH@h;srr:H@</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-43"></a><span class="go">        ;@9:rrsrsrsrrrsrsrsrsr;,S@Hi@i:;s;MX;rr:h@;</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-44"></a><span class="go">         r@B:rrrrsrsrsrsrsrr;;sA@#i,i@h;r;S5;r:H@r</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-45"></a><span class="go">          ,@@r;rrrsrsrsrsrr;2BM3r:;r:G@:rrr;;r@@,</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-46"></a><span class="go">            B@Mr;rrrrsrsrsr@@S;;;rrr:5M;rr;rM@H</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-47"></a><span class="go">             .@@@i;;rrrrsrs2i;rrrrr;r@M:;i@@@.</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-48"></a><span class="go">               .A@@#5r;;;r;;;rrr;r:r#AsM@@H.</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-49"></a><span class="go">                  ;&amp;@@@@MhXS5i5SX9B@@@@G;</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-50"></a><span class="go">                      :ihM#@@@@@##hs,</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-51"></a>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-52"></a><span class="go">       AHCI 0001.0300 32 slots 1 ports 3 Gbps 0x1 impl SATA mode</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-53"></a><span class="go">       flags: ncq stag pm led clo only pmp pio slum part</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-54"></a><span class="go">       Net:   &lt;ethaddr&gt; not set. Reading from E-fuse</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-55"></a><span class="go">       Detected MACID:0:18:32:39:b2:f2</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-56"></a><span class="go">       cpsw</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-57"></a><span class="go">       Hit any key to stop autoboot:  3</span>
-<a name="rest_code_643a647ab9864da686a606b469bf6af6-58"></a><span class="go">       TI8148_EVM#</span>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-1"> 1</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-2"> 2</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-3"> 3</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-4"> 4</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-5"> 5</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-6"> 6</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-7"> 7</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-8"> 8</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-9"> 9</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-10">10</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-11">11</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-12">12</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-13">13</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-14">14</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-15">15</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-16">16</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-17">17</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-18">18</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-19">19</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-20">20</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-21">21</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-22">22</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-23">23</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-24">24</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-25">25</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-26">26</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-27">27</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-28">28</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-29">29</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-30">30</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-31">31</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-32">32</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-33">33</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-34">34</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-35">35</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-36">36</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-37">37</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-38">38</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-39">39</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-40">40</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-41">41</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-42">42</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-43">43</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-44">44</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-45">45</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-46">46</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-47">47</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-48">48</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-49">49</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-50">50</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-51">51</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-52">52</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-53">53</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-54">54</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-55">55</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-56">56</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-57">57</a>
+<a href="#rest_code_74c2b085d3264d9a8f6978c5755e1120-58">58</a></pre></div></td>
+<td class="code"><pre class="code console"><a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-1"></a><span class="go">       TI-MIN#loady 80800000</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-2"></a><span class="gp">       #</span><span class="c1"># Ready for binary (ymodem) download to 0x80800000 at 115200 bps...</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-3"></a><span class="go">       Cm - CRC mode, 1700(SOH)/0(STX)/0(CAN) packets, 8 retries</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-4"></a><span class="gp">       #</span><span class="c1"># Total Size      = 0x000350dc = 217308 Bytes</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-5"></a><span class="go">       TI-MIN#go 80800000</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-6"></a><span class="gp">       #</span><span class="c1"># Starting application at 0x80800000 ...</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-7"></a>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-8"></a>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-9"></a><span class="go">       U-Boot 2010.06 (May 09 2016 - 20:09:26)</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-10"></a>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-11"></a><span class="go">       TI8148-GP rev 2.1</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-12"></a>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-13"></a><span class="go">       ARM clk: 600MHz</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-14"></a><span class="go">       DDR clk: 400MHz</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-15"></a>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-16"></a><span class="go">       I2C:   ready</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-17"></a><span class="go">       DRAM:  2 GiB</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-18"></a><span class="go">       NAND:  HW ECC BCH8 Selected</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-19"></a><span class="go">       256 MiB</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-20"></a><span class="go">       MMC:   OMAP SD/MMC: 0</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-21"></a><span class="go">       *** Warning - bad CRC or NAND, using default environment</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-22"></a>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-23"></a><span class="go">                         .:;rrr;;.</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-24"></a><span class="go">                   ,5#@@@@#####@@@@@@#2,</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-25"></a><span class="go">                ,A@@@hi;;;r5;;;;r;rrSG@@@A,</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-26"></a><span class="go">              r@@#i;:;s222hG;rrsrrrrrr;ri#@@r</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-27"></a><span class="go">            :@@hr:r;SG3ssrr2r;rrsrsrsrsrr;rh@@:</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-28"></a><span class="go">           B@H;;rr;3Hs;rrr;sr;;rrsrsrsrsrsr;;H@B</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-29"></a><span class="go">          @@s:rrs;5#;;rrrr;r#@H:;;rrsrsrsrsrr:s@@</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-30"></a><span class="go">         @@;;srs&amp;X#9;r;r;;,2@@@rrr:;;rrsrsrsrr;;@@</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-31"></a><span class="go">        @@;;rrsrrs@MB#@@@@@###@@@@@@#rsrsrsrsrr;;@@</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-32"></a><span class="go">       G@r;rrsrsr;#X;SX25Ss#@@#M@#9H9rrsrsrsrsrs;r@G</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-33"></a><span class="go">       @9:srsrsrs;2@;:;;:.X@@@@@H::;rrsrsrsrsrsrr:3@</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-34"></a><span class="go">      X@;rrsrsrsrr;XAi;;:&amp;@@#@Bs:rrsrsrsrsrsrsrsrr;@X</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-35"></a><span class="go">      @#;rsrsrsrsrr;r2ir@@@###::rrsrsrsrsrsrsrsrsr:@@</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-36"></a><span class="go">      @A:rrsrsrsrr;:2@29@@M@@@;:;rrrrsrsrsrsrsrsrs;H@</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-37"></a><span class="go">      @&amp;;rsrsrsrr;A@@@@@@###@@@s::;:;;rrsrsrsrsrsr;G@</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-38"></a><span class="go">      @#:rrsrsrsr;G@5Hr25@@@#@@@#9XG9s:rrrrsrsrsrs:#@</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-39"></a><span class="go">      M@;rsrsrsrs;r@&amp;#;::S@@@@@@@M@@@@Grr:;rsrsrsr;@#</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-40"></a><span class="go">      :@s;rsrsrsrr:M#Msrr;;&amp;#@@@@@@@@@@H@@5;rsrsr;s@,</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-41"></a><span class="go">       @@:rrsrsrsr;S@rrrsr;:;r3MH@@#@M5,S@@irrsrr:@@</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-42"></a><span class="go">        @A:rrsrsrsrrrrrsrsrrr;::;@##@r:;rH@h;srr:H@</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-43"></a><span class="go">        ;@9:rrsrsrsrrrsrsrsrsr;,S@Hi@i:;s;MX;rr:h@;</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-44"></a><span class="go">         r@B:rrrrsrsrsrsrsrr;;sA@#i,i@h;r;S5;r:H@r</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-45"></a><span class="go">          ,@@r;rrrsrsrsrsrr;2BM3r:;r:G@:rrr;;r@@,</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-46"></a><span class="go">            B@Mr;rrrrsrsrsr@@S;;;rrr:5M;rr;rM@H</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-47"></a><span class="go">             .@@@i;;rrrrsrs2i;rrrrr;r@M:;i@@@.</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-48"></a><span class="go">               .A@@#5r;;;r;;;rrr;r:r#AsM@@H.</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-49"></a><span class="go">                  ;&amp;@@@@MhXS5i5SX9B@@@@G;</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-50"></a><span class="go">                      :ihM#@@@@@##hs,</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-51"></a>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-52"></a><span class="go">       AHCI 0001.0300 32 slots 1 ports 3 Gbps 0x1 impl SATA mode</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-53"></a><span class="go">       flags: ncq stag pm led clo only pmp pio slum part</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-54"></a><span class="go">       Net:   &lt;ethaddr&gt; not set. Reading from E-fuse</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-55"></a><span class="go">       Detected MACID:0:18:32:39:b2:f2</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-56"></a><span class="go">       cpsw</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-57"></a><span class="go">       Hit any key to stop autoboot:  3</span>
+<a name="rest_code_74c2b085d3264d9a8f6978c5755e1120-58"></a><span class="go">       TI8148_EVM#</span>
 </pre></td>
 </tr></table>
 <p>The new u-boot detects the SATA controller as shown just below the text art(line 52). U-Boot's <em>SCSI</em> command and
 <em>FAT</em> command can be used for the rest of the tests relating to SATA HDD access.</p>
 <table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_b7fac0bf32934fb7ad8da8e398c4a35d-1"> 1</a>
-<a href="#rest_code_b7fac0bf32934fb7ad8da8e398c4a35d-2"> 2</a>
-<a href="#rest_code_b7fac0bf32934fb7ad8da8e398c4a35d-3"> 3</a>
-<a href="#rest_code_b7fac0bf32934fb7ad8da8e398c4a35d-4"> 4</a>
-<a href="#rest_code_b7fac0bf32934fb7ad8da8e398c4a35d-5"> 5</a>
-<a href="#rest_code_b7fac0bf32934fb7ad8da8e398c4a35d-6"> 6</a>
-<a href="#rest_code_b7fac0bf32934fb7ad8da8e398c4a35d-7"> 7</a>
-<a href="#rest_code_b7fac0bf32934fb7ad8da8e398c4a35d-8"> 8</a>
-<a href="#rest_code_b7fac0bf32934fb7ad8da8e398c4a35d-9"> 9</a>
-<a href="#rest_code_b7fac0bf32934fb7ad8da8e398c4a35d-10">10</a>
-<a href="#rest_code_b7fac0bf32934fb7ad8da8e398c4a35d-11">11</a>
-<a href="#rest_code_b7fac0bf32934fb7ad8da8e398c4a35d-12">12</a>
-<a href="#rest_code_b7fac0bf32934fb7ad8da8e398c4a35d-13">13</a>
-<a href="#rest_code_b7fac0bf32934fb7ad8da8e398c4a35d-14">14</a></pre></div></td>
-<td class="code"><pre class="code console"><a name="rest_code_b7fac0bf32934fb7ad8da8e398c4a35d-1"></a><span class="go">       TI8148_EVM#scsi scan</span>
-<a name="rest_code_b7fac0bf32934fb7ad8da8e398c4a35d-2"></a><span class="go">       scanning bus for devices...</span>
-<a name="rest_code_b7fac0bf32934fb7ad8da8e398c4a35d-3"></a><span class="go">         Device 0: (0:0) Vendor: ATA Prod.: Hitachi HTS54505 Rev: GG2O</span>
-<a name="rest_code_b7fac0bf32934fb7ad8da8e398c4a35d-4"></a><span class="go">           Type: Hard Disk</span>
-<a name="rest_code_b7fac0bf32934fb7ad8da8e398c4a35d-5"></a><span class="go">           Capacity: 476940.0 MB = 465.7 GB (976773168 x 512)</span>
-<a name="rest_code_b7fac0bf32934fb7ad8da8e398c4a35d-6"></a>
-<a name="rest_code_b7fac0bf32934fb7ad8da8e398c4a35d-7"></a><span class="go">       TI8148_EVM#scsi part</span>
-<a name="rest_code_b7fac0bf32934fb7ad8da8e398c4a35d-8"></a>
-<a name="rest_code_b7fac0bf32934fb7ad8da8e398c4a35d-9"></a><span class="go">       Partition Map for SCSI device 0  --   Partition Type: DOS</span>
-<a name="rest_code_b7fac0bf32934fb7ad8da8e398c4a35d-10"></a>
-<a name="rest_code_b7fac0bf32934fb7ad8da8e398c4a35d-11"></a><span class="go">       Partition     Start Sector     Num Sectors     Type</span>
-<a name="rest_code_b7fac0bf32934fb7ad8da8e398c4a35d-12"></a><span class="go">           1                 2048        20971520       b</span>
-<a name="rest_code_b7fac0bf32934fb7ad8da8e398c4a35d-13"></a><span class="go">           2             20973568       955799600      83</span>
-<a name="rest_code_b7fac0bf32934fb7ad8da8e398c4a35d-14"></a><span class="go">       TI8148_EVM#</span>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_a3fa9d7308db4ad687d5676b6d9c63ec-1"> 1</a>
+<a href="#rest_code_a3fa9d7308db4ad687d5676b6d9c63ec-2"> 2</a>
+<a href="#rest_code_a3fa9d7308db4ad687d5676b6d9c63ec-3"> 3</a>
+<a href="#rest_code_a3fa9d7308db4ad687d5676b6d9c63ec-4"> 4</a>
+<a href="#rest_code_a3fa9d7308db4ad687d5676b6d9c63ec-5"> 5</a>
+<a href="#rest_code_a3fa9d7308db4ad687d5676b6d9c63ec-6"> 6</a>
+<a href="#rest_code_a3fa9d7308db4ad687d5676b6d9c63ec-7"> 7</a>
+<a href="#rest_code_a3fa9d7308db4ad687d5676b6d9c63ec-8"> 8</a>
+<a href="#rest_code_a3fa9d7308db4ad687d5676b6d9c63ec-9"> 9</a>
+<a href="#rest_code_a3fa9d7308db4ad687d5676b6d9c63ec-10">10</a>
+<a href="#rest_code_a3fa9d7308db4ad687d5676b6d9c63ec-11">11</a>
+<a href="#rest_code_a3fa9d7308db4ad687d5676b6d9c63ec-12">12</a>
+<a href="#rest_code_a3fa9d7308db4ad687d5676b6d9c63ec-13">13</a>
+<a href="#rest_code_a3fa9d7308db4ad687d5676b6d9c63ec-14">14</a></pre></div></td>
+<td class="code"><pre class="code console"><a name="rest_code_a3fa9d7308db4ad687d5676b6d9c63ec-1"></a><span class="go">       TI8148_EVM#scsi scan</span>
+<a name="rest_code_a3fa9d7308db4ad687d5676b6d9c63ec-2"></a><span class="go">       scanning bus for devices...</span>
+<a name="rest_code_a3fa9d7308db4ad687d5676b6d9c63ec-3"></a><span class="go">         Device 0: (0:0) Vendor: ATA Prod.: Hitachi HTS54505 Rev: GG2O</span>
+<a name="rest_code_a3fa9d7308db4ad687d5676b6d9c63ec-4"></a><span class="go">           Type: Hard Disk</span>
+<a name="rest_code_a3fa9d7308db4ad687d5676b6d9c63ec-5"></a><span class="go">           Capacity: 476940.0 MB = 465.7 GB (976773168 x 512)</span>
+<a name="rest_code_a3fa9d7308db4ad687d5676b6d9c63ec-6"></a>
+<a name="rest_code_a3fa9d7308db4ad687d5676b6d9c63ec-7"></a><span class="go">       TI8148_EVM#scsi part</span>
+<a name="rest_code_a3fa9d7308db4ad687d5676b6d9c63ec-8"></a>
+<a name="rest_code_a3fa9d7308db4ad687d5676b6d9c63ec-9"></a><span class="go">       Partition Map for SCSI device 0  --   Partition Type: DOS</span>
+<a name="rest_code_a3fa9d7308db4ad687d5676b6d9c63ec-10"></a>
+<a name="rest_code_a3fa9d7308db4ad687d5676b6d9c63ec-11"></a><span class="go">       Partition     Start Sector     Num Sectors     Type</span>
+<a name="rest_code_a3fa9d7308db4ad687d5676b6d9c63ec-12"></a><span class="go">           1                 2048        20971520       b</span>
+<a name="rest_code_a3fa9d7308db4ad687d5676b6d9c63ec-13"></a><span class="go">           2             20973568       955799600      83</span>
+<a name="rest_code_a3fa9d7308db4ad687d5676b6d9c63ec-14"></a><span class="go">       TI8148_EVM#</span>
 </pre></td>
 </tr></table>
 <p>The <em>scan</em> data above (line 1) is the result of the <em>INQUIRY</em> command while the data from <em>part</em> (line 7) is the result from
 reading HDD partition information. <em>FAT</em> commands that list file on partition as well as loading file are:</p>
 <table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_66d54afe837f4d0a9302905eb221a7db-1"> 1</a>
-<a href="#rest_code_66d54afe837f4d0a9302905eb221a7db-2"> 2</a>
-<a href="#rest_code_66d54afe837f4d0a9302905eb221a7db-3"> 3</a>
-<a href="#rest_code_66d54afe837f4d0a9302905eb221a7db-4"> 4</a>
-<a href="#rest_code_66d54afe837f4d0a9302905eb221a7db-5"> 5</a>
-<a href="#rest_code_66d54afe837f4d0a9302905eb221a7db-6"> 6</a>
-<a href="#rest_code_66d54afe837f4d0a9302905eb221a7db-7"> 7</a>
-<a href="#rest_code_66d54afe837f4d0a9302905eb221a7db-8"> 8</a>
-<a href="#rest_code_66d54afe837f4d0a9302905eb221a7db-9"> 9</a>
-<a href="#rest_code_66d54afe837f4d0a9302905eb221a7db-10">10</a>
-<a href="#rest_code_66d54afe837f4d0a9302905eb221a7db-11">11</a>
-<a href="#rest_code_66d54afe837f4d0a9302905eb221a7db-12">12</a>
-<a href="#rest_code_66d54afe837f4d0a9302905eb221a7db-13">13</a>
-<a href="#rest_code_66d54afe837f4d0a9302905eb221a7db-14">14</a>
-<a href="#rest_code_66d54afe837f4d0a9302905eb221a7db-15">15</a>
-<a href="#rest_code_66d54afe837f4d0a9302905eb221a7db-16">16</a>
-<a href="#rest_code_66d54afe837f4d0a9302905eb221a7db-17">17</a>
-<a href="#rest_code_66d54afe837f4d0a9302905eb221a7db-18">18</a>
-<a href="#rest_code_66d54afe837f4d0a9302905eb221a7db-19">19</a>
-<a href="#rest_code_66d54afe837f4d0a9302905eb221a7db-20">20</a>
-<a href="#rest_code_66d54afe837f4d0a9302905eb221a7db-21">21</a>
-<a href="#rest_code_66d54afe837f4d0a9302905eb221a7db-22">22</a>
-<a href="#rest_code_66d54afe837f4d0a9302905eb221a7db-23">23</a>
-<a href="#rest_code_66d54afe837f4d0a9302905eb221a7db-24">24</a>
-<a href="#rest_code_66d54afe837f4d0a9302905eb221a7db-25">25</a></pre></div></td>
-<td class="code"><pre class="code console"><a name="rest_code_66d54afe837f4d0a9302905eb221a7db-1"></a><span class="go">       TI8148_EVM#fatls scsi 0</span>
-<a name="rest_code_66d54afe837f4d0a9302905eb221a7db-2"></a><span class="go">         3522384   uimage</span>
-<a name="rest_code_66d54afe837f4d0a9302905eb221a7db-3"></a><span class="go">        95158272   rootfs.ubi.img</span>
-<a name="rest_code_66d54afe837f4d0a9302905eb221a7db-4"></a><span class="go">        100925440   rootfs.ubi.img.624</span>
-<a name="rest_code_66d54afe837f4d0a9302905eb221a7db-5"></a>
-<a name="rest_code_66d54afe837f4d0a9302905eb221a7db-6"></a><span class="go">       3 file(s), 0 dir(s)</span>
-<a name="rest_code_66d54afe837f4d0a9302905eb221a7db-7"></a>
-<a name="rest_code_66d54afe837f4d0a9302905eb221a7db-8"></a><span class="go">       TI8148_EVM#fatload scsi 0 80800000 uimage</span>
-<a name="rest_code_66d54afe837f4d0a9302905eb221a7db-9"></a><span class="go">       reading uimage</span>
-<a name="rest_code_66d54afe837f4d0a9302905eb221a7db-10"></a>
-<a name="rest_code_66d54afe837f4d0a9302905eb221a7db-11"></a><span class="go">       3522384 bytes read</span>
-<a name="rest_code_66d54afe837f4d0a9302905eb221a7db-12"></a><span class="go">       TI8148_EVM#bootm 80800000</span>
-<a name="rest_code_66d54afe837f4d0a9302905eb221a7db-13"></a><span class="gp">       #</span><span class="c1"># Booting kernel from Legacy Image at 80800000 ...</span>
-<a name="rest_code_66d54afe837f4d0a9302905eb221a7db-14"></a><span class="go">          Image Name:   Linux-2.6.37</span>
-<a name="rest_code_66d54afe837f4d0a9302905eb221a7db-15"></a><span class="go">          Image Type:   ARM Linux Kernel Image (uncompressed)</span>
-<a name="rest_code_66d54afe837f4d0a9302905eb221a7db-16"></a><span class="go">          Data Size:    3522320 Bytes = 3.4 MiB</span>
-<a name="rest_code_66d54afe837f4d0a9302905eb221a7db-17"></a><span class="go">          Load Address: 80008000</span>
-<a name="rest_code_66d54afe837f4d0a9302905eb221a7db-18"></a><span class="go">          Entry Point:  80008000</span>
-<a name="rest_code_66d54afe837f4d0a9302905eb221a7db-19"></a><span class="go">          Verifying Checksum ... OK</span>
-<a name="rest_code_66d54afe837f4d0a9302905eb221a7db-20"></a><span class="go">          Loading Kernel Image ... OK</span>
-<a name="rest_code_66d54afe837f4d0a9302905eb221a7db-21"></a><span class="go">       OK</span>
-<a name="rest_code_66d54afe837f4d0a9302905eb221a7db-22"></a>
-<a name="rest_code_66d54afe837f4d0a9302905eb221a7db-23"></a><span class="go">       Starting kernel ...</span>
-<a name="rest_code_66d54afe837f4d0a9302905eb221a7db-24"></a>
-<a name="rest_code_66d54afe837f4d0a9302905eb221a7db-25"></a><span class="go">       Uncompressing Linux... done, booting the kernel.</span>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_99f7f31a3a224f849300e3e7c3de9d81-1"> 1</a>
+<a href="#rest_code_99f7f31a3a224f849300e3e7c3de9d81-2"> 2</a>
+<a href="#rest_code_99f7f31a3a224f849300e3e7c3de9d81-3"> 3</a>
+<a href="#rest_code_99f7f31a3a224f849300e3e7c3de9d81-4"> 4</a>
+<a href="#rest_code_99f7f31a3a224f849300e3e7c3de9d81-5"> 5</a>
+<a href="#rest_code_99f7f31a3a224f849300e3e7c3de9d81-6"> 6</a>
+<a href="#rest_code_99f7f31a3a224f849300e3e7c3de9d81-7"> 7</a>
+<a href="#rest_code_99f7f31a3a224f849300e3e7c3de9d81-8"> 8</a>
+<a href="#rest_code_99f7f31a3a224f849300e3e7c3de9d81-9"> 9</a>
+<a href="#rest_code_99f7f31a3a224f849300e3e7c3de9d81-10">10</a>
+<a href="#rest_code_99f7f31a3a224f849300e3e7c3de9d81-11">11</a>
+<a href="#rest_code_99f7f31a3a224f849300e3e7c3de9d81-12">12</a>
+<a href="#rest_code_99f7f31a3a224f849300e3e7c3de9d81-13">13</a>
+<a href="#rest_code_99f7f31a3a224f849300e3e7c3de9d81-14">14</a>
+<a href="#rest_code_99f7f31a3a224f849300e3e7c3de9d81-15">15</a>
+<a href="#rest_code_99f7f31a3a224f849300e3e7c3de9d81-16">16</a>
+<a href="#rest_code_99f7f31a3a224f849300e3e7c3de9d81-17">17</a>
+<a href="#rest_code_99f7f31a3a224f849300e3e7c3de9d81-18">18</a>
+<a href="#rest_code_99f7f31a3a224f849300e3e7c3de9d81-19">19</a>
+<a href="#rest_code_99f7f31a3a224f849300e3e7c3de9d81-20">20</a>
+<a href="#rest_code_99f7f31a3a224f849300e3e7c3de9d81-21">21</a>
+<a href="#rest_code_99f7f31a3a224f849300e3e7c3de9d81-22">22</a>
+<a href="#rest_code_99f7f31a3a224f849300e3e7c3de9d81-23">23</a>
+<a href="#rest_code_99f7f31a3a224f849300e3e7c3de9d81-24">24</a>
+<a href="#rest_code_99f7f31a3a224f849300e3e7c3de9d81-25">25</a></pre></div></td>
+<td class="code"><pre class="code console"><a name="rest_code_99f7f31a3a224f849300e3e7c3de9d81-1"></a><span class="go">       TI8148_EVM#fatls scsi 0</span>
+<a name="rest_code_99f7f31a3a224f849300e3e7c3de9d81-2"></a><span class="go">         3522384   uimage</span>
+<a name="rest_code_99f7f31a3a224f849300e3e7c3de9d81-3"></a><span class="go">        95158272   rootfs.ubi.img</span>
+<a name="rest_code_99f7f31a3a224f849300e3e7c3de9d81-4"></a><span class="go">        100925440   rootfs.ubi.img.624</span>
+<a name="rest_code_99f7f31a3a224f849300e3e7c3de9d81-5"></a>
+<a name="rest_code_99f7f31a3a224f849300e3e7c3de9d81-6"></a><span class="go">       3 file(s), 0 dir(s)</span>
+<a name="rest_code_99f7f31a3a224f849300e3e7c3de9d81-7"></a>
+<a name="rest_code_99f7f31a3a224f849300e3e7c3de9d81-8"></a><span class="go">       TI8148_EVM#fatload scsi 0 80800000 uimage</span>
+<a name="rest_code_99f7f31a3a224f849300e3e7c3de9d81-9"></a><span class="go">       reading uimage</span>
+<a name="rest_code_99f7f31a3a224f849300e3e7c3de9d81-10"></a>
+<a name="rest_code_99f7f31a3a224f849300e3e7c3de9d81-11"></a><span class="go">       3522384 bytes read</span>
+<a name="rest_code_99f7f31a3a224f849300e3e7c3de9d81-12"></a><span class="go">       TI8148_EVM#bootm 80800000</span>
+<a name="rest_code_99f7f31a3a224f849300e3e7c3de9d81-13"></a><span class="gp">       #</span><span class="c1"># Booting kernel from Legacy Image at 80800000 ...</span>
+<a name="rest_code_99f7f31a3a224f849300e3e7c3de9d81-14"></a><span class="go">          Image Name:   Linux-2.6.37</span>
+<a name="rest_code_99f7f31a3a224f849300e3e7c3de9d81-15"></a><span class="go">          Image Type:   ARM Linux Kernel Image (uncompressed)</span>
+<a name="rest_code_99f7f31a3a224f849300e3e7c3de9d81-16"></a><span class="go">          Data Size:    3522320 Bytes = 3.4 MiB</span>
+<a name="rest_code_99f7f31a3a224f849300e3e7c3de9d81-17"></a><span class="go">          Load Address: 80008000</span>
+<a name="rest_code_99f7f31a3a224f849300e3e7c3de9d81-18"></a><span class="go">          Entry Point:  80008000</span>
+<a name="rest_code_99f7f31a3a224f849300e3e7c3de9d81-19"></a><span class="go">          Verifying Checksum ... OK</span>
+<a name="rest_code_99f7f31a3a224f849300e3e7c3de9d81-20"></a><span class="go">          Loading Kernel Image ... OK</span>
+<a name="rest_code_99f7f31a3a224f849300e3e7c3de9d81-21"></a><span class="go">       OK</span>
+<a name="rest_code_99f7f31a3a224f849300e3e7c3de9d81-22"></a>
+<a name="rest_code_99f7f31a3a224f849300e3e7c3de9d81-23"></a><span class="go">       Starting kernel ...</span>
+<a name="rest_code_99f7f31a3a224f849300e3e7c3de9d81-24"></a>
+<a name="rest_code_99f7f31a3a224f849300e3e7c3de9d81-25"></a><span class="go">       Uncompressing Linux... done, booting the kernel.</span>
 </pre></td>
 </tr></table>
 <p>U-Boot's <em>bootcmd</em> can then be customize to <em>fatload</em> (line 8) the kernel image from the harddisk instead of NAND
@@ -433,9 +433,9 @@ or SD card. To do this, set  <em>bootcmd='fatload scsi 0 $loadaddr uImage2 &amp;
 <p><em>u-boot.bin</em> that is tested above can be flashed to NAND partition. For my case, the partition offset
 is at <em>0x20000</em>, and the size of this u-boot is less than 256KB.</p>
 <p>After I satisfy with the result, I download and flash to NAND using the commands below.</p>
-<pre class="code text"><a name="rest_code_f96f2f4185ea4a7f80ceaa40988f6e25-1"></a>TI-MIN#nand erase 20000 40000
-<a name="rest_code_f96f2f4185ea4a7f80ceaa40988f6e25-2"></a>TI-MIN#nandecc hw 2
-<a name="rest_code_f96f2f4185ea4a7f80ceaa40988f6e25-3"></a>TI-MIN#nand write 80800000 20000 40000
+<pre class="code text"><a name="rest_code_5e8286fe035e46b7be77817c37e68aa9-1"></a>TI-MIN#nand erase 20000 40000
+<a name="rest_code_5e8286fe035e46b7be77817c37e68aa9-2"></a>TI-MIN#nandecc hw 2
+<a name="rest_code_5e8286fe035e46b7be77817c37e68aa9-3"></a>TI-MIN#nand write 80800000 20000 40000
 </pre>
 </div>
 </div>

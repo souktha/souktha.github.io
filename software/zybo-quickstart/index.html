@@ -99,8 +99,8 @@ to decouple PS and PL components.</p>
 GNU tools in their SDK to build Linux kernel and u-boot, but those tools are based on standard
 <em>glibc</em> which is too big for my use so I chose to build the smaller toolchain and root FS with
 <em>buildroot</em> based on uClibc. For my use,</p>
-<pre class="code console"><a name="rest_code_f8b0133752d04e19a5d489cc19ff2d86-1"></a><span class="gp">$</span>make zedboard_defconfig
-<a name="rest_code_f8b0133752d04e19a5d489cc19ff2d86-2"></a><span class="gp">$</span>make
+<pre class="code console"><a name="rest_code_143026ad5c4145dfa0f1c54f879f5ff6-1"></a><span class="gp">$</span>make zedboard_defconfig
+<a name="rest_code_143026ad5c4145dfa0f1c54f879f5ff6-2"></a><span class="gp">$</span>make
 </pre>
 <p>The default configuration builds the basic cross toolchain and minimum rootfs with majority of the utilities
 provided by <em>busybox</em>.
@@ -117,115 +117,115 @@ Copy them to SD boot partition. After that I populate the SD root partition with
 rootfs.
 For my development, I combine zImage with dtb so I do not have to have it load separately during
 kernel boot up. I use the script below for my source,</p>
-<pre class="code text"><a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-1"></a>/dts-v1/;
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-2"></a>
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-3"></a>/ {
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-4"></a>description = "ARM Zynq Zybo FIT (Flattened Image Tree)";
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-5"></a>#address-cells = &lt;1&gt;;
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-6"></a>
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-7"></a>images {
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-8"></a>        kernel@1 {
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-9"></a>                description = "ARM Xilinx Zynq Linux-4.x";
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-10"></a>                data = /incbin/("zImage");
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-11"></a>                type = "kernel";
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-12"></a>                arch = "arm";
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-13"></a>                os = "linux";
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-14"></a>                compression = "none";
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-15"></a>                load = &lt;0x800000&gt;;
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-16"></a>                entry = &lt;0x800000&gt;;
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-17"></a>                hash@1 {
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-18"></a>                        algo = "crc32";
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-19"></a>                };
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-20"></a>                hash@2 {
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-21"></a>                        algo = "sha1";
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-22"></a>                };
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-23"></a>        };
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-24"></a>
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-25"></a>        fdt@1 {
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-26"></a>                description = "ARM Zynq Zybo device tree blob";
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-27"></a>                data = /incbin/("dts/zynq-zybo.dtb");
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-28"></a>                type = "flat_dt";
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-29"></a>                arch = "arm";
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-30"></a>                compression = "none";
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-31"></a>
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-32"></a>                hash@1 {
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-33"></a>                        algo = "crc32";
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-34"></a>                };
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-35"></a>                hash@2 {
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-36"></a>                        algo = "sha1";
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-37"></a>                };
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-38"></a>        };
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-39"></a>
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-40"></a>};
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-41"></a>
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-42"></a>configurations {
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-43"></a>        default = "config@1";
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-44"></a>
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-45"></a>        config@1 {
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-46"></a>                description = "Zynq Zybo";
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-47"></a>                kernel = "kernel@1";
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-48"></a>                fdt = "fdt@1";
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-49"></a>        };
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-50"></a>
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-51"></a>};
-<a name="rest_code_aa70cc0ef28e49c39d28425c6b048958-52"></a>};
+<pre class="code text"><a name="rest_code_b872003d56c84c80babf64a7c3743431-1"></a>/dts-v1/;
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-2"></a>
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-3"></a>/ {
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-4"></a>description = "ARM Zynq Zybo FIT (Flattened Image Tree)";
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-5"></a>#address-cells = &lt;1&gt;;
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-6"></a>
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-7"></a>images {
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-8"></a>        kernel@1 {
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-9"></a>                description = "ARM Xilinx Zynq Linux-4.x";
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-10"></a>                data = /incbin/("zImage");
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-11"></a>                type = "kernel";
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-12"></a>                arch = "arm";
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-13"></a>                os = "linux";
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-14"></a>                compression = "none";
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-15"></a>                load = &lt;0x800000&gt;;
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-16"></a>                entry = &lt;0x800000&gt;;
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-17"></a>                hash@1 {
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-18"></a>                        algo = "crc32";
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-19"></a>                };
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-20"></a>                hash@2 {
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-21"></a>                        algo = "sha1";
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-22"></a>                };
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-23"></a>        };
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-24"></a>
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-25"></a>        fdt@1 {
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-26"></a>                description = "ARM Zynq Zybo device tree blob";
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-27"></a>                data = /incbin/("dts/zynq-zybo.dtb");
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-28"></a>                type = "flat_dt";
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-29"></a>                arch = "arm";
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-30"></a>                compression = "none";
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-31"></a>
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-32"></a>                hash@1 {
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-33"></a>                        algo = "crc32";
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-34"></a>                };
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-35"></a>                hash@2 {
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-36"></a>                        algo = "sha1";
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-37"></a>                };
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-38"></a>        };
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-39"></a>
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-40"></a>};
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-41"></a>
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-42"></a>configurations {
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-43"></a>        default = "config@1";
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-44"></a>
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-45"></a>        config@1 {
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-46"></a>                description = "Zynq Zybo";
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-47"></a>                kernel = "kernel@1";
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-48"></a>                fdt = "fdt@1";
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-49"></a>        };
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-50"></a>
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-51"></a>};
+<a name="rest_code_b872003d56c84c80babf64a7c3743431-52"></a>};
 </pre>
 <p>I place this script, <em>kernel.its</em>, in <em>linux-xlnx/arch/arm/boot</em> where I create the kernel image
 with device tree blob</p>
-<pre class="code console"><a name="rest_code_50ca996aa4234127a0d2de13c72fcaab-1"></a><span class="gp">$</span>mkimage -f kernel.its zImage.itb
+<pre class="code console"><a name="rest_code_0a43569af76f446494d9790724a79034-1"></a><span class="gp">$</span>mkimage -f kernel.its zImage.itb
 </pre>
 <p>The <em>zImage.itb</em> will be copied to SD boot partition later, but I need to test it first.
 I stop at u-boot prompt at boot up to tftp zImage.itb,</p>
-<pre class="code console"><a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-1"></a><span class="go">zynq&gt;tftpboot 100000 zImage.itb</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-2"></a><span class="go">ethernet@e000b000 Waiting for PHY auto negotiation to complete...... done</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-3"></a><span class="go">Using ethernet@e000b000 device</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-4"></a><span class="go">TFTP from server 192.168.10.14; our IP address is 192.168.10.3</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-5"></a><span class="go">Filename 'zImage.itb'.</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-6"></a><span class="go">Load address: 0x100000</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-7"></a><span class="go">Loading: ################################################################</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-8"></a><span class="gp"> #</span><span class="c1">################################################################</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-9"></a><span class="go"> ..</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-10"></a><span class="gp"> #</span><span class="c1">###################</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-11"></a><span class="go"> 3.4 MiB/s</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-12"></a><span class="go">done</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-13"></a><span class="go">Bytes transferred = 3760372 (3960f4 hex)</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-14"></a><span class="go">Zynq&gt; set bootargs 'root=dev/mmcblk0p2 rootfstype=ext4 rootwait rw' &amp;&amp; bootm 100000</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-15"></a><span class="gp">#</span><span class="c1"># Loading kernel from FIT Image at 00100000 ...</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-16"></a><span class="go">   Using 'config@1' configuration</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-17"></a><span class="go">   Verifying Hash Integrity ... OK</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-18"></a><span class="go">   Trying 'kernel@1' kernel subimage</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-19"></a><span class="go">     Description:  ARM Xilinx Zynq Linux-4.x</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-20"></a><span class="go">     Type:         Kernel Image</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-21"></a><span class="go">     Compression:  uncompressed</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-22"></a><span class="go">     Data Start:   0x001000e8</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-23"></a><span class="go">     ..</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-24"></a><span class="go">  Verifying Hash Integrity ... crc32+ sha1+ OK</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-25"></a><span class="go">   Booting using the fdt blob at 0x493b6c</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-26"></a><span class="go">   Loading Kernel Image ... OK</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-27"></a><span class="go">   Loading Device Tree to 1f314000, end 1f31925e ... OK</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-28"></a>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-29"></a><span class="go">Starting kernel ...</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-30"></a>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-31"></a><span class="go">Booting Linux on physical CPU 0x0</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-32"></a><span class="go">Linux version 4.4.0-xilinx-34568-g9c1d910-dirty (xxx@host3) (gcc version 4.9.3 (Buildroot 2016.02) ) #2 SMP PREEMPT Sat Apr 23 18:32:38 PDT 2016</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-33"></a><span class="go">CPU: ARMv7 Processor [413fc090] revision 0 (ARMv7), cr=18c5387d</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-34"></a><span class="go">CPU: PIPT / VIPT nonaliasing data cache, VIPT aliasing instruction cache</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-35"></a><span class="go">Machine model: Zynq ZYBO Development Board</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-36"></a><span class="go">..</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-37"></a>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-38"></a><span class="go">EXT4-fs (mmcblk0p2): mounted filesystem with ordered data mode. Opts: (null)</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-39"></a><span class="go">VFS: Mounted root (ext4 filesystem) on device 179:2.</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-40"></a><span class="go">devtmpfs: mounted</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-41"></a><span class="go">Freeing unused kernel memory: 252K (c06bb000 - c06fa000)</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-42"></a><span class="go">EXT4-fs (mmcblk0p2): re-mounted. Opts: data=ordered</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-43"></a><span class="go">..</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-44"></a><span class="go">done.</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-45"></a><span class="go">Starting network...</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-46"></a><span class="go">IPv6: ADDRCONF(NETDEV_UP): eth0: link is not ready</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-47"></a><span class="go">Starting ntpd: OK</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-48"></a>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-49"></a><span class="go">Welcome to Buildroot</span>
-<a name="rest_code_482bedfab7ec46c69f43be5b62e0ef98-50"></a><span class="go">buildroot login:</span>
+<pre class="code console"><a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-1"></a><span class="go">zynq&gt;tftpboot 100000 zImage.itb</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-2"></a><span class="go">ethernet@e000b000 Waiting for PHY auto negotiation to complete...... done</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-3"></a><span class="go">Using ethernet@e000b000 device</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-4"></a><span class="go">TFTP from server 192.168.10.14; our IP address is 192.168.10.3</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-5"></a><span class="go">Filename 'zImage.itb'.</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-6"></a><span class="go">Load address: 0x100000</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-7"></a><span class="go">Loading: ################################################################</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-8"></a><span class="gp"> #</span><span class="c1">################################################################</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-9"></a><span class="go"> ..</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-10"></a><span class="gp"> #</span><span class="c1">###################</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-11"></a><span class="go"> 3.4 MiB/s</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-12"></a><span class="go">done</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-13"></a><span class="go">Bytes transferred = 3760372 (3960f4 hex)</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-14"></a><span class="go">Zynq&gt; set bootargs 'root=dev/mmcblk0p2 rootfstype=ext4 rootwait rw' &amp;&amp; bootm 100000</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-15"></a><span class="gp">#</span><span class="c1"># Loading kernel from FIT Image at 00100000 ...</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-16"></a><span class="go">   Using 'config@1' configuration</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-17"></a><span class="go">   Verifying Hash Integrity ... OK</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-18"></a><span class="go">   Trying 'kernel@1' kernel subimage</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-19"></a><span class="go">     Description:  ARM Xilinx Zynq Linux-4.x</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-20"></a><span class="go">     Type:         Kernel Image</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-21"></a><span class="go">     Compression:  uncompressed</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-22"></a><span class="go">     Data Start:   0x001000e8</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-23"></a><span class="go">     ..</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-24"></a><span class="go">  Verifying Hash Integrity ... crc32+ sha1+ OK</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-25"></a><span class="go">   Booting using the fdt blob at 0x493b6c</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-26"></a><span class="go">   Loading Kernel Image ... OK</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-27"></a><span class="go">   Loading Device Tree to 1f314000, end 1f31925e ... OK</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-28"></a>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-29"></a><span class="go">Starting kernel ...</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-30"></a>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-31"></a><span class="go">Booting Linux on physical CPU 0x0</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-32"></a><span class="go">Linux version 4.4.0-xilinx-34568-g9c1d910-dirty (xxx@host3) (gcc version 4.9.3 (Buildroot 2016.02) ) #2 SMP PREEMPT Sat Apr 23 18:32:38 PDT 2016</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-33"></a><span class="go">CPU: ARMv7 Processor [413fc090] revision 0 (ARMv7), cr=18c5387d</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-34"></a><span class="go">CPU: PIPT / VIPT nonaliasing data cache, VIPT aliasing instruction cache</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-35"></a><span class="go">Machine model: Zynq ZYBO Development Board</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-36"></a><span class="go">..</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-37"></a>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-38"></a><span class="go">EXT4-fs (mmcblk0p2): mounted filesystem with ordered data mode. Opts: (null)</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-39"></a><span class="go">VFS: Mounted root (ext4 filesystem) on device 179:2.</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-40"></a><span class="go">devtmpfs: mounted</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-41"></a><span class="go">Freeing unused kernel memory: 252K (c06bb000 - c06fa000)</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-42"></a><span class="go">EXT4-fs (mmcblk0p2): re-mounted. Opts: data=ordered</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-43"></a><span class="go">..</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-44"></a><span class="go">done.</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-45"></a><span class="go">Starting network...</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-46"></a><span class="go">IPv6: ADDRCONF(NETDEV_UP): eth0: link is not ready</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-47"></a><span class="go">Starting ntpd: OK</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-48"></a>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-49"></a><span class="go">Welcome to Buildroot</span>
+<a name="rest_code_731c4a1afcdb4873ba14cb9f452cafe7-50"></a><span class="go">buildroot login:</span>
 </pre>
 <p>Once I verified that <em>zImage.itb</em> is good and rootfs is sane. I can finalize the SD card and edit the necessary
 boot scripts. The Linux booting process is done at this point and I can login to Zybo linux host.</p>
@@ -240,25 +240,25 @@ If I load the bitstream that generated by Vivado, it will hang and I have to res
 it assumes that the binary I load is generated by SDK's <em>bitgen</em> so it tries to post initialize the FPGA after the loading.
 The bitstgream generated by Vivado synthesis tool is considered <em>partial bitstream</em> so
 it needs to be loaded as partial bitstream. To do that, I need to tell it before I load the bitstream,</p>
-<pre class="code console"><a name="rest_code_82078e59336d4550b09ba0379fcbbe6b-1"></a><span class="gp">$</span><span class="nb">echo</span> <span class="m">1</span> &gt; /sys/devices/soc0/amba/f8007000.devcfg/is_partial_bitstream
+<pre class="code console"><a name="rest_code_5365b0ae9fe349068db54d841681902e-1"></a><span class="gp">$</span><span class="nb">echo</span> <span class="m">1</span> &gt; /sys/devices/soc0/amba/f8007000.devcfg/is_partial_bitstream
 </pre>
 <p>After this flag is set, FPGA post initialization will not be invoked. This enable me to load the bitstream
 at will. Of course, this assumes that the system is running in non-secure mode and that no POR is required.</p>
 <p>Using this simple switches to LEDs, synthesize and generate the bitstream (Vivado) and load it,</p>
-<pre class="code verilog"><a name="rest_code_d53cbcfdc188437fa5bc06ce9c5489c6-1"></a><span class="no">`timescale</span> <span class="mh">1</span><span class="n">ns</span> <span class="o">/</span> <span class="mh">1</span><span class="n">ps</span>
-<a name="rest_code_d53cbcfdc188437fa5bc06ce9c5489c6-2"></a><span class="k">module</span> <span class="n">simpletest</span><span class="p">(</span>
-<a name="rest_code_d53cbcfdc188437fa5bc06ce9c5489c6-3"></a>    <span class="k">input</span> <span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">sw</span><span class="p">,</span>
-<a name="rest_code_d53cbcfdc188437fa5bc06ce9c5489c6-4"></a>    <span class="k">output</span> <span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">led</span><span class="p">,</span>
-<a name="rest_code_d53cbcfdc188437fa5bc06ce9c5489c6-5"></a>    <span class="k">input</span> <span class="n">clk</span>
-<a name="rest_code_d53cbcfdc188437fa5bc06ce9c5489c6-6"></a>    <span class="p">);</span>
-<a name="rest_code_d53cbcfdc188437fa5bc06ce9c5489c6-7"></a>
-<a name="rest_code_d53cbcfdc188437fa5bc06ce9c5489c6-8"></a>    <span class="k">assign</span> <span class="n">led</span> <span class="o">=</span> <span class="n">sw</span> <span class="p">;</span>
-<a name="rest_code_d53cbcfdc188437fa5bc06ce9c5489c6-9"></a>
-<a name="rest_code_d53cbcfdc188437fa5bc06ce9c5489c6-10"></a><span class="k">endmodule</span>
+<pre class="code verilog"><a name="rest_code_3fb07066ac604dbbbc2d77df599e3c66-1"></a><span class="no">`timescale</span> <span class="mh">1</span><span class="n">ns</span> <span class="o">/</span> <span class="mh">1</span><span class="n">ps</span>
+<a name="rest_code_3fb07066ac604dbbbc2d77df599e3c66-2"></a><span class="k">module</span> <span class="n">simpletest</span><span class="p">(</span>
+<a name="rest_code_3fb07066ac604dbbbc2d77df599e3c66-3"></a>    <span class="k">input</span> <span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">sw</span><span class="p">,</span>
+<a name="rest_code_3fb07066ac604dbbbc2d77df599e3c66-4"></a>    <span class="k">output</span> <span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">led</span><span class="p">,</span>
+<a name="rest_code_3fb07066ac604dbbbc2d77df599e3c66-5"></a>    <span class="k">input</span> <span class="n">clk</span>
+<a name="rest_code_3fb07066ac604dbbbc2d77df599e3c66-6"></a>    <span class="p">);</span>
+<a name="rest_code_3fb07066ac604dbbbc2d77df599e3c66-7"></a>
+<a name="rest_code_3fb07066ac604dbbbc2d77df599e3c66-8"></a>    <span class="k">assign</span> <span class="n">led</span> <span class="o">=</span> <span class="n">sw</span> <span class="p">;</span>
+<a name="rest_code_3fb07066ac604dbbbc2d77df599e3c66-9"></a>
+<a name="rest_code_3fb07066ac604dbbbc2d77df599e3c66-10"></a><span class="k">endmodule</span>
 </pre>
 <p>Consider that to be <em>helloworld</em> for the PL component. Once synthesized, bring it over to the Zybo
 and load it,</p>
-<pre class="code console"><a name="rest_code_d8ae75330c4046fa9babe55515673b39-1"></a><span class="gp">$</span>cat simpletest.bit &gt; /dev/xdevcfg
+<pre class="code console"><a name="rest_code_e5e67c99eb57440c8de76375059bf439-1"></a><span class="gp">$</span>cat simpletest.bit &gt; /dev/xdevcfg
 </pre>
 <p>After the <em>is_partial_bitstream</em> is set, I can keep on loading the bitstream. Any new bitstream will
 overwrite the old one that is currently active. If the bitstream is part of the kernel component such
