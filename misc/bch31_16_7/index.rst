@@ -1,5 +1,5 @@
-.. title: BCH, an example of linear cyclic code
-.. slug: bch_1_x_x4
+.. title: Binary BCH (31,16,7) linear cyclic code work out
+.. slug: bch31_16_7
 .. date: 2017-01-16 23:39:17 UTC
 .. tags: misc, mathjax, latex
 .. category: math 
@@ -562,9 +562,11 @@ possible algorithm that I like is this, let :math:`w(x)` be the received code wo
 error respectively.
 
 . Calculate syndrome :math:`s(x) = w(x) mod g(x)`
-. For :math:`i \ge 0`, calculate :math:`s_i(x)=x^i mod g(x)` until :math:`s_j(x)` is found 
+
+. For :math:`i \ge 0`, calculate :math:`s_i(x)=x^i s(x) mod g(x)` until :math:`s_j(x)` is found 
 where weight of :math:`s_j(x) \le t`. 
-. Once :math:`s_i(x)` is located, :math:`e(x)=x^{n-j} mod (x^n + 1)` are the most likely
+
+. Once :math:`s_j(x)` is located, :math:`e(x)=x^{n-j}s_j(x) mod (x^n + 1)` are the most likely
 error bits.
 
 

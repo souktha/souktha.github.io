@@ -1,17 +1,19 @@
-.. title: BCH, an example of linear cyclic code
-.. slug: bch_1_x_x4
-.. date: 2017-01-16 23:39:17 UTC
-.. tags: misc, mathjax, latex
+.. title: Binary BCH work out example 
+.. slug: bch_1_x2_x5
+.. date: 2017-02-26 23:39:17 UTC
+.. tags: misc, mathjax, latex, draft
 .. category: math 
 .. link: 
 .. description: BCH code based on g(x)=1+x**2+x**5
 .. type: text
 
 Building on my previous post on the simple Hamming linear cyclic code, I decide to push on for a little bit
-more usefull class of cyclic code, the BCH code. This will not be based on the same generator polynomial,
-:math:`h(x)=1+x+x^4` using the powers of :math:`\beta` as worked out in the last post since it is only 
-a :math:`t=1` FEC. While it is possible to achieve :math:`t > 1`, but it comes with the expense
-of information bits. For this workout problem I choose higher degree primitive polynomial.
+more usefull class of cyclic code, the BCH code. While the past worked out example was also a BCH code, it
+is commonly known a Hamming cyclic code. The binary BCH code exercise will offer higher :math:`t` 
+error-correcting capability than the previous exercise.
+.. :math:`h(x)=1+x+x^4` using the powers of :math:`\beta` as worked out in the last post since it is only 
+.. a :math:`t=1` FEC. While it is possible to achieve :math:`t > 1`, but it comes with the expense
+.. of information bits. For this workout problem I choose higher degree primitive polynomial.
 
 .. TEASER_END
 
@@ -22,7 +24,7 @@ parity check length :math:`(n-k) \le rt`,  minimum distance :math:`d \ge 2t + 1`
 having dimension :math:`k \geq n-rt`.  The :math:`t=1` error-correcting BCH codes of length 
 :math:`n=2^r-1` is a Hamming code (old post).
 
-I will use the *primitive* :math:`p(x)=x^5+x^2+1` as a basis for the :math:`(n,k,d) \equiv (31,16,7)` BCH codes.
+I will use the *primitive* :math:`p(x)=x^5+x^2+1` as a basis for the :math:`(n,k,d) \equiv (31,21,5)` BCH codes.
 
 
 Some more field algebra
@@ -57,17 +59,17 @@ Base on the theorem that the set of all roots of :math:`m_\alpha(x)` is
 will have the generator polynomial, :math:`g(x) = m_{\alpha^1}(x)`. The two error-correcting codes
 will have the generator polynomial, :math:`g(x) =  m_\alpha(x)m_{\alpha^3}(x)`.
 
-I can generate the elements of :math:`GF(2^5)` based on :math:`p(x)=x^5+x^2+1` as
-the primitive polynomial numerically using *deconv* of MATHLAB/Octave,
+First let's try to generate the elements of :math:`GF(2^5)` based on :math:`p(x)=x^5+x^2+1` as
+the primitive polynomial numerically using either MATHLAB or Octave as the tool,
 
 .. code-block::
    :linenos:
         
-        >> n=31;
-        >> I=eye(n);
+        >> I=eye(31);
         >> gx=[1 0 0 1 0 1];
-        >> I=I(n:-1:1,:);
-        >> for i=1:n [a,r(i,:)]=deconv(I(i,:),gx);end
+        >> I=I(31:-1:1,:);
+        >> q=zeros(31,26);r=I;
+        >> for i=1:31 [q(i,:),r(i,:)]=deconv(I(i,:),gx);end
         >> r=mod(r(:,27:31),2);
 
 then tabulate the result,
@@ -164,24 +166,24 @@ The result agrees with what is obtained numerically by MATLAB/Octave. I think it
 randomly verify the result for couple of elements after :math:`\alpha^5`.
 
 Next is to get the generator polynomial by performing the calculation for minimal polynomials,
-:math:`m_1(x)=p(x), m_3(x)` and :math:`m_5(x)`, that is the root based on 
-:math:`\alpha, \alpha_3` and :math:`\alpha^5`
-because I need :math:`g(x)=m_1(x)m_3(x)m_5(x)` for this exercise. I can avoid the tedious calculation
+:math:`m_1(x)=p(x)` and :math:`m_(x)`, that is the root based on 
+:math:`\alpha` and :math:`\alpha^3`
+because I need :math:`g(x)=m_1(x)m_3(x)` for this exercise. I can avoid the tedious calculation
 by opting to use the tabulated generator polynomials of :math:`(n,k,d)` BCH code. For the
-:math:`(31,16,7), t=3`, :math:`m_3(x)=x^5+x^4+x^3+x^2+1`, and :math:`m_5(x)=x^5+x^4+x^2+x+1`.
+:math:`(31,21,5), t=2`, :math:`m_3(x)=x^5+x^4+x^3+x^2+1`, and :math:`m_1(x)=x^5+x^2+1`.
 
 .. math::
         
-        g(x)=LCM[m_1(x)m_3(x)m_5(x)] \\
-        = LCM[(x^5+x^2+1)(x^5+x^4+x^3+x^2+1)(x^5+x^4+x^2+x+1)] 
+        g(x)=LCM[m_1(x)m_3(x)] \\
+        = LCM[(x^5+x^2+1)(x^5+x^4+x^3+x^2+1)] 
 
 Using MATLAB/Octave's *conv* to multiply the polynomial,
 
 .. math::
 
-        g(x) = x^{15}+ x^{11}+x^{10}+x^9+ x^8+x^7+ x^5+x^3 + x^2+x+1
+        g(x) = x^{10}+x^9+ x^8+x^6+ x^5+x^3+1
 
-This matches to the tabulated octal table value, :math:`(107657)_8 = 001 000 111 110 101 111`.
+This matches to the tabulated octal table value, :math:`(3551)_8 = 011 101 101 001`.
 I can verify that :math:`g(x) | (x^{31} + 1)` using Octave's *deconv* operation. This is to
 confirm that any irreducible polynomial over GF(2) of degree :math:`m` divides :math:`X^{2^m-1}+1`.
         
@@ -221,40 +223,6 @@ confirm that any irreducible polynomial over GF(2) of degree :math:`m` divides :
         {B->A };
         }
 
-.. graphviz::
-
-        digraph m5 {
-        graph [label="polynomial m5(x)", splines=ortho];
-        0 [label="input", shape=none];
-	1 [label="output",shape=none];
-        a [label="x",shape=box];
-        b [label="x2",shape=box];
-        c [label="x3",shape=box];
-        d [label="x4",shape=box];
-        e [label="x5",shape=box];
-        E[label="",shape=circle];
-	  A[label="+",shape=doublecircle];
-	  B[label="",shape=circle];
-	  C[label="+",shape=doublecircle];
-	  D[label="",shape=circle];
-	  I[label="+",shape=doublecircle];
-	  H[label="",shape=circle];
-	  E1[label="",shape=circle];
-	  G[label="+",shape=doublecircle];
-	  F[label="",shape=circle];
-        
-        {rank=same; 0->A;};
-        {rank=same; D;B;E1;H;F};
-	D->B [constraint=false]
-        D->C
-        {rank=same;A->a->C->b->G->c->d->I->e->E};
-	E->E1 [constraint=false];
-	{rank=same;E->1};
-	{rank=same;E1->H->F->D [constraint=false]};
-        H->I 
-        F->G 
-        {B->A };
-        }
 
 By definition, a t-error-correcting BCH code of lengt :math:`2^m-1` having a binary *n-tuple* 
 :math:`u(X)=u_0+u_1+\cdots+u_{n-1}` is a code word iff :math:`u(X)` has :math:`\alpha,\alpha^2,
@@ -270,7 +238,7 @@ and for this exercise,
 
         u(\alpha) = u_o + u_1(\alpha) + u_2(\alpha^2) + \cdots + u_{n-1}(\alpha^{30}) = 0  \\
         u(\alpha^3) = u_o + u_1(\alpha^3) + u_2(\alpha^{6}) + \cdots + u_{n-1}(\alpha^{90}) = 0 \\
-        u(\alpha^5) = u_o + u_1(\alpha^5) + u_2(\alpha^{10}) + \cdots + u_{n-1}(\alpha^{150}) = 0
+..        u(\alpha^5) = u_o + u_1(\alpha^5) + u_2(\alpha^{10}) + \cdots + u_{n-1}(\alpha^{150}) = 0
 
 note that the power of :math:`\alpha` will wrap on this finite field, for example, 
 :math:`\alpha^{35} = \alpha^{31} \alpha^4 = \alpha^{4}`. Put it in matrix form,
@@ -280,10 +248,10 @@ note that the power of :math:`\alpha` will wrap on this finite field, for exampl
         (u_0 u_1 \cdots u_{n-1})  
         \left [
         \begin{array}{cc}
-        1 & 1 & 1 \\
-        \alpha & \alpha^3 & \alpha^5 \\
-        \cdots & \cdots & \cdots \\
-        \alpha^{30} & (\alpha^3)^{30} & (\alpha^5)^{30}
+        1 & 1  \\
+        \alpha & \alpha^3 \\
+        \cdots & \cdots \\
+        \alpha^{30} & (\alpha^3)^{30} 
         \end{array}
         \right] = 0 
         
@@ -329,37 +297,37 @@ The matrix below has the highest power of :math:`\alpha` at its top row.
          H^t=
         \left[
         \begin{array}{cc}
-        1   0   0   1   0& 1 0 1 1 0 & 1 0 1 1 1 \\
-        0   1   0   0   1& 1 1 0 0 1 & 1 1 0 0 0 \\
-        1   0   1   1   0& 1 0 1 0 1 & 1 1 0 1 1 \\
-        0   1   0   1   1& 0 0 1 1 0 & 0 0 1 1 1 \\
-        1   0   1   1   1& 1 1 0 1 1 & 0 1 0 1 0 \\
-        1   1   0   0   1& 1 1 1 0 0 & 0 0 0 1 0 \\
-        1   1   1   1   0& 1 0 0 0 1 & 0 1 0 1 1 \\
-        0   1   1   1   1& 1 0 1 0 0 & 1 0 1 0 1 \\
-        1   0   1   0   1& 1 0 0 0 0 & 1 0 0 1 1 \\
-        1   1   0   0   0& 0 0 0 1 0 & 0 1 1 1 0 \\
-        0   1   1   0   0& 0 1 0 0 1 & 1 0 1 0 0 \\
-        0   0   1   1   0& 1 0 1 1 1 & 0 0 1 0 0 \\
-        0   0   0   1   1& 0 1 1 1 1 & 1 0 1 1 0 \\
-        1   0   0   1   1& 0 1 1 0 0 & 0 1 1 1 1 \\
-        1   1   0   1   1& 1 0 0 1 1 & 0 0 0 1 1 \\
-        1   1   1   1   1& 1 1 1 0 1 & 1 1 1 0 0 \\
-        1   1   1   0   1& 0 0 1 1 1 & 0 1 1 0 1 \\
-        1   1   1   0   0& 0 1 1 0 1 & 0 1 0 0 0 \\
-        0   1   1   1   0& 0 0 1 0 1 & 0 1 0 0 1 \\
-        0   0   1   1   1& 0 0 1 0 0 & 1 1 1 1 0 \\
-        1   0   0   0   1& 1 0 0 1 0 & 0 0 1 1 0 \\
-        1   1   0   1   0& 0 1 0 1 1 & 1 1 1 0 1 \\
-        0   1   1   0   1& 1 1 1 1 0 & 1 1 0 1 0 \\
-        1   0   1   0   0& 1 1 0 0 0 & 1 0 0 0 0 \\
-        0   1   0   1   0& 0 0 0 1 1 & 1 0 0 1 0 \\
-        0   0   1   0   1& 1 1 1 1 1 & 1 1 0 0 1 \\
-        1   0   0   0   0& 0 1 1 1 0 & 0 1 1 0 0 \\
-        0   1   0   0   0& 1 1 0 1 0 & 1 1 1 1 1 \\
-        0   0   1   0   0& 0 1 0 1 0 & 1 0 0 0 1 \\
-        0   0   0   1   0& 0 1 0 0 0 & 0 0 1 0 1 \\
-        0   0   0   0   1& 0 0 0 0 1 & 0 0 0 0 1 
+        1   0   0   1   0& 1 0 1 1 0 \\
+        0   1   0   0   1& 1 1 0 0 1 \\
+        1   0   1   1   0& 1 0 1 0 1 \\
+        0   1   0   1   1& 0 0 1 1 0 \\
+        1   0   1   1   1& 1 1 0 1 1 \\
+        1   1   0   0   1& 1 1 1 0 0 \\
+        1   1   1   1   0& 1 0 0 0 1 \\
+        0   1   1   1   1& 1 0 1 0 0 \\
+        1   0   1   0   1& 1 0 0 0 0 \\
+        1   1   0   0   0& 0 0 0 1 0 \\
+        0   1   1   0   0& 0 1 0 0 1 \\
+        0   0   1   1   0& 1 0 1 1 1 \\
+        0   0   0   1   1& 0 1 1 1 1 \\
+        1   0   0   1   1& 0 1 1 0 0 \\
+        1   1   0   1   1& 1 0 0 1 1 \\
+        1   1   1   1   1& 1 1 1 0 1 \\
+        1   1   1   0   1& 0 0 1 1 1 \\
+        1   1   1   0   0& 0 1 1 0 1 \\
+        0   1   1   1   0& 0 0 1 0 1 \\
+        0   0   1   1   1& 0 0 1 0 0 \\
+        1   0   0   0   1& 1 0 0 1 0 \\
+        1   1   0   1   0& 0 1 0 1 1 \\
+        0   1   1   0   1& 1 1 1 1 0 \\
+        1   0   1   0   0& 1 1 0 0 0 \\
+        0   1   0   1   0& 0 0 0 1 1 \\
+        0   0   1   0   1& 1 1 1 1 1 \\
+        1   0   0   0   0& 0 1 1 1 0 \\
+        0   1   0   0   0& 1 1 0 1 0 \\
+        0   0   1   0   0& 0 1 0 1 0 \\
+        0   0   0   1   0& 0 1 0 0 0 \\
+        0   0   0   0   1& 0 0 0 0 1 
         \end{array}
         \right]
 
@@ -368,26 +336,27 @@ MATLAB/Octave is used to generate the power of :math:`\alpha` above,
 .. code-block::
    :linenos:
 
-        % minimum polynomials
+        I=eye(31);
+        % generator poly
+        gx=[1 0 0 0 1 1 1 1 1 0 1 0 1 1 1 1];
+        %set of mini poly
         m1=[1 0 0 1 0 1];
         m3=[1 1 1 1 0 1];
         m5=[1 1 0 1 1 1];
-        % generator poly
-        gx=mod(conv(conv(m1,m3),m5),2);
-        % will produce gx=[1 0 0 0 1 1 1 1 1 0 1 0 1 1 1 1];
-        for i=1:n
-        	 j=mod(3*i,31);
-        	 l=mod(5*i,31);
-        	 if j==0
-        		j=31;
-        	 end
-        	 if l == 0
-        		l=31;
-        	 end
-        	 R3(i,:)=r1(j,:);
-        	 R5(i,:)=r1(l,:);
+        q1=zeros(31,31-5);r1=I;
+        q3=zeros(31,31-5);r3=I;
+        q5=zeros(31,31-5);r5=I;
+        for i=1:31
+        	[q1(i,:),r1(i,:)]= deconv(I(i,:),m1);
+        	[q3(i,:),r3(i,:)]= deconv(I(i,:),m3);
+        	[q5(i,:),r5(i,:)]= deconv(I(i,:),m5);
         end
- 
+        % keep only the parity bits
+        r1=r1(:,27:31);r1=mod(r1,2);
+        r3=r3(:,27:31);r3=mod(r3,2);
+        r5=r5(:,27:31);r5=mod(r5,2);
+        h=[r1 r3 r5];
+
  
 The parity check is not in systematic form. 
 
@@ -431,22 +400,22 @@ Likewise the generator matrix can be obtained from the generator polynomial, :ma
         \right]
         =\left[
         \begin{array}{c|c}
-	     1000000000000000&100011111010111 \\
-	     0100000000000000&110010000111100 \\
-	     0010000000000000&011001000011110 \\
-	     0001000000000000&001100100001111 \\
-	     0000100000000000&100101101010000 \\
-	     0000010000000000&010010110101000 \\
-	     0000001000000000&001001011010100 \\
-	     0000000100000000&000100101101010 \\
-	     0000000010000000&000010010110101 \\
-	     0000000001000000&100010110001101 \\
-	     0000000000100000&110010100010001 \\
-	     0000000000010000&111010101011111 \\
-	     0000000000001000&111110101111000 \\
-	     0000000000000100&011111010111100 \\
-	     0000000000000010&001111101011110 \\
-	     0000000000000001&000111110101111 
+	     1000000000000000&1000111110\\
+	     0100000000000000&1100100001\\
+	     0010000000000000&0110010000\\
+	     0001000000000000&0011001000\\
+	     0000100000000000&1001011010\\
+	     0000010000000000&0100101101\\
+	     0000001000000000&0010010110\\
+	     0000000100000000&0001001011\\
+	     0000000010000000&0000100101\\
+	     0000000001000000&1000101100\\
+	     0000000000100000&1100101000\\
+	     0000000000010000&1110101010\\
+	     0000000000001000&1111101011\\
+	     0000000000000100&0111110101\\
+	     0000000000000010&0011111010\\
+	     0000000000000001&0001111101
         \end{array}
         \right ]
 
@@ -456,21 +425,21 @@ shift registers for error detection.
 
 .. code-block::
 
-        for i=1:n [a,r(i,:)]= deconv(I(i,:),gx);end
+        q=zeros(31,31-15);r=I;
+        for i=1:31 [q(i,:),r(i,:)]= deconv(I(i,:),gx);end
         r=r(:,17:31);r=mod(r,2);
         p=r(1:16,:); %partity bits
-        % generator matrix
         G=[eye(16) p];
         mod(G*h,2) %  zeros
 
 Decoder and errors locator
 ==========================
 
-From the row of :math:`H`, there are :math:`2^{15}` syndromes
-and :math:`1+\binom{n}{1} + \binom{n}{2} + \binom{n}{3} = 4992` 
+From the row of :math:`H`, there are :math:`2^{10}` syndromes
+and :math:`1+\binom{n}{1} + \binom{n}{2}=497` 
 correctable error patterns for this implementation.
 
-If :math:`\psi_i:i=1,3,5` are the syndromes each having 5 bits and representing the columns of
+If :math:`\psi_i:i=1,3` are the syndromes each having 5 bits and representing the columns of
 the transpose parity check matrix, :math:`H^t`,
 
 .. math::
@@ -478,17 +447,17 @@ the transpose parity check matrix, :math:`H^t`,
         H^t =
         \left[
         \begin{array}{cc}
-        1 & 1 & 1 \\
-        \alpha & \alpha^3 & \alpha^5 \\
-        \cdots & \cdots & \cdots \\
-        \alpha^{30} & (\alpha^3)^{30} & (\alpha^5)^{30}
+        1 & 1 \\
+        \alpha & \alpha^3  \\
+        \cdots & \cdots \\
+        \alpha^{30} & (\alpha^3)^{30} 
         \end{array}
         \right]
 
-and :math:`w` is the received coded word, then :math:`wH^t=[w(\alpha), w(\alpha^3), w(\alpha^5)] = [\psi_1, \psi_3, \psi_5]` is
-the syndrome of this code word. For a single bit error, :math:`e(x)=x^i`, the syndrome is :math:`wH^t=[(\alpha)^i,(\alpha^3)^i,(\alpha^5)^i]`.
+and :math:`w` is the received coded word, then :math:`wH^t=[w(\alpha), w(\alpha^3)] = [\psi_1, \psi_3]` is
+the syndrome of this code word. For a single bit error, :math:`e(x)=x^i`, the syndrome is :math:`wH^t=[(\alpha)^i,(\alpha^3)^i]`.
 If there are two errors in the code word, :math:`e(x)=x^i+x^j, i\neq j`, the syndrome
-becomes :math:`[\psi_1,\psi_3,\psi_5]=[(\alpha)^i+\alpha^j,(\alpha^3)^i+(\alpha^3)^j,(\alpha^5)^i+(\alpha^5)^j]`.
+becomes :math:`[\psi_1,\psi_3]=[(\alpha)^i+\alpha^j,(\alpha^3)^i+(\alpha^3)^j]`.
 Eventually it will lead to system of equations to be solved for a polynomial :math:`x(\psi_i)`. It is
 called the error-locator polynomial. This polynomial is dependent on error bit positions.
 
@@ -514,7 +483,7 @@ Suppose that a received coded word, :math:`w` has one bit error, say bit 14,
 
         >> mod(w*h,2)
         ans =
-           1 0 0 1 1 0 1 1 0 0 0 1 1 1 1
+         0 1 1 1 1 1 0 1 0 1 1 1 1 0 0
 
 The output from :math:`wH^t` produces the syndrome identical to row 14 of :math:`H^t`. The corrected
 code word is then :math:`w+I(14)`, where :math:`I(14)` is the 14th row of the identity matrix.
@@ -522,50 +491,37 @@ Now what happens if two bit errors, say another bit at bit 0,
 
 .. code-block::
 
-        w(1)=1; % was 0, set to 1 as error. Now we have bit0,14 as error bits
-        >> mod(w*h,2)
+        x(1)=1; % was 0, set to 1 as error. Now we have bit0,14 as error bits
+        >> mod(x*h,2)
         ans =
-           0 0 0 0 1 1 1 0 1 0 1 1 0 0 0
+         1 1 1 1 0 0 1 0 1 1 0 1 0 1 1
         >> mod(h(1,:)+h(14,:),2)
         ans =
-           0 0 0 0 1 1 1 0 1 0 1 1 0 0 0
+         1 1 1 1 0 0 1 0 1 1 0 1 0 1 1
 
          
 Evidently the syndrome is the same as :math:`H^t(14)+H^t(1)`, sum of first and 14th row. The 
 corrected bits are then :math:`I(14)+I(1)`, 1st and 14th row of :math:`I` matrix.
-This can go on up to 3-bits error, but how do I know which bit or bits are in error ? The 
+This can go on up to three-bits error. How do I know which bit or bits are in error ? The 
 possibility is binomial sum as stated earlier because error can be any number of bits and
 at any positions. Locating the error positions is the hardest part of the implementation.
 
-.. Some reformulation is needed for practical implementation.
-.. Suppose that the received code word :math:`W(x)` from the transmitted code word, :math:`U(x)`,
+Some reformulation is needed for practical implementation.
+Suppose that the received code word :math:`W(x)` from the transmitted code word, :math:`U(x)`,
 
-.. .. math::
+.. math::
 
-..        U(x)=u_0+u_1x+u_2x^2+ \cdots + u_{n-1}x^{n-1} \\
-..        W(x) = U(x) + e (x) 
+        U(x)=u_0+u_1x+u_2x^2+ \cdots + u_{n-1}x^{n-1} \\
+        W(x) = U(x) + e (x) 
 
-.. The syndrome from :math:`W(x)` is therefore,
+The syndrome from :math:`W(x)` is therefore,
 
-.. .. math::
+.. math::
 
-..         rH^T = (U + e)H^T = UH^T + eH^T = 0 + eH^T = S(s_1, s_2, \cdots, s_{2t})
+        rH^T = (U + e)H^T = UH^T + eH^T = 0 + eH^T = S(s_1, s_2, \cdots, s_{2t})
 
-.. Syndrome of :math:`2t` tuple depends only on error bits. For this implementation, I will
-.. have :math:`S(s_1,s_2,\cdots,s_6)`
+Syndrome of :math:`2t` tuple depends only on error bits. For this implementation, I will
+have :math:`S(s_1,s_2,s_3,s_4)`
 
-While there are several algorithms for error locating, they are not always efficient for
-hardware implementation. I tried out some algorithms on paper and pencil that work well, but
-I have no idea how to translate it into hardware. I will leave those to the experts. One
-possible algorithm that I like is this, let :math:`w(x)` be the received code word where
-:math:`w(x)=u(x)+e(x)`. :math:`u(x)` and :math:`e(x)` are the transmitted code word and
-error respectively.
-
-. Calculate syndrome :math:`s(x) = w(x) mod g(x)`
-. For :math:`i \ge 0`, calculate :math:`s_i(x)=x^i mod g(x)` until :math:`s_j(x)` is found 
-where weight of :math:`s_j(x) \le t`. 
-. Once :math:`s_i(x)` is located, :math:`e(x)=x^{n-j} mod (x^n + 1)` are the most likely
-error bits.
-
-
+        
 

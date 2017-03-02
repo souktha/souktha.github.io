@@ -8,7 +8,7 @@
 .. type: text
 
 This is a math workout problem that accompanied my FPGA implementation of forward error correction code (FEC). I choose to
-make a simple implementation of :math:`(n,k,d)=(15,11,1)` code using the primitive polynomial :math:`h(x)=1+x+x^4`. 
+make a simple implementation of :math:`(n,k,d)=(15,11,3)` code using the primitive polynomial :math:`h(x)=1+x+x^4`. 
 This FEC will have be able to correct 1 bit error based on its minimum distance of 3. It is simple because it can be worked 
 out by hand and it would not take too long to implement in hardware.
 
