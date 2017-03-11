@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Soukthavy Sopha (Misc)</title><link>http://souktha.github.io/</link><description></description><atom:link rel="self" href="http://souktha.github.io/misc/rss.xml" type="application/rss+xml"></atom:link><language>en</language><lastBuildDate>Fri, 10 Mar 2017 19:21:20 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Binary BCH (15,7,5) work out</title><link>http://souktha.github.io/misc/bch15_7_5/</link><dc:creator>Soukthavy</dc:creator><description>&lt;div&gt;&lt;p&gt;This is a math workout problem that is the math part of my FPGA implementation of forward
+error correction code (FEC). Build on my earlier blog of a Hamming cyclic code of
+&lt;span class="math"&gt;\((n,k,d)=(15,11,3)\)&lt;/span&gt;, I will expand its capability to a binary
+BCH &lt;span class="math"&gt;\((15,7,5), t=2\)&lt;/span&gt;  code based on the same primitive polynomial &lt;span class="math"&gt;\(h(x)=1+x+x^4\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://souktha.github.io/misc/bch15_7_5/"&gt;Read more…&lt;/a&gt; (10 min remaining to read)&lt;/p&gt;&lt;/div&gt;</description><category>latex</category><category>mathjax</category><category>misc</category><guid>http://souktha.github.io/misc/bch15_7_5/</guid><pubDate>Sun, 26 Feb 2017 22:46:19 GMT</pubDate></item><item><title>Create Wireless AP on Linux PC in 10 minutes</title><link>http://souktha.github.io/misc/create-ap-linuxpc/</link><dc:creator>Soukthavy</dc:creator><description>&lt;div&gt;&lt;p&gt;Creating a wireless access point aka WiFi AP is relatively easy. A typical PC
+usually has at least one networking device or maybe two. One would be an Ethernet
+device while the other would be a WiFi device. If the ethernet device is tethered
+into the router already, this leaves WiFi device unused as in my case. Instead of
+leaving it in a useless state, I choose to create a WiFi AP out of it.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://souktha.github.io/misc/create-ap-linuxpc/"&gt;Read more…&lt;/a&gt; (9 min remaining to read)&lt;/p&gt;&lt;/div&gt;</description><category>misc</category><guid>http://souktha.github.io/misc/create-ap-linuxpc/</guid><pubDate>Sun, 15 Jan 2017 19:14:05 GMT</pubDate></item><item><title>Simple Cyclic Hamming codes</title><link>http://souktha.github.io/misc/cyclic_1_x_x4/</link><dc:creator>Soukthavy</dc:creator><description>&lt;div&gt;&lt;p&gt;This is a math workout problem that accompanied my FPGA implementation of forward error correction code (FEC). I choose to
+make a simple implementation of &lt;span class="math"&gt;\((n,k,d)=(15,11,3)\)&lt;/span&gt; code using the primitive polynomial &lt;span class="math"&gt;\(h(x)=1+x+x^4\)&lt;/span&gt;.
+This FEC will have be able to correct 1 bit error based on its minimum distance of 3. It is simple because it can be worked
+out by hand and it would not take too long to implement in hardware.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://souktha.github.io/misc/cyclic_1_x_x4/"&gt;Read more…&lt;/a&gt; (8 min remaining to read)&lt;/p&gt;&lt;/div&gt;</description><category>latex</category><category>mathjax</category><category>misc</category><guid>http://souktha.github.io/misc/cyclic_1_x_x4/</guid><pubDate>Sat, 10 Dec 2016 22:46:19 GMT</pubDate></item><item><title>UBI block and read-only NAND FS</title><link>http://souktha.github.io/misc/squashfs-ubi/</link><dc:creator>Soukthavy</dc:creator><description>&lt;div&gt;&lt;p&gt;There are many NAND Flash file systems available in Linux distribution that are suitable for deployment
+in various Linux embedded products. Every FS has their strengths and weeknesses and they are not
+perfect for every type of applications. The debate will be endless as to which is better than the others.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://souktha.github.io/misc/squashfs-ubi/"&gt;Read more…&lt;/a&gt; (9 min remaining to read)&lt;/p&gt;&lt;/div&gt;</description><category>misc</category><guid>http://souktha.github.io/misc/squashfs-ubi/</guid><pubDate>Sat, 09 Apr 2016 01:44:47 GMT</pubDate></item><item><title>Repartitioning 4GB Beaglebone Black eMMC flash</title><link>http://souktha.github.io/misc/repartition-boneblk/</link><dc:creator>Soukthavy</dc:creator><description>&lt;div&gt;&lt;!-- $LastChangeDate$ --&gt;
+&lt;!-- $Rev$ --&gt;
+&lt;!-- $Author$ --&gt;
+&lt;p&gt;I bought the Beaglebone Black Rev C nearly two years ago. When I received it, I powered it up and
+saw that everything appeared to be functional, put it back in the box and never had the chance
+to work with it again until now. It looks like it was preloaded with Debian (I am not sure). There
+must have been a lot of updates ever since.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://souktha.github.io/misc/repartition-boneblk/"&gt;Read more…&lt;/a&gt; (10 min remaining to read)&lt;/p&gt;&lt;/div&gt;</description><category>misc</category><guid>http://souktha.github.io/misc/repartition-boneblk/</guid><pubDate>Sun, 20 Mar 2016 01:26:53 GMT</pubDate></item><item><title>LaTeX conversion</title><link>http://souktha.github.io/misc/class_report_503/</link><dc:creator>Soukthavy</dc:creator><description>&lt;div&gt;&lt;table class="docinfo" frame="void" rules="none"&gt;
+&lt;col class="docinfo-name"&gt;
+&lt;col class="docinfo-content"&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;th class="docinfo-name"&gt;Author:&lt;/th&gt;
+&lt;td&gt;Soukthavy Sopha&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th class="docinfo-name"&gt;Contact:&lt;/th&gt;
+&lt;td&gt;&lt;a class="first last reference external" href="mailto:soukthavy@yahoo.com"&gt;soukthavy@yahoo.com&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th class="docinfo-name"&gt;Organization:&lt;/th&gt;
+&lt;td&gt;self&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th class="docinfo-name"&gt;Status:&lt;/th&gt;
+&lt;td&gt;Lean to convert the LaTex of IEEE format to reST using my old class homework.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th class="docinfo-name"&gt;Revision:&lt;/th&gt;
+&lt;td&gt;0.1&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th class="docinfo-name"&gt;Copyright:&lt;/th&gt;
+&lt;td&gt;None&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class="abstract topic"&gt;
+&lt;p class="topic-title first"&gt;Abstract&lt;/p&gt;
+&lt;p&gt;The Arimoto-Blahut algorithm is the algorithm used to solve the convex optimization problem
+for the maximum capacity of a discrete memoryless channel. We will implement their algorithm with
+MATLAB script to solve the given problem.&lt;/p&gt;
+&lt;/div&gt;
+&lt;!-- Converting my old LaTeX file to reST format requires a bit of editing. Unless I did something wrong, cut-n-paste mode is not working, for example, I cannot get this to work, --&gt;
+&lt;!-- .. code-block:: --&gt;
+&lt;!-- .. raw: latex --&gt;
+&lt;!-- \begin{equation} --&gt;
+&lt;!-- \phi(y_j,x_i)  = \frac{p(x_i|y_j)p(y_j)}{\sum_{k=1}^{n}p(x_i|y_k)p(y_k)} --&gt;
+&lt;!-- \end{equation} --&gt;
+&lt;!-- instead, --&gt;
+&lt;!-- .. code-block:: --&gt;
+&lt;!-- .. math:: --&gt;
+&lt;!-- \phi(y_j,x_i)  = \frac{p(x_i|y_j)p(y_j)}{\sum_{k=1}^{n}p(x_i|y_k)p(y_k)} --&gt;
+&lt;!-- works. Most of editing involves deleting and indenting. Later I will figure out how to do multi columns in IEEE format. --&gt;
+&lt;p&gt;&lt;a href="http://souktha.github.io/misc/class_report_503/"&gt;Read more…&lt;/a&gt; (3 min remaining to read)&lt;/p&gt;&lt;/div&gt;</description><category>latex</category><category>mathjax</category><category>misc</category><guid>http://souktha.github.io/misc/class_report_503/</guid><pubDate>Sun, 06 Mar 2016 15:56:21 GMT</pubDate></item><item><title>ReStructuredText Demo (import from demo.txt)</title><link>http://souktha.github.io/misc/restructuredtext-demo-import-from-demotxt/</link><dc:creator>Soukthavy</dc:creator><description>&lt;div&gt;&lt;table class="docinfo" frame="void" rules="none"&gt;
+&lt;col class="docinfo-name"&gt;
+&lt;col class="docinfo-content"&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;th class="docinfo-name"&gt;Author:&lt;/th&gt;
+&lt;td&gt;David Goodger&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th class="docinfo-name"&gt;Address:&lt;/th&gt;
+&lt;td&gt;&lt;pre class="address"&gt;
+123 Example Street
+Example, EX  Canada
+A1B 2C3
+&lt;/pre&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th class="docinfo-name"&gt;Contact:&lt;/th&gt;
+&lt;td&gt;&lt;a class="first last reference external" href="mailto:docutils-develop@lists.sourceforge.net"&gt;docutils-develop@lists.sourceforge.net&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th class="docinfo-name"&gt;Authors:&lt;/th&gt;
+&lt;td&gt;Me
+&lt;br&gt;Myself
+&lt;br&gt;I&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th class="docinfo-name"&gt;Organization:&lt;/th&gt;
+&lt;td&gt;humankind&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th class="docinfo-name"&gt;Date:&lt;/th&gt;
+&lt;td&gt;2012-01-03&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th class="docinfo-name"&gt;Status:&lt;/th&gt;
+&lt;td&gt;This is a "work in progress"&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th class="docinfo-name"&gt;Revision:&lt;/th&gt;
+&lt;td&gt;7302&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th class="docinfo-name"&gt;Version:&lt;/th&gt;
+&lt;td&gt;1&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th class="docinfo-name"&gt;Copyright:&lt;/th&gt;
+&lt;td&gt;This document has been placed in the public domain. You
+may do with it as you wish. You may copy, modify,
+redistribute, reattribute, sell, buy, rent, lease,
+destroy, or improve it, quote it at length, excerpt,
+incorporate, collate, fold, staple, or mutilate it, or do
+anything else to it that your or anyone else's heart
+desires.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr class="field-name field"&gt;&lt;th class="docinfo-name"&gt;field name:&lt;/th&gt;&lt;td class="field-body"&gt;This is a generic bibliographic field.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class="field-name-2 field"&gt;&lt;th class="docinfo-name"&gt;field name 2:&lt;/th&gt;&lt;td class="field-body"&gt;&lt;p class="first"&gt;Generic bibliographic fields may contain multiple body elements.&lt;/p&gt;
+&lt;p class="last"&gt;Like this.&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class="dedication topic"&gt;
+&lt;p class="topic-title first"&gt;Dedication&lt;/p&gt;
+&lt;p&gt;For Docutils users &amp;amp; co-developers.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="abstract topic"&gt;
+&lt;p class="topic-title first"&gt;Abstract&lt;/p&gt;
+&lt;p&gt;This document is a demonstration of the reStructuredText markup
+language, containing examples of all basic reStructuredText
+constructs and many advanced constructs.&lt;/p&gt;
+&lt;/div&gt;
+&lt;!-- This is a comment. Note how any initial comments are moved by
+transforms to after the document title, subtitle, and docinfo. --&gt;
+&lt;!-- Above is the document title, and below is the subtitle.
+They are transformed from section titles after parsing. --&gt;
+&lt;!-- bibliographic fields (which also require a transform): --&gt;
+&lt;p&gt;&lt;a href="http://souktha.github.io/misc/restructuredtext-demo-import-from-demotxt/"&gt;Read more…&lt;/a&gt; (10 min remaining to read)&lt;/p&gt;&lt;/div&gt;</description><category>mathjax</category><category>misc</category><guid>http://souktha.github.io/misc/restructuredtext-demo-import-from-demotxt/</guid><pubDate>Fri, 04 Mar 2016 22:47:22 GMT</pubDate></item></channel></rss>

@@ -1,7 +1,7 @@
 .. title: Binary BCH (31,16,7) linear cyclic code work out
 .. slug: bch31_16_7
 .. date: 2017-01-16 23:39:17 UTC
-.. tags: misc, mathjax, latex
+.. tags: misc, mathjax, latex, draft
 .. category: math 
 .. link: 
 .. description: BCH code based on g(x)=1+x**2+x**5
@@ -569,5 +569,23 @@ where weight of :math:`s_j(x) \le t`.
 . Once :math:`s_j(x)` is located, :math:`e(x)=x^{n-j}s_j(x) mod (x^n + 1)` are the most likely
 error bits.
 
+Assume the transmitted code word :math:`u(12345)= 0011_0000_0011_1000_10001_10001 _00111`,
+which obtained from :math:`u=vG` above. Representin in polynomial form,
 
+.. math::
 
+        u(x)=1+x+x^2+x^5+x^9+x^{10}+x^{14}+x^{18}+x^{19}+x^{20}+x^{27}+x^{28}
+
+having 3 bits error at bit 0, bit 29, bit 26, such that :math:`0111_1000_0011_1000_10001_10001 _00110`
+
+.. math::
+        w(x)=x+x^2+x^5+x^9+x^{10}+x^{14}+x^{18}+x^{19}+x^{20}+x^{26}+x^{27}+x^{28}+x^{29}
+
+The compute syndrome is :math:`01011_11011_01101`
+
+.. math::
+
+        s(x)= w(x) mod g(x) =1+x^2+x^3+x^5+x^6+x^8+x^9+x^{10}+x^{11}+x^{13}
+        s_1(x) = xs(x) mod g(x) =  
+
+  

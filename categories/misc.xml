@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/"><channel><title>Soukthavy Sopha (misc)</title><link>http://souktha.github.io/</link><description></description><atom:link href="http://souktha.github.io/categories/misc.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><lastBuildDate>Thu, 02 Mar 2017 18:25:44 GMT</lastBuildDate><generator>https://getnikola.com/</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Create Wireless AP on Linux PC in 10 minutes</title><link>http://souktha.github.io/misc/create-ap-linuxpc/</link><dc:creator>Soukthavy</dc:creator><description>&lt;div&gt;&lt;p&gt;Creating a wireless access point aka WiFi AP is relatively easy. A typical PC
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>Soukthavy Sopha (Posts about misc)</title><link>http://souktha.github.io/</link><description></description><atom:link rel="self" href="http://souktha.github.io/categories/misc.xml" type="application/rss+xml"></atom:link><language>en</language><lastBuildDate>Fri, 10 Mar 2017 19:21:20 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Binary BCH (15,7,5) work out</title><link>http://souktha.github.io/misc/bch15_7_5/</link><dc:creator>Soukthavy</dc:creator><description>&lt;div&gt;&lt;p&gt;This is a math workout problem that is the math part of my FPGA implementation of forward
+error correction code (FEC). Build on my earlier blog of a Hamming cyclic code of
+&lt;span class="math"&gt;\((n,k,d)=(15,11,3)\)&lt;/span&gt;, I will expand its capability to a binary
+BCH &lt;span class="math"&gt;\((15,7,5), t=2\)&lt;/span&gt;  code based on the same primitive polynomial &lt;span class="math"&gt;\(h(x)=1+x+x^4\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://souktha.github.io/misc/bch15_7_5/"&gt;Read more…&lt;/a&gt; (10 min remaining to read)&lt;/p&gt;&lt;/div&gt;</description><category>latex</category><category>mathjax</category><category>misc</category><guid>http://souktha.github.io/misc/bch15_7_5/</guid><pubDate>Sun, 26 Feb 2017 22:46:19 GMT</pubDate></item><item><title>Create Wireless AP on Linux PC in 10 minutes</title><link>http://souktha.github.io/misc/create-ap-linuxpc/</link><dc:creator>Soukthavy</dc:creator><description>&lt;div&gt;&lt;p&gt;Creating a wireless access point aka WiFi AP is relatively easy. A typical PC
 usually has at least one networking device or maybe two. One would be an Ethernet
 device while the other would be a WiFi device. If the ethernet device is tethered
 into the router already, this leaves WiFi device unused as in my case. Instead of
@@ -90,9 +94,9 @@ destroy, or improve it, quote it at length, excerpt,
 incorporate, collate, fold, staple, or mutilate it, or do
 anything else to it that your or anyone else's heart
 desires.&lt;/td&gt;&lt;/tr&gt;
-&lt;tr class="field"&gt;&lt;th class="docinfo-name"&gt;field name:&lt;/th&gt;&lt;td class="field-body"&gt;This is a generic bibliographic field.&lt;/td&gt;
+&lt;tr class="field-name field"&gt;&lt;th class="docinfo-name"&gt;field name:&lt;/th&gt;&lt;td class="field-body"&gt;This is a generic bibliographic field.&lt;/td&gt;
 &lt;/tr&gt;
-&lt;tr class="field"&gt;&lt;th class="docinfo-name"&gt;field name 2:&lt;/th&gt;&lt;td class="field-body"&gt;&lt;p class="first"&gt;Generic bibliographic fields may contain multiple body elements.&lt;/p&gt;
+&lt;tr class="field-name-2 field"&gt;&lt;th class="docinfo-name"&gt;field name 2:&lt;/th&gt;&lt;td class="field-body"&gt;&lt;p class="first"&gt;Generic bibliographic fields may contain multiple body elements.&lt;/p&gt;
 &lt;p class="last"&gt;Like this.&lt;/p&gt;
 &lt;/td&gt;
 &lt;/tr&gt;

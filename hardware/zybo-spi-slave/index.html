@@ -2,12 +2,12 @@
 <html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
 <head>
 <meta charset="utf-8">
-<base href="http://souktha.github.io/hardware/zybo-spi-slave/">
 <meta name="description" content="Adding custom SPI slave device connected to SPI0 via EMIO">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Zynq Zybo SPI slave via EMIO | Soukthavy Sopha</title>
 <link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
-<meta content="#5670d4" name="theme-color">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
 <link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
 <link rel="canonical" href="http://souktha.github.io/hardware/zybo-spi-slave/">
 <!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="description" itemprop="description" content="Adding custom SPI slave device connected to SPI0 via EMIO">
@@ -85,7 +85,7 @@
         <div class="row">
             
             
-<article class="storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Zynq Zybo SPI slave via EMIO</a></h1>
+<article class="post-text storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Zynq Zybo SPI slave via EMIO</a></h1>
 
         
 
@@ -110,135 +110,135 @@ device for this exercise.</p>
 <p>. Basic command support: Read ID (0x1d), Read(0xea), Write(0xad). Limited to three commands for simplicity. Any other
 commands is rejected.</p>
 <p>Here is the sample of verilog code of my SPI slave device, <em>spi_slave.v</em>,</p>
-<pre class="code verilog"><a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-1"></a>    <span class="no">`timescale</span> <span class="mh">1</span><span class="n">ns</span> <span class="o">/</span> <span class="mh">100</span><span class="n">ps</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-2"></a>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-3"></a><span class="cp">    `define DEVICE_ID 8'h5a</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-4"></a>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-5"></a>    <span class="cm">/* SPI slave interface.</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-6"></a><span class="cm">    This is a simple version of SPI slave mode 0.</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-7"></a><span class="cm">    * /</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-8"></a>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-9"></a><span class="cm">    module spi_slave #(parameter WIDTH=8) (</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-10"></a><span class="cm">        input clk,  //system clock feed</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-11"></a><span class="cm">        input _cs,  // chip select, active low</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-12"></a><span class="cm">        input sck,  //spi master clock</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-13"></a><span class="cm">        input mosi, //input from master</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-14"></a><span class="cm">        output miso</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-15"></a><span class="cm">    );</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-16"></a><span class="cm">        reg [WIDTH-1:0] din, dout,slave_dout;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-17"></a><span class="cm">        reg [4:0] bitcount;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-18"></a><span class="cm">        reg sout, dload;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-19"></a><span class="cm">        reg [7:0] command;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-20"></a>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-21"></a><span class="cm">        reg [2:0] current,next;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-22"></a><span class="cm">        /* possible states: IDLE, CMD_IN, CMD_PROCESS for command received,</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-23"></a><span class="cm">        DIN for data from master, DOUT for data to master.</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-24"></a><span class="cm">        Commands are: READ_ID=0x1d, READ=0xea, WRITE=0xad.</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-25"></a><span class="cm">            ID data  * /</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-26"></a><span class="cm">        parameter IDLE=0, CMD_IN=1, CMD_PROCESS=2, DIN=3, DOUT=4, INVALID=5, CMD_DEBUG=6;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-27"></a><span class="cm">        parameter READ_ID=8'h1d, READ=8'hea, WRITE=8'had;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-28"></a>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-29"></a><span class="cm">        initial begin</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-30"></a><span class="cm">            current = IDLE;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-31"></a><span class="cm">            next = IDLE;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-32"></a><span class="cm">            command = 8'h0;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-33"></a><span class="cm">            bitcount = 8'h0;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-34"></a><span class="cm">            dload = 1'b0;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-35"></a><span class="cm">         end</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-36"></a>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-37"></a><span class="cm">      /* _cs is to remain asserted during command and data transfer.*/</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-38"></a>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-39"></a>        <span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">,</span> <span class="k">negedge</span> <span class="n">_cs</span><span class="p">)</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-40"></a>         <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="n">_cs</span> <span class="p">)</span> <span class="k">begin</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-41"></a>             <span class="k">if</span> <span class="p">(</span><span class="n">current</span> <span class="o">==</span> <span class="no">IDLE</span> <span class="p">)</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-42"></a>                    <span class="n">current</span> <span class="o">&lt;=</span> <span class="no">CMD_IN</span><span class="p">;</span>      <span class="cm">/* on assertion of _cs*/</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-43"></a>             <span class="k">else</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-44"></a>                     <span class="n">current</span> <span class="o">&lt;=</span> <span class="n">next</span><span class="p">;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-45"></a>             <span class="k">end</span> <span class="k">else</span> <span class="n">current</span> <span class="o">&lt;=</span> <span class="no">IDLE</span><span class="p">;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-46"></a>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-47"></a>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-48"></a>       <span class="cm">/* state machine transition*/</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-49"></a>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-50"></a>        <span class="k">always</span><span class="p">@(</span><span class="n">current</span> <span class="k">or</span> <span class="n">bitcount</span> <span class="k">or</span> <span class="n">_cs</span><span class="p">)</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-51"></a>            <span class="k">if</span> <span class="p">(</span><span class="n">_cs</span> <span class="p">)</span> <span class="n">next</span> <span class="o">=</span> <span class="no">IDLE</span><span class="p">;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-52"></a>            <span class="k">else</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-53"></a>        <span class="k">case</span><span class="p">(</span><span class="n">current</span><span class="p">)</span> <span class="c1">//full_case</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-54"></a>        <span class="nl">CMD_IN:</span> <span class="k">begin</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-55"></a>            <span class="k">if</span> <span class="p">(</span> <span class="n">bitcount</span><span class="p">[</span><span class="mh">3</span><span class="p">])</span> <span class="k">begin</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-56"></a>                <span class="p">#</span><span class="mh">1</span> <span class="n">command</span> <span class="o">=</span> <span class="n">din</span><span class="p">;</span> <span class="c1">//latch in command</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-57"></a>                            <span class="n">next</span> <span class="o">=</span> <span class="no">CMD_PROCESS</span><span class="p">;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-58"></a>                      <span class="k">end</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-59"></a>                    <span class="k">else</span> <span class="k">begin</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-60"></a>                      <span class="n">next</span> <span class="o">=</span> <span class="no">CMD_IN</span><span class="p">;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-61"></a>                      <span class="k">end</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-62"></a>                    <span class="k">end</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-63"></a>        <span class="nl">CMD_PROCESS:</span> <span class="k">begin</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-64"></a>                    <span class="k">case</span> <span class="p">(</span><span class="n">command</span><span class="p">)</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-65"></a>                            <span class="nl">READ_ID:</span> <span class="k">begin</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-66"></a>                                    <span class="n">slave_dout</span> <span class="o">=</span> <span class="no">`DEVICE_ID</span><span class="p">;</span> <span class="c1">//ID is 5A or as defined</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-67"></a>                                    <span class="n">next</span> <span class="o">=</span> <span class="no">DOUT</span><span class="p">;</span> <span class="c1">// transition to DOUT via miso</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-68"></a>                                    <span class="n">dload</span> <span class="o">=</span> <span class="mh">1</span><span class="mb">'b1</span><span class="p">;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-69"></a>                                    <span class="k">end</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-70"></a>                            <span class="nl">READ:</span> <span class="k">begin</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-71"></a>                                    <span class="n">slave_dout</span> <span class="o">=</span> <span class="mh">8'hc4</span><span class="p">;</span> <span class="c1">//use this for dummy read for now</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-72"></a>                                    <span class="n">next</span> <span class="o">=</span> <span class="no">DOUT</span><span class="p">;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-73"></a>                                    <span class="n">dload</span> <span class="o">=</span> <span class="mh">1</span><span class="mb">'b1</span><span class="p">;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-74"></a>                                    <span class="k">end</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-75"></a>                            <span class="nl">WRITE:</span> <span class="k">begin</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-76"></a>                                    <span class="n">next</span> <span class="o">=</span> <span class="no">DIN</span><span class="p">;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-77"></a>                                    <span class="k">end</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-78"></a>                            <span class="k">default</span><span class="o">:</span> <span class="k">begin</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-79"></a>                                    <span class="n">next</span> <span class="o">=</span> <span class="no">CMD_IN</span><span class="p">;</span> <span class="c1">//reject invalid cmd</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-80"></a>                                    <span class="k">end</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-81"></a>                            <span class="k">endcase</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-82"></a>                    <span class="k">end</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-83"></a>         <span class="nl">DIN:</span> <span class="k">begin</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-84"></a>            <span class="k">if</span> <span class="p">(</span> <span class="n">bitcount</span><span class="p">[</span><span class="mh">4</span><span class="p">]</span>  <span class="p">)</span> <span class="k">begin</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-85"></a>                    <span class="n">next</span> <span class="o">=</span> <span class="no">CMD_IN</span><span class="p">;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-86"></a>               <span class="k">end</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-87"></a>                    <span class="k">else</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-88"></a>                            <span class="n">next</span> <span class="o">=</span> <span class="no">DIN</span><span class="p">;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-89"></a>                    <span class="k">end</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-90"></a>        <span class="nl">DOUT:</span> <span class="k">begin</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-91"></a>            <span class="k">if</span> <span class="p">(</span> <span class="n">bitcount</span><span class="p">[</span><span class="mh">4</span><span class="p">]</span> <span class="p">)</span> <span class="k">begin</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-92"></a>                    <span class="n">next</span> <span class="o">=</span> <span class="no">CMD_IN</span><span class="p">;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-93"></a>            <span class="k">end</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-94"></a>            <span class="k">else</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-95"></a>                    <span class="n">next</span> <span class="o">=</span> <span class="no">DOUT</span><span class="p">;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-96"></a>                    <span class="n">dload</span> <span class="o">=</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-97"></a>            <span class="k">end</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-98"></a>    <span class="k">endcase</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-99"></a>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-100"></a>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-101"></a><span class="cm">/* MISO at z if not in DOUT phase. Don't drive it.*/</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-102"></a><span class="k">assign</span> <span class="p">#</span><span class="mh">1</span> <span class="n">miso</span> <span class="o">=</span> <span class="n">sout</span><span class="p">;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-103"></a>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-104"></a><span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">sck</span><span class="p">,</span> <span class="k">posedge</span> <span class="n">_cs</span><span class="p">,</span> <span class="k">posedge</span> <span class="n">current</span> <span class="p">)</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-105"></a>  <span class="k">if</span> <span class="p">(</span><span class="n">_cs</span> <span class="o">||</span> <span class="n">current</span> <span class="o">!=</span> <span class="no">DOUT</span><span class="p">)</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-106"></a>   <span class="n">sout</span> <span class="o">&lt;=</span> <span class="mh">1</span><span class="p">'</span><span class="n">bz</span><span class="p">;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-107"></a>  <span class="k">else</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-108"></a>   <span class="n">sout</span> <span class="o">&lt;=</span> <span class="n">dout</span><span class="p">[</span><span class="mh">7</span><span class="p">];</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-109"></a>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-110"></a><span class="o">/*</span> <span class="n">sample</span> <span class="no">MOSI</span> <span class="n">bits</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-111"></a><span class="o">&gt;--</span><span class="mh">01234567</span><span class="o">----&gt;---</span><span class="mh">01234567</span><span class="o">-----&gt;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-112"></a> <span class="o">|--------------------------|</span>   <span class="o">*</span> <span class="o">/</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-113"></a><span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">sck</span><span class="p">,</span> <span class="k">posedge</span> <span class="n">_cs</span> <span class="p">)</span> <span class="k">begin</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-114"></a>            <span class="k">if</span> <span class="p">(</span><span class="n">_cs</span> <span class="p">)</span> <span class="p">#</span><span class="mh">1</span> <span class="n">bitcount</span> <span class="o">&lt;=</span> <span class="mh">8'h0</span><span class="p">;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-115"></a>    <span class="k">else</span>  <span class="k">begin</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-116"></a>            <span class="p">#</span><span class="mh">1</span> <span class="n">din</span> <span class="o">&lt;=</span> <span class="p">{</span><span class="n">din</span><span class="p">[</span><span class="mh">6</span><span class="o">:</span><span class="mh">0</span><span class="p">],</span><span class="n">mosi</span><span class="p">};</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-117"></a>            <span class="p">#</span><span class="mh">1</span> <span class="n">bitcount</span> <span class="o">&lt;=</span> <span class="n">bitcount</span> <span class="o">+</span> <span class="mh">1</span><span class="mb">'b1</span><span class="p">;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-118"></a>        <span class="k">if</span> <span class="p">(</span><span class="n">bitcount</span><span class="p">[</span><span class="mh">4</span><span class="p">])</span> <span class="p">#</span><span class="mh">1</span> <span class="n">bitcount</span> <span class="o">&lt;=</span> <span class="mh">4'h1</span><span class="p">;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-119"></a>     <span class="k">end</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-120"></a><span class="k">end</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-121"></a>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-122"></a><span class="o">/*</span> <span class="n">Transmit</span> <span class="no">MSB</span> <span class="n">first</span> <span class="o">*</span> <span class="o">/</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-123"></a><span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">sck</span><span class="p">,</span> <span class="k">posedge</span> <span class="n">dload</span><span class="p">)</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-124"></a>            <span class="k">if</span> <span class="p">(</span><span class="n">dload</span><span class="p">)</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-125"></a>             <span class="n">dout</span> <span class="o">&lt;=</span> <span class="n">slave_dout</span><span class="p">;</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-126"></a>            <span class="k">else</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-127"></a>             <span class="n">dout</span> <span class="o">&lt;=</span> <span class="p">{</span><span class="n">dout</span><span class="p">[</span><span class="mh">6</span><span class="o">:</span><span class="mh">0</span><span class="p">],</span><span class="n">mosi</span><span class="p">};</span> <span class="c1">//loop with input data</span>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-128"></a>
-<a name="rest_code_f33cd1535f304d1785f61bcb6e48b1dd-129"></a>    <span class="k">endmodule</span>
+<pre class="code verilog"><a name="rest_code_95c63531388f4848b71e0c6f39c6afae-1"></a>    <span class="no">`timescale</span> <span class="mh">1</span><span class="n">ns</span> <span class="o">/</span> <span class="mh">100</span><span class="n">ps</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-2"></a>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-3"></a><span class="cp">    `define DEVICE_ID 8'h5a</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-4"></a>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-5"></a>    <span class="cm">/* SPI slave interface.</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-6"></a><span class="cm">    This is a simple version of SPI slave mode 0.</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-7"></a><span class="cm">    * /</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-8"></a>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-9"></a><span class="cm">    module spi_slave #(parameter WIDTH=8) (</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-10"></a><span class="cm">        input clk,  //system clock feed</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-11"></a><span class="cm">        input _cs,  // chip select, active low</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-12"></a><span class="cm">        input sck,  //spi master clock</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-13"></a><span class="cm">        input mosi, //input from master</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-14"></a><span class="cm">        output miso</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-15"></a><span class="cm">    );</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-16"></a><span class="cm">        reg [WIDTH-1:0] din, dout,slave_dout;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-17"></a><span class="cm">        reg [4:0] bitcount;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-18"></a><span class="cm">        reg sout, dload;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-19"></a><span class="cm">        reg [7:0] command;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-20"></a>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-21"></a><span class="cm">        reg [2:0] current,next;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-22"></a><span class="cm">        /* possible states: IDLE, CMD_IN, CMD_PROCESS for command received,</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-23"></a><span class="cm">        DIN for data from master, DOUT for data to master.</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-24"></a><span class="cm">        Commands are: READ_ID=0x1d, READ=0xea, WRITE=0xad.</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-25"></a><span class="cm">            ID data  * /</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-26"></a><span class="cm">        parameter IDLE=0, CMD_IN=1, CMD_PROCESS=2, DIN=3, DOUT=4, INVALID=5, CMD_DEBUG=6;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-27"></a><span class="cm">        parameter READ_ID=8'h1d, READ=8'hea, WRITE=8'had;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-28"></a>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-29"></a><span class="cm">        initial begin</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-30"></a><span class="cm">            current = IDLE;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-31"></a><span class="cm">            next = IDLE;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-32"></a><span class="cm">            command = 8'h0;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-33"></a><span class="cm">            bitcount = 8'h0;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-34"></a><span class="cm">            dload = 1'b0;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-35"></a><span class="cm">         end</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-36"></a>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-37"></a><span class="cm">      /* _cs is to remain asserted during command and data transfer.*/</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-38"></a>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-39"></a>        <span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">,</span> <span class="k">negedge</span> <span class="n">_cs</span><span class="p">)</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-40"></a>         <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="n">_cs</span> <span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-41"></a>             <span class="k">if</span> <span class="p">(</span><span class="n">current</span> <span class="o">==</span> <span class="no">IDLE</span> <span class="p">)</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-42"></a>                    <span class="n">current</span> <span class="o">&lt;=</span> <span class="no">CMD_IN</span><span class="p">;</span>      <span class="cm">/* on assertion of _cs*/</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-43"></a>             <span class="k">else</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-44"></a>                     <span class="n">current</span> <span class="o">&lt;=</span> <span class="n">next</span><span class="p">;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-45"></a>             <span class="k">end</span> <span class="k">else</span> <span class="n">current</span> <span class="o">&lt;=</span> <span class="no">IDLE</span><span class="p">;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-46"></a>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-47"></a>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-48"></a>       <span class="cm">/* state machine transition*/</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-49"></a>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-50"></a>        <span class="k">always</span><span class="p">@(</span><span class="n">current</span> <span class="k">or</span> <span class="n">bitcount</span> <span class="k">or</span> <span class="n">_cs</span><span class="p">)</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-51"></a>            <span class="k">if</span> <span class="p">(</span><span class="n">_cs</span> <span class="p">)</span> <span class="n">next</span> <span class="o">=</span> <span class="no">IDLE</span><span class="p">;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-52"></a>            <span class="k">else</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-53"></a>        <span class="k">case</span><span class="p">(</span><span class="n">current</span><span class="p">)</span> <span class="c1">//full_case</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-54"></a>        <span class="nl">CMD_IN:</span> <span class="k">begin</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-55"></a>            <span class="k">if</span> <span class="p">(</span> <span class="n">bitcount</span><span class="p">[</span><span class="mh">3</span><span class="p">])</span> <span class="k">begin</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-56"></a>                <span class="p">#</span><span class="mh">1</span> <span class="n">command</span> <span class="o">=</span> <span class="n">din</span><span class="p">;</span> <span class="c1">//latch in command</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-57"></a>                            <span class="n">next</span> <span class="o">=</span> <span class="no">CMD_PROCESS</span><span class="p">;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-58"></a>                      <span class="k">end</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-59"></a>                    <span class="k">else</span> <span class="k">begin</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-60"></a>                      <span class="n">next</span> <span class="o">=</span> <span class="no">CMD_IN</span><span class="p">;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-61"></a>                      <span class="k">end</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-62"></a>                    <span class="k">end</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-63"></a>        <span class="nl">CMD_PROCESS:</span> <span class="k">begin</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-64"></a>                    <span class="k">case</span> <span class="p">(</span><span class="n">command</span><span class="p">)</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-65"></a>                            <span class="nl">READ_ID:</span> <span class="k">begin</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-66"></a>                                    <span class="n">slave_dout</span> <span class="o">=</span> <span class="no">`DEVICE_ID</span><span class="p">;</span> <span class="c1">//ID is 5A or as defined</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-67"></a>                                    <span class="n">next</span> <span class="o">=</span> <span class="no">DOUT</span><span class="p">;</span> <span class="c1">// transition to DOUT via miso</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-68"></a>                                    <span class="n">dload</span> <span class="o">=</span> <span class="mh">1</span><span class="mb">'b1</span><span class="p">;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-69"></a>                                    <span class="k">end</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-70"></a>                            <span class="nl">READ:</span> <span class="k">begin</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-71"></a>                                    <span class="n">slave_dout</span> <span class="o">=</span> <span class="mh">8'hc4</span><span class="p">;</span> <span class="c1">//use this for dummy read for now</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-72"></a>                                    <span class="n">next</span> <span class="o">=</span> <span class="no">DOUT</span><span class="p">;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-73"></a>                                    <span class="n">dload</span> <span class="o">=</span> <span class="mh">1</span><span class="mb">'b1</span><span class="p">;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-74"></a>                                    <span class="k">end</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-75"></a>                            <span class="nl">WRITE:</span> <span class="k">begin</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-76"></a>                                    <span class="n">next</span> <span class="o">=</span> <span class="no">DIN</span><span class="p">;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-77"></a>                                    <span class="k">end</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-78"></a>                            <span class="k">default</span><span class="o">:</span> <span class="k">begin</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-79"></a>                                    <span class="n">next</span> <span class="o">=</span> <span class="no">CMD_IN</span><span class="p">;</span> <span class="c1">//reject invalid cmd</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-80"></a>                                    <span class="k">end</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-81"></a>                            <span class="k">endcase</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-82"></a>                    <span class="k">end</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-83"></a>         <span class="nl">DIN:</span> <span class="k">begin</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-84"></a>            <span class="k">if</span> <span class="p">(</span> <span class="n">bitcount</span><span class="p">[</span><span class="mh">4</span><span class="p">]</span>  <span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-85"></a>                    <span class="n">next</span> <span class="o">=</span> <span class="no">CMD_IN</span><span class="p">;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-86"></a>               <span class="k">end</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-87"></a>                    <span class="k">else</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-88"></a>                            <span class="n">next</span> <span class="o">=</span> <span class="no">DIN</span><span class="p">;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-89"></a>                    <span class="k">end</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-90"></a>        <span class="nl">DOUT:</span> <span class="k">begin</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-91"></a>            <span class="k">if</span> <span class="p">(</span> <span class="n">bitcount</span><span class="p">[</span><span class="mh">4</span><span class="p">]</span> <span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-92"></a>                    <span class="n">next</span> <span class="o">=</span> <span class="no">CMD_IN</span><span class="p">;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-93"></a>            <span class="k">end</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-94"></a>            <span class="k">else</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-95"></a>                    <span class="n">next</span> <span class="o">=</span> <span class="no">DOUT</span><span class="p">;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-96"></a>                    <span class="n">dload</span> <span class="o">=</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-97"></a>            <span class="k">end</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-98"></a>    <span class="k">endcase</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-99"></a>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-100"></a>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-101"></a><span class="cm">/* MISO at z if not in DOUT phase. Don't drive it.*/</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-102"></a><span class="k">assign</span> <span class="p">#</span><span class="mh">1</span> <span class="n">miso</span> <span class="o">=</span> <span class="n">sout</span><span class="p">;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-103"></a>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-104"></a><span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">sck</span><span class="p">,</span> <span class="k">posedge</span> <span class="n">_cs</span><span class="p">,</span> <span class="k">posedge</span> <span class="n">current</span> <span class="p">)</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-105"></a>  <span class="k">if</span> <span class="p">(</span><span class="n">_cs</span> <span class="o">||</span> <span class="n">current</span> <span class="o">!=</span> <span class="no">DOUT</span><span class="p">)</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-106"></a>   <span class="n">sout</span> <span class="o">&lt;=</span> <span class="mh">1</span><span class="p">'</span><span class="n">bz</span><span class="p">;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-107"></a>  <span class="k">else</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-108"></a>   <span class="n">sout</span> <span class="o">&lt;=</span> <span class="n">dout</span><span class="p">[</span><span class="mh">7</span><span class="p">];</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-109"></a>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-110"></a><span class="o">/*</span> <span class="n">sample</span> <span class="no">MOSI</span> <span class="n">bits</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-111"></a><span class="o">&gt;--</span><span class="mh">01234567</span><span class="o">----&gt;---</span><span class="mh">01234567</span><span class="o">-----&gt;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-112"></a> <span class="o">|--------------------------|</span>   <span class="o">*</span> <span class="o">/</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-113"></a><span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">sck</span><span class="p">,</span> <span class="k">posedge</span> <span class="n">_cs</span> <span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-114"></a>            <span class="k">if</span> <span class="p">(</span><span class="n">_cs</span> <span class="p">)</span> <span class="p">#</span><span class="mh">1</span> <span class="n">bitcount</span> <span class="o">&lt;=</span> <span class="mh">8'h0</span><span class="p">;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-115"></a>    <span class="k">else</span>  <span class="k">begin</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-116"></a>            <span class="p">#</span><span class="mh">1</span> <span class="n">din</span> <span class="o">&lt;=</span> <span class="p">{</span><span class="n">din</span><span class="p">[</span><span class="mh">6</span><span class="o">:</span><span class="mh">0</span><span class="p">],</span><span class="n">mosi</span><span class="p">};</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-117"></a>            <span class="p">#</span><span class="mh">1</span> <span class="n">bitcount</span> <span class="o">&lt;=</span> <span class="n">bitcount</span> <span class="o">+</span> <span class="mh">1</span><span class="mb">'b1</span><span class="p">;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-118"></a>        <span class="k">if</span> <span class="p">(</span><span class="n">bitcount</span><span class="p">[</span><span class="mh">4</span><span class="p">])</span> <span class="p">#</span><span class="mh">1</span> <span class="n">bitcount</span> <span class="o">&lt;=</span> <span class="mh">4'h1</span><span class="p">;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-119"></a>     <span class="k">end</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-120"></a><span class="k">end</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-121"></a>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-122"></a><span class="o">/*</span> <span class="n">Transmit</span> <span class="no">MSB</span> <span class="n">first</span> <span class="o">*</span> <span class="o">/</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-123"></a><span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">sck</span><span class="p">,</span> <span class="k">posedge</span> <span class="n">dload</span><span class="p">)</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-124"></a>            <span class="k">if</span> <span class="p">(</span><span class="n">dload</span><span class="p">)</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-125"></a>             <span class="n">dout</span> <span class="o">&lt;=</span> <span class="n">slave_dout</span><span class="p">;</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-126"></a>            <span class="k">else</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-127"></a>             <span class="n">dout</span> <span class="o">&lt;=</span> <span class="p">{</span><span class="n">dout</span><span class="p">[</span><span class="mh">6</span><span class="o">:</span><span class="mh">0</span><span class="p">],</span><span class="n">mosi</span><span class="p">};</span> <span class="c1">//loop with input data</span>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-128"></a>
+<a name="rest_code_95c63531388f4848b71e0c6f39c6afae-129"></a>    <span class="k">endmodule</span>
 </pre>
 <p>That is all for this simple SPI slave device. It is then simulated with <em>spi_slave_tb.v</em>, and from what
 I can tell it should work and that the code is synthesizable. It is now ready for integration to the PL
@@ -288,33 +288,33 @@ its testbench.</p>
 <p>. Under Design Sources, right click on <em>myspi_ip_v1_0</em> and select add sources to add <em>spi_slave.v</em>.</p>
 <p>. Double clicks on <em>myspi_ip_v1_0.v</em> to open for editing.</p>
 <p>. Add the following code,</p>
-<pre class="code verilog"><a name="rest_code_9b8d4a3e841e42e2a8090618f257488b-1"></a><span class="c1">// Users to add ports here</span>
-<a name="rest_code_9b8d4a3e841e42e2a8090618f257488b-2"></a><span class="k">input</span> <span class="kt">wire</span> <span class="n">spi_cs</span><span class="p">,</span>
-<a name="rest_code_9b8d4a3e841e42e2a8090618f257488b-3"></a><span class="k">input</span> <span class="kt">wire</span> <span class="n">spi_mosi</span><span class="p">,</span> <span class="c1">//it is input with respect to this slave</span>
-<a name="rest_code_9b8d4a3e841e42e2a8090618f257488b-4"></a><span class="k">input</span> <span class="kt">wire</span> <span class="n">spi_sck</span><span class="p">,</span>
-<a name="rest_code_9b8d4a3e841e42e2a8090618f257488b-5"></a><span class="k">output</span> <span class="kt">wire</span> <span class="n">spi_miso</span><span class="p">,</span>
-<a name="rest_code_9b8d4a3e841e42e2a8090618f257488b-6"></a><span class="c1">// User ports ends</span>
+<pre class="code verilog"><a name="rest_code_5301703f05e24d469d6ccecee76a392c-1"></a><span class="c1">// Users to add ports here</span>
+<a name="rest_code_5301703f05e24d469d6ccecee76a392c-2"></a><span class="k">input</span> <span class="kt">wire</span> <span class="n">spi_cs</span><span class="p">,</span>
+<a name="rest_code_5301703f05e24d469d6ccecee76a392c-3"></a><span class="k">input</span> <span class="kt">wire</span> <span class="n">spi_mosi</span><span class="p">,</span> <span class="c1">//it is input with respect to this slave</span>
+<a name="rest_code_5301703f05e24d469d6ccecee76a392c-4"></a><span class="k">input</span> <span class="kt">wire</span> <span class="n">spi_sck</span><span class="p">,</span>
+<a name="rest_code_5301703f05e24d469d6ccecee76a392c-5"></a><span class="k">output</span> <span class="kt">wire</span> <span class="n">spi_miso</span><span class="p">,</span>
+<a name="rest_code_5301703f05e24d469d6ccecee76a392c-6"></a><span class="c1">// User ports ends</span>
 </pre>
 <p>. Save and close <em>myspi_ip_v1_0.v</em> file.</p>
 <p>. Double clicks to open <em>myspi_ip_v1_0_S00_AXI.v</em> for editing. Add the following code to instantiate the
 custom SPI slave IP,</p>
-<pre class="code verilog"><a name="rest_code_2da40affa95d4cdc8ea29ee530844a48-1"></a>    <span class="c1">// Users to add ports here</span>
-<a name="rest_code_2da40affa95d4cdc8ea29ee530844a48-2"></a>    <span class="k">input</span> <span class="kt">wire</span> <span class="n">_cs</span><span class="p">,</span>
-<a name="rest_code_2da40affa95d4cdc8ea29ee530844a48-3"></a>    <span class="k">input</span> <span class="kt">wire</span> <span class="n">mosi</span><span class="p">,</span>
-<a name="rest_code_2da40affa95d4cdc8ea29ee530844a48-4"></a>    <span class="k">input</span> <span class="kt">wire</span> <span class="n">sck</span><span class="p">,</span>
-<a name="rest_code_2da40affa95d4cdc8ea29ee530844a48-5"></a>    <span class="k">output</span> <span class="kt">wire</span> <span class="n">miso</span><span class="p">,</span>
-<a name="rest_code_2da40affa95d4cdc8ea29ee530844a48-6"></a>    <span class="c1">// User ports ends</span>
-<a name="rest_code_2da40affa95d4cdc8ea29ee530844a48-7"></a>
-<a name="rest_code_2da40affa95d4cdc8ea29ee530844a48-8"></a>    <span class="p">..</span>
-<a name="rest_code_2da40affa95d4cdc8ea29ee530844a48-9"></a>    <span class="c1">//instantiate spi_slave here at the end of the file.</span>
-<a name="rest_code_2da40affa95d4cdc8ea29ee530844a48-10"></a>    <span class="c1">// Add user logic here</span>
-<a name="rest_code_2da40affa95d4cdc8ea29ee530844a48-11"></a><span class="n">spi_slave</span> <span class="n">myspi</span><span class="p">(</span>
-<a name="rest_code_2da40affa95d4cdc8ea29ee530844a48-12"></a><span class="p">.</span><span class="n">_cs</span><span class="p">(</span><span class="n">_cs</span><span class="p">),</span>
-<a name="rest_code_2da40affa95d4cdc8ea29ee530844a48-13"></a><span class="p">.</span><span class="n">miso</span><span class="p">(</span><span class="n">miso</span><span class="p">),</span>
-<a name="rest_code_2da40affa95d4cdc8ea29ee530844a48-14"></a><span class="p">.</span><span class="n">mosi</span><span class="p">(</span><span class="n">mosi</span><span class="p">),</span>
-<a name="rest_code_2da40affa95d4cdc8ea29ee530844a48-15"></a><span class="p">.</span><span class="n">sck</span><span class="p">(</span><span class="n">sck</span><span class="p">),</span>
-<a name="rest_code_2da40affa95d4cdc8ea29ee530844a48-16"></a><span class="p">.</span><span class="n">clk</span><span class="p">(</span><span class="no">S_AXI_ACLK</span><span class="p">));</span>
-<a name="rest_code_2da40affa95d4cdc8ea29ee530844a48-17"></a>    <span class="c1">// User logic ends</span>
+<pre class="code verilog"><a name="rest_code_dfe9e3ea5d4141bda2a797016f2b5f8b-1"></a>    <span class="c1">// Users to add ports here</span>
+<a name="rest_code_dfe9e3ea5d4141bda2a797016f2b5f8b-2"></a>    <span class="k">input</span> <span class="kt">wire</span> <span class="n">_cs</span><span class="p">,</span>
+<a name="rest_code_dfe9e3ea5d4141bda2a797016f2b5f8b-3"></a>    <span class="k">input</span> <span class="kt">wire</span> <span class="n">mosi</span><span class="p">,</span>
+<a name="rest_code_dfe9e3ea5d4141bda2a797016f2b5f8b-4"></a>    <span class="k">input</span> <span class="kt">wire</span> <span class="n">sck</span><span class="p">,</span>
+<a name="rest_code_dfe9e3ea5d4141bda2a797016f2b5f8b-5"></a>    <span class="k">output</span> <span class="kt">wire</span> <span class="n">miso</span><span class="p">,</span>
+<a name="rest_code_dfe9e3ea5d4141bda2a797016f2b5f8b-6"></a>    <span class="c1">// User ports ends</span>
+<a name="rest_code_dfe9e3ea5d4141bda2a797016f2b5f8b-7"></a>
+<a name="rest_code_dfe9e3ea5d4141bda2a797016f2b5f8b-8"></a>    <span class="p">..</span>
+<a name="rest_code_dfe9e3ea5d4141bda2a797016f2b5f8b-9"></a>    <span class="c1">//instantiate spi_slave here at the end of the file.</span>
+<a name="rest_code_dfe9e3ea5d4141bda2a797016f2b5f8b-10"></a>    <span class="c1">// Add user logic here</span>
+<a name="rest_code_dfe9e3ea5d4141bda2a797016f2b5f8b-11"></a><span class="n">spi_slave</span> <span class="n">myspi</span><span class="p">(</span>
+<a name="rest_code_dfe9e3ea5d4141bda2a797016f2b5f8b-12"></a><span class="p">.</span><span class="n">_cs</span><span class="p">(</span><span class="n">_cs</span><span class="p">),</span>
+<a name="rest_code_dfe9e3ea5d4141bda2a797016f2b5f8b-13"></a><span class="p">.</span><span class="n">miso</span><span class="p">(</span><span class="n">miso</span><span class="p">),</span>
+<a name="rest_code_dfe9e3ea5d4141bda2a797016f2b5f8b-14"></a><span class="p">.</span><span class="n">mosi</span><span class="p">(</span><span class="n">mosi</span><span class="p">),</span>
+<a name="rest_code_dfe9e3ea5d4141bda2a797016f2b5f8b-15"></a><span class="p">.</span><span class="n">sck</span><span class="p">(</span><span class="n">sck</span><span class="p">),</span>
+<a name="rest_code_dfe9e3ea5d4141bda2a797016f2b5f8b-16"></a><span class="p">.</span><span class="n">clk</span><span class="p">(</span><span class="no">S_AXI_ACLK</span><span class="p">));</span>
+<a name="rest_code_dfe9e3ea5d4141bda2a797016f2b5f8b-17"></a>    <span class="c1">// User logic ends</span>
 </pre>
 <p>. Save and close the source file, <em>myspi_ip_v1_0_S00_AXI.v</em>.</p>
 <p>. File Groups -&gt; Merge change Groups Wizards to merge all the changes made.</p>
@@ -388,81 +388,81 @@ SPI0_SCLK_O-&gt;spi_sck, SPI0_SS_O-&gt;spi_cs.</p>
 these are located in <em>linux-xlnx/arch/arm/boot/dts</em> directory which is Xilinx's kernel git version. I replace
 the original <em>zynq-7000.dtsi</em> with the one generated from my design and add portion of code in <em>system.dts</em> into
 the existing <em>zynq-zybo.dts</em> as follows,</p>
-<pre class="code text"><a name="rest_code_ee482de2ad904a288c2c5c430c52aea7-1"></a>//add this custom spi0 block for my custom driver, spi5a
-<a name="rest_code_ee482de2ad904a288c2c5c430c52aea7-2"></a>&amp;spi0 {
-<a name="rest_code_ee482de2ad904a288c2c5c430c52aea7-3"></a>        is-decoded-cs = &lt;0&gt;;
-<a name="rest_code_ee482de2ad904a288c2c5c430c52aea7-4"></a>        num-cs = &lt;3&gt;;
-<a name="rest_code_ee482de2ad904a288c2c5c430c52aea7-5"></a>        status = "okay";
-<a name="rest_code_ee482de2ad904a288c2c5c430c52aea7-6"></a>
-<a name="rest_code_ee482de2ad904a288c2c5c430c52aea7-7"></a>        spi5a@0 {
-<a name="rest_code_ee482de2ad904a288c2c5c430c52aea7-8"></a>        compatible = "souk,spi5a";
-<a name="rest_code_ee482de2ad904a288c2c5c430c52aea7-9"></a>        reg = &lt;0&gt;;
-<a name="rest_code_ee482de2ad904a288c2c5c430c52aea7-10"></a>        spi-max-frequency = &lt;1000000&gt;;
-<a name="rest_code_ee482de2ad904a288c2c5c430c52aea7-11"></a>      };
-<a name="rest_code_ee482de2ad904a288c2c5c430c52aea7-12"></a>
-<a name="rest_code_ee482de2ad904a288c2c5c430c52aea7-13"></a>};//end of zynq-zybo.dts
+<pre class="code text"><a name="rest_code_b2255ef3e3e44a768bbb846f83bd6b9e-1"></a>//add this custom spi0 block for my custom driver, spi5a
+<a name="rest_code_b2255ef3e3e44a768bbb846f83bd6b9e-2"></a>&amp;spi0 {
+<a name="rest_code_b2255ef3e3e44a768bbb846f83bd6b9e-3"></a>        is-decoded-cs = &lt;0&gt;;
+<a name="rest_code_b2255ef3e3e44a768bbb846f83bd6b9e-4"></a>        num-cs = &lt;3&gt;;
+<a name="rest_code_b2255ef3e3e44a768bbb846f83bd6b9e-5"></a>        status = "okay";
+<a name="rest_code_b2255ef3e3e44a768bbb846f83bd6b9e-6"></a>
+<a name="rest_code_b2255ef3e3e44a768bbb846f83bd6b9e-7"></a>        spi5a@0 {
+<a name="rest_code_b2255ef3e3e44a768bbb846f83bd6b9e-8"></a>        compatible = "souk,spi5a";
+<a name="rest_code_b2255ef3e3e44a768bbb846f83bd6b9e-9"></a>        reg = &lt;0&gt;;
+<a name="rest_code_b2255ef3e3e44a768bbb846f83bd6b9e-10"></a>        spi-max-frequency = &lt;1000000&gt;;
+<a name="rest_code_b2255ef3e3e44a768bbb846f83bd6b9e-11"></a>      };
+<a name="rest_code_b2255ef3e3e44a768bbb846f83bd6b9e-12"></a>
+<a name="rest_code_b2255ef3e3e44a768bbb846f83bd6b9e-13"></a>};//end of zynq-zybo.dts
 </pre>
 <p>Since my Zybo's kernel(zImage) has already been compiled, I only need to recompile the device tree.</p>
-<pre class="code text"><a name="rest_code_c63aea2c892b43a99ad09ad0e6b9854e-1"></a>make ARCH=arm CROSS_COMPILE=arm-linux- zynq-zybo.dtb
+<pre class="code text"><a name="rest_code_9787f68cbe704615804076fb23dcd69a-1"></a>make ARCH=arm CROSS_COMPILE=arm-linux- zynq-zybo.dtb
 </pre>
 <p>follow by appending the device tree blob to zImage for booting. This is creating the U-Boot FIT image,</p>
-<pre class="code text"><a name="rest_code_2169345fe3c84b27a3fbfac9fc5b3a42-1"></a>mkimage -f kernel.its zImage.itb
+<pre class="code text"><a name="rest_code_0b971dcf700c460993cbea12e018b417-1"></a>mkimage -f kernel.its zImage.itb
 </pre>
 <p>The <em>kernel.its</em> is the FIT image description source file. This file is created and placed in
 <em>linux-xlnx/arch/arm/boot/</em> directory. I 'cd' to this directory to create the FIT image. This is
 the content of <em>kernel.its</em>,</p>
-<pre class="code text"><a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-1"></a> /dts-v1/;
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-2"></a>
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-3"></a>/ {
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-4"></a>         description = "ARM Zynq Zybo FIT (Flattened Image Tree)";
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-5"></a>         #address-cells = &lt;1&gt;;
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-6"></a>
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-7"></a>         images {
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-8"></a>                 kernel@1 {
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-9"></a>                         description = "ARM Xilinx Zynq Linux-4.x";
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-10"></a>                         data = /incbin/("zImage");
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-11"></a>                         type = "kernel";
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-12"></a>                         arch = "arm";
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-13"></a>                         os = "linux";
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-14"></a>                         compression = "none";
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-15"></a>                         load = &lt;0x800000&gt;;
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-16"></a>                         entry = &lt;0x800000&gt;;
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-17"></a>                         hash@1 {
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-18"></a>                                 algo = "crc32";
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-19"></a>                         };
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-20"></a>                         hash@2 {
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-21"></a>                                 algo = "sha1";
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-22"></a>                         };
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-23"></a>                 };
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-24"></a>
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-25"></a>                 fdt@1 {
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-26"></a>                         description = "ARM Zynq Zybo device tree blob";
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-27"></a>                         data = /incbin/("dts/zynq-zybo.dtb");
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-28"></a>                         type = "flat_dt";
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-29"></a>                         arch = "arm";
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-30"></a>                         compression = "none";
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-31"></a>
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-32"></a>                         hash@1 {
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-33"></a>                                 algo = "crc32";
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-34"></a>                         };
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-35"></a>                         hash@2 {
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-36"></a>                                 algo = "sha1";
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-37"></a>                         };
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-38"></a>                 };
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-39"></a>
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-40"></a>         };
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-41"></a>
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-42"></a>         configurations {
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-43"></a>                 default = "config@1";
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-44"></a>
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-45"></a>                 config@1 {
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-46"></a>                         description = "Zynq Zybo";
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-47"></a>                         kernel = "kernel@1";
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-48"></a>                         fdt = "fdt@1";
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-49"></a>                 };
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-50"></a>
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-51"></a>                 };
-<a name="rest_code_e1ba9092962146a5b2ed4b49ce96dc63-52"></a> };
+<pre class="code text"><a name="rest_code_0944e88730d14aaa925d71675eef84b2-1"></a> /dts-v1/;
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-2"></a>
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-3"></a>/ {
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-4"></a>         description = "ARM Zynq Zybo FIT (Flattened Image Tree)";
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-5"></a>         #address-cells = &lt;1&gt;;
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-6"></a>
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-7"></a>         images {
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-8"></a>                 kernel@1 {
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-9"></a>                         description = "ARM Xilinx Zynq Linux-4.x";
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-10"></a>                         data = /incbin/("zImage");
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-11"></a>                         type = "kernel";
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-12"></a>                         arch = "arm";
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-13"></a>                         os = "linux";
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-14"></a>                         compression = "none";
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-15"></a>                         load = &lt;0x800000&gt;;
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-16"></a>                         entry = &lt;0x800000&gt;;
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-17"></a>                         hash@1 {
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-18"></a>                                 algo = "crc32";
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-19"></a>                         };
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-20"></a>                         hash@2 {
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-21"></a>                                 algo = "sha1";
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-22"></a>                         };
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-23"></a>                 };
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-24"></a>
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-25"></a>                 fdt@1 {
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-26"></a>                         description = "ARM Zynq Zybo device tree blob";
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-27"></a>                         data = /incbin/("dts/zynq-zybo.dtb");
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-28"></a>                         type = "flat_dt";
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-29"></a>                         arch = "arm";
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-30"></a>                         compression = "none";
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-31"></a>
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-32"></a>                         hash@1 {
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-33"></a>                                 algo = "crc32";
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-34"></a>                         };
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-35"></a>                         hash@2 {
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-36"></a>                                 algo = "sha1";
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-37"></a>                         };
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-38"></a>                 };
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-39"></a>
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-40"></a>         };
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-41"></a>
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-42"></a>         configurations {
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-43"></a>                 default = "config@1";
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-44"></a>
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-45"></a>                 config@1 {
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-46"></a>                         description = "Zynq Zybo";
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-47"></a>                         kernel = "kernel@1";
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-48"></a>                         fdt = "fdt@1";
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-49"></a>                 };
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-50"></a>
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-51"></a>                 };
+<a name="rest_code_0944e88730d14aaa925d71675eef84b2-52"></a> };
 </pre>
 </div>
 <div class="section" id="custom-linux-spi-slave-device-driver">
@@ -477,82 +477,82 @@ Here is major the code for SPI slave device driver, <em>spi5a.c</em>, which is v
 and reading a fixed data from the SPI slave on loading. It is to prove that if the data return from
 these operations, then the SPI slave device works.</p>
 <table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_a242ef6977c84946b37819d20127c8d3-1"> 1</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-2"> 2</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-3"> 3</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-4"> 4</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-5"> 5</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-6"> 6</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-7"> 7</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-8"> 8</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-9"> 9</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-10">10</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-11">11</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-12">12</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-13">13</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-14">14</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-15">15</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-16">16</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-17">17</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-18">18</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-19">19</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-20">20</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-21">21</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-22">22</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-23">23</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-24">24</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-25">25</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-26">26</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-27">27</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-28">28</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-29">29</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-30">30</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-31">31</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-32">32</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-33">33</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-34">34</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-35">35</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-36">36</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-37">37</a>
-<a href="#rest_code_a242ef6977c84946b37819d20127c8d3-38">38</a></pre></div></td>
-<td class="code"><pre class="code c"><a name="rest_code_a242ef6977c84946b37819d20127c8d3-1"></a><span class="p">...</span>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-2"></a>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-3"></a><span class="k">static</span> <span class="kt">int</span> <span class="n">spi5a_probe</span><span class="p">(</span><span class="k">struct</span> <span class="n">spi_device</span> <span class="o">*</span> <span class="n">spi</span><span class="p">)</span>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-4"></a><span class="p">{</span>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-5"></a>        <span class="kt">int</span> <span class="n">ret</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-6"></a>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-7"></a>        <span class="n">spi</span><span class="o">-&gt;</span><span class="n">bits_per_word</span> <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-8"></a>        <span class="n">spi_setup</span><span class="p">(</span><span class="n">spi</span><span class="p">);</span>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-9"></a>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-10"></a>        <span class="n">printk</span><span class="p">(</span><span class="n">KERN_INFO</span> <span class="s">"spi read ID for cs %d, mode %d, bpw %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">spi</span><span class="o">-&gt;</span><span class="n">chip_select</span><span class="p">,</span><span class="n">spi</span><span class="o">-&gt;</span><span class="n">mode</span><span class="p">,</span><span class="n">spi</span><span class="o">-&gt;</span><span class="n">bits_per_word</span><span class="p">);</span>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-11"></a>        <span class="n">ret</span> <span class="o">=</span> <span class="n">spi_w8r8</span><span class="p">(</span><span class="n">spi</span><span class="p">,</span> <span class="mh">0x1d</span><span class="p">);</span> <span class="c1">//read ID</span>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-12"></a>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-13"></a>        <span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-14"></a>                <span class="n">dev_err</span><span class="p">(</span><span class="o">&amp;</span><span class="n">spi</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">,</span> <span class="s">"not found.</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-15"></a>                <span class="n">printk</span><span class="p">(</span><span class="n">KERN_INFO</span> <span class="s">"spi read id return 0x%x</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">ret</span><span class="p">);</span>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-16"></a>                <span class="k">return</span> <span class="n">ret</span><span class="p">;</span>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-17"></a>        <span class="p">}</span>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-18"></a>        <span class="n">printk</span><span class="p">(</span><span class="n">KERN_INFO</span> <span class="s">"%s returns id= 0x%x</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">__FUNCTION__</span><span class="p">,(</span><span class="n">u8</span><span class="p">)</span><span class="n">ret</span><span class="p">);</span>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-19"></a>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-20"></a>        <span class="n">ret</span> <span class="o">=</span> <span class="n">spi_w8r8</span><span class="p">(</span><span class="n">spi</span><span class="p">,</span> <span class="mh">0xea</span><span class="p">);</span> <span class="c1">//read</span>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-21"></a>        <span class="n">printk</span><span class="p">(</span><span class="n">KERN_INFO</span> <span class="s">"%s read(ea) returns 0x%x</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">__FUNCTION__</span><span class="p">,(</span><span class="n">u8</span><span class="p">)</span><span class="n">ret</span><span class="p">);</span>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-22"></a>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-23"></a>        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-24"></a><span class="p">}</span>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-25"></a>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-26"></a><span class="k">static</span> <span class="kt">int</span> <span class="n">spi5a_remove</span><span class="p">(</span><span class="k">struct</span> <span class="n">spi_device</span> <span class="o">*</span> <span class="n">spi</span><span class="p">)</span>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-27"></a><span class="p">{</span>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-28"></a>        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-29"></a><span class="p">}</span>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-30"></a>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-31"></a><span class="k">static</span> <span class="k">struct</span> <span class="n">spi_driver</span> <span class="n">spi5a_driver</span> <span class="o">=</span> <span class="p">{</span>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-32"></a>        <span class="p">.</span><span class="n">driver</span> <span class="o">=</span> <span class="p">{</span>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-33"></a>                <span class="p">.</span><span class="n">name</span>   <span class="o">=</span> <span class="s">"spi5a"</span><span class="p">,</span>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-34"></a>        <span class="p">},</span>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-35"></a>        <span class="p">.</span><span class="n">probe</span>  <span class="o">=</span> <span class="n">spi5a_probe</span><span class="p">,</span>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-36"></a>        <span class="p">.</span><span class="n">remove</span> <span class="o">=</span> <span class="n">spi5a_remove</span><span class="p">,</span>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-37"></a><span class="p">};</span>
-<a name="rest_code_a242ef6977c84946b37819d20127c8d3-38"></a><span class="p">...</span>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-1"> 1</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-2"> 2</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-3"> 3</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-4"> 4</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-5"> 5</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-6"> 6</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-7"> 7</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-8"> 8</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-9"> 9</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-10">10</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-11">11</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-12">12</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-13">13</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-14">14</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-15">15</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-16">16</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-17">17</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-18">18</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-19">19</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-20">20</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-21">21</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-22">22</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-23">23</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-24">24</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-25">25</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-26">26</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-27">27</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-28">28</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-29">29</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-30">30</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-31">31</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-32">32</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-33">33</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-34">34</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-35">35</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-36">36</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-37">37</a>
+<a href="#rest_code_d213c678085e4be99a8595eadbeaa82a-38">38</a></pre></div></td>
+<td class="code"><pre class="code c"><a name="rest_code_d213c678085e4be99a8595eadbeaa82a-1"></a><span class="p">...</span>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-2"></a>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-3"></a><span class="k">static</span> <span class="kt">int</span> <span class="n">spi5a_probe</span><span class="p">(</span><span class="k">struct</span> <span class="n">spi_device</span> <span class="o">*</span> <span class="n">spi</span><span class="p">)</span>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-4"></a><span class="p">{</span>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-5"></a>        <span class="kt">int</span> <span class="n">ret</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-6"></a>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-7"></a>        <span class="n">spi</span><span class="o">-&gt;</span><span class="n">bits_per_word</span> <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-8"></a>        <span class="n">spi_setup</span><span class="p">(</span><span class="n">spi</span><span class="p">);</span>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-9"></a>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-10"></a>        <span class="n">printk</span><span class="p">(</span><span class="n">KERN_INFO</span> <span class="s">"spi read ID for cs %d, mode %d, bpw %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">spi</span><span class="o">-&gt;</span><span class="n">chip_select</span><span class="p">,</span><span class="n">spi</span><span class="o">-&gt;</span><span class="n">mode</span><span class="p">,</span><span class="n">spi</span><span class="o">-&gt;</span><span class="n">bits_per_word</span><span class="p">);</span>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-11"></a>        <span class="n">ret</span> <span class="o">=</span> <span class="n">spi_w8r8</span><span class="p">(</span><span class="n">spi</span><span class="p">,</span> <span class="mh">0x1d</span><span class="p">);</span> <span class="c1">//read ID</span>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-12"></a>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-13"></a>        <span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-14"></a>                <span class="n">dev_err</span><span class="p">(</span><span class="o">&amp;</span><span class="n">spi</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">,</span> <span class="s">"not found.</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-15"></a>                <span class="n">printk</span><span class="p">(</span><span class="n">KERN_INFO</span> <span class="s">"spi read id return 0x%x</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">ret</span><span class="p">);</span>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-16"></a>                <span class="k">return</span> <span class="n">ret</span><span class="p">;</span>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-17"></a>        <span class="p">}</span>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-18"></a>        <span class="n">printk</span><span class="p">(</span><span class="n">KERN_INFO</span> <span class="s">"%s returns id= 0x%x</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">__FUNCTION__</span><span class="p">,(</span><span class="n">u8</span><span class="p">)</span><span class="n">ret</span><span class="p">);</span>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-19"></a>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-20"></a>        <span class="n">ret</span> <span class="o">=</span> <span class="n">spi_w8r8</span><span class="p">(</span><span class="n">spi</span><span class="p">,</span> <span class="mh">0xea</span><span class="p">);</span> <span class="c1">//read</span>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-21"></a>        <span class="n">printk</span><span class="p">(</span><span class="n">KERN_INFO</span> <span class="s">"%s read(ea) returns 0x%x</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">__FUNCTION__</span><span class="p">,(</span><span class="n">u8</span><span class="p">)</span><span class="n">ret</span><span class="p">);</span>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-22"></a>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-23"></a>        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-24"></a><span class="p">}</span>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-25"></a>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-26"></a><span class="k">static</span> <span class="kt">int</span> <span class="n">spi5a_remove</span><span class="p">(</span><span class="k">struct</span> <span class="n">spi_device</span> <span class="o">*</span> <span class="n">spi</span><span class="p">)</span>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-27"></a><span class="p">{</span>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-28"></a>        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-29"></a><span class="p">}</span>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-30"></a>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-31"></a><span class="k">static</span> <span class="k">struct</span> <span class="n">spi_driver</span> <span class="n">spi5a_driver</span> <span class="o">=</span> <span class="p">{</span>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-32"></a>        <span class="p">.</span><span class="n">driver</span> <span class="o">=</span> <span class="p">{</span>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-33"></a>                <span class="p">.</span><span class="n">name</span>   <span class="o">=</span> <span class="s">"spi5a"</span><span class="p">,</span>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-34"></a>        <span class="p">},</span>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-35"></a>        <span class="p">.</span><span class="n">probe</span>  <span class="o">=</span> <span class="n">spi5a_probe</span><span class="p">,</span>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-36"></a>        <span class="p">.</span><span class="n">remove</span> <span class="o">=</span> <span class="n">spi5a_remove</span><span class="p">,</span>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-37"></a><span class="p">};</span>
+<a name="rest_code_d213c678085e4be99a8595eadbeaa82a-38"></a><span class="p">...</span>
 </pre></td>
 </tr></table>
 <p>Line 7,8 setup kernel SPI device interface. Line 11,20 read SPI slave device and display the result. Next is
@@ -568,16 +568,16 @@ everything that was done in prior steps.</p>
 <p>. Load <em>zybo_spi_wrapper.bit</em>, load the Linux <em>spi5a</em> custom driver and observe the result. These two files are
 stored in my local root directory of rootfs.</p>
 <table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_a664c0b0fd73446796d173f94195c65d-1">1</a>
-<a href="#rest_code_a664c0b0fd73446796d173f94195c65d-2">2</a>
-<a href="#rest_code_a664c0b0fd73446796d173f94195c65d-3">3</a>
-<a href="#rest_code_a664c0b0fd73446796d173f94195c65d-4">4</a>
-<a href="#rest_code_a664c0b0fd73446796d173f94195c65d-5">5</a></pre></div></td>
-<td class="code"><pre class="code console"><a name="rest_code_a664c0b0fd73446796d173f94195c65d-1"></a><span class="gp">#</span> cat zybo_spi_slave_wrapper.bit &gt; /dev/xdevcfg
-<a name="rest_code_a664c0b0fd73446796d173f94195c65d-2"></a><span class="gp">#</span> insmod ./spi5a.ko
-<a name="rest_code_a664c0b0fd73446796d173f94195c65d-3"></a><span class="go">spi read ID for cs 0, mode 0, bpw 8</span>
-<a name="rest_code_a664c0b0fd73446796d173f94195c65d-4"></a><span class="go">spi5a_probe returns id= 0x5a</span>
-<a name="rest_code_a664c0b0fd73446796d173f94195c65d-5"></a><span class="go">spi5a_probe read(ea) returns 0xc4</span>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_4da706f4b36045f6b2b2b0b28a8c6eff-1">1</a>
+<a href="#rest_code_4da706f4b36045f6b2b2b0b28a8c6eff-2">2</a>
+<a href="#rest_code_4da706f4b36045f6b2b2b0b28a8c6eff-3">3</a>
+<a href="#rest_code_4da706f4b36045f6b2b2b0b28a8c6eff-4">4</a>
+<a href="#rest_code_4da706f4b36045f6b2b2b0b28a8c6eff-5">5</a></pre></div></td>
+<td class="code"><pre class="code console"><a name="rest_code_4da706f4b36045f6b2b2b0b28a8c6eff-1"></a><span class="gp">#</span> cat zybo_spi_slave_wrapper.bit &gt; /dev/xdevcfg
+<a name="rest_code_4da706f4b36045f6b2b2b0b28a8c6eff-2"></a><span class="gp">#</span> insmod ./spi5a.ko
+<a name="rest_code_4da706f4b36045f6b2b2b0b28a8c6eff-3"></a><span class="go">spi read ID for cs 0, mode 0, bpw 8</span>
+<a name="rest_code_4da706f4b36045f6b2b2b0b28a8c6eff-4"></a><span class="go">spi5a_probe returns id= 0x5a</span>
+<a name="rest_code_4da706f4b36045f6b2b2b0b28a8c6eff-5"></a><span class="go">spi5a_probe read(ea) returns 0xc4</span>
 </pre></td>
 </tr></table>
 <p>Line 1 is to load the generated FPGA bitstream (PL) of this simple hardware. Line 2 is to load the linux kernel module
@@ -592,61 +592,61 @@ what being set in the synthesized Verilog code, <em>spi_slave.v</em></p>
 stage by U-Boot script and U-Boot command. U-Boot for this board supports FPGA bitmask loading, using U-Boot's
 <em>fpga loadb 0 $loadaddr $filesize</em> (line 18) will load this bitstream as demonstate below,</p>
 <table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_d2d5c3188cbc409caf966a586a7bc69c-1"> 1</a>
-<a href="#rest_code_d2d5c3188cbc409caf966a586a7bc69c-2"> 2</a>
-<a href="#rest_code_d2d5c3188cbc409caf966a586a7bc69c-3"> 3</a>
-<a href="#rest_code_d2d5c3188cbc409caf966a586a7bc69c-4"> 4</a>
-<a href="#rest_code_d2d5c3188cbc409caf966a586a7bc69c-5"> 5</a>
-<a href="#rest_code_d2d5c3188cbc409caf966a586a7bc69c-6"> 6</a>
-<a href="#rest_code_d2d5c3188cbc409caf966a586a7bc69c-7"> 7</a>
-<a href="#rest_code_d2d5c3188cbc409caf966a586a7bc69c-8"> 8</a>
-<a href="#rest_code_d2d5c3188cbc409caf966a586a7bc69c-9"> 9</a>
-<a href="#rest_code_d2d5c3188cbc409caf966a586a7bc69c-10">10</a>
-<a href="#rest_code_d2d5c3188cbc409caf966a586a7bc69c-11">11</a>
-<a href="#rest_code_d2d5c3188cbc409caf966a586a7bc69c-12">12</a>
-<a href="#rest_code_d2d5c3188cbc409caf966a586a7bc69c-13">13</a>
-<a href="#rest_code_d2d5c3188cbc409caf966a586a7bc69c-14">14</a>
-<a href="#rest_code_d2d5c3188cbc409caf966a586a7bc69c-15">15</a>
-<a href="#rest_code_d2d5c3188cbc409caf966a586a7bc69c-16">16</a>
-<a href="#rest_code_d2d5c3188cbc409caf966a586a7bc69c-17">17</a>
-<a href="#rest_code_d2d5c3188cbc409caf966a586a7bc69c-18">18</a>
-<a href="#rest_code_d2d5c3188cbc409caf966a586a7bc69c-19">19</a>
-<a href="#rest_code_d2d5c3188cbc409caf966a586a7bc69c-20">20</a>
-<a href="#rest_code_d2d5c3188cbc409caf966a586a7bc69c-21">21</a>
-<a href="#rest_code_d2d5c3188cbc409caf966a586a7bc69c-22">22</a>
-<a href="#rest_code_d2d5c3188cbc409caf966a586a7bc69c-23">23</a>
-<a href="#rest_code_d2d5c3188cbc409caf966a586a7bc69c-24">24</a>
-<a href="#rest_code_d2d5c3188cbc409caf966a586a7bc69c-25">25</a></pre></div></td>
-<td class="code"><pre class="code console"><a name="rest_code_d2d5c3188cbc409caf966a586a7bc69c-1"></a><span class="go">       Zynq&gt; tftpboot $loadaddr zybo_spi_wrapper.bit</span>
-<a name="rest_code_d2d5c3188cbc409caf966a586a7bc69c-2"></a><span class="go">       ethernet@e000b000 Waiting for PHY auto negotiation to complete...... done</span>
-<a name="rest_code_d2d5c3188cbc409caf966a586a7bc69c-3"></a><span class="go">       Using ethernet@e000b000 device</span>
-<a name="rest_code_d2d5c3188cbc409caf966a586a7bc69c-4"></a><span class="go">       TFTP from server 192.168.10.14; our IP address is 192.168.10.3</span>
-<a name="rest_code_d2d5c3188cbc409caf966a586a7bc69c-5"></a><span class="go">       Filename 'zybo_spi_wrapper.bit'.</span>
-<a name="rest_code_d2d5c3188cbc409caf966a586a7bc69c-6"></a><span class="go">       Load address: 0x100000</span>
-<a name="rest_code_d2d5c3188cbc409caf966a586a7bc69c-7"></a><span class="go">       Loading: #################################################################</span>
-<a name="rest_code_d2d5c3188cbc409caf966a586a7bc69c-8"></a><span class="gp">                #</span><span class="c1">################################################################</span>
-<a name="rest_code_d2d5c3188cbc409caf966a586a7bc69c-9"></a><span class="gp">                #</span><span class="c1">################################################################</span>
-<a name="rest_code_d2d5c3188cbc409caf966a586a7bc69c-10"></a><span class="gp">                #</span><span class="c1">################################################################</span>
-<a name="rest_code_d2d5c3188cbc409caf966a586a7bc69c-11"></a><span class="gp">                #</span><span class="c1">################################################################</span>
-<a name="rest_code_d2d5c3188cbc409caf966a586a7bc69c-12"></a><span class="gp">                #</span><span class="c1">################################################################</span>
-<a name="rest_code_d2d5c3188cbc409caf966a586a7bc69c-13"></a><span class="gp">                #</span><span class="c1">#################</span>
-<a name="rest_code_d2d5c3188cbc409caf966a586a7bc69c-14"></a><span class="go">                3.3 MiB/s</span>
-<a name="rest_code_d2d5c3188cbc409caf966a586a7bc69c-15"></a><span class="go">       done</span>
-<a name="rest_code_d2d5c3188cbc409caf966a586a7bc69c-16"></a><span class="go">       Bytes transferred = 2083852 (1fcc0c hex)</span>
-<a name="rest_code_d2d5c3188cbc409caf966a586a7bc69c-17"></a><span class="go">       Zynq&gt;</span>
-<a name="rest_code_d2d5c3188cbc409caf966a586a7bc69c-18"></a><span class="go">       Zynq&gt; fpga loadb 0 $loadaddr $filesize</span>
-<a name="rest_code_d2d5c3188cbc409caf966a586a7bc69c-19"></a><span class="go">         design filename = "zybo_spi_wrapper;UserID=0XFFFFFFFF;Version=2016.1"</span>
-<a name="rest_code_d2d5c3188cbc409caf966a586a7bc69c-20"></a><span class="go">         part number = "7z010clg400"</span>
-<a name="rest_code_d2d5c3188cbc409caf966a586a7bc69c-21"></a><span class="go">         date = "2016/07/19"</span>
-<a name="rest_code_d2d5c3188cbc409caf966a586a7bc69c-22"></a><span class="go">         time = "19:27:06"</span>
-<a name="rest_code_d2d5c3188cbc409caf966a586a7bc69c-23"></a><span class="go">         bytes in bitstream = 2083740</span>
-<a name="rest_code_d2d5c3188cbc409caf966a586a7bc69c-24"></a><span class="go">       zynq_align_dma_buffer: Align buffer at 100070 to 100000(swap 1)</span>
-<a name="rest_code_d2d5c3188cbc409caf966a586a7bc69c-25"></a><span class="go">       Zynq&gt;</span>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_825b46b29c9548a48daf5429cc29ad55-1"> 1</a>
+<a href="#rest_code_825b46b29c9548a48daf5429cc29ad55-2"> 2</a>
+<a href="#rest_code_825b46b29c9548a48daf5429cc29ad55-3"> 3</a>
+<a href="#rest_code_825b46b29c9548a48daf5429cc29ad55-4"> 4</a>
+<a href="#rest_code_825b46b29c9548a48daf5429cc29ad55-5"> 5</a>
+<a href="#rest_code_825b46b29c9548a48daf5429cc29ad55-6"> 6</a>
+<a href="#rest_code_825b46b29c9548a48daf5429cc29ad55-7"> 7</a>
+<a href="#rest_code_825b46b29c9548a48daf5429cc29ad55-8"> 8</a>
+<a href="#rest_code_825b46b29c9548a48daf5429cc29ad55-9"> 9</a>
+<a href="#rest_code_825b46b29c9548a48daf5429cc29ad55-10">10</a>
+<a href="#rest_code_825b46b29c9548a48daf5429cc29ad55-11">11</a>
+<a href="#rest_code_825b46b29c9548a48daf5429cc29ad55-12">12</a>
+<a href="#rest_code_825b46b29c9548a48daf5429cc29ad55-13">13</a>
+<a href="#rest_code_825b46b29c9548a48daf5429cc29ad55-14">14</a>
+<a href="#rest_code_825b46b29c9548a48daf5429cc29ad55-15">15</a>
+<a href="#rest_code_825b46b29c9548a48daf5429cc29ad55-16">16</a>
+<a href="#rest_code_825b46b29c9548a48daf5429cc29ad55-17">17</a>
+<a href="#rest_code_825b46b29c9548a48daf5429cc29ad55-18">18</a>
+<a href="#rest_code_825b46b29c9548a48daf5429cc29ad55-19">19</a>
+<a href="#rest_code_825b46b29c9548a48daf5429cc29ad55-20">20</a>
+<a href="#rest_code_825b46b29c9548a48daf5429cc29ad55-21">21</a>
+<a href="#rest_code_825b46b29c9548a48daf5429cc29ad55-22">22</a>
+<a href="#rest_code_825b46b29c9548a48daf5429cc29ad55-23">23</a>
+<a href="#rest_code_825b46b29c9548a48daf5429cc29ad55-24">24</a>
+<a href="#rest_code_825b46b29c9548a48daf5429cc29ad55-25">25</a></pre></div></td>
+<td class="code"><pre class="code console"><a name="rest_code_825b46b29c9548a48daf5429cc29ad55-1"></a><span class="go">       Zynq&gt; tftpboot $loadaddr zybo_spi_wrapper.bit</span>
+<a name="rest_code_825b46b29c9548a48daf5429cc29ad55-2"></a><span class="go">       ethernet@e000b000 Waiting for PHY auto negotiation to complete...... done</span>
+<a name="rest_code_825b46b29c9548a48daf5429cc29ad55-3"></a><span class="go">       Using ethernet@e000b000 device</span>
+<a name="rest_code_825b46b29c9548a48daf5429cc29ad55-4"></a><span class="go">       TFTP from server 192.168.10.14; our IP address is 192.168.10.3</span>
+<a name="rest_code_825b46b29c9548a48daf5429cc29ad55-5"></a><span class="go">       Filename 'zybo_spi_wrapper.bit'.</span>
+<a name="rest_code_825b46b29c9548a48daf5429cc29ad55-6"></a><span class="go">       Load address: 0x100000</span>
+<a name="rest_code_825b46b29c9548a48daf5429cc29ad55-7"></a><span class="go">       Loading: #################################################################</span>
+<a name="rest_code_825b46b29c9548a48daf5429cc29ad55-8"></a><span class="gp">                #</span><span class="c1">################################################################</span>
+<a name="rest_code_825b46b29c9548a48daf5429cc29ad55-9"></a><span class="gp">                #</span><span class="c1">################################################################</span>
+<a name="rest_code_825b46b29c9548a48daf5429cc29ad55-10"></a><span class="gp">                #</span><span class="c1">################################################################</span>
+<a name="rest_code_825b46b29c9548a48daf5429cc29ad55-11"></a><span class="gp">                #</span><span class="c1">################################################################</span>
+<a name="rest_code_825b46b29c9548a48daf5429cc29ad55-12"></a><span class="gp">                #</span><span class="c1">################################################################</span>
+<a name="rest_code_825b46b29c9548a48daf5429cc29ad55-13"></a><span class="gp">                #</span><span class="c1">#################</span>
+<a name="rest_code_825b46b29c9548a48daf5429cc29ad55-14"></a><span class="go">                3.3 MiB/s</span>
+<a name="rest_code_825b46b29c9548a48daf5429cc29ad55-15"></a><span class="go">       done</span>
+<a name="rest_code_825b46b29c9548a48daf5429cc29ad55-16"></a><span class="go">       Bytes transferred = 2083852 (1fcc0c hex)</span>
+<a name="rest_code_825b46b29c9548a48daf5429cc29ad55-17"></a><span class="go">       Zynq&gt;</span>
+<a name="rest_code_825b46b29c9548a48daf5429cc29ad55-18"></a><span class="go">       Zynq&gt; fpga loadb 0 $loadaddr $filesize</span>
+<a name="rest_code_825b46b29c9548a48daf5429cc29ad55-19"></a><span class="go">         design filename = "zybo_spi_wrapper;UserID=0XFFFFFFFF;Version=2016.1"</span>
+<a name="rest_code_825b46b29c9548a48daf5429cc29ad55-20"></a><span class="go">         part number = "7z010clg400"</span>
+<a name="rest_code_825b46b29c9548a48daf5429cc29ad55-21"></a><span class="go">         date = "2016/07/19"</span>
+<a name="rest_code_825b46b29c9548a48daf5429cc29ad55-22"></a><span class="go">         time = "19:27:06"</span>
+<a name="rest_code_825b46b29c9548a48daf5429cc29ad55-23"></a><span class="go">         bytes in bitstream = 2083740</span>
+<a name="rest_code_825b46b29c9548a48daf5429cc29ad55-24"></a><span class="go">       zynq_align_dma_buffer: Align buffer at 100070 to 100000(swap 1)</span>
+<a name="rest_code_825b46b29c9548a48daf5429cc29ad55-25"></a><span class="go">       Zynq&gt;</span>
 </pre></td>
 </tr></table>
 <p>Instead of tftp load as shown above. The FPGA bitstream file can be read from SD card and load to the Zynq in the same
 way following by the normal boot sequence ie.. loading kernel image. Once at Linux OS, loading bitstream via</p>
-<pre class="code console"><a name="rest_code_28425f814a984e08a819f90e0146aed3-1"></a><span class="gp">#</span>cat zybo_spi_wrapper_bit &gt; /dev/xdevcfg
+<pre class="code console"><a name="rest_code_dbfdca4134e5481dacc7ac6e56031a78-1"></a><span class="gp">#</span>cat zybo_spi_wrapper_bit &gt; /dev/xdevcfg
 </pre>
 <p>is no longer required. This is my preferred way of loading bitstream.</p>
 </div>
