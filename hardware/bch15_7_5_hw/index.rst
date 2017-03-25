@@ -8,7 +8,7 @@
 .. type: text
 
 This post is the implementation part of the my post on `Binary BCH (15,7,5) workout`_
-where I did some math workout on the BCH forward error-correction code (FEC). I find
+where I did some math workout on the BCH forward-error-correcting code (FEC). I find
 it to be simple enough to implement it in verilog that can eventually be synthesized for FPGA.
 I choose the simplest algorithm for decoding the binary BCH (15,7,5) as outlined in my last post.
 
@@ -24,7 +24,8 @@ Implementation
 The implementation can be targeted to any FPGA device. Since I am usinx Xilinx Vivado, I
 am targeting it for Zynq or Artix type of device. For now, I am focusing on getting
 the main algorithm to work correctly.  The implementation is less then 300 lines of 
-code which I think it is fairly simple and straight forward. The simple specification of
+code which I think it is fairly simple and straight forward. I implement it
+as a serialized transceiver model. The simple specification of
 the top module, *bch15_7_5_decode*,
 
 *       Input (n bits): 
@@ -66,7 +67,9 @@ the top module, *bch15_7_5_decode*,
 
 
 Decoder decodes 15 bits coded word input to 7 bits output with 2 bits error forward-error correcting
-capability.
+capability. For parallel input data bits, simply change *input ibit* to *input [IWIDTH-1:0] ibit*, and
+change the inputting scheme of *module_gx*. The parallel data case saves half the number of bit shiftings.
+This will make it roughly twice as fast.
 
 Decoding algorithm
 ------------------
@@ -212,7 +215,7 @@ final FEC code word is the upper 7 bits of the corrected code word.
 
 
 Some sample of waveforms captured  from the test bench based on this algorithm is shown for
-various situation of bit(s) error.
+various situation of bit(s) error. The simulation is for 100MHZ FPGA clock.
 
 .. figure:: ../../images/hardware/bch1575_033e.JPG
 
