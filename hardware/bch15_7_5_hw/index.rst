@@ -90,7 +90,7 @@ The generator for this implementation is,
 The decoder and FEC 
 -------------------
 
-The BCH FEC `decoder`_ takes in the serial 15-bit code word (MSB first), detects
+The BCH FEC decoder takes in the serial 15-bit code word (MSB first), detects
 if there is any error in the input codeword, and computes the most likely
 bit(s) error position. The corrected codeword is returned as its
 7-bit output word. 
@@ -210,9 +210,6 @@ final FEC code word is the upper 7 bits of the corrected code word.
                 ready <= 1'b0;
 
 
-.. _decoder: ../../listings/bch15_7_5_decode.v
-.. .. listing:: bch15_7_5_decode.v
-..        :linenos:
 
 Some sample of waveforms captured  from the test bench based on this algorithm is shown for
 various situation of bit(s) error.
