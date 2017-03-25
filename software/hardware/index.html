@@ -2,11 +2,11 @@
 <html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
 <head>
 <meta charset="utf-8">
-<base href="http://souktha.github.io/hardware/">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hardware | Soukthavy Sopha</title>
 <link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
-<meta content="#5670d4" name="theme-color">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
 <link rel="alternate" type="application/rss+xml" title="RSS" href="../rss.xml">
 <link rel="canonical" href="http://souktha.github.io/hardware/">
 <!--[if lt IE 9]><script src="../assets/js/html5.js"></script><![endif]-->
@@ -76,7 +76,23 @@
 <div class="sectionindex">
     <header><h2><a href=".">Hardware</a></h2>
     </header><div class="postindex">
-    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="cyclic_1_x_x4_hw/" class="u-url">Simple Cyclic Hamming (15,11,3) FEC</a></h1>
+    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="bch15_7_5_hw/" class="u-url">Implementing BCH (15,7,5) FEC</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="bch15_7_5_hw/" rel="bookmark"><time class="published dt-published" datetime="2017-03-18T00:17:42Z" title="2017-03-18 00:17">2017-03-18 00:17</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<p>This post is the implementation part of the my post on <a class="reference external" href="http://souktha.github.io/misc/bch15_7_5">Binary BCH (15,7,5) workout</a>
+where I did some math workout on the BCH forward error-correction code (FEC). I find
+it to be simple enough to implement it in verilog that can eventually be synthesized for FPGA.
+I choose the simplest algorithm for decoding the binary BCH (15,7,5) as outlined in my last post.</p>
+<p class="more"><a href="bch15_7_5_hw/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="cyclic_1_x_x4_hw/" class="u-url">Simple Cyclic Hamming (15,11,3) FEC</a></h1>
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn">
                 Soukthavy
@@ -85,8 +101,8 @@
         </div>
     </header><div class="p-summary entry-summary">
     <div>
-<p>This post is the implementation part of the my post on "simple cyclic Hamming code"__</p>
-<p>where I did some math workout on this type of forward error-correction code (FEC). I am doing
+<p>This post is the implementation part of the my post on <a class="reference external" href="http://souktha.github.io/misc/cyclic_1_x_x4">simple cyclic Hamming code</a>
+where I did some math workout on this type of forward error-correction code (FEC). I am doing
 it for fun since I think it is simple enough to implement it in FPGA. The generator
 for this exercise is <span class="math">\(g(x)=1+x+x4\)</span> for an <span class="math">\((n,k,d) \equiv (15,11,3)\)</span> code.</p>
 <p class="more"><a href="cyclic_1_x_x4_hw/">Read more…</a></p>
@@ -208,7 +224,7 @@ In this demo, I use a very simple verilog code to control its movement.</p>
         <!--End of body content-->
 
         <footer id="footer">
-            Contents © 2016         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            Contents © 2017         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
             
         </footer>
 </div>

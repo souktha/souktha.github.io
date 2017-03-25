@@ -10,7 +10,7 @@
 <meta name="generator" content="Nikola (getnikola.com)">
 <link rel="alternate" type="application/rss+xml" title="RSS" href="../rss.xml">
 <link rel="canonical" href="http://souktha.github.io/blog/">
-<link rel="next" href="index-1.html" type="text/html">
+<link rel="next" href="index-2.html" type="text/html">
 <!--[if lt IE 9]><script src="../assets/js/html5.js"></script><![endif]-->
 </head>
 <body>
@@ -78,7 +78,23 @@
 
     
 <div class="postindex">
-    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../misc/bch15_7_5/" class="u-url">Binary BCH (15,7,5) work out</a></h1>
+    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../hardware/bch15_7_5_hw/" class="u-url">Implementing BCH (15,7,5) FEC</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="../hardware/bch15_7_5_hw/" rel="bookmark"><time class="published dt-published" datetime="2017-03-18T00:17:42Z" title="2017-03-18 00:17">2017-03-18 00:17</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<p>This post is the implementation part of the my post on <a class="reference external" href="http://souktha.github.io/misc/bch15_7_5">Binary BCH (15,7,5) workout</a>
+where I did some math workout on the BCH forward error-correction code (FEC). I find
+it to be simple enough to implement it in verilog that can eventually be synthesized for FPGA.
+I choose the simplest algorithm for decoding the binary BCH (15,7,5) as outlined in my last post.</p>
+<p class="more"><a href="../hardware/bch15_7_5_hw/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../misc/bch15_7_5/" class="u-url">Binary BCH (15,7,5) work out</a></h1>
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn">
                 Soukthavy
@@ -229,28 +245,12 @@ Linux kernel image from HDD instead of loading it from NAND device.</p>
 <p class="more"><a href="../software/dm814x_sata/">Read more…</a></p>
 </div>
     </div>
-    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../software/zybo-quickstart/" class="u-url">Decoupling Xilinx Zynq PS and PL on Linux for Digilent Zybo</a></h1>
-        <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn">
-                Soukthavy
-            </span></p>
-            <p class="dateline"><a href="../software/zybo-quickstart/" rel="bookmark"><time class="published dt-published" datetime="2016-04-23T19:08:20Z" title="2016-04-23 19:08">2016-04-23 19:08</time></a></p>
-        </div>
-    </header><div class="p-summary entry-summary">
-    <div>
-<p>Digilent Zybo board is built around Xilinx Zynq-7000 family [<a class="reference internal" href="../software/zybo-quickstart/#id1">1</a>]. This Zynq-7000 is integrated with a dual-core
-ARM Cortex-A9 processor that has Linux support for it. In addition to this PS unit, the Xilinx 7-series
-FPGA is also integrated as the PL component of this SoC [<a class="reference internal" href="../software/zybo-quickstart/#id2">2</a>]. This demonstation will show how easy it is
-to decouple PS and PL components.</p>
-<p class="more"><a href="../software/zybo-quickstart/">Read more…</a></p>
-</div>
-    </div>
     </article>
 </div>
 
         <nav class="postindexpager"><ul class="pager">
 <li class="next">
-                <a href="index-1.html" rel="next">Older posts</a>
+                <a href="index-2.html" rel="next">Older posts</a>
             </li>
         </ul></nav><script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> </script><script type="text/x-mathjax-config">
             MathJax.Hub.Config({tex2jax: {inlineMath: [['$latex ','$'], ['\\(','\\)']]}});

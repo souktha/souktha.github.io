@@ -18,8 +18,12 @@ All of the source codes in my repository are considered open source and most of 
 If you find something interesting you may use them for educational purpose. My blog page will list the categories 
 and where the corresponding source files can be found in my github repository. 
 
+My latest blogs are listed below.
+
 Thank you for visiting !
 
+.. post-list::
+   :stop: 3
 
 .. .. image:: ../images/under-construction-icon-47228.png
 ..         :width: 100

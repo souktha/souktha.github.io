@@ -135,18 +135,18 @@ will have the generator polynomial, <span class="math">\(g(x) =  m_\alpha(x)m_{\
 <p>I can generate the elements of <span class="math">\(GF(2^5)\)</span> based on <span class="math">\(p(x)=x^5+x^2+1\)</span> as
 the primitive polynomial numerically using <em>deconv</em> of MATHLAB/Octave,</p>
 <table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_da38b14e3434413aa497cbe636ce6244-1">1</a>
-<a href="#rest_code_da38b14e3434413aa497cbe636ce6244-2">2</a>
-<a href="#rest_code_da38b14e3434413aa497cbe636ce6244-3">3</a>
-<a href="#rest_code_da38b14e3434413aa497cbe636ce6244-4">4</a>
-<a href="#rest_code_da38b14e3434413aa497cbe636ce6244-5">5</a>
-<a href="#rest_code_da38b14e3434413aa497cbe636ce6244-6">6</a></pre></div></td>
-<td class="code"><pre class="code text"><a name="rest_code_da38b14e3434413aa497cbe636ce6244-1"></a>     &gt;&gt; n=31;
-<a name="rest_code_da38b14e3434413aa497cbe636ce6244-2"></a>     &gt;&gt; I=eye(n);
-<a name="rest_code_da38b14e3434413aa497cbe636ce6244-3"></a>     &gt;&gt; gx=[1 0 0 1 0 1];
-<a name="rest_code_da38b14e3434413aa497cbe636ce6244-4"></a>     &gt;&gt; I=I(n:-1:1,:);
-<a name="rest_code_da38b14e3434413aa497cbe636ce6244-5"></a>     &gt;&gt; for i=1:n [a,r(i,:)]=deconv(I(i,:),gx);end
-<a name="rest_code_da38b14e3434413aa497cbe636ce6244-6"></a>     &gt;&gt; r=mod(r(:,27:31),2);
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_8f5e493573224551a9175cea01565644-1">1</a>
+<a href="#rest_code_8f5e493573224551a9175cea01565644-2">2</a>
+<a href="#rest_code_8f5e493573224551a9175cea01565644-3">3</a>
+<a href="#rest_code_8f5e493573224551a9175cea01565644-4">4</a>
+<a href="#rest_code_8f5e493573224551a9175cea01565644-5">5</a>
+<a href="#rest_code_8f5e493573224551a9175cea01565644-6">6</a></pre></div></td>
+<td class="code"><pre class="code text"><a name="rest_code_8f5e493573224551a9175cea01565644-1"></a>     &gt;&gt; n=31;
+<a name="rest_code_8f5e493573224551a9175cea01565644-2"></a>     &gt;&gt; I=eye(n);
+<a name="rest_code_8f5e493573224551a9175cea01565644-3"></a>     &gt;&gt; gx=[1 0 0 1 0 1];
+<a name="rest_code_8f5e493573224551a9175cea01565644-4"></a>     &gt;&gt; I=I(n:-1:1,:);
+<a name="rest_code_8f5e493573224551a9175cea01565644-5"></a>     &gt;&gt; for i=1:n [a,r(i,:)]=deconv(I(i,:),gx);end
+<a name="rest_code_8f5e493573224551a9175cea01565644-6"></a>     &gt;&gt; r=mod(r(:,27:31),2);
 </pre></td>
 </tr></table>
 <p>then tabulate the result,</p>
@@ -477,44 +477,44 @@ The matrix below has the highest power of <span class="math">\(\alpha\)</span> a
 </div>
 <p>MATLAB/Octave is used to generate the power of <span class="math">\(\alpha\)</span> above,</p>
 <table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_2efa0d3d547649eaa07914286b84a639-1"> 1</a>
-<a href="#rest_code_2efa0d3d547649eaa07914286b84a639-2"> 2</a>
-<a href="#rest_code_2efa0d3d547649eaa07914286b84a639-3"> 3</a>
-<a href="#rest_code_2efa0d3d547649eaa07914286b84a639-4"> 4</a>
-<a href="#rest_code_2efa0d3d547649eaa07914286b84a639-5"> 5</a>
-<a href="#rest_code_2efa0d3d547649eaa07914286b84a639-6"> 6</a>
-<a href="#rest_code_2efa0d3d547649eaa07914286b84a639-7"> 7</a>
-<a href="#rest_code_2efa0d3d547649eaa07914286b84a639-8"> 8</a>
-<a href="#rest_code_2efa0d3d547649eaa07914286b84a639-9"> 9</a>
-<a href="#rest_code_2efa0d3d547649eaa07914286b84a639-10">10</a>
-<a href="#rest_code_2efa0d3d547649eaa07914286b84a639-11">11</a>
-<a href="#rest_code_2efa0d3d547649eaa07914286b84a639-12">12</a>
-<a href="#rest_code_2efa0d3d547649eaa07914286b84a639-13">13</a>
-<a href="#rest_code_2efa0d3d547649eaa07914286b84a639-14">14</a>
-<a href="#rest_code_2efa0d3d547649eaa07914286b84a639-15">15</a>
-<a href="#rest_code_2efa0d3d547649eaa07914286b84a639-16">16</a>
-<a href="#rest_code_2efa0d3d547649eaa07914286b84a639-17">17</a>
-<a href="#rest_code_2efa0d3d547649eaa07914286b84a639-18">18</a>
-<a href="#rest_code_2efa0d3d547649eaa07914286b84a639-19">19</a></pre></div></td>
-<td class="code"><pre class="code text"><a name="rest_code_2efa0d3d547649eaa07914286b84a639-1"></a>     % minimum polynomials
-<a name="rest_code_2efa0d3d547649eaa07914286b84a639-2"></a>     m1=[1 0 0 1 0 1];
-<a name="rest_code_2efa0d3d547649eaa07914286b84a639-3"></a>     m3=[1 1 1 1 0 1];
-<a name="rest_code_2efa0d3d547649eaa07914286b84a639-4"></a>     m5=[1 1 0 1 1 1];
-<a name="rest_code_2efa0d3d547649eaa07914286b84a639-5"></a>     % generator poly
-<a name="rest_code_2efa0d3d547649eaa07914286b84a639-6"></a>     gx=mod(conv(conv(m1,m3),m5),2);
-<a name="rest_code_2efa0d3d547649eaa07914286b84a639-7"></a>     % will produce gx=[1 0 0 0 1 1 1 1 1 0 1 0 1 1 1 1];
-<a name="rest_code_2efa0d3d547649eaa07914286b84a639-8"></a>     for i=1:n
-<a name="rest_code_2efa0d3d547649eaa07914286b84a639-9"></a>              j=mod(3*i,31);
-<a name="rest_code_2efa0d3d547649eaa07914286b84a639-10"></a>              l=mod(5*i,31);
-<a name="rest_code_2efa0d3d547649eaa07914286b84a639-11"></a>              if j==0
-<a name="rest_code_2efa0d3d547649eaa07914286b84a639-12"></a>                     j=31;
-<a name="rest_code_2efa0d3d547649eaa07914286b84a639-13"></a>              end
-<a name="rest_code_2efa0d3d547649eaa07914286b84a639-14"></a>              if l == 0
-<a name="rest_code_2efa0d3d547649eaa07914286b84a639-15"></a>                     l=31;
-<a name="rest_code_2efa0d3d547649eaa07914286b84a639-16"></a>              end
-<a name="rest_code_2efa0d3d547649eaa07914286b84a639-17"></a>              R3(i,:)=r1(j,:);
-<a name="rest_code_2efa0d3d547649eaa07914286b84a639-18"></a>              R5(i,:)=r1(l,:);
-<a name="rest_code_2efa0d3d547649eaa07914286b84a639-19"></a>     end
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_7fe7955b1da04f9db65537c28fbad218-1"> 1</a>
+<a href="#rest_code_7fe7955b1da04f9db65537c28fbad218-2"> 2</a>
+<a href="#rest_code_7fe7955b1da04f9db65537c28fbad218-3"> 3</a>
+<a href="#rest_code_7fe7955b1da04f9db65537c28fbad218-4"> 4</a>
+<a href="#rest_code_7fe7955b1da04f9db65537c28fbad218-5"> 5</a>
+<a href="#rest_code_7fe7955b1da04f9db65537c28fbad218-6"> 6</a>
+<a href="#rest_code_7fe7955b1da04f9db65537c28fbad218-7"> 7</a>
+<a href="#rest_code_7fe7955b1da04f9db65537c28fbad218-8"> 8</a>
+<a href="#rest_code_7fe7955b1da04f9db65537c28fbad218-9"> 9</a>
+<a href="#rest_code_7fe7955b1da04f9db65537c28fbad218-10">10</a>
+<a href="#rest_code_7fe7955b1da04f9db65537c28fbad218-11">11</a>
+<a href="#rest_code_7fe7955b1da04f9db65537c28fbad218-12">12</a>
+<a href="#rest_code_7fe7955b1da04f9db65537c28fbad218-13">13</a>
+<a href="#rest_code_7fe7955b1da04f9db65537c28fbad218-14">14</a>
+<a href="#rest_code_7fe7955b1da04f9db65537c28fbad218-15">15</a>
+<a href="#rest_code_7fe7955b1da04f9db65537c28fbad218-16">16</a>
+<a href="#rest_code_7fe7955b1da04f9db65537c28fbad218-17">17</a>
+<a href="#rest_code_7fe7955b1da04f9db65537c28fbad218-18">18</a>
+<a href="#rest_code_7fe7955b1da04f9db65537c28fbad218-19">19</a></pre></div></td>
+<td class="code"><pre class="code text"><a name="rest_code_7fe7955b1da04f9db65537c28fbad218-1"></a>     % minimum polynomials
+<a name="rest_code_7fe7955b1da04f9db65537c28fbad218-2"></a>     m1=[1 0 0 1 0 1];
+<a name="rest_code_7fe7955b1da04f9db65537c28fbad218-3"></a>     m3=[1 1 1 1 0 1];
+<a name="rest_code_7fe7955b1da04f9db65537c28fbad218-4"></a>     m5=[1 1 0 1 1 1];
+<a name="rest_code_7fe7955b1da04f9db65537c28fbad218-5"></a>     % generator poly
+<a name="rest_code_7fe7955b1da04f9db65537c28fbad218-6"></a>     gx=mod(conv(conv(m1,m3),m5),2);
+<a name="rest_code_7fe7955b1da04f9db65537c28fbad218-7"></a>     % will produce gx=[1 0 0 0 1 1 1 1 1 0 1 0 1 1 1 1];
+<a name="rest_code_7fe7955b1da04f9db65537c28fbad218-8"></a>     for i=1:n
+<a name="rest_code_7fe7955b1da04f9db65537c28fbad218-9"></a>              j=mod(3*i,31);
+<a name="rest_code_7fe7955b1da04f9db65537c28fbad218-10"></a>              l=mod(5*i,31);
+<a name="rest_code_7fe7955b1da04f9db65537c28fbad218-11"></a>              if j==0
+<a name="rest_code_7fe7955b1da04f9db65537c28fbad218-12"></a>                     j=31;
+<a name="rest_code_7fe7955b1da04f9db65537c28fbad218-13"></a>              end
+<a name="rest_code_7fe7955b1da04f9db65537c28fbad218-14"></a>              if l == 0
+<a name="rest_code_7fe7955b1da04f9db65537c28fbad218-15"></a>                     l=31;
+<a name="rest_code_7fe7955b1da04f9db65537c28fbad218-16"></a>              end
+<a name="rest_code_7fe7955b1da04f9db65537c28fbad218-17"></a>              R3(i,:)=r1(j,:);
+<a name="rest_code_7fe7955b1da04f9db65537c28fbad218-18"></a>              R5(i,:)=r1(l,:);
+<a name="rest_code_7fe7955b1da04f9db65537c28fbad218-19"></a>     end
 </pre></td>
 </tr></table>
 <p>The parity check is not in systematic form.</p>
@@ -578,12 +578,12 @@ I_{k} &amp;  P_{k,n-k}
 <p>since <span class="math">\(G \perp H\)</span>, <span class="math">\(GH^t = 0\)</span>. The parity check matrix
 obtained this way can be easily implemented in hardware using the
 shift registers for error detection.</p>
-<pre class="code text"><a name="rest_code_11ee0ca1efe345358bfc2d4bf0ab1b0d-1"></a>for i=1:n [a,r(i,:)]= deconv(I(i,:),gx);end
-<a name="rest_code_11ee0ca1efe345358bfc2d4bf0ab1b0d-2"></a>r=r(:,17:31);r=mod(r,2);
-<a name="rest_code_11ee0ca1efe345358bfc2d4bf0ab1b0d-3"></a>p=r(1:16,:); %partity bits
-<a name="rest_code_11ee0ca1efe345358bfc2d4bf0ab1b0d-4"></a>% generator matrix
-<a name="rest_code_11ee0ca1efe345358bfc2d4bf0ab1b0d-5"></a>G=[eye(16) p];
-<a name="rest_code_11ee0ca1efe345358bfc2d4bf0ab1b0d-6"></a>mod(G*h,2) %  zeros
+<pre class="code text"><a name="rest_code_cd5dcfc5abf54d229019ea7206bc38d9-1"></a>for i=1:n [a,r(i,:)]= deconv(I(i,:),gx);end
+<a name="rest_code_cd5dcfc5abf54d229019ea7206bc38d9-2"></a>r=r(:,17:31);r=mod(r,2);
+<a name="rest_code_cd5dcfc5abf54d229019ea7206bc38d9-3"></a>p=r(1:16,:); %partity bits
+<a name="rest_code_cd5dcfc5abf54d229019ea7206bc38d9-4"></a>% generator matrix
+<a name="rest_code_cd5dcfc5abf54d229019ea7206bc38d9-5"></a>G=[eye(16) p];
+<a name="rest_code_cd5dcfc5abf54d229019ea7206bc38d9-6"></a>mod(G*h,2) %  zeros
 </pre>
 <div class="section" id="decoder-and-errors-locator">
 <h3>Decoder and errors locator</h3>
@@ -612,33 +612,33 @@ becomes <span class="math">\([\psi_1,\psi_3,\psi_5]=[(\alpha)^i+\alpha^j,(\alpha
 Eventually it will lead to system of equations to be solved for a polynomial <span class="math">\(x(\psi_i)\)</span>. It is
 called the error-locator polynomial. This polynomial is dependent on error bit positions.</p>
 <p>To test the error correction capability of this exercise,</p>
-<pre class="code text"><a name="rest_code_2cba0c5142c84be8ad4127df5773b876-1"></a>v=dec2bin(0:2^16-1)-'0'; % input code word
-<a name="rest_code_2cba0c5142c84be8ad4127df5773b876-2"></a>u=mod(v*G,2); % BCH coded word
-<a name="rest_code_2cba0c5142c84be8ad4127df5773b876-3"></a>
-<a name="rest_code_2cba0c5142c84be8ad4127df5773b876-4"></a>&gt;&gt; mod(u(1000,:)*h,2)
-<a name="rest_code_2cba0c5142c84be8ad4127df5773b876-5"></a>
-<a name="rest_code_2cba0c5142c84be8ad4127df5773b876-6"></a>ans =
-<a name="rest_code_2cba0c5142c84be8ad4127df5773b876-7"></a>
-<a name="rest_code_2cba0c5142c84be8ad4127df5773b876-8"></a> 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+<pre class="code text"><a name="rest_code_708f6acb5a904463a8d171c463c3227b-1"></a>v=dec2bin(0:2^16-1)-'0'; % input code word
+<a name="rest_code_708f6acb5a904463a8d171c463c3227b-2"></a>u=mod(v*G,2); % BCH coded word
+<a name="rest_code_708f6acb5a904463a8d171c463c3227b-3"></a>
+<a name="rest_code_708f6acb5a904463a8d171c463c3227b-4"></a>&gt;&gt; mod(u(1000,:)*h,2)
+<a name="rest_code_708f6acb5a904463a8d171c463c3227b-5"></a>
+<a name="rest_code_708f6acb5a904463a8d171c463c3227b-6"></a>ans =
+<a name="rest_code_708f6acb5a904463a8d171c463c3227b-7"></a>
+<a name="rest_code_708f6acb5a904463a8d171c463c3227b-8"></a> 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 </pre>
 <p>Suppose that a received coded word, <span class="math">\(w\)</span> has one bit error, say bit 14,</p>
-<pre class="code text"><a name="rest_code_5661b76a4897480c84f3e5a83bf687c5-1"></a>w=u(1000,:); % a coded word
-<a name="rest_code_5661b76a4897480c84f3e5a83bf687c5-2"></a>w(14)=0; %was 1, set to 0 to simulate error
-<a name="rest_code_5661b76a4897480c84f3e5a83bf687c5-3"></a>
-<a name="rest_code_5661b76a4897480c84f3e5a83bf687c5-4"></a>&gt;&gt; mod(w*h,2)
-<a name="rest_code_5661b76a4897480c84f3e5a83bf687c5-5"></a>ans =
-<a name="rest_code_5661b76a4897480c84f3e5a83bf687c5-6"></a>   1 0 0 1 1 0 1 1 0 0 0 1 1 1 1
+<pre class="code text"><a name="rest_code_33ba914503f8484c9edb4333a7bf0cb2-1"></a>w=u(1000,:); % a coded word
+<a name="rest_code_33ba914503f8484c9edb4333a7bf0cb2-2"></a>w(14)=0; %was 1, set to 0 to simulate error
+<a name="rest_code_33ba914503f8484c9edb4333a7bf0cb2-3"></a>
+<a name="rest_code_33ba914503f8484c9edb4333a7bf0cb2-4"></a>&gt;&gt; mod(w*h,2)
+<a name="rest_code_33ba914503f8484c9edb4333a7bf0cb2-5"></a>ans =
+<a name="rest_code_33ba914503f8484c9edb4333a7bf0cb2-6"></a>   1 0 0 1 1 0 1 1 0 0 0 1 1 1 1
 </pre>
 <p>The output from <span class="math">\(wH^t\)</span> produces the syndrome identical to row 14 of <span class="math">\(H^t\)</span>. The corrected
 code word is then <span class="math">\(w+I(14)\)</span>, where <span class="math">\(I(14)\)</span> is the 14th row of the identity matrix.
 Now what happens if two bit errors, say another bit at bit 0,</p>
-<pre class="code text"><a name="rest_code_8ecd0201ae3a4e0e9ac43ed659bb9ec9-1"></a>w(1)=1; % was 0, set to 1 as error. Now we have bit0,14 as error bits
-<a name="rest_code_8ecd0201ae3a4e0e9ac43ed659bb9ec9-2"></a>&gt;&gt; mod(w*h,2)
-<a name="rest_code_8ecd0201ae3a4e0e9ac43ed659bb9ec9-3"></a>ans =
-<a name="rest_code_8ecd0201ae3a4e0e9ac43ed659bb9ec9-4"></a>   0 0 0 0 1 1 1 0 1 0 1 1 0 0 0
-<a name="rest_code_8ecd0201ae3a4e0e9ac43ed659bb9ec9-5"></a>&gt;&gt; mod(h(1,:)+h(14,:),2)
-<a name="rest_code_8ecd0201ae3a4e0e9ac43ed659bb9ec9-6"></a>ans =
-<a name="rest_code_8ecd0201ae3a4e0e9ac43ed659bb9ec9-7"></a>   0 0 0 0 1 1 1 0 1 0 1 1 0 0 0
+<pre class="code text"><a name="rest_code_bd85de7791424d9ab74f17f61eebc4a0-1"></a>w(1)=1; % was 0, set to 1 as error. Now we have bit0,14 as error bits
+<a name="rest_code_bd85de7791424d9ab74f17f61eebc4a0-2"></a>&gt;&gt; mod(w*h,2)
+<a name="rest_code_bd85de7791424d9ab74f17f61eebc4a0-3"></a>ans =
+<a name="rest_code_bd85de7791424d9ab74f17f61eebc4a0-4"></a>   0 0 0 0 1 1 1 0 1 0 1 1 0 0 0
+<a name="rest_code_bd85de7791424d9ab74f17f61eebc4a0-5"></a>&gt;&gt; mod(h(1,:)+h(14,:),2)
+<a name="rest_code_bd85de7791424d9ab74f17f61eebc4a0-6"></a>ans =
+<a name="rest_code_bd85de7791424d9ab74f17f61eebc4a0-7"></a>   0 0 0 0 1 1 1 0 1 0 1 1 0 0 0
 </pre>
 <p>Evidently the syndrome is the same as <span class="math">\(H^t(14)+H^t(1)\)</span>, sum of first and 14th row. The
 corrected bits are then <span class="math">\(I(14)+I(1)\)</span>, 1st and 14th row of <span class="math">\(I\)</span> matrix.

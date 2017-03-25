@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<head>
+<meta charset="utf-8">
+<base href="http://souktha.github.io/misc/bch_1_x2_x5/">
+<meta name="description" content="BCH code based on g(x)=1+x**2+x**5">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Binary BCH work out example | Soukthavy Sopha</title>
+<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<meta content="#5670d4" name="theme-color">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
+<link rel="canonical" href="http://souktha.github.io/misc/bch_1_x2_x5/">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="description" itemprop="description" content="BCH code based on g(x)=1+x**2+x**5">
+<meta name="author" content="Soukthavy">
+<meta name="robots" content="noindex">
+<meta property="og:site_name" content="Soukthavy Sopha">
+<meta property="og:title" content="Binary BCH work out example">
+<meta property="og:url" content="http://souktha.github.io/misc/bch_1_x2_x5/">
+<meta property="og:description" content="BCH code based on g(x)=1+x**2+x**5">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2017-02-26T23:39:17Z">
+<meta property="article:tag" content="latex">
+<meta property="article:tag" content="mathjax">
+<meta property="article:tag" content="misc">
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-inverse navbar-static-top"><div class="container">
+<!-- This keeps the margins nice -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://souktha.github.io/">
+
+                <span id="blog-title">Soukthavy Sopha</span>
+            </a>
+        </div>
+<!-- /.navbar-header -->
+        <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
+            <ul class="nav navbar-nav">
+<li>
+<a href="../../archive.html">Archive</a>
+                </li>
+<li>
+<a href="../../categories/">Tags</a>
+                </li>
+<li>
+<a href="../../rss.xml">RSS feed</a>
+            </li>
+<li class="dropdown">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Blog <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+<li>
+<a href="../../software">Sofware</a>
+                    </li>
+<li>
+<a href="../../hardware">Hardware</a>
+                    </li>
+<li>
+<a href="../../misc">Misc</a>
+            </li>
+</ul>
+</li>
+<li>
+<a href="https://github.com/souktha">My Github</a>
+
+                
+            </li>
+</ul>
+<ul class="nav navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        <div class="row">
+            
+            
+<article class="storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Binary BCH work out example</a></h1>
+
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>Building on my previous post on the simple Hamming linear cyclic code, I decide to push on for a little bit
+more usefull class of cyclic code, the BCH code. While the past worked out example was also a BCH code, it
+is commonly known a Hamming cyclic code. The binary BCH code exercise will offer higher <span class="math">\(t\)</span>
+error-correcting capability than the previous exercise.
+.. <span class="math">\(h(x)=1+x+x^4\)</span> using the powers of <span class="math">\(\beta\)</span> as worked out in the last post since it is only
+.. a <span class="math">\(t=1\)</span> FEC. While it is possible to achieve <span class="math">\(t &gt; 1\)</span>, but it comes with the expense
+.. of information bits. For this workout problem I choose higher degree primitive polynomial.</p>
+<!-- TEASER_END -->
+<p>One important class of cyclic codes is BCH codes. It is quite extensive and easy to decode and
+because of that it is quite practical for its use in real-life application. By definition,
+any <span class="math">\(r \ge 3, t \leq 2^{r-1}-1\)</span> there exists BCH error-correcting codes of length <span class="math">\(n=2^r -1\)</span>,
+parity check length <span class="math">\((n-k) \le rt\)</span>,  minimum distance <span class="math">\(d \ge 2t + 1\)</span> and
+having dimension <span class="math">\(k \geq n-rt\)</span>.  The <span class="math">\(t=1\)</span> error-correcting BCH codes of length
+<span class="math">\(n=2^r-1\)</span> is a Hamming code (old post).</p>
+<p>I will use the <em>primitive</em> <span class="math">\(p(x)=x^5+x^2+1\)</span> as a basis for the <span class="math">\((n,k,d) \equiv (31,21,5)\)</span> BCH codes.</p>
+<div class="section" id="some-more-field-algebra">
+<h2>Some more field algebra</h2>
+<p>The <em>minimal polynomial</em> of <span class="math">\(\alpha\)</span>, <span class="math">\(m_{\alpha}(x)\)</span> is the smallest polynomial in
+<span class="math">\(K[x]\)</span> of smallest degree having <span class="math">\(\alpha\)</span> as a root, that is, if <span class="math">\(f(x)=a_0+
+a_1x+a_2x^2+..+a_kx^k\)</span>, that is <span class="math">\(f(\alpha)=a_0+a_1\alpha+a_2\alpha^2+..+a_k\alpha^k = 0\)</span></p>
+<p>The order of nonzero element <span class="math">\(\alpha\)</span> in <span class="math">\(GF(2^r)\)</span> is the smallest positive <span class="math">\(m\)</span>
+such that <span class="math">\(\alpha^m = 1\)</span>. If <span class="math">\(\alpha\)</span> is of order <span class="math">\(2^r-1\)</span> then it is a <em>primitive</em>
+element. It not easy to find the primitive polynomial of higher degree. Luckily the hard part
+of finding them has been done and tabulated for our use and this is what I will use for my
+implementation.</p>
+<p>If <span class="math">\(\alpha\)</span> has order <span class="math">\(m\)</span>, then <span class="math">\(\alpha\)</span> is a root of <span class="math">\(1+x^m\)</span>.
+Relative to my previous post, defining <span class="math">\(\beta\)</span> as primitive element, <span class="math">\(\alpha=\beta^i\)</span>,
+then <span class="math">\(\alpha^{2r-1}=(\beta^i)^{2r-1}= (\beta^{2r-1})^i = 1^i = 1\)</span>. <span class="math">\(\alpha\)</span> is therefore
+a root of <span class="math">\(1+x^{2r-1}\)</span> and <span class="math">\(m_\alpha(x)\)</span> is a factor of <span class="math">\(1+x^{2r-1}\)</span>. In the last
+post <span class="math">\(g(x) | (1+x^{15})\)</span>. <span class="math">\(g(x)\)</span> must be the least common multiple of
+<span class="math">\(m_i(x),m_2(x),..,m_{2t}(x)\)</span>. Taking the conjugate roots into account, the t-error-correcting
+BCH of code length <span class="math">\(n=2^r-1\)</span> has its generator <span class="math">\(g(x)\)</span> reduced to,</p>
+<div class="math">
+\begin{equation*}
+g(x) = LCM[m_1(x),m_3(x),\cdots,m_{2t-1}(x)]
+\end{equation*}
+</div>
+<p>Since the degree of of each minimal polynomial is <span class="math">\(m\)</span> or less, <span class="math">\(g(x)\)</span> has degree
+at most <span class="math">\(mt = (n-k)\)</span>, its parity check digits.
+Base on the theorem that the set of all roots of <span class="math">\(m_\alpha(x)\)</span> is
+<span class="math">\(\{\alpha,\alpha^2,\alpha^4,..,\alpha^{2t-1}\}\)</span>, the single error-correcting BCH codes
+will have the generator polynomial, <span class="math">\(g(x) = m_{\alpha^1}(x)\)</span>. The two error-correcting codes
+will have the generator polynomial, <span class="math">\(g(x) =  m_\alpha(x)m_{\alpha^3}(x)\)</span>.</p>
+<p>First let's try to generate the elements of <span class="math">\(GF(2^5)\)</span> based on <span class="math">\(p(x)=x^5+x^2+1\)</span> as
+the primitive polynomial numerically using either MATHLAB or Octave as the tool,</p>
+<table class="codetable"><tr>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_dad56dbc6fc34af7a76cd7bc2dd92432-1">1</a>
+<a href="#rest_code_dad56dbc6fc34af7a76cd7bc2dd92432-2">2</a>
+<a href="#rest_code_dad56dbc6fc34af7a76cd7bc2dd92432-3">3</a>
+<a href="#rest_code_dad56dbc6fc34af7a76cd7bc2dd92432-4">4</a>
+<a href="#rest_code_dad56dbc6fc34af7a76cd7bc2dd92432-5">5</a>
+<a href="#rest_code_dad56dbc6fc34af7a76cd7bc2dd92432-6">6</a></pre></div></td>
+<td class="code"><pre class="code text"><a name="rest_code_dad56dbc6fc34af7a76cd7bc2dd92432-1"></a>     &gt;&gt; I=eye(31);
+<a name="rest_code_dad56dbc6fc34af7a76cd7bc2dd92432-2"></a>     &gt;&gt; gx=[1 0 0 1 0 1];
+<a name="rest_code_dad56dbc6fc34af7a76cd7bc2dd92432-3"></a>     &gt;&gt; I=I(31:-1:1,:);
+<a name="rest_code_dad56dbc6fc34af7a76cd7bc2dd92432-4"></a>     &gt;&gt; q=zeros(31,26);r=I;
+<a name="rest_code_dad56dbc6fc34af7a76cd7bc2dd92432-5"></a>     &gt;&gt; for i=1:31 [q(i,:),r(i,:)]=deconv(I(i,:),gx);end
+<a name="rest_code_dad56dbc6fc34af7a76cd7bc2dd92432-6"></a>     &gt;&gt; r=mod(r(:,27:31),2);
+</pre></td>
+</tr></table>
+<p>then tabulate the result,</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="9%">
+<col width="49%">
+<col width="42%">
+</colgroup>
+<tbody valign="top">
+<tr>
+<td>word</td>
+<td><span class="math">\(x^i mod(x^5+x^2+1)\)</span></td>
+<td>Power of <span class="math">\(\alpha\)</span>
+</td>
+</tr>
+<tr>
+<td>00000</td>
+<td><ul class="first last simple"><li>
+</li></ul></td>
+<td><ul class="first last simple"><li>
+</li></ul></td>
+</tr>
+<tr>
+<td>00001</td>
+<td>1</td>
+<td><span class="math">\(\alpha^0\)</span></td>
+</tr>
+<tr>
+<td>00010</td>
+<td><span class="math">\(x\)</span></td>
+<td><span class="math">\(\alpha^1\)</span></td>
+</tr>
+<tr>
+<td>00100</td>
+<td><span class="math">\(x^2\)</span></td>
+<td><span class="math">\(\alpha^2\)</span></td>
+</tr>
+<tr>
+<td>01000</td>
+<td><span class="math">\(x^3\)</span></td>
+<td><span class="math">\(\alpha^3\)</span></td>
+</tr>
+<tr>
+<td>10000</td>
+<td><span class="math">\(x^4\)</span></td>
+<td><span class="math">\(\alpha^4\)</span></td>
+</tr>
+<tr>
+<td>00101</td>
+<td><span class="math">\(x^2+1\)</span></td>
+<td><span class="math">\(\alpha^5\)</span></td>
+</tr>
+<tr>
+<td>01010</td>
+<td><span class="math">\(x^3+x\)</span></td>
+<td><span class="math">\(\alpha^6\)</span></td>
+</tr>
+<tr>
+<td>10100</td>
+<td><span class="math">\(x^4+x^2\)</span></td>
+<td><span class="math">\(\alpha^7\)</span></td>
+</tr>
+<tr>
+<td>01101</td>
+<td><span class="math">\(x^3+x^2+1\)</span></td>
+<td><span class="math">\(\alpha^8\)</span></td>
+</tr>
+<tr>
+<td>11010</td>
+<td><span class="math">\(x^4+x^3+x\)</span></td>
+<td><span class="math">\(\alpha^9\)</span></td>
+</tr>
+<tr>
+<td>10001</td>
+<td><span class="math">\(x^4+1\)</span></td>
+<td><span class="math">\(\alpha^{10}\)</span></td>
+</tr>
+<tr>
+<td>00111</td>
+<td><span class="math">\(x^2+x+1\)</span></td>
+<td><span class="math">\(\alpha^{11}\)</span></td>
+</tr>
+<tr>
+<td>01110</td>
+<td><span class="math">\(x^3+x^2+x\)</span></td>
+<td><span class="math">\(\alpha^{12}\)</span></td>
+</tr>
+<tr>
+<td>11100</td>
+<td><span class="math">\(x^4+x^3+x^2\)</span></td>
+<td><span class="math">\(\alpha^{13}\)</span></td>
+</tr>
+<tr>
+<td>11101</td>
+<td><span class="math">\(x^4+x^3+x^2+1\)</span></td>
+<td><span class="math">\(\alpha^{14}\)</span></td>
+</tr>
+<tr>
+<td>11111</td>
+<td><span class="math">\(x^4+x^3+x^2+x+1\)</span></td>
+<td><span class="math">\(\alpha^{15}\)</span></td>
+</tr>
+<tr>
+<td>11011</td>
+<td><span class="math">\(x^4+x^3+x+1\)</span></td>
+<td><span class="math">\(\alpha^{16}\)</span></td>
+</tr>
+<tr>
+<td>10011</td>
+<td><span class="math">\(x^4+x+1\)</span></td>
+<td><span class="math">\(\alpha^{17}\)</span></td>
+</tr>
+<tr>
+<td>00011</td>
+<td><span class="math">\(x+1\)</span></td>
+<td><span class="math">\(\alpha^{18}\)</span></td>
+</tr>
+<tr>
+<td>00110</td>
+<td><span class="math">\(x^2+x\)</span></td>
+<td><span class="math">\(\alpha^{19}\)</span></td>
+</tr>
+<tr>
+<td>01100</td>
+<td><span class="math">\(x^3+x^2\)</span></td>
+<td><span class="math">\(\alpha^{20}\)</span></td>
+</tr>
+<tr>
+<td>11000</td>
+<td><span class="math">\(x^4+x^3\)</span></td>
+<td><span class="math">\(\alpha^{21}\)</span></td>
+</tr>
+<tr>
+<td>10101</td>
+<td><span class="math">\(x^4+x^2+1\)</span></td>
+<td><span class="math">\(\alpha^{22}\)</span></td>
+</tr>
+<tr>
+<td>01111</td>
+<td><span class="math">\(x^3+x^2+x+1\)</span></td>
+<td><span class="math">\(\alpha^{23}\)</span></td>
+</tr>
+<tr>
+<td>11110</td>
+<td><span class="math">\(x^4+x^3+x^2+x\)</span></td>
+<td><span class="math">\(\alpha^{24}\)</span></td>
+</tr>
+<tr>
+<td>11001</td>
+<td><span class="math">\(x^4+x^3+1\)</span></td>
+<td><span class="math">\(\alpha^{25}\)</span></td>
+</tr>
+<tr>
+<td>10111</td>
+<td><span class="math">\(x^4+x^2+x+1\)</span></td>
+<td><span class="math">\(\alpha^{26}\)</span></td>
+</tr>
+<tr>
+<td>01011</td>
+<td><span class="math">\(x^3+x+1\)</span></td>
+<td><span class="math">\(\alpha^{27}\)</span></td>
+</tr>
+<tr>
+<td>10110</td>
+<td><span class="math">\(x^4+x^2+x\)</span></td>
+<td><span class="math">\(\alpha^{28}\)</span></td>
+</tr>
+<tr>
+<td>01001</td>
+<td><span class="math">\(x^3+1\)</span></td>
+<td><span class="math">\(\alpha^{29}\)</span></td>
+</tr>
+<tr>
+<td>10010</td>
+<td><span class="math">\(x^4+x\)</span></td>
+<td><span class="math">\(\alpha^{30}\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Note that <span class="math">\(\alpha^{31}=1\)</span>.</p>
+<p class="graphviz">b'<?xml version="1.0" encoding="UTF-8" standalone="no"?>\nn "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"&gt;\n<!-- Generated by graphviz version 2.40.1 (20161225.0304)\n -->\n<!-- Title: m1 Pages: 1 -->\n<svg width="672pt" height="147pt" viewbox="0.00 0.00 672.00 147.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">\n<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 143)">\n<title>m1</title>\n<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-143 668,-143 668,4 -4,4"></polygon>\n<text text-anchor="middle" x="332" y="-7.8" font-family="Times,serif" font-size="14.00" fill="#000000">polynomial m1(x)</text>\n<!-- 0 -->\n<g id="node1" class="node">\n<title>0</title>\n<text text-anchor="middle" x="27" y="-41.3" font-family="Times,serif" font-size="14.00" fill="#000000">input</text>\n</g>\n<!-- A -->\n<g id="node9" class="node">\n<title>A</title>\n<ellipse fill="none" stroke="#000000" cx="94" cy="-45" rx="18" ry="18"></ellipse>\n<ellipse fill="none" stroke="#000000" cx="94" cy="-45" rx="22" ry="22"></ellipse>\n<text text-anchor="middle" x="94" y="-41.3" font-family="Times,serif" font-size="14.00" fill="#000000">+</text>\n</g>\n<!-- 0&#45;&gt;A -->\n<g id="edge1" class="edge">\n<title>0-&gt;A</title>\n<path fill="none" stroke="#000000" d="M54.2515,-44C54.2515,-44 61.69,-44 61.69,-44"></path>\n<polygon fill="#000000" stroke="#000000" points="61.69,-47.5001 71.69,-44 61.6899,-40.5001 61.69,-47.5001"></polygon>\n</g>\n<!-- 1 -->\n<g id="node2" class="node">\n<title>1</title>\n<text text-anchor="middle" x="637" y="-41.3" font-family="Times,serif" font-size="14.00" fill="#000000">output</text>\n</g>\n<!-- a -->\n<g id="node3" class="node">\n<title>a</title>\n<polygon fill="none" stroke="#000000" points="188,-63 134,-63 134,-27 188,-27 188,-63"></polygon>\n<text text-anchor="middle" x="161" y="-41.3" font-family="Times,serif" font-size="14.00" fill="#000000">x</text>\n</g>\n<!-- b -->\n<g id="node4" class="node">\n<title>b</title>\n<polygon fill="none" stroke="#000000" points="260,-63 206,-63 206,-27 260,-27 260,-63"></polygon>\n<text text-anchor="middle" x="233" y="-41.3" font-family="Times,serif" font-size="14.00" fill="#000000">x2</text>\n</g>\n<!-- a&#45;&gt;b -->\n<g id="edge5" class="edge">\n<title>a-&gt;b</title>\n<path fill="none" stroke="#000000" d="M188.2201,-44C188.2201,-44 195.7414,-44 195.7414,-44"></path>\n<polygon fill="#000000" stroke="#000000" points="195.7414,-47.5001 205.7414,-44 195.7414,-40.5001 195.7414,-47.5001"></polygon>\n</g>\n<!-- C -->\n<g id="node11" class="node">\n<title>C</title>\n<ellipse fill="none" stroke="#000000" cx="300" cy="-45" rx="18" ry="18"></ellipse>\n<ellipse fill="none" stroke="#000000" cx="300" cy="-45" rx="22" ry="22"></ellipse>\n<text text-anchor="middle" x="300" y="-41.3" font-family="Times,serif" font-size="14.00" fill="#000000">+</text>\n</g>\n<!-- b&#45;&gt;C -->\n<g id="edge6" class="edge">\n<title>b-&gt;C</title>\n<path fill="none" stroke="#000000" d="M260.2515,-44C260.2515,-44 267.69,-44 267.69,-44"></path>\n<polygon fill="#000000" stroke="#000000" points="267.69,-47.5001 277.69,-44 267.6899,-40.5001 267.69,-47.5001"></polygon>\n</g>\n<!-- c -->\n<g id="node5" class="node">\n<title>c</title>\n<polygon fill="none" stroke="#000000" points="394,-63 340,-63 340,-27 394,-27 394,-63"></polygon>\n<text text-anchor="middle" x="367" y="-41.3" font-family="Times,serif" font-size="14.00" fill="#000000">x3</text>\n</g>\n<!-- d -->\n<g id="node6" class="node">\n<title>d</title>\n<polygon fill="none" stroke="#000000" points="466,-63 412,-63 412,-27 466,-27 466,-63"></polygon>\n<text text-anchor="middle" x="439" y="-41.3" font-family="Times,serif" font-size="14.00" fill="#000000">x4</text>\n</g>\n<!-- c&#45;&gt;d -->\n<g id="edge8" class="edge">\n<title>c-&gt;d</title>\n<path fill="none" stroke="#000000" d="M394.2201,-44C394.2201,-44 401.7414,-44 401.7414,-44"></path>\n<polygon fill="#000000" stroke="#000000" points="401.7414,-47.5001 411.7414,-44 401.7414,-40.5001 401.7414,-47.5001"></polygon>\n</g>\n<!-- e -->\n<g id="node7" class="node">\n<title>e</title>\n<polygon fill="none" stroke="#000000" points="538,-63 484,-63 484,-27 538,-27 538,-63"></polygon>\n<text text-anchor="middle" x="511" y="-41.3" font-family="Times,serif" font-size="14.00" fill="#000000">x5</text>\n</g>\n<!-- d&#45;&gt;e -->\n<g id="edge9" class="edge">\n<title>d-&gt;e</title>\n<path fill="none" stroke="#000000" d="M466.2201,-44C466.2201,-44 473.7414,-44 473.7414,-44"></path>\n<polygon fill="#000000" stroke="#000000" points="473.7414,-47.5001 483.7414,-44 473.7414,-40.5001 473.7414,-47.5001"></polygon>\n</g>\n<!-- E -->\n<g id="node8" class="node">\n<title>E</title>\n<ellipse fill="none" stroke="#000000" cx="574" cy="-45" rx="18" ry="18"></ellipse>\n</g>\n<!-- e&#45;&gt;E -->\n<g id="edge10" class="edge">\n<title>e-&gt;E</title>\n<path fill="none" stroke="#000000" d="M538.0833,-44C538.0833,-44 545.8518,-44 545.8518,-44"></path>\n<polygon fill="#000000" stroke="#000000" points="545.8518,-47.5001 555.8518,-44 545.8517,-40.5001 545.8518,-47.5001"></polygon>\n</g>\n<!-- E&#45;&gt;1 -->\n<g id="edge12" class="edge">\n<title>E-&gt;1</title>\n<path fill="none" stroke="#000000" d="M592.2222,-44C592.2222,-44 599.911,-44 599.911,-44"></path>\n<polygon fill="#000000" stroke="#000000" points="599.911,-47.5001 609.911,-44 599.911,-40.5001 599.911,-47.5001"></polygon>\n</g>\n<!-- E1 -->\n<g id="node13" class="node">\n<title>E1</title>\n<ellipse fill="none" stroke="#000000" cx="464" cy="-121" rx="18" ry="18"></ellipse>\n</g>\n<!-- E&#45;&gt;E1 -->\n<g id="edge11" class="edge">\n<title>E-&gt;E1</title>\n<path fill="none" stroke="#000000" d="M574,-63.0109C574,-85.4852 574,-121 574,-121 574,-121 492.1643,-121 492.1643,-121"></path>\n<polygon fill="#000000" stroke="#000000" points="492.1643,-117.5001 482.1643,-121 492.1642,-124.5001 492.1643,-117.5001"></polygon>\n</g>\n<!-- A&#45;&gt;a -->\n<g id="edge4" class="edge">\n<title>A-&gt;a</title>\n<path fill="none" stroke="#000000" d="M116.31,-44C116.31,-44 123.8964,-44 123.8964,-44"></path>\n<polygon fill="#000000" stroke="#000000" points="123.8964,-47.5001 133.8964,-44 123.8964,-40.5001 123.8964,-47.5001"></polygon>\n</g>\n<!-- B -->\n<g id="node10" class="node">\n<title>B</title>\n<ellipse fill="none" stroke="#000000" cx="94" cy="-121" rx="18" ry="18"></ellipse>\n</g>\n<!-- B&#45;&gt;A -->\n<g id="edge14" class="edge">\n<title>B-&gt;A</title>\n<path fill="none" stroke="#000000" d="M94,-102.9891C94,-102.9891 94,-77.2282 94,-77.2282"></path>\n<polygon fill="#000000" stroke="#000000" points="97.5001,-77.2282 94,-67.2282 90.5001,-77.2282 97.5001,-77.2282"></polygon>\n</g>\n<!-- C&#45;&gt;c -->\n<g id="edge7" class="edge">\n<title>C-&gt;c</title>\n<path fill="none" stroke="#000000" d="M322.31,-44C322.31,-44 329.8964,-44 329.8964,-44"></path>\n<polygon fill="#000000" stroke="#000000" points="329.8964,-47.5001 339.8964,-44 329.8964,-40.5001 329.8964,-47.5001"></polygon>\n</g>\n<!-- D -->\n<g id="node12" class="node">\n<title>D</title>\n<ellipse fill="none" stroke="#000000" cx="300" cy="-121" rx="18" ry="18"></ellipse>\n</g>\n<!-- D&#45;&gt;B -->\n<g id="edge2" class="edge">\n<title>D-&gt;B</title>\n<path fill="none" stroke="#000000" d="M281.7189,-121C281.7189,-121 122.2402,-121 122.2402,-121"></path>\n<polygon fill="#000000" stroke="#000000" points="122.2402,-117.5001 112.2402,-121 122.2401,-124.5001 122.2402,-117.5001"></polygon>\n</g>\n<!-- D&#45;&gt;C -->\n<g id="edge3" class="edge">\n<title>D-&gt;C</title>\n<path fill="none" stroke="#000000" d="M300,-102.9891C300,-102.9891 300,-77.2282 300,-77.2282"></path>\n<polygon fill="#000000" stroke="#000000" points="303.5001,-77.2282 300,-67.2282 296.5001,-77.2282 303.5001,-77.2282"></polygon>\n</g>\n<!-- E1&#45;&gt;D -->\n<g id="edge13" class="edge">\n<title>E1-&gt;D</title>\n<path fill="none" stroke="#000000" d="M445.8225,-121C445.8225,-121 328.2589,-121 328.2589,-121"></path>\n<polygon fill="#000000" stroke="#000000" points="328.2589,-117.5001 318.2589,-121 328.2589,-124.5001 328.2589,-117.5001"></polygon>\n</g>\n</g>\n</svg>\n'</p>
+<p>The elements obtained above can also be calculated by hand, for example, <span class="math">\(\alpha^{25}\)</span>
+can be obtained by first, set <span class="math">\(p(\alpha) = \alpha^5+\alpha^2+1=0\)</span> then solve for it
+using the table above,</p>
+<div class="math">
+\begin{align*}
+\alpha^5+\alpha^2+1 = 0 \\
+\alpha^5 = \alpha^2+1 \\
+\alpha^{25}=(\alpha^5)^5 = (\alpha^2+1)^5 = (\alpha^2+1)^2(\alpha^2+1)^2(\alpha^2+1) \\
+\alpha^{25}=(\alpha^4+1)^2(\alpha^2+1) \\
+           =(\alpha^8+1)(\alpha^2+1) \\
+           =(\alpha^3\alpha^5+1)(\alpha^2+1) \\
+           =(\alpha^3(\alpha^2+1)+1)(\alpha^2+1) \\
+           =(\alpha^5+\alpha^3+1)(\alpha^2+1) \\
+           =\alpha^7+\alpha^3+(\alpha^2+1) \\
+           =\alpha^7+\alpha^5+\alpha^3 \\
+           = x^4+x^2+x^2+1+x^3 = x^4+x^3+1 \\
+\end{align*}
+</div>
+<p>The result agrees with what is obtained numerically by MATLAB/Octave. I think it is fine just to
+randomly verify the result for couple of elements after <span class="math">\(\alpha^5\)</span>.</p>
+<p>Next is to get the generator polynomial by performing the calculation for minimal polynomials,
+<span class="math">\(m_1(x)=p(x)\)</span> and <span class="math">\(m_(x)\)</span>, that is the root based on
+<span class="math">\(\alpha\)</span> and <span class="math">\(\alpha^3\)</span>
+because I need <span class="math">\(g(x)=m_1(x)m_3(x)\)</span> for this exercise. I can avoid the tedious calculation
+by opting to use the tabulated generator polynomials of <span class="math">\((n,k,d)\)</span> BCH code. For the
+<span class="math">\((31,21,5), t=2\)</span>, <span class="math">\(m_3(x)=x^5+x^4+x^3+x^2+1\)</span>, and <span class="math">\(m_1(x)=x^5+x^2+1\)</span>.</p>
+<div class="math">
+\begin{align*}
+g(x)=LCM[m_1(x)m_3(x)] \\
+= LCM[(x^5+x^2+1)(x^5+x^4+x^3+x^2+1)]
+\end{align*}
+</div>
+<p>Using MATLAB/Octave's <em>conv</em> to multiply the polynomial,</p>
+<div class="math">
+\begin{equation*}
+g(x) = x^{10}+x^9+ x^8+x^6+ x^5+x^3+1
+\end{equation*}
+</div>
+<p>This matches to the tabulated octal table value, <span class="math">\((3551)_8 = 011 101 101 001\)</span>.
+I can verify that <span class="math">\(g(x) | (x^{31} + 1)\)</span> using Octave's <em>deconv</em> operation. This is to
+confirm that any irreducible polynomial over GF(2) of degree <span class="math">\(m\)</span> divides <span class="math">\(X^{2^m-1}+1\)</span>.</p>
+<!-- example with graph -->
+<p class="graphviz">b'<?xml version="1.0" encoding="UTF-8" standalone="no"?>\nn "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"&gt;\n<!-- Generated by graphviz version 2.40.1 (20161225.0304)\n -->\n<!-- Title: m3 Pages: 1 -->\n<svg width="796pt" height="147pt" viewbox="0.00 0.00 796.00 147.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">\n<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 143)">\n<title>m3</title>\n<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-143 792,-143 792,4 -4,4"></polygon>\n<text text-anchor="middle" x="394" y="-7.8" font-family="Times,serif" font-size="14.00" fill="#000000">polynomial m3(x)</text>\n<!-- 0 -->\n<g id="node1" class="node">\n<title>0</title>\n<text text-anchor="middle" x="27" y="-41.3" font-family="Times,serif" font-size="14.00" fill="#000000">input</text>\n</g>\n<!-- A -->\n<g id="node9" class="node">\n<title>A</title>\n<ellipse fill="none" stroke="#000000" cx="94" cy="-45" rx="18" ry="18"></ellipse>\n<ellipse fill="none" stroke="#000000" cx="94" cy="-45" rx="22" ry="22"></ellipse>\n<text text-anchor="middle" x="94" y="-41.3" font-family="Times,serif" font-size="14.00" fill="#000000">+</text>\n</g>\n<!-- 0&#45;&gt;A -->\n<g id="edge1" class="edge">\n<title>0-&gt;A</title>\n<path fill="none" stroke="#000000" d="M54.2515,-44C54.2515,-44 61.69,-44 61.69,-44"></path>\n<polygon fill="#000000" stroke="#000000" points="61.69,-47.5001 71.69,-44 61.6899,-40.5001 61.69,-47.5001"></polygon>\n</g>\n<!-- 1 -->\n<g id="node2" class="node">\n<title>1</title>\n<text text-anchor="middle" x="761" y="-41.3" font-family="Times,serif" font-size="14.00" fill="#000000">output</text>\n</g>\n<!-- a -->\n<g id="node3" class="node">\n<title>a</title>\n<polygon fill="none" stroke="#000000" points="188,-63 134,-63 134,-27 188,-27 188,-63"></polygon>\n<text text-anchor="middle" x="161" y="-41.3" font-family="Times,serif" font-size="14.00" fill="#000000">x</text>\n</g>\n<!-- b -->\n<g id="node4" class="node">\n<title>b</title>\n<polygon fill="none" stroke="#000000" points="260,-63 206,-63 206,-27 260,-27 260,-63"></polygon>\n<text text-anchor="middle" x="233" y="-41.3" font-family="Times,serif" font-size="14.00" fill="#000000">x2</text>\n</g>\n<!-- a&#45;&gt;b -->\n<g id="edge5" class="edge">\n<title>a-&gt;b</title>\n<path fill="none" stroke="#000000" d="M188.2201,-44C188.2201,-44 195.7414,-44 195.7414,-44"></path>\n<polygon fill="#000000" stroke="#000000" points="195.7414,-47.5001 205.7414,-44 195.7414,-40.5001 195.7414,-47.5001"></polygon>\n</g>\n<!-- C -->\n<g id="node11" class="node">\n<title>C</title>\n<ellipse fill="none" stroke="#000000" cx="300" cy="-45" rx="18" ry="18"></ellipse>\n<ellipse fill="none" stroke="#000000" cx="300" cy="-45" rx="22" ry="22"></ellipse>\n<text text-anchor="middle" x="300" y="-41.3" font-family="Times,serif" font-size="14.00" fill="#000000">+</text>\n</g>\n<!-- b&#45;&gt;C -->\n<g id="edge6" class="edge">\n<title>b-&gt;C</title>\n<path fill="none" stroke="#000000" d="M260.2515,-44C260.2515,-44 267.69,-44 267.69,-44"></path>\n<polygon fill="#000000" stroke="#000000" points="267.69,-47.5001 277.69,-44 267.6899,-40.5001 267.69,-47.5001"></polygon>\n</g>\n<!-- c -->\n<g id="node5" class="node">\n<title>c</title>\n<polygon fill="none" stroke="#000000" points="394,-63 340,-63 340,-27 394,-27 394,-63"></polygon>\n<text text-anchor="middle" x="367" y="-41.3" font-family="Times,serif" font-size="14.00" fill="#000000">x3</text>\n</g>\n<!-- G -->\n<g id="node16" class="node">\n<title>G</title>\n<ellipse fill="none" stroke="#000000" cx="434" cy="-45" rx="18" ry="18"></ellipse>\n<ellipse fill="none" stroke="#000000" cx="434" cy="-45" rx="22" ry="22"></ellipse>\n<text text-anchor="middle" x="434" y="-41.3" font-family="Times,serif" font-size="14.00" fill="#000000">+</text>\n</g>\n<!-- c&#45;&gt;G -->\n<g id="edge8" class="edge">\n<title>c-&gt;G</title>\n<path fill="none" stroke="#000000" d="M394.2515,-44C394.2515,-44 401.69,-44 401.69,-44"></path>\n<polygon fill="#000000" stroke="#000000" points="401.69,-47.5001 411.69,-44 401.6899,-40.5001 401.69,-47.5001"></polygon>\n</g>\n<!-- d -->\n<g id="node6" class="node">\n<title>d</title>\n<polygon fill="none" stroke="#000000" points="528,-63 474,-63 474,-27 528,-27 528,-63"></polygon>\n<text text-anchor="middle" x="501" y="-41.3" font-family="Times,serif" font-size="14.00" fill="#000000">x4</text>\n</g>\n<!-- F -->\n<g id="node17" class="node">\n<title>F</title>\n<ellipse fill="none" stroke="#000000" cx="568" cy="-45" rx="18" ry="18"></ellipse>\n<ellipse fill="none" stroke="#000000" cx="568" cy="-45" rx="22" ry="22"></ellipse>\n<text text-anchor="middle" x="568" y="-41.3" font-family="Times,serif" font-size="14.00" fill="#000000">+</text>\n</g>\n<!-- d&#45;&gt;F -->\n<g id="edge10" class="edge">\n<title>d-&gt;F</title>\n<path fill="none" stroke="#000000" d="M528.2515,-44C528.2515,-44 535.69,-44 535.69,-44"></path>\n<polygon fill="#000000" stroke="#000000" points="535.69,-47.5001 545.69,-44 535.6899,-40.5001 535.69,-47.5001"></polygon>\n</g>\n<!-- e -->\n<g id="node7" class="node">\n<title>e</title>\n<polygon fill="none" stroke="#000000" points="662,-63 608,-63 608,-27 662,-27 662,-63"></polygon>\n<text text-anchor="middle" x="635" y="-41.3" font-family="Times,serif" font-size="14.00" fill="#000000">x5</text>\n</g>\n<!-- E -->\n<g id="node8" class="node">\n<title>E</title>\n<ellipse fill="none" stroke="#000000" cx="698" cy="-45" rx="18" ry="18"></ellipse>\n</g>\n<!-- e&#45;&gt;E -->\n<g id="edge12" class="edge">\n<title>e-&gt;E</title>\n<path fill="none" stroke="#000000" d="M662.0833,-38C662.0833,-38 671.3135,-38 671.3135,-38"></path>\n<polygon fill="#000000" stroke="#000000" points="671.3136,-41.5001 681.3135,-38 671.3135,-34.5001 671.3136,-41.5001"></polygon>\n</g>\n<!-- E&#45;&gt;1 -->\n<g id="edge14" class="edge">\n<title>E-&gt;1</title>\n<path fill="none" stroke="#000000" d="M716.2222,-44C716.2222,-44 723.911,-44 723.911,-44"></path>\n<polygon fill="#000000" stroke="#000000" points="723.911,-47.5001 733.911,-44 723.911,-40.5001 723.911,-47.5001"></polygon>\n</g>\n<!-- E1 -->\n<g id="node15" class="node">\n<title>E1</title>\n<ellipse fill="none" stroke="#000000" cx="660" cy="-121" rx="18" ry="18"></ellipse>\n</g>\n<!-- E&#45;&gt;E1 -->\n<g id="edge13" class="edge">\n<title>E-&gt;E1</title>\n<path fill="none" stroke="#000000" d="M680.7455,-51C674.9834,-51 670,-51 670,-51 670,-51 670,-95.811 670,-95.811"></path>\n<polygon fill="#000000" stroke="#000000" points="666.5001,-95.811 670,-105.811 673.5001,-95.8111 666.5001,-95.811"></polygon>\n</g>\n<!-- A&#45;&gt;a -->\n<g id="edge4" class="edge">\n<title>A-&gt;a</title>\n<path fill="none" stroke="#000000" d="M116.31,-44C116.31,-44 123.8964,-44 123.8964,-44"></path>\n<polygon fill="#000000" stroke="#000000" points="123.8964,-47.5001 133.8964,-44 123.8964,-40.5001 123.8964,-47.5001"></polygon>\n</g>\n<!-- B -->\n<g id="node10" class="node">\n<title>B</title>\n<ellipse fill="none" stroke="#000000" cx="94" cy="-121" rx="18" ry="18"></ellipse>\n</g>\n<!-- B&#45;&gt;A -->\n<g id="edge20" class="edge">\n<title>B-&gt;A</title>\n<path fill="none" stroke="#000000" d="M94,-102.9891C94,-102.9891 94,-77.2282 94,-77.2282"></path>\n<polygon fill="#000000" stroke="#000000" points="97.5001,-77.2282 94,-67.2282 90.5001,-77.2282 97.5001,-77.2282"></polygon>\n</g>\n<!-- C&#45;&gt;c -->\n<g id="edge7" class="edge">\n<title>C-&gt;c</title>\n<path fill="none" stroke="#000000" d="M322.31,-44C322.31,-44 329.8964,-44 329.8964,-44"></path>\n<polygon fill="#000000" stroke="#000000" points="329.8964,-47.5001 339.8964,-44 329.8964,-40.5001 329.8964,-47.5001"></polygon>\n</g>\n<!-- D -->\n<g id="node12" class="node">\n<title>D</title>\n<ellipse fill="none" stroke="#000000" cx="300" cy="-121" rx="18" ry="18"></ellipse>\n</g>\n<!-- D&#45;&gt;B -->\n<g id="edge2" class="edge">\n<title>D-&gt;B</title>\n<path fill="none" stroke="#000000" d="M281.7189,-121C281.7189,-121 122.2402,-121 122.2402,-121"></path>\n<polygon fill="#000000" stroke="#000000" points="122.2402,-117.5001 112.2402,-121 122.2401,-124.5001 122.2402,-117.5001"></polygon>\n</g>\n<!-- D&#45;&gt;C -->\n<g id="edge3" class="edge">\n<title>D-&gt;C</title>\n<path fill="none" stroke="#000000" d="M300,-102.9891C300,-102.9891 300,-77.2282 300,-77.2282"></path>\n<polygon fill="#000000" stroke="#000000" points="303.5001,-77.2282 300,-67.2282 296.5001,-77.2282 303.5001,-77.2282"></polygon>\n</g>\n<!-- I -->\n<g id="node13" class="node">\n<title>I</title>\n<ellipse fill="none" stroke="#000000" cx="434" cy="-121" rx="18" ry="18"></ellipse>\n</g>\n<!-- I&#45;&gt;D -->\n<g id="edge17" class="edge">\n<title>I-&gt;D</title>\n<path fill="none" stroke="#000000" d="M415.9282,-121C415.9282,-121 328.2135,-121 328.2135,-121"></path>\n<polygon fill="#000000" stroke="#000000" points="328.2135,-117.5001 318.2135,-121 328.2134,-124.5001 328.2135,-117.5001"></polygon>\n</g>\n<!-- I&#45;&gt;G -->\n<g id="edge19" class="edge">\n<title>I-&gt;G</title>\n<path fill="none" stroke="#000000" d="M434,-102.9891C434,-102.9891 434,-77.2282 434,-77.2282"></path>\n<polygon fill="#000000" stroke="#000000" points="437.5001,-77.2282 434,-67.2282 430.5001,-77.2282 437.5001,-77.2282"></polygon>\n</g>\n<!-- H -->\n<g id="node14" class="node">\n<title>H</title>\n<ellipse fill="none" stroke="#000000" cx="568" cy="-121" rx="18" ry="18"></ellipse>\n</g>\n<!-- H&#45;&gt;I -->\n<g id="edge16" class="edge">\n<title>H-&gt;I</title>\n<path fill="none" stroke="#000000" d="M549.9282,-121C549.9282,-121 462.2135,-121 462.2135,-121"></path>\n<polygon fill="#000000" stroke="#000000" points="462.2135,-117.5001 452.2135,-121 462.2134,-124.5001 462.2135,-117.5001"></polygon>\n</g>\n<!-- H&#45;&gt;F -->\n<g id="edge18" class="edge">\n<title>H-&gt;F</title>\n<path fill="none" stroke="#000000" d="M568,-102.9891C568,-102.9891 568,-77.2282 568,-77.2282"></path>\n<polygon fill="#000000" stroke="#000000" points="571.5001,-77.2282 568,-67.2282 564.5001,-77.2282 571.5001,-77.2282"></polygon>\n</g>\n<!-- E1&#45;&gt;H -->\n<g id="edge15" class="edge">\n<title>E1-&gt;H</title>\n<path fill="none" stroke="#000000" d="M641.8238,-121C641.8238,-121 596.1385,-121 596.1385,-121"></path>\n<polygon fill="#000000" stroke="#000000" points="596.1385,-117.5001 586.1385,-121 596.1384,-124.5001 596.1385,-117.5001"></polygon>\n</g>\n<!-- G&#45;&gt;d -->\n<g id="edge9" class="edge">\n<title>G-&gt;d</title>\n<path fill="none" stroke="#000000" d="M456.31,-44C456.31,-44 463.8964,-44 463.8964,-44"></path>\n<polygon fill="#000000" stroke="#000000" points="463.8964,-47.5001 473.8964,-44 463.8964,-40.5001 463.8964,-47.5001"></polygon>\n</g>\n<!-- F&#45;&gt;e -->\n<g id="edge11" class="edge">\n<title>F-&gt;e</title>\n<path fill="none" stroke="#000000" d="M590.31,-44C590.31,-44 597.8964,-44 597.8964,-44"></path>\n<polygon fill="#000000" stroke="#000000" points="597.8964,-47.5001 607.8964,-44 597.8964,-40.5001 597.8964,-47.5001"></polygon>\n</g>\n</g>\n</svg>\n'</p>
+<p>By definition, a t-error-correcting BCH code of lengt <span class="math">\(2^m-1\)</span> having a binary <em>n-tuple</em>
+<span class="math">\(u(X)=u_0+u_1+\cdots+u_{n-1}\)</span> is a code word iff <span class="math">\(u(X)\)</span> has <span class="math">\(\alpha,\alpha^2,
+\cdots,\alpha^{2t}\)</span> as roots, that is,</p>
+<div class="math">
+\begin{equation*}
+u(\alpha^i) = u_o + u_1(\alpha^i) + u_2(\alpha^{2i}) + \cdots + u_{n-1}(\alpha^{(n-1)i}) = 0
+\end{equation*}
+</div>
+<p>and for this exercise,</p>
+<div class="math">
+\begin{align*}
+u(\alpha) = u_o + u_1(\alpha) + u_2(\alpha^2) + \cdots + u_{n-1}(\alpha^{30}) = 0  \\
+u(\alpha^3) = u_o + u_1(\alpha^3) + u_2(\alpha^{6}) + \cdots + u_{n-1}(\alpha^{90}) = 0 \\
+\end{align*}
+</div>
+<!-- u(\alpha^5) = u_o + u_1(\alpha^5) + u_2(\alpha^{10}) + \cdots + u_{n-1}(\alpha^{150}) = 0 -->
+<p>note that the power of <span class="math">\(\alpha\)</span> will wrap on this finite field, for example,
+<span class="math">\(\alpha^{35} = \alpha^{31} \alpha^4 = \alpha^{4}\)</span>. Put it in matrix form,</p>
+<div class="math">
+\begin{equation*}
+(u_0 u_1 \cdots u_{n-1})
+\left [
+\begin{array}{cc}
+1 &amp; 1  \\
+\alpha &amp; \alpha^3 \\
+\cdots &amp; \cdots \\
+\alpha^{30} &amp; (\alpha^3)^{30}
+\end{array}
+\right] = 0
+\end{equation*}
+</div>
+<p>The equation above is in the form,</p>
+<div class="math">
+\begin{equation*}
+UH^t = 0
+\end{equation*}
+</div>
+<!-- According the parity-check matrix will be something like this, -->
+<!-- .. math:: -->
+<!-- H^t = -->
+<!-- \left[ -->
+<!-- \begin{array}{cc} -->
+<!-- 1 & 1 & 1 \\ -->
+<!-- \alpha & \alpha^3 & \alpha^5 \\ -->
+<!-- \cdots & \cdots & \cdots \\ -->
+<!-- \alpha^{30} & (\alpha^3)^{30} & (\alpha^5)^{30} -->
+<!-- \end{array} -->
+<!-- \right] -->
+<!-- H = -->
+<!-- \left[ -->
+<!-- \begin{array}{cc} -->
+<!-- 1 & \alpha & \alpha^2 & \cdots & \alpha^{30} \\ -->
+<!-- 1 & \alpha^3 & \alpha^6 & \cdots & (\alpha^3)^{30} \\ -->
+<!-- 1 & \alpha^5 & \alpha^{10} & \cdots & (\alpha^5)^{30} \\ -->
+<!-- \end{array} -->
+<!-- \right] -->
+<p>note <span class="math">\((\alpha^i)^0 = 1\)</span>. The transpose of the parity-check matric, <span class="math">\(H\)</span> is a 31x15 matrix.
+It will follow that if <span class="math">\(U=(u_0,u_1,\cdots,u_{31})\)</span> is a code word, then <span class="math">\(UH^t = 0\)</span>.
+<span class="math">\(\alpha^3 \equiv x^i mod(m_3(x))\)</span> and so on.</p>
+<p>Each column of power of <span class="math">\(\alpha\)</span> is arranged below for <span class="math">\(H^t\)</span> parity check matrix. It
+is not important as to whether to go for head first or bottom first as long as it stays consistent.
+The matrix below has the highest power of <span class="math">\(\alpha\)</span> at its top row.</p>
+<div class="math">
+\begin{equation*}
+ H^t=
+\left[
+\begin{array}{cc}
+1   0   0   1   0&amp; 1 0 1 1 0 \\
+0   1   0   0   1&amp; 1 1 0 0 1 \\
+1   0   1   1   0&amp; 1 0 1 0 1 \\
+0   1   0   1   1&amp; 0 0 1 1 0 \\
+1   0   1   1   1&amp; 1 1 0 1 1 \\
+1   1   0   0   1&amp; 1 1 1 0 0 \\
+1   1   1   1   0&amp; 1 0 0 0 1 \\
+0   1   1   1   1&amp; 1 0 1 0 0 \\
+1   0   1   0   1&amp; 1 0 0 0 0 \\
+1   1   0   0   0&amp; 0 0 0 1 0 \\
+0   1   1   0   0&amp; 0 1 0 0 1 \\
+0   0   1   1   0&amp; 1 0 1 1 1 \\
+0   0   0   1   1&amp; 0 1 1 1 1 \\
+1   0   0   1   1&amp; 0 1 1 0 0 \\
+1   1   0   1   1&amp; 1 0 0 1 1 \\
+1   1   1   1   1&amp; 1 1 1 0 1 \\
+1   1   1   0   1&amp; 0 0 1 1 1 \\
+1   1   1   0   0&amp; 0 1 1 0 1 \\
+0   1   1   1   0&amp; 0 0 1 0 1 \\
+0   0   1   1   1&amp; 0 0 1 0 0 \\
+1   0   0   0   1&amp; 1 0 0 1 0 \\
+1   1   0   1   0&amp; 0 1 0 1 1 \\
+0   1   1   0   1&amp; 1 1 1 1 0 \\
+1   0   1   0   0&amp; 1 1 0 0 0 \\
+0   1   0   1   0&amp; 0 0 0 1 1 \\
+0   0   1   0   1&amp; 1 1 1 1 1 \\
+1   0   0   0   0&amp; 0 1 1 1 0 \\
+0   1   0   0   0&amp; 1 1 0 1 0 \\
+0   0   1   0   0&amp; 0 1 0 1 0 \\
+0   0   0   1   0&amp; 0 1 0 0 0 \\
+0   0   0   0   1&amp; 0 0 0 0 1
+\end{array}
+\right]
+\end{equation*}
+</div>
+<p>MATLAB/Octave is used to generate the power of <span class="math">\(\alpha\)</span> above,</p>
+<table class="codetable"><tr>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_998ec7809a64447ebcfc54b79ba9051c-1"> 1</a>
+<a href="#rest_code_998ec7809a64447ebcfc54b79ba9051c-2"> 2</a>
+<a href="#rest_code_998ec7809a64447ebcfc54b79ba9051c-3"> 3</a>
+<a href="#rest_code_998ec7809a64447ebcfc54b79ba9051c-4"> 4</a>
+<a href="#rest_code_998ec7809a64447ebcfc54b79ba9051c-5"> 5</a>
+<a href="#rest_code_998ec7809a64447ebcfc54b79ba9051c-6"> 6</a>
+<a href="#rest_code_998ec7809a64447ebcfc54b79ba9051c-7"> 7</a>
+<a href="#rest_code_998ec7809a64447ebcfc54b79ba9051c-8"> 8</a>
+<a href="#rest_code_998ec7809a64447ebcfc54b79ba9051c-9"> 9</a>
+<a href="#rest_code_998ec7809a64447ebcfc54b79ba9051c-10">10</a>
+<a href="#rest_code_998ec7809a64447ebcfc54b79ba9051c-11">11</a>
+<a href="#rest_code_998ec7809a64447ebcfc54b79ba9051c-12">12</a>
+<a href="#rest_code_998ec7809a64447ebcfc54b79ba9051c-13">13</a>
+<a href="#rest_code_998ec7809a64447ebcfc54b79ba9051c-14">14</a>
+<a href="#rest_code_998ec7809a64447ebcfc54b79ba9051c-15">15</a>
+<a href="#rest_code_998ec7809a64447ebcfc54b79ba9051c-16">16</a>
+<a href="#rest_code_998ec7809a64447ebcfc54b79ba9051c-17">17</a>
+<a href="#rest_code_998ec7809a64447ebcfc54b79ba9051c-18">18</a>
+<a href="#rest_code_998ec7809a64447ebcfc54b79ba9051c-19">19</a>
+<a href="#rest_code_998ec7809a64447ebcfc54b79ba9051c-20">20</a></pre></div></td>
+<td class="code"><pre class="code text"><a name="rest_code_998ec7809a64447ebcfc54b79ba9051c-1"></a>     I=eye(31);
+<a name="rest_code_998ec7809a64447ebcfc54b79ba9051c-2"></a>     % generator poly
+<a name="rest_code_998ec7809a64447ebcfc54b79ba9051c-3"></a>     gx=[1 0 0 0 1 1 1 1 1 0 1 0 1 1 1 1];
+<a name="rest_code_998ec7809a64447ebcfc54b79ba9051c-4"></a>     %set of mini poly
+<a name="rest_code_998ec7809a64447ebcfc54b79ba9051c-5"></a>     m1=[1 0 0 1 0 1];
+<a name="rest_code_998ec7809a64447ebcfc54b79ba9051c-6"></a>     m3=[1 1 1 1 0 1];
+<a name="rest_code_998ec7809a64447ebcfc54b79ba9051c-7"></a>     m5=[1 1 0 1 1 1];
+<a name="rest_code_998ec7809a64447ebcfc54b79ba9051c-8"></a>     q1=zeros(31,31-5);r1=I;
+<a name="rest_code_998ec7809a64447ebcfc54b79ba9051c-9"></a>     q3=zeros(31,31-5);r3=I;
+<a name="rest_code_998ec7809a64447ebcfc54b79ba9051c-10"></a>     q5=zeros(31,31-5);r5=I;
+<a name="rest_code_998ec7809a64447ebcfc54b79ba9051c-11"></a>     for i=1:31
+<a name="rest_code_998ec7809a64447ebcfc54b79ba9051c-12"></a>             [q1(i,:),r1(i,:)]= deconv(I(i,:),m1);
+<a name="rest_code_998ec7809a64447ebcfc54b79ba9051c-13"></a>             [q3(i,:),r3(i,:)]= deconv(I(i,:),m3);
+<a name="rest_code_998ec7809a64447ebcfc54b79ba9051c-14"></a>             [q5(i,:),r5(i,:)]= deconv(I(i,:),m5);
+<a name="rest_code_998ec7809a64447ebcfc54b79ba9051c-15"></a>     end
+<a name="rest_code_998ec7809a64447ebcfc54b79ba9051c-16"></a>     % keep only the parity bits
+<a name="rest_code_998ec7809a64447ebcfc54b79ba9051c-17"></a>     r1=r1(:,27:31);r1=mod(r1,2);
+<a name="rest_code_998ec7809a64447ebcfc54b79ba9051c-18"></a>     r3=r3(:,27:31);r3=mod(r3,2);
+<a name="rest_code_998ec7809a64447ebcfc54b79ba9051c-19"></a>     r5=r5(:,27:31);r5=mod(r5,2);
+<a name="rest_code_998ec7809a64447ebcfc54b79ba9051c-20"></a>     h=[r1 r3 r5];
+</pre></td>
+</tr></table>
+<p>The parity check is not in systematic form.</p>
+<!-- .. math:: -->
+<!-- H = -->
+<!-- \left[ -->
+<!-- \begin{array}{cc|c} -->
+<!-- P_{k,n-k}^t &  I_{n-k} -->
+<!-- \end{array} -->
+<!-- \right] -->
+<!-- =\left [ -->
+<!-- \begin{array}{c|c} -->
+<!-- 1     1     0     0     1     0     0     0     0     1     1     1     1     0     0     0     & 1000 0000 0000 000 \\ -->
+<!-- 0     1     1     0     0     1     0     0     0     0     1     1     1     1     0     0     & 0100 0000 0000 000 \\ -->
+<!-- 0     0     1     1     0     0     1     0     0     0     0     1     1     1     1     0     & 0010 0000 0000 000 \\ -->
+<!-- 0     0     0     1     1     0     0     1     0     0     0     0     1     1     1     1     & 0001 0000 0000 000 \\ -->
+<!-- 1     1     0     0     0     1     0     0     1     1     1     1     1     1     1     1     & 0000 1000 0000 000 \\ -->
+<!-- 1     0     1     0     1     0     1     0     0     0     0     0     0     1     1     1     & 0000 0100 0000 000 \\ -->
+<!-- 1     0     0     1     1     1     0     1     0     1     1     1     1     0     1     1     & 0000 0010 0000 000 \\ -->
+<!-- 1     0     0     0     0     1     1     0     1     1     0     0     0     1     0     1     & 0000 0001 0000 000 \\ -->
+<!-- 1     0     0     0     1     0     1     1     0     0     0     1     1     0     1     0     & 0000 0000 1000 000 \\ -->
+<!-- 0     1     0     0     0     1     0     1     1     0     0     0     1     1     0     1     & 0000 0000 0100 000 \\ -->
+<!-- 1     1     1     0     1     0     1     0     1     0     1     1     1     1     1     0     & 0000 0000 0010 000 \\ -->
+<!-- 0     1     1     1     0     1     0     1     0     1     0     1     1     1     1     1     & 0000 0000 0001 000 \\ -->
+<!-- 1     1     1     1     0     0     1     0     1     1     0     1     0     1     1     1     & 0000 0000 0000 100 \\ -->
+<!-- 1     0     1     1     0     0     0     1     0     0     0     1     0     0     1     1     & 0000 0000 0000 010 \\ -->
+<!-- 1     0     0     1     0     0     0     0     1     1     1     1     0     0     0     1     & 0000 0000 0000 001 \\ -->
+<!-- \end{array} -->
+<!-- \right] -->
+<p>Likewise the generator matrix can be obtained from the generator polynomial, <span class="math">\(g(x)\)</span>,</p>
+<div class="math">
+\begin{equation*}
+G =
+\left[
+\begin{array}{cc}
+I_{k} &amp;  P_{k,n-k}
+\end{array}
+\right]
+=\left[
+\begin{array}{c|c}
+     1000000000000000&amp;1000111110\\
+     0100000000000000&amp;1100100001\\
+     0010000000000000&amp;0110010000\\
+     0001000000000000&amp;0011001000\\
+     0000100000000000&amp;1001011010\\
+     0000010000000000&amp;0100101101\\
+     0000001000000000&amp;0010010110\\
+     0000000100000000&amp;0001001011\\
+     0000000010000000&amp;0000100101\\
+     0000000001000000&amp;1000101100\\
+     0000000000100000&amp;1100101000\\
+     0000000000010000&amp;1110101010\\
+     0000000000001000&amp;1111101011\\
+     0000000000000100&amp;0111110101\\
+     0000000000000010&amp;0011111010\\
+     0000000000000001&amp;0001111101
+\end{array}
+\right ]
+\end{equation*}
+</div>
+<p>since <span class="math">\(G \perp H\)</span>, <span class="math">\(GH^t = 0\)</span>. The parity check matrix
+obtained this way can be easily implemented in hardware using the
+shift registers for error detection.</p>
+<pre class="code text"><a name="rest_code_4215e77707cb4e2eb56238b7f73e684e-1"></a>q=zeros(31,31-15);r=I;
+<a name="rest_code_4215e77707cb4e2eb56238b7f73e684e-2"></a>for i=1:31 [q(i,:),r(i,:)]= deconv(I(i,:),gx);end
+<a name="rest_code_4215e77707cb4e2eb56238b7f73e684e-3"></a>r=r(:,17:31);r=mod(r,2);
+<a name="rest_code_4215e77707cb4e2eb56238b7f73e684e-4"></a>p=r(1:16,:); %partity bits
+<a name="rest_code_4215e77707cb4e2eb56238b7f73e684e-5"></a>G=[eye(16) p];
+<a name="rest_code_4215e77707cb4e2eb56238b7f73e684e-6"></a>mod(G*h,2) %  zeros
+</pre>
+<div class="section" id="decoder-and-errors-locator">
+<h3>Decoder and errors locator</h3>
+<p>From the row of <span class="math">\(H\)</span>, there are <span class="math">\(2^{10}\)</span> syndromes
+and <span class="math">\(1+\binom{n}{1} + \binom{n}{2}=497\)</span>
+correctable error patterns for this implementation.</p>
+<p>If <span class="math">\(\psi_i:i=1,3\)</span> are the syndromes each having 5 bits and representing the columns of
+the transpose parity check matrix, <span class="math">\(H^t\)</span>,</p>
+<div class="math">
+\begin{equation*}
+H^t =
+\left[
+\begin{array}{cc}
+1 &amp; 1 \\
+\alpha &amp; \alpha^3  \\
+\cdots &amp; \cdots \\
+\alpha^{30} &amp; (\alpha^3)^{30}
+\end{array}
+\right]
+\end{equation*}
+</div>
+<p>and <span class="math">\(w\)</span> is the received coded word, then <span class="math">\(wH^t=[w(\alpha), w(\alpha^3)] = [\psi_1, \psi_3]\)</span> is
+the syndrome of this code word. For a single bit error, <span class="math">\(e(x)=x^i\)</span>, the syndrome is <span class="math">\(wH^t=[(\alpha)^i,(\alpha^3)^i]\)</span>.
+If there are two errors in the code word, <span class="math">\(e(x)=x^i+x^j, i\neq j\)</span>, the syndrome
+becomes <span class="math">\([\psi_1,\psi_3]=[(\alpha)^i+\alpha^j,(\alpha^3)^i+(\alpha^3)^j]\)</span>.
+Eventually it will lead to system of equations to be solved for a polynomial <span class="math">\(x(\psi_i)\)</span>. It is
+called the error-locator polynomial. This polynomial is dependent on error bit positions.</p>
+<p>To test the error correction capability of this exercise,</p>
+<pre class="code text"><a name="rest_code_2c09ae2d2dc848b4ad969b11e293636d-1"></a>v=dec2bin(0:2^16-1)-'0'; % input code word
+<a name="rest_code_2c09ae2d2dc848b4ad969b11e293636d-2"></a>u=mod(v*G,2); % BCH coded word
+<a name="rest_code_2c09ae2d2dc848b4ad969b11e293636d-3"></a>
+<a name="rest_code_2c09ae2d2dc848b4ad969b11e293636d-4"></a>&gt;&gt; mod(u(1000,:)*h,2)
+<a name="rest_code_2c09ae2d2dc848b4ad969b11e293636d-5"></a>
+<a name="rest_code_2c09ae2d2dc848b4ad969b11e293636d-6"></a>ans =
+<a name="rest_code_2c09ae2d2dc848b4ad969b11e293636d-7"></a>
+<a name="rest_code_2c09ae2d2dc848b4ad969b11e293636d-8"></a> 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+</pre>
+<p>Suppose that a received coded word, <span class="math">\(w\)</span> has one bit error, say bit 14,</p>
+<pre class="code text"><a name="rest_code_534027e798eb4855812c966c802c874f-1"></a>w=u(1000,:); % a coded word
+<a name="rest_code_534027e798eb4855812c966c802c874f-2"></a>w(14)=0; %was 1, set to 0 to simulate error
+<a name="rest_code_534027e798eb4855812c966c802c874f-3"></a>
+<a name="rest_code_534027e798eb4855812c966c802c874f-4"></a>&gt;&gt; mod(w*h,2)
+<a name="rest_code_534027e798eb4855812c966c802c874f-5"></a>ans =
+<a name="rest_code_534027e798eb4855812c966c802c874f-6"></a> 0 1 1 1 1 1 0 1 0 1 1 1 1 0 0
+</pre>
+<p>The output from <span class="math">\(wH^t\)</span> produces the syndrome identical to row 14 of <span class="math">\(H^t\)</span>. The corrected
+code word is then <span class="math">\(w+I(14)\)</span>, where <span class="math">\(I(14)\)</span> is the 14th row of the identity matrix.
+Now what happens if two bit errors, say another bit at bit 0,</p>
+<pre class="code text"><a name="rest_code_948c3b1bbfc34cc1a2f31a48d93fa8e7-1"></a>x(1)=1; % was 0, set to 1 as error. Now we have bit0,14 as error bits
+<a name="rest_code_948c3b1bbfc34cc1a2f31a48d93fa8e7-2"></a>&gt;&gt; mod(x*h,2)
+<a name="rest_code_948c3b1bbfc34cc1a2f31a48d93fa8e7-3"></a>ans =
+<a name="rest_code_948c3b1bbfc34cc1a2f31a48d93fa8e7-4"></a> 1 1 1 1 0 0 1 0 1 1 0 1 0 1 1
+<a name="rest_code_948c3b1bbfc34cc1a2f31a48d93fa8e7-5"></a>&gt;&gt; mod(h(1,:)+h(14,:),2)
+<a name="rest_code_948c3b1bbfc34cc1a2f31a48d93fa8e7-6"></a>ans =
+<a name="rest_code_948c3b1bbfc34cc1a2f31a48d93fa8e7-7"></a> 1 1 1 1 0 0 1 0 1 1 0 1 0 1 1
+</pre>
+<p>Evidently the syndrome is the same as <span class="math">\(H^t(14)+H^t(1)\)</span>, sum of first and 14th row. The
+corrected bits are then <span class="math">\(I(14)+I(1)\)</span>, 1st and 14th row of <span class="math">\(I\)</span> matrix.
+This can go on up to three-bits error. How do I know which bit or bits are in error ? The
+possibility is binomial sum as stated earlier because error can be any number of bits and
+at any positions. Locating the error positions is the hardest part of the implementation.</p>
+<p>Some reformulation is needed for practical implementation.
+Suppose that the received code word <span class="math">\(W(x)\)</span> from the transmitted code word, <span class="math">\(U(x)\)</span>,</p>
+<div class="math">
+\begin{align*}
+U(x)=u_0+u_1x+u_2x^2+ \cdots + u_{n-1}x^{n-1} \\
+W(x) = U(x) + e (x)
+\end{align*}
+</div>
+<p>The syndrome from <span class="math">\(W(x)\)</span> is therefore,</p>
+<div class="math">
+\begin{equation*}
+rH^T = (U + e)H^T = UH^T + eH^T = 0 + eH^T = S(s_1, s_2, \cdots, s_{2t})
+\end{equation*}
+</div>
+<p>Syndrome of <span class="math">\(2t\)</span> tuple depends only on error bits. For this implementation, I will
+have <span class="math">\(S(s_1,s_2,s_3,s_4)\)</span></p>
+</div>
+</div>
+</div>
+    </div>
+    
+            <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> </script><script type="text/x-mathjax-config">
+            MathJax.Hub.Config({tex2jax: {inlineMath: [['$latex ','$'], ['\\(','\\)']]}});
+            </script></article>
+</div>
+        <!--End of body content-->
+
+        <footer id="footer">
+            Contents © 2017         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+        </footer>
+</div>
+</div>
+
+
+            <script src="../../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+    moment.locale("en");
+    fancydates(0, "YYYY-MM-DD HH:mm");
+    </script><!-- end fancy dates -->
+</body>
+</html>

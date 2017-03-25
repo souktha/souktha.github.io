@@ -122,44 +122,44 @@ not worth the effort.</p>
 Its timing mode is <em>continuous mode</em> and its conversion rate is set to 500 KSPS. It is instantiated from the generated core IP.</li>
 </ul>
 <table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_2106f14be4fa4ff7a143fc662ecda072-1"> 1</a>
-<a href="#rest_code_2106f14be4fa4ff7a143fc662ecda072-2"> 2</a>
-<a href="#rest_code_2106f14be4fa4ff7a143fc662ecda072-3"> 3</a>
-<a href="#rest_code_2106f14be4fa4ff7a143fc662ecda072-4"> 4</a>
-<a href="#rest_code_2106f14be4fa4ff7a143fc662ecda072-5"> 5</a>
-<a href="#rest_code_2106f14be4fa4ff7a143fc662ecda072-6"> 6</a>
-<a href="#rest_code_2106f14be4fa4ff7a143fc662ecda072-7"> 7</a>
-<a href="#rest_code_2106f14be4fa4ff7a143fc662ecda072-8"> 8</a>
-<a href="#rest_code_2106f14be4fa4ff7a143fc662ecda072-9"> 9</a>
-<a href="#rest_code_2106f14be4fa4ff7a143fc662ecda072-10">10</a>
-<a href="#rest_code_2106f14be4fa4ff7a143fc662ecda072-11">11</a>
-<a href="#rest_code_2106f14be4fa4ff7a143fc662ecda072-12">12</a>
-<a href="#rest_code_2106f14be4fa4ff7a143fc662ecda072-13">13</a>
-<a href="#rest_code_2106f14be4fa4ff7a143fc662ecda072-14">14</a>
-<a href="#rest_code_2106f14be4fa4ff7a143fc662ecda072-15">15</a>
-<a href="#rest_code_2106f14be4fa4ff7a143fc662ecda072-16">16</a>
-<a href="#rest_code_2106f14be4fa4ff7a143fc662ecda072-17">17</a>
-<a href="#rest_code_2106f14be4fa4ff7a143fc662ecda072-18">18</a>
-<a href="#rest_code_2106f14be4fa4ff7a143fc662ecda072-19">19</a></pre></div></td>
-<td class="code"><pre class="code verilog"><a name="rest_code_2106f14be4fa4ff7a143fc662ecda072-1"></a>   <span class="n">xadc_wiz_0</span> <span class="no">XADC_INST</span><span class="p">(</span>
-<a name="rest_code_2106f14be4fa4ff7a143fc662ecda072-2"></a>       <span class="p">.</span><span class="n">daddr_in</span><span class="p">(</span><span class="mh">8</span><span class="mi">'d19</span><span class="p">),</span> <span class="c1">//19 for vaux3</span>
-<a name="rest_code_2106f14be4fa4ff7a143fc662ecda072-3"></a>       <span class="p">.</span><span class="n">dclk_in</span><span class="p">(</span><span class="no">CLK100MHZ</span><span class="p">),</span>  <span class="c1">//4*time FS. This is set in the IP wizard.</span>
-<a name="rest_code_2106f14be4fa4ff7a143fc662ecda072-4"></a>       <span class="p">.</span><span class="n">den_in</span><span class="p">(</span><span class="n">dp_we</span><span class="p">),</span>  <span class="c1">//connect this to eoc_out for continuous sampling.</span>
-<a name="rest_code_2106f14be4fa4ff7a143fc662ecda072-5"></a>       <span class="p">.</span><span class="n">di_in</span><span class="p">(),</span>  <span class="c1">//not use</span>
-<a name="rest_code_2106f14be4fa4ff7a143fc662ecda072-6"></a>       <span class="p">.</span><span class="n">dwe_in</span><span class="p">(),</span>  <span class="c1">//not use</span>
-<a name="rest_code_2106f14be4fa4ff7a143fc662ecda072-7"></a>       <span class="p">.</span><span class="n">reset_in</span><span class="p">(),</span>
-<a name="rest_code_2106f14be4fa4ff7a143fc662ecda072-8"></a>       <span class="p">.</span><span class="n">vauxp3</span><span class="p">(</span><span class="n">vauxp3</span><span class="p">),</span>
-<a name="rest_code_2106f14be4fa4ff7a143fc662ecda072-9"></a>       <span class="p">.</span><span class="n">vauxn3</span><span class="p">(</span><span class="n">vauxn3</span><span class="p">),</span>
-<a name="rest_code_2106f14be4fa4ff7a143fc662ecda072-10"></a>       <span class="p">.</span><span class="n">busy_out</span><span class="p">(</span><span class="n">xadc_bsy</span><span class="p">),</span>
-<a name="rest_code_2106f14be4fa4ff7a143fc662ecda072-11"></a>       <span class="p">.</span><span class="n">channel_out</span><span class="p">(</span><span class="n">chout</span><span class="p">),</span>
-<a name="rest_code_2106f14be4fa4ff7a143fc662ecda072-12"></a>       <span class="p">.</span><span class="n">do_out</span><span class="p">(</span><span class="n">xadc_dout</span><span class="p">),</span>
-<a name="rest_code_2106f14be4fa4ff7a143fc662ecda072-13"></a>       <span class="p">.</span><span class="n">drdy_out</span><span class="p">(</span><span class="n">xadc_drdy</span><span class="p">),</span>
-<a name="rest_code_2106f14be4fa4ff7a143fc662ecda072-14"></a>       <span class="p">.</span><span class="n">eoc_out</span><span class="p">(</span><span class="n">dp_we</span><span class="p">),</span>
-<a name="rest_code_2106f14be4fa4ff7a143fc662ecda072-15"></a>       <span class="p">.</span><span class="n">eos_out</span><span class="p">(</span><span class="n">xadc_eos</span><span class="p">),</span>
-<a name="rest_code_2106f14be4fa4ff7a143fc662ecda072-16"></a>       <span class="p">.</span><span class="n">alarm_out</span><span class="p">(</span><span class="n">xdc_alarm</span><span class="p">),</span>
-<a name="rest_code_2106f14be4fa4ff7a143fc662ecda072-17"></a>       <span class="p">.</span><span class="n">vp_in</span><span class="p">(),</span>
-<a name="rest_code_2106f14be4fa4ff7a143fc662ecda072-18"></a>       <span class="p">.</span><span class="n">vn_in</span><span class="p">()</span>
-<a name="rest_code_2106f14be4fa4ff7a143fc662ecda072-19"></a>       <span class="p">);</span>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-1"> 1</a>
+<a href="#rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-2"> 2</a>
+<a href="#rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-3"> 3</a>
+<a href="#rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-4"> 4</a>
+<a href="#rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-5"> 5</a>
+<a href="#rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-6"> 6</a>
+<a href="#rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-7"> 7</a>
+<a href="#rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-8"> 8</a>
+<a href="#rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-9"> 9</a>
+<a href="#rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-10">10</a>
+<a href="#rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-11">11</a>
+<a href="#rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-12">12</a>
+<a href="#rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-13">13</a>
+<a href="#rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-14">14</a>
+<a href="#rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-15">15</a>
+<a href="#rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-16">16</a>
+<a href="#rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-17">17</a>
+<a href="#rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-18">18</a>
+<a href="#rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-19">19</a></pre></div></td>
+<td class="code"><pre class="code verilog"><a name="rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-1"></a>   <span class="n">xadc_wiz_0</span> <span class="no">XADC_INST</span><span class="p">(</span>
+<a name="rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-2"></a>       <span class="p">.</span><span class="n">daddr_in</span><span class="p">(</span><span class="mh">8</span><span class="mi">'d19</span><span class="p">),</span> <span class="c1">//19 for vaux3</span>
+<a name="rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-3"></a>       <span class="p">.</span><span class="n">dclk_in</span><span class="p">(</span><span class="no">CLK100MHZ</span><span class="p">),</span>  <span class="c1">//4*time FS. This is set in the IP wizard.</span>
+<a name="rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-4"></a>       <span class="p">.</span><span class="n">den_in</span><span class="p">(</span><span class="n">dp_we</span><span class="p">),</span>  <span class="c1">//connect this to eoc_out for continuous sampling.</span>
+<a name="rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-5"></a>       <span class="p">.</span><span class="n">di_in</span><span class="p">(),</span>  <span class="c1">//not use</span>
+<a name="rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-6"></a>       <span class="p">.</span><span class="n">dwe_in</span><span class="p">(),</span>  <span class="c1">//not use</span>
+<a name="rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-7"></a>       <span class="p">.</span><span class="n">reset_in</span><span class="p">(),</span>
+<a name="rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-8"></a>       <span class="p">.</span><span class="n">vauxp3</span><span class="p">(</span><span class="n">vauxp3</span><span class="p">),</span>
+<a name="rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-9"></a>       <span class="p">.</span><span class="n">vauxn3</span><span class="p">(</span><span class="n">vauxn3</span><span class="p">),</span>
+<a name="rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-10"></a>       <span class="p">.</span><span class="n">busy_out</span><span class="p">(</span><span class="n">xadc_bsy</span><span class="p">),</span>
+<a name="rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-11"></a>       <span class="p">.</span><span class="n">channel_out</span><span class="p">(</span><span class="n">chout</span><span class="p">),</span>
+<a name="rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-12"></a>       <span class="p">.</span><span class="n">do_out</span><span class="p">(</span><span class="n">xadc_dout</span><span class="p">),</span>
+<a name="rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-13"></a>       <span class="p">.</span><span class="n">drdy_out</span><span class="p">(</span><span class="n">xadc_drdy</span><span class="p">),</span>
+<a name="rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-14"></a>       <span class="p">.</span><span class="n">eoc_out</span><span class="p">(</span><span class="n">dp_we</span><span class="p">),</span>
+<a name="rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-15"></a>       <span class="p">.</span><span class="n">eos_out</span><span class="p">(</span><span class="n">xadc_eos</span><span class="p">),</span>
+<a name="rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-16"></a>       <span class="p">.</span><span class="n">alarm_out</span><span class="p">(</span><span class="n">xdc_alarm</span><span class="p">),</span>
+<a name="rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-17"></a>       <span class="p">.</span><span class="n">vp_in</span><span class="p">(),</span>
+<a name="rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-18"></a>       <span class="p">.</span><span class="n">vn_in</span><span class="p">()</span>
+<a name="rest_code_2999aa4fc4974fcfb12ea48d19adc3b7-19"></a>       <span class="p">);</span>
 </pre></td>
 </tr></table>
 <ul class="simple">
@@ -167,28 +167,28 @@ Its timing mode is <em>continuous mode</em> and its conversion rate is set to 50
 <li>The output of XADC is stored in DPRAM location on XADC's EOC signal by its <em>DRDY_OUT</em>. Its <em>EOC_OUT</em> is connected to <em>DEN_IN</em> for continuous sampling.</li>
 </ul>
 <table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_07c034efd20c4d0599d5844d721400e2-1"> 1</a>
-<a href="#rest_code_07c034efd20c4d0599d5844d721400e2-2"> 2</a>
-<a href="#rest_code_07c034efd20c4d0599d5844d721400e2-3"> 3</a>
-<a href="#rest_code_07c034efd20c4d0599d5844d721400e2-4"> 4</a>
-<a href="#rest_code_07c034efd20c4d0599d5844d721400e2-5"> 5</a>
-<a href="#rest_code_07c034efd20c4d0599d5844d721400e2-6"> 6</a>
-<a href="#rest_code_07c034efd20c4d0599d5844d721400e2-7"> 7</a>
-<a href="#rest_code_07c034efd20c4d0599d5844d721400e2-8"> 8</a>
-<a href="#rest_code_07c034efd20c4d0599d5844d721400e2-9"> 9</a>
-<a href="#rest_code_07c034efd20c4d0599d5844d721400e2-10">10</a>
-<a href="#rest_code_07c034efd20c4d0599d5844d721400e2-11">11</a></pre></div></td>
-<td class="code"><pre class="code verilog"><a name="rest_code_07c034efd20c4d0599d5844d721400e2-1"></a>   <span class="n">ram_dual_port</span> <span class="p">#(</span>
-<a name="rest_code_07c034efd20c4d0599d5844d721400e2-2"></a>       <span class="p">.</span><span class="no">DATA_WIDTH</span><span class="p">(</span><span class="mh">16</span><span class="p">),</span>
-<a name="rest_code_07c034efd20c4d0599d5844d721400e2-3"></a>       <span class="p">.</span><span class="no">ADDR_WIDTH</span><span class="p">(</span><span class="mh">10</span><span class="p">))</span>
-<a name="rest_code_07c034efd20c4d0599d5844d721400e2-4"></a>    <span class="n">dp_ram</span><span class="p">(</span>
-<a name="rest_code_07c034efd20c4d0599d5844d721400e2-5"></a>       <span class="p">.</span><span class="n">clk</span><span class="p">(</span><span class="no">CLK100MHZ</span><span class="p">),</span>
-<a name="rest_code_07c034efd20c4d0599d5844d721400e2-6"></a>       <span class="p">.</span><span class="n">we</span><span class="p">(</span><span class="n">xadc_drdy</span> <span class="o">&amp;</span> <span class="no">SW</span><span class="p">[</span><span class="mh">0</span><span class="p">]),</span> <span class="c1">//write on every DRDY as enabled by SW[0]</span>
-<a name="rest_code_07c034efd20c4d0599d5844d721400e2-7"></a>       <span class="p">.</span><span class="n">data</span><span class="p">(</span><span class="n">xadc_dout</span><span class="p">),</span> <span class="c1">//data from xadc to be stored</span>
-<a name="rest_code_07c034efd20c4d0599d5844d721400e2-8"></a>       <span class="p">.</span><span class="n">read_addr</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="c1">//location to be read for VGA x-coordinate</span>
-<a name="rest_code_07c034efd20c4d0599d5844d721400e2-9"></a>       <span class="p">.</span><span class="n">write_addr</span><span class="p">(</span><span class="n">xadc_waddr</span><span class="p">),</span> <span class="c1">//location to store on EOC</span>
-<a name="rest_code_07c034efd20c4d0599d5844d721400e2-10"></a>       <span class="p">.</span><span class="n">q</span><span class="p">(</span><span class="n">dp_rdata</span><span class="p">)</span> <span class="c1">//Y data read correspond to x-coordinate</span>
-<a name="rest_code_07c034efd20c4d0599d5844d721400e2-11"></a>       <span class="p">);</span>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_f7545a59e138444c93ea95d9604cecd4-1"> 1</a>
+<a href="#rest_code_f7545a59e138444c93ea95d9604cecd4-2"> 2</a>
+<a href="#rest_code_f7545a59e138444c93ea95d9604cecd4-3"> 3</a>
+<a href="#rest_code_f7545a59e138444c93ea95d9604cecd4-4"> 4</a>
+<a href="#rest_code_f7545a59e138444c93ea95d9604cecd4-5"> 5</a>
+<a href="#rest_code_f7545a59e138444c93ea95d9604cecd4-6"> 6</a>
+<a href="#rest_code_f7545a59e138444c93ea95d9604cecd4-7"> 7</a>
+<a href="#rest_code_f7545a59e138444c93ea95d9604cecd4-8"> 8</a>
+<a href="#rest_code_f7545a59e138444c93ea95d9604cecd4-9"> 9</a>
+<a href="#rest_code_f7545a59e138444c93ea95d9604cecd4-10">10</a>
+<a href="#rest_code_f7545a59e138444c93ea95d9604cecd4-11">11</a></pre></div></td>
+<td class="code"><pre class="code verilog"><a name="rest_code_f7545a59e138444c93ea95d9604cecd4-1"></a>   <span class="n">ram_dual_port</span> <span class="p">#(</span>
+<a name="rest_code_f7545a59e138444c93ea95d9604cecd4-2"></a>       <span class="p">.</span><span class="no">DATA_WIDTH</span><span class="p">(</span><span class="mh">16</span><span class="p">),</span>
+<a name="rest_code_f7545a59e138444c93ea95d9604cecd4-3"></a>       <span class="p">.</span><span class="no">ADDR_WIDTH</span><span class="p">(</span><span class="mh">10</span><span class="p">))</span>
+<a name="rest_code_f7545a59e138444c93ea95d9604cecd4-4"></a>    <span class="n">dp_ram</span><span class="p">(</span>
+<a name="rest_code_f7545a59e138444c93ea95d9604cecd4-5"></a>       <span class="p">.</span><span class="n">clk</span><span class="p">(</span><span class="no">CLK100MHZ</span><span class="p">),</span>
+<a name="rest_code_f7545a59e138444c93ea95d9604cecd4-6"></a>       <span class="p">.</span><span class="n">we</span><span class="p">(</span><span class="n">xadc_drdy</span> <span class="o">&amp;</span> <span class="no">SW</span><span class="p">[</span><span class="mh">0</span><span class="p">]),</span> <span class="c1">//write on every DRDY as enabled by SW[0]</span>
+<a name="rest_code_f7545a59e138444c93ea95d9604cecd4-7"></a>       <span class="p">.</span><span class="n">data</span><span class="p">(</span><span class="n">xadc_dout</span><span class="p">),</span> <span class="c1">//data from xadc to be stored</span>
+<a name="rest_code_f7545a59e138444c93ea95d9604cecd4-8"></a>       <span class="p">.</span><span class="n">read_addr</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="c1">//location to be read for VGA x-coordinate</span>
+<a name="rest_code_f7545a59e138444c93ea95d9604cecd4-9"></a>       <span class="p">.</span><span class="n">write_addr</span><span class="p">(</span><span class="n">xadc_waddr</span><span class="p">),</span> <span class="c1">//location to store on EOC</span>
+<a name="rest_code_f7545a59e138444c93ea95d9604cecd4-10"></a>       <span class="p">.</span><span class="n">q</span><span class="p">(</span><span class="n">dp_rdata</span><span class="p">)</span> <span class="c1">//Y data read correspond to x-coordinate</span>
+<a name="rest_code_f7545a59e138444c93ea95d9604cecd4-11"></a>       <span class="p">);</span>
 </pre></td>
 </tr></table>
 <ul class="simple">

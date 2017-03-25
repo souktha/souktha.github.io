@@ -2,15 +2,15 @@
 <html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
 <head>
 <meta charset="utf-8">
-<base href="http://souktha.github.io/blog/">
 <meta name="description" content="Demo site">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Soukthavy Sopha</title>
 <link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
-<meta content="#5670d4" name="theme-color">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
 <link rel="alternate" type="application/rss+xml" title="RSS" href="../rss.xml">
 <link rel="canonical" href="http://souktha.github.io/blog/">
-<link rel="next" href="index-1.html" type="text/html">
+<link rel="next" href="index-2.html" type="text/html">
 <!--[if lt IE 9]><script src="../assets/js/html5.js"></script><![endif]-->
 </head>
 <body>
@@ -78,7 +78,56 @@
 
     
 <div class="postindex">
-    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../hardware/cyclic_1_x_x4_hw/" class="u-url">Simple Cyclic Hamming (15,11,3) FEC</a></h1>
+    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../hardware/bch15_7_5_hw/" class="u-url">Implementing BCH (15,7,5) FEC</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="../hardware/bch15_7_5_hw/" rel="bookmark"><time class="published dt-published" datetime="2017-03-18T00:17:42Z" title="2017-03-18 00:17">2017-03-18 00:17</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<p>This post is the implementation part of the my post on <a class="reference external" href="http://souktha.github.io/misc/bch15_7_5">Binary BCH (15,7,5) workout</a>
+where I did some math workout on the BCH forward error-correction code (FEC). I find
+it to be simple enough to implement it in verilog that can eventually be synthesized for FPGA.
+I choose the simplest algorithm for decoding the binary BCH (15,7,5) as outlined in my last post.</p>
+<p class="more"><a href="../hardware/bch15_7_5_hw/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../misc/bch15_7_5/" class="u-url">Binary BCH (15,7,5) work out</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="../misc/bch15_7_5/" rel="bookmark"><time class="published dt-published" datetime="2017-02-26T22:46:19Z" title="2017-02-26 22:46">2017-02-26 22:46</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<p>This is a math workout problem that is the math part of my FPGA implementation of forward
+error correction code (FEC). Build on my earlier blog of a Hamming cyclic code of
+<span class="math">\((n,k,d)=(15,11,3)\)</span>, I will expand its capability to a binary
+BCH <span class="math">\((15,7,5), t=2\)</span>  code based on the same primitive polynomial <span class="math">\(h(x)=1+x+x^4\)</span>.</p>
+<p class="more"><a href="../misc/bch15_7_5/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../misc/create-ap-linuxpc/" class="u-url">Create Wireless AP on Linux PC in 10 minutes</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="../misc/create-ap-linuxpc/" rel="bookmark"><time class="published dt-published" datetime="2017-01-15T19:14:05Z" title="2017-01-15 19:14">2017-01-15 19:14</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<p>Creating a wireless access point aka WiFi AP is relatively easy. A typical PC
+usually has at least one networking device or maybe two. One would be an Ethernet
+device while the other would be a WiFi device. If the ethernet device is tethered
+into the router already, this leaves WiFi device unused as in my case. Instead of
+leaving it in a useless state, I choose to create a WiFi AP out of it.</p>
+<p class="more"><a href="../misc/create-ap-linuxpc/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../hardware/cyclic_1_x_x4_hw/" class="u-url">Simple Cyclic Hamming (15,11,3) FEC</a></h1>
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn">
                 Soukthavy
@@ -87,8 +136,8 @@
         </div>
     </header><div class="p-summary entry-summary">
     <div>
-<p>This post is the implementation part of the my post on "simple cyclic Hamming code"__</p>
-<p>where I did some math workout on this type of forward error-correction code (FEC). I am doing
+<p>This post is the implementation part of the my post on <a class="reference external" href="http://souktha.github.io/misc/cyclic_1_x_x4">simple cyclic Hamming code</a>
+where I did some math workout on this type of forward error-correction code (FEC). I am doing
 it for fun since I think it is simple enough to implement it in FPGA. The generator
 for this exercise is <span class="math">\(g(x)=1+x+x4\)</span> for an <span class="math">\((n,k,d) \equiv (15,11,3)\)</span> code.</p>
 <p class="more"><a href="../hardware/cyclic_1_x_x4_hw/">Read more…</a></p>
@@ -104,7 +153,7 @@ for this exercise is <span class="math">\(g(x)=1+x+x4\)</span> for an <span clas
     </header><div class="p-summary entry-summary">
     <div>
 <p>This is a math workout problem that accompanied my FPGA implementation of forward error correction code (FEC). I choose to
-make a simple implementation of <span class="math">\((n,k,d)=(15,11,1)\)</span> code using the primitive polynomial <span class="math">\(h(x)=1+x+x^4\)</span>.
+make a simple implementation of <span class="math">\((n,k,d)=(15,11,3)\)</span> code using the primitive polynomial <span class="math">\(h(x)=1+x+x^4\)</span>.
 This FEC will have be able to correct 1 bit error based on its minimum distance of 3. It is simple because it can be worked
 out by hand and it would not take too long to implement in hardware.</p>
 <p class="more"><a href="../misc/cyclic_1_x_x4/">Read more…</a></p>
@@ -196,57 +245,12 @@ Linux kernel image from HDD instead of loading it from NAND device.</p>
 <p class="more"><a href="../software/dm814x_sata/">Read more…</a></p>
 </div>
     </div>
-    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../software/zybo-quickstart/" class="u-url">Decoupling Xilinx Zynq PS and PL on Linux for Digilent Zybo</a></h1>
-        <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn">
-                Soukthavy
-            </span></p>
-            <p class="dateline"><a href="../software/zybo-quickstart/" rel="bookmark"><time class="published dt-published" datetime="2016-04-23T19:08:20Z" title="2016-04-23 19:08">2016-04-23 19:08</time></a></p>
-        </div>
-    </header><div class="p-summary entry-summary">
-    <div>
-<p>Digilent Zybo board is built around Xilinx Zynq-7000 family [<a class="reference internal" href="../software/zybo-quickstart/#id1">1</a>]. This Zynq-7000 is integrated with a dual-core
-ARM Cortex-A9 processor that has Linux support for it. In addition to this PS unit, the Xilinx 7-series
-FPGA is also integrated as the PL component of this SoC [<a class="reference internal" href="../software/zybo-quickstart/#id2">2</a>]. This demonstation will show how easy it is
-to decouple PS and PL components.</p>
-<p class="more"><a href="../software/zybo-quickstart/">Read more…</a></p>
-</div>
-    </div>
-    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../misc/squashfs-ubi/" class="u-url">UBI block and read-only NAND FS</a></h1>
-        <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn">
-                Soukthavy
-            </span></p>
-            <p class="dateline"><a href="../misc/squashfs-ubi/" rel="bookmark"><time class="published dt-published" datetime="2016-04-09T01:44:47Z" title="2016-04-09 01:44">2016-04-09 01:44</time></a></p>
-        </div>
-    </header><div class="p-summary entry-summary">
-    <div>
-<p>There are many NAND Flash file systems available in Linux distribution that are suitable for deployment
-in various Linux embedded products. Every FS has their strengths and weeknesses and they are not
-perfect for every type of applications. The debate will be endless as to which is better than the others.</p>
-<p class="more"><a href="../misc/squashfs-ubi/">Read more…</a></p>
-</div>
-    </div>
-    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../hardware/vga-display-xadc/" class="u-url">Displaying Xilinx XADC on VGA</a></h1>
-        <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn">
-                Soukthavy
-            </span></p>
-            <p class="dateline"><a href="../hardware/vga-display-xadc/" rel="bookmark"><time class="published dt-published" datetime="2016-04-03T21:10:14Z" title="2016-04-03 21:10">2016-04-03 21:10</time></a></p>
-        </div>
-    </header><div class="p-summary entry-summary">
-    <div>
-<p>My previous blog was about displaying simple bar graph on a standard VGA <a class="reference external" href="mailto:640x480@60HZ">640x480@60HZ</a> monitor using synthesized Verilog code.
-This blog is to follow on with that exercise, but using the actual sampled data from the Xilinx XADC instead.</p>
-<p class="more"><a href="../hardware/vga-display-xadc/">Read more…</a></p>
-</div>
-    </div>
     </article>
 </div>
 
         <nav class="postindexpager"><ul class="pager">
 <li class="next">
-                <a href="index-1.html" rel="next">Older posts</a>
+                <a href="index-2.html" rel="next">Older posts</a>
             </li>
         </ul></nav><script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> </script><script type="text/x-mathjax-config">
             MathJax.Hub.Config({tex2jax: {inlineMath: [['$latex ','$'], ['\\(','\\)']]}});
@@ -255,7 +259,7 @@ This blog is to follow on with that exercise, but using the actual sampled data 
         <!--End of body content-->
 
         <footer id="footer">
-            Contents © 2016         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            Contents © 2017         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
             
         </footer>
 </div>

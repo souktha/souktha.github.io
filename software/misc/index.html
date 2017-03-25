@@ -2,11 +2,11 @@
 <html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
 <head>
 <meta charset="utf-8">
-<base href="http://souktha.github.io/misc/">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Misc | Soukthavy Sopha</title>
 <link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
-<meta content="#5670d4" name="theme-color">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
 <link rel="alternate" type="application/rss+xml" title="RSS" href="../rss.xml">
 <link rel="canonical" href="http://souktha.github.io/misc/">
 <!--[if lt IE 9]><script src="../assets/js/html5.js"></script><![endif]-->
@@ -76,7 +76,40 @@
 <div class="sectionindex">
     <header><h2><a href=".">Misc</a></h2>
     </header><div class="postindex">
-    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="cyclic_1_x_x4/" class="u-url">Simple Cyclic Hamming codes</a></h1>
+    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="bch15_7_5/" class="u-url">Binary BCH (15,7,5) work out</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="bch15_7_5/" rel="bookmark"><time class="published dt-published" datetime="2017-02-26T22:46:19Z" title="2017-02-26 22:46">2017-02-26 22:46</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<p>This is a math workout problem that is the math part of my FPGA implementation of forward
+error correction code (FEC). Build on my earlier blog of a Hamming cyclic code of
+<span class="math">\((n,k,d)=(15,11,3)\)</span>, I will expand its capability to a binary
+BCH <span class="math">\((15,7,5), t=2\)</span>  code based on the same primitive polynomial <span class="math">\(h(x)=1+x+x^4\)</span>.</p>
+<p class="more"><a href="bch15_7_5/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="create-ap-linuxpc/" class="u-url">Create Wireless AP on Linux PC in 10 minutes</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="create-ap-linuxpc/" rel="bookmark"><time class="published dt-published" datetime="2017-01-15T19:14:05Z" title="2017-01-15 19:14">2017-01-15 19:14</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<p>Creating a wireless access point aka WiFi AP is relatively easy. A typical PC
+usually has at least one networking device or maybe two. One would be an Ethernet
+device while the other would be a WiFi device. If the ethernet device is tethered
+into the router already, this leaves WiFi device unused as in my case. Instead of
+leaving it in a useless state, I choose to create a WiFi AP out of it.</p>
+<p class="more"><a href="create-ap-linuxpc/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="cyclic_1_x_x4/" class="u-url">Simple Cyclic Hamming codes</a></h1>
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn">
                 Soukthavy
@@ -86,7 +119,7 @@
     </header><div class="p-summary entry-summary">
     <div>
 <p>This is a math workout problem that accompanied my FPGA implementation of forward error correction code (FEC). I choose to
-make a simple implementation of <span class="math">\((n,k,d)=(15,11,1)\)</span> code using the primitive polynomial <span class="math">\(h(x)=1+x+x^4\)</span>.
+make a simple implementation of <span class="math">\((n,k,d)=(15,11,3)\)</span> code using the primitive polynomial <span class="math">\(h(x)=1+x+x^4\)</span>.
 This FEC will have be able to correct 1 bit error based on its minimum distance of 3. It is simple because it can be worked
 out by hand and it would not take too long to implement in hardware.</p>
 <p class="more"><a href="cyclic_1_x_x4/">Read more…</a></p>
@@ -252,11 +285,11 @@ incorporate, collate, fold, staple, or mutilate it, or do
 anything else to it that your or anyone else's heart
 desires.</td>
 </tr>
-<tr class="field">
+<tr class="field-name field">
 <th class="docinfo-name">field name:</th>
 <td class="field-body">This is a generic bibliographic field.</td>
 </tr>
-<tr class="field">
+<tr class="field-name-2 field">
 <th class="docinfo-name">field name 2:</th>
 <td class="field-body">
 <p class="first">Generic bibliographic fields may contain multiple body elements.</p>
@@ -299,7 +332,7 @@ They are transformed from section titles after parsing. -->
         <!--End of body content-->
 
         <footer id="footer">
-            Contents © 2016         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            Contents © 2017         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
             
         </footer>
 </div>

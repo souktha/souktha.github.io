@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Implementing BCH (15,7,5) FEC | Soukthavy Sopha</title>
+<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
+<link rel="canonical" href="http://souktha.github.io/hardware/bch15_7_5_hw/">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Soukthavy">
+<link rel="prev" href="../../misc/bch15_7_5/" title="Binary BCH (15,7,5) work out" type="text/html">
+<meta property="og:site_name" content="Soukthavy Sopha">
+<meta property="og:title" content="Implementing BCH (15,7,5) FEC">
+<meta property="og:url" content="http://souktha.github.io/hardware/bch15_7_5_hw/">
+<meta property="og:description" content="This post is the implementation part of the my post on Binary BCH (15,7,5) workout
+where I did some math workout on the BCH forward error-correction code (FEC). I find
+it to be simple enough to implem">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2017-03-18T00:17:42Z">
+<meta property="article:tag" content="hardware">
+<meta property="article:tag" content="latex">
+<meta property="article:tag" content="mathjax">
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-inverse navbar-static-top"><div class="container">
+<!-- This keeps the margins nice -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://souktha.github.io/">
+
+                <span id="blog-title">Soukthavy Sopha</span>
+            </a>
+        </div>
+<!-- /.navbar-header -->
+        <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
+            <ul class="nav navbar-nav">
+<li>
+<a href="../../archive.html">Archive</a>
+                </li>
+<li>
+<a href="../../categories/">Tags</a>
+                </li>
+<li>
+<a href="../../rss.xml">RSS feed</a>
+            </li>
+<li class="dropdown">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Blog <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+<li>
+<a href="../../software">Sofware</a>
+                    </li>
+<li>
+<a href="../../hardware">Hardware</a>
+                    </li>
+<li>
+<a href="../../misc">Misc</a>
+            </li>
+</ul>
+</li>
+<li>
+<a href="https://github.com/souktha">My Github</a>
+
+                
+            </li>
+</ul>
+<ul class="nav navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        <div class="row">
+            
+            
+<article class="post-text storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Implementing BCH (15,7,5) FEC</a></h1>
+
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>This post is the implementation part of the my post on <a class="reference external" href="http://souktha.github.io/misc/bch15_7_5">Binary BCH (15,7,5) workout</a>
+where I did some math workout on the BCH forward error-correction code (FEC). I find
+it to be simple enough to implement it in verilog that can eventually be synthesized for FPGA.
+I choose the simplest algorithm for decoding the binary BCH (15,7,5) as outlined in my last post.</p>
+<!-- TEASER_END -->
+<div class="section" id="implementation">
+<h2>Implementation</h2>
+<p>The implementation can be targeted to any FPGA device. Since I am usinx Xilinx Vivado, I
+am targeting it for Zynq or Artix type of device. For now, I am focusing on getting
+the main algorithm to work correctly.  The implementation is less then 300 lines of
+code which I think it is fairly simple and straight forward. The simple specification of
+the top module, <em>bch15_7_5_decode</em>,</p>
+<ul>
+<li>
+<p class="first">Input (n bits):</p>
+<p>. <em>dec_enable(1)</em>, enable decoder. This shall remain asserted while
+decoding is in progress. Host shall deassert this signal upon
+detecting deassertion of <em>bsy</em>.</p>
+<p>. <em>ibit(1)</em>, serialized input bit (MSB first). Host shall wait
+for deassertion of <em>bsy</em> prior to placing data on <em>ibit</em> as data will
+be strobed on the rising clock.</p>
+</li>
+<li>
+<p class="first">Output (n bits)</p>
+<p>. <em>bsy(1)</em>, decoder status. Assert by decoder while processing data. Host
+shall wait for <em>bsy</em> to go low before asserting <em>dec_enable</em>. If <em>dec_enable</em>
+is deasserted, <em>bys</em> is automatically deasserted. This signal is deasserted
+on completion of decoding.</p>
+<p>. <em>rdy(1)</em>, data ready. Assert on data ready upon decoding completion.</p>
+<p>. <em>err(1)</em>, error status. Assert on uncorrectable error.</p>
+<p>. <em>outw(7)</em>, 7bit decoded code word.</p>
+</li>
+</ul>
+<table class="codetable"><tr>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_0a5d41052dbb4c9f94ad9a56c6474a0b-1"> 1</a>
+<a href="#rest_code_0a5d41052dbb4c9f94ad9a56c6474a0b-2"> 2</a>
+<a href="#rest_code_0a5d41052dbb4c9f94ad9a56c6474a0b-3"> 3</a>
+<a href="#rest_code_0a5d41052dbb4c9f94ad9a56c6474a0b-4"> 4</a>
+<a href="#rest_code_0a5d41052dbb4c9f94ad9a56c6474a0b-5"> 5</a>
+<a href="#rest_code_0a5d41052dbb4c9f94ad9a56c6474a0b-6"> 6</a>
+<a href="#rest_code_0a5d41052dbb4c9f94ad9a56c6474a0b-7"> 7</a>
+<a href="#rest_code_0a5d41052dbb4c9f94ad9a56c6474a0b-8"> 8</a>
+<a href="#rest_code_0a5d41052dbb4c9f94ad9a56c6474a0b-9"> 9</a>
+<a href="#rest_code_0a5d41052dbb4c9f94ad9a56c6474a0b-10">10</a></pre></div></td>
+<td class="code"><pre class="code verilog"><a name="rest_code_0a5d41052dbb4c9f94ad9a56c6474a0b-1"></a>     <span class="k">module</span> <span class="n">bch15_7_5_decode</span> <span class="p">#(</span><span class="k">parameter</span> <span class="no">IWIDTH</span><span class="o">=</span><span class="mh">15</span><span class="p">,</span> <span class="no">OWIDTH</span><span class="o">=</span><span class="mh">7</span><span class="p">)</span> <span class="p">(</span>
+<a name="rest_code_0a5d41052dbb4c9f94ad9a56c6474a0b-2"></a>         <span class="k">input</span> <span class="n">clk</span><span class="p">,</span>
+<a name="rest_code_0a5d41052dbb4c9f94ad9a56c6474a0b-3"></a>         <span class="k">input</span> <span class="n">dec_enable</span><span class="p">,</span> <span class="c1">//enable decoder</span>
+<a name="rest_code_0a5d41052dbb4c9f94ad9a56c6474a0b-4"></a>         <span class="k">input</span>  <span class="n">ibit</span><span class="p">,</span> <span class="c1">//serialize input bit input code word</span>
+<a name="rest_code_0a5d41052dbb4c9f94ad9a56c6474a0b-5"></a>         <span class="k">output</span> <span class="n">bsy</span><span class="p">,</span> <span class="c1">// state of decoder</span>
+<a name="rest_code_0a5d41052dbb4c9f94ad9a56c6474a0b-6"></a>         <span class="k">output</span> <span class="n">rdy</span><span class="p">,</span> <span class="c1">// 1 when decoded data is ready for reading.</span>
+<a name="rest_code_0a5d41052dbb4c9f94ad9a56c6474a0b-7"></a>         <span class="k">output</span> <span class="n">err</span><span class="p">,</span> <span class="c1">// error if undecodable</span>
+<a name="rest_code_0a5d41052dbb4c9f94ad9a56c6474a0b-8"></a>         <span class="k">output</span> <span class="p">[</span><span class="no">OWIDTH</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">outw</span> <span class="c1">//7 bit output decoded word</span>
+<a name="rest_code_0a5d41052dbb4c9f94ad9a56c6474a0b-9"></a>     <span class="p">);</span>
+<a name="rest_code_0a5d41052dbb4c9f94ad9a56c6474a0b-10"></a>     <span class="p">..</span>
+</pre></td>
+</tr></table>
+<p>Decoder decodes 15 bits coded word input to 7 bits output with 2 bits error forward-error correcting
+capability.</p>
+<div class="section" id="decoding-algorithm">
+<h3>Decoding algorithm</h3>
+<p>1 Calculate syndrome <span class="math">\(s(x) = w(x)\ mod\ g(x)\)</span> from the received codeword <span class="math">\(w(x)\)</span>.</p>
+<p>2 For <span class="math">\(i \ge 0\)</span>, calculate <span class="math">\(s_i(x)=x^i s(x)\ mod\ g(x)\)</span> until <span class="math">\(s_j(x)\)</span> is found
+where weight of <span class="math">\(s_j(x) \le t\)</span>.</p>
+<p>3 Once <span class="math">\(s_j(x)\)</span> is located, <span class="math">\(e(x)=x^{n-j}s_j(x)\ mod\ (x^n + 1)\)</span> are the most likely
+error bits.</p>
+<p>The iteration for this one is at most <span class="math">\(2t\)</span> because
+if there are <span class="math">\(\nu \le t\)</span> error positions, the iteration is <span class="math">\(\nu + t\)</span>.</p>
+<p>The generator for this implementation is,</p>
+<div class="math">
+\begin{equation*}
+g(x) = x^8 + x^7 + x^6 + x^4 + 1
+\end{equation*}
+</div>
+</div>
+<div class="section" id="the-decoder-and-fec">
+<h3>The decoder and FEC</h3>
+<p>The BCH FEC <a class="reference external" href="../../listings/bch15_7_5_decode.v">decoder</a> takes in the serial 15-bit code word (MSB first), detects
+if there is any error in the input codeword, and computes the most likely
+bit(s) error position. The corrected codeword is returned as its
+7-bit output word.</p>
+<p>The top module, <em>bch15_7_5_decode</em>, instantiates two submodules, <em>module_gx</em>
+and <em>compute_error_cw</em>.</p>
+<table class="codetable"><tr>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_0f4542d3b32248d5987621627d227cbc-1"> 1</a>
+<a href="#rest_code_0f4542d3b32248d5987621627d227cbc-2"> 2</a>
+<a href="#rest_code_0f4542d3b32248d5987621627d227cbc-3"> 3</a>
+<a href="#rest_code_0f4542d3b32248d5987621627d227cbc-4"> 4</a>
+<a href="#rest_code_0f4542d3b32248d5987621627d227cbc-5"> 5</a>
+<a href="#rest_code_0f4542d3b32248d5987621627d227cbc-6"> 6</a>
+<a href="#rest_code_0f4542d3b32248d5987621627d227cbc-7"> 7</a>
+<a href="#rest_code_0f4542d3b32248d5987621627d227cbc-8"> 8</a>
+<a href="#rest_code_0f4542d3b32248d5987621627d227cbc-9"> 9</a>
+<a href="#rest_code_0f4542d3b32248d5987621627d227cbc-10">10</a>
+<a href="#rest_code_0f4542d3b32248d5987621627d227cbc-11">11</a>
+<a href="#rest_code_0f4542d3b32248d5987621627d227cbc-12">12</a>
+<a href="#rest_code_0f4542d3b32248d5987621627d227cbc-13">13</a>
+<a href="#rest_code_0f4542d3b32248d5987621627d227cbc-14">14</a>
+<a href="#rest_code_0f4542d3b32248d5987621627d227cbc-15">15</a>
+<a href="#rest_code_0f4542d3b32248d5987621627d227cbc-16">16</a>
+<a href="#rest_code_0f4542d3b32248d5987621627d227cbc-17">17</a>
+<a href="#rest_code_0f4542d3b32248d5987621627d227cbc-18">18</a>
+<a href="#rest_code_0f4542d3b32248d5987621627d227cbc-19">19</a>
+<a href="#rest_code_0f4542d3b32248d5987621627d227cbc-20">20</a></pre></div></td>
+<td class="code"><pre class="code verilog"><a name="rest_code_0f4542d3b32248d5987621627d227cbc-1"></a>        <span class="p">..</span>
+<a name="rest_code_0f4542d3b32248d5987621627d227cbc-2"></a>        <span class="k">assign</span> <span class="n">outw</span> <span class="o">=</span> <span class="n">cw</span><span class="p">[</span><span class="no">IWIDTH</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="no">`PBITS</span><span class="p">]</span> <span class="o">^</span> <span class="n">bit_correction</span><span class="p">[</span><span class="no">IWIDTH</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="no">`PBITS</span><span class="p">];</span>
+<a name="rest_code_0f4542d3b32248d5987621627d227cbc-3"></a>        <span class="p">..</span>
+<a name="rest_code_0f4542d3b32248d5987621627d227cbc-4"></a>         <span class="n">modulo_gx</span> <span class="n">syndrome</span> <span class="p">(</span>
+<a name="rest_code_0f4542d3b32248d5987621627d227cbc-5"></a>             <span class="p">.</span><span class="n">clk</span><span class="p">(</span><span class="n">clk</span><span class="p">),</span>
+<a name="rest_code_0f4542d3b32248d5987621627d227cbc-6"></a>             <span class="p">.</span><span class="n">enable</span><span class="p">(</span><span class="n">divider_en</span><span class="p">),</span>
+<a name="rest_code_0f4542d3b32248d5987621627d227cbc-7"></a>             <span class="p">.</span><span class="n">ibit</span><span class="p">(</span><span class="n">ibit</span><span class="p">),</span>
+<a name="rest_code_0f4542d3b32248d5987621627d227cbc-8"></a>             <span class="p">.</span><span class="n">weight</span><span class="p">(</span><span class="n">sweight</span><span class="p">),</span>
+<a name="rest_code_0f4542d3b32248d5987621627d227cbc-9"></a>             <span class="p">.</span><span class="n">remainder</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+<a name="rest_code_0f4542d3b32248d5987621627d227cbc-10"></a>             <span class="p">);</span>
+<a name="rest_code_0f4542d3b32248d5987621627d227cbc-11"></a>
+<a name="rest_code_0f4542d3b32248d5987621627d227cbc-12"></a>         <span class="n">compute_error_cw</span> <span class="n">likely_bits_err</span> <span class="p">(</span>
+<a name="rest_code_0f4542d3b32248d5987621627d227cbc-13"></a>             <span class="p">.</span><span class="n">clk</span><span class="p">(</span><span class="n">clk</span><span class="p">),</span>
+<a name="rest_code_0f4542d3b32248d5987621627d227cbc-14"></a>             <span class="p">.</span><span class="n">enable</span><span class="p">(</span><span class="n">enable_estimate_error_bits</span><span class="p">),</span>
+<a name="rest_code_0f4542d3b32248d5987621627d227cbc-15"></a>             <span class="p">.</span><span class="n">syndrome</span><span class="p">(</span><span class="n">r</span><span class="p">),</span>
+<a name="rest_code_0f4542d3b32248d5987621627d227cbc-16"></a>             <span class="p">.</span><span class="n">weight</span><span class="p">(</span><span class="n">sweight</span><span class="p">),</span>
+<a name="rest_code_0f4542d3b32248d5987621627d227cbc-17"></a>             <span class="p">.</span><span class="n">pos</span><span class="p">(</span><span class="n">pos</span><span class="p">),</span>
+<a name="rest_code_0f4542d3b32248d5987621627d227cbc-18"></a>             <span class="p">.</span><span class="n">rdy</span><span class="p">(</span><span class="n">sready</span><span class="p">),</span>
+<a name="rest_code_0f4542d3b32248d5987621627d227cbc-19"></a>             <span class="p">.</span><span class="n">err_bits</span><span class="p">(</span><span class="n">bit_correction</span><span class="p">)</span>
+<a name="rest_code_0f4542d3b32248d5987621627d227cbc-20"></a>             <span class="p">);</span>
+</pre></td>
+</tr></table>
+<p>The submodule, <em>modulo_gx</em> performs syndrome
+computation continuously while input data is being shifted into its
+divider circuit and it also output the computer code's weight from the
+result. This is step 2 of the algorithm. If <span class="math">\(weight \le 2\)</span> and
+all the input bits are in, the circuit then enable the bits error
+computation circuit. This is step 3 of the algorithm.</p>
+<table class="codetable"><tr>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_468a8464d9744897ab3d5778835ca4f0-1"> 1</a>
+<a href="#rest_code_468a8464d9744897ab3d5778835ca4f0-2"> 2</a>
+<a href="#rest_code_468a8464d9744897ab3d5778835ca4f0-3"> 3</a>
+<a href="#rest_code_468a8464d9744897ab3d5778835ca4f0-4"> 4</a>
+<a href="#rest_code_468a8464d9744897ab3d5778835ca4f0-5"> 5</a>
+<a href="#rest_code_468a8464d9744897ab3d5778835ca4f0-6"> 6</a>
+<a href="#rest_code_468a8464d9744897ab3d5778835ca4f0-7"> 7</a>
+<a href="#rest_code_468a8464d9744897ab3d5778835ca4f0-8"> 8</a>
+<a href="#rest_code_468a8464d9744897ab3d5778835ca4f0-9"> 9</a>
+<a href="#rest_code_468a8464d9744897ab3d5778835ca4f0-10">10</a>
+<a href="#rest_code_468a8464d9744897ab3d5778835ca4f0-11">11</a>
+<a href="#rest_code_468a8464d9744897ab3d5778835ca4f0-12">12</a>
+<a href="#rest_code_468a8464d9744897ab3d5778835ca4f0-13">13</a>
+<a href="#rest_code_468a8464d9744897ab3d5778835ca4f0-14">14</a>
+<a href="#rest_code_468a8464d9744897ab3d5778835ca4f0-15">15</a>
+<a href="#rest_code_468a8464d9744897ab3d5778835ca4f0-16">16</a>
+<a href="#rest_code_468a8464d9744897ab3d5778835ca4f0-17">17</a>
+<a href="#rest_code_468a8464d9744897ab3d5778835ca4f0-18">18</a>
+<a href="#rest_code_468a8464d9744897ab3d5778835ca4f0-19">19</a></pre></div></td>
+<td class="code"><pre class="code verilog"><a name="rest_code_468a8464d9744897ab3d5778835ca4f0-1"></a>     <span class="p">..</span>
+<a name="rest_code_468a8464d9744897ab3d5778835ca4f0-2"></a>     <span class="k">assign</span> <span class="n">weight</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">r</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">r</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">r</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">r</span><span class="p">[</span><span class="mh">4</span><span class="p">]</span> <span class="o">+</span> <span class="n">r</span><span class="p">[</span><span class="mh">5</span><span class="p">]</span> <span class="o">+</span> <span class="n">r</span><span class="p">[</span><span class="mh">6</span><span class="p">]</span> <span class="o">+</span> <span class="n">r</span><span class="p">[</span><span class="mh">7</span><span class="p">];</span>
+<a name="rest_code_468a8464d9744897ab3d5778835ca4f0-3"></a>
+<a name="rest_code_468a8464d9744897ab3d5778835ca4f0-4"></a>     <span class="o">/*</span> <span class="n">divider</span> <span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">=</span><span class="n">x</span><span class="o">^</span><span class="mh">8</span> <span class="o">+</span> <span class="n">x</span><span class="o">^</span><span class="mh">7</span> <span class="o">+</span> <span class="n">x</span><span class="o">^</span><span class="mh">6</span> <span class="o">+</span> <span class="n">x</span><span class="o">^</span><span class="mh">4</span> <span class="o">+</span> <span class="mh">1</span> <span class="o">*</span> <span class="o">/</span>
+<a name="rest_code_468a8464d9744897ab3d5778835ca4f0-5"></a>     <span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_468a8464d9744897ab3d5778835ca4f0-6"></a>             <span class="k">if</span> <span class="p">(</span><span class="n">enable</span> <span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_468a8464d9744897ab3d5778835ca4f0-7"></a>             <span class="n">r</span><span class="p">[</span><span class="mh">7</span><span class="p">]</span> <span class="o">&lt;=</span>  <span class="n">r</span><span class="p">[</span><span class="mh">6</span><span class="p">]</span> <span class="o">^</span> <span class="n">r</span><span class="p">[</span><span class="mh">7</span><span class="p">];</span>
+<a name="rest_code_468a8464d9744897ab3d5778835ca4f0-8"></a>             <span class="n">r</span><span class="p">[</span><span class="mh">6</span><span class="p">]</span> <span class="o">&lt;=</span>  <span class="n">r</span><span class="p">[</span><span class="mh">5</span><span class="p">]</span> <span class="o">^</span> <span class="n">r</span><span class="p">[</span><span class="mh">7</span><span class="p">];</span>
+<a name="rest_code_468a8464d9744897ab3d5778835ca4f0-9"></a>             <span class="n">r</span><span class="p">[</span><span class="mh">5</span><span class="p">]</span> <span class="o">&lt;=</span>  <span class="n">r</span><span class="p">[</span><span class="mh">4</span><span class="p">];</span>
+<a name="rest_code_468a8464d9744897ab3d5778835ca4f0-10"></a>             <span class="n">r</span><span class="p">[</span><span class="mh">4</span><span class="p">]</span> <span class="o">&lt;=</span>  <span class="n">r</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">^</span> <span class="n">r</span><span class="p">[</span><span class="mh">7</span><span class="p">];</span>
+<a name="rest_code_468a8464d9744897ab3d5778835ca4f0-11"></a>             <span class="n">r</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">&lt;=</span>  <span class="n">r</span><span class="p">[</span><span class="mh">2</span><span class="p">];</span>
+<a name="rest_code_468a8464d9744897ab3d5778835ca4f0-12"></a>             <span class="n">r</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">&lt;=</span>  <span class="n">r</span><span class="p">[</span><span class="mh">1</span><span class="p">];</span>
+<a name="rest_code_468a8464d9744897ab3d5778835ca4f0-13"></a>             <span class="n">r</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span> <span class="o">&lt;=</span>  <span class="n">r</span><span class="p">[</span><span class="mh">0</span><span class="p">];</span>
+<a name="rest_code_468a8464d9744897ab3d5778835ca4f0-14"></a>
+<a name="rest_code_468a8464d9744897ab3d5778835ca4f0-15"></a>             <span class="n">r</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span> <span class="o">&lt;=</span>  <span class="n">ibit</span> <span class="o">^</span> <span class="n">r</span><span class="p">[</span><span class="mh">7</span><span class="p">];</span>
+<a name="rest_code_468a8464d9744897ab3d5778835ca4f0-16"></a>     <span class="k">end</span>
+<a name="rest_code_468a8464d9744897ab3d5778835ca4f0-17"></a>     <span class="k">else</span>
+<a name="rest_code_468a8464d9744897ab3d5778835ca4f0-18"></a>             <span class="n">r</span> <span class="o">&lt;=</span>  <span class="mh">8'h0</span><span class="p">;</span>
+<a name="rest_code_468a8464d9744897ab3d5778835ca4f0-19"></a>     <span class="k">end</span>
+</pre></td>
+</tr></table>
+<p>step 3 of the algorithm performs final bit(s) error computation based on the result from
+<em>modulo_gx</em> module. This module takes the syndrome, <span class="math">\(s_j(x)\)</span>, shift-multiplies
+by <span class="math">\(x^{15-j}\)</span> then takes the modulo <span class="math">\((1+x^{15})\)</span>. The resulted bit(s) error
+needed for correction is <em>err_bits</em> where it is added to the input code word. The
+correction bits error includes both the information bits and the parity bits. The
+final FEC code word is the upper 7 bits of the corrected code word.</p>
+<table class="codetable"><tr>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-1"> 1</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-2"> 2</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-3"> 3</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-4"> 4</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-5"> 5</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-6"> 6</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-7"> 7</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-8"> 8</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-9"> 9</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-10">10</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-11">11</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-12">12</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-13">13</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-14">14</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-15">15</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-16">16</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-17">17</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-18">18</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-19">19</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-20">20</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-21">21</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-22">22</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-23">23</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-24">24</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-25">25</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-26">26</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-27">27</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-28">28</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-29">29</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-30">30</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-31">31</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-32">32</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-33">33</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-34">34</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-35">35</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-36">36</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-37">37</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-38">38</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-39">39</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-40">40</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-41">41</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-42">42</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-43">43</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-44">44</a>
+<a href="#rest_code_188b990cbeeb4876b7e144476f44cdbd-45">45</a></pre></div></td>
+<td class="code"><pre class="code verilog"><a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-1"></a>     <span class="p">..</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-2"></a>     <span class="k">assign</span> <span class="n">err_bits</span> <span class="o">=</span> <span class="n">bit_err</span><span class="p">[</span><span class="mh">14</span><span class="o">:</span><span class="mh">0</span><span class="p">];</span> <span class="o">/*</span> <span class="n">error</span> <span class="n">bits</span> <span class="n">are</span> <span class="n">lower</span> <span class="mh">15</span> <span class="n">bits</span> <span class="o">*</span> <span class="o">/</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-3"></a>     <span class="k">assign</span> <span class="n">rdy</span> <span class="o">=</span> <span class="n">ready</span><span class="p">;</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-4"></a>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-5"></a>     <span class="k">always</span><span class="p">@(</span><span class="n">syndrome</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">enable</span><span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-6"></a>     <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="n">ready</span> <span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-7"></a>             <span class="n">bit_err</span> <span class="o">=</span> <span class="n">syndrome</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="mh">5'h0f</span>  <span class="o">-</span> <span class="n">pos</span><span class="p">);</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-8"></a>             <span class="no">R</span>  <span class="o">=</span> <span class="n">bit_err</span><span class="p">[</span><span class="mh">14</span><span class="o">:</span><span class="mh">0</span><span class="p">];</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-9"></a>     <span class="k">end</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-10"></a>     <span class="k">end</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-11"></a>     <span class="p">..</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-12"></a>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-13"></a>     <span class="o">/*</span> <span class="n">Divide</span> <span class="n">by</span> <span class="mh">1</span><span class="o">+</span><span class="n">x</span><span class="o">**</span><span class="mf">15.</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-14"></a>     <span class="n">Divide</span> <span class="n">only</span> <span class="k">if</span> <span class="n">degree</span> <span class="n">of</span> <span class="n">the</span> <span class="n">computed</span> <span class="n">syndrome</span> <span class="n">Si</span> <span class="n">is</span> <span class="o">&gt;=</span> <span class="mf">15.</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-15"></a>    <span class="o">*</span> <span class="o">/</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-16"></a>     <span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">)</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-17"></a>     <span class="k">if</span> <span class="p">(</span><span class="n">enable</span><span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-18"></a>             <span class="n">ready</span> <span class="o">&lt;=</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-19"></a>     <span class="o">/*</span> <span class="n">Divide</span> <span class="k">if</span> <span class="n">degree</span> <span class="n">is</span> <span class="o">&gt;=</span> <span class="mh">15</span> <span class="o">*</span> <span class="o">/</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-20"></a>             <span class="k">if</span> <span class="p">(</span> <span class="n">bit_err</span><span class="p">[</span><span class="mh">22</span><span class="o">:</span><span class="mh">15</span><span class="p">]</span> <span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-21"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">14</span><span class="p">]</span> <span class="o">^</span> <span class="n">ibit</span><span class="p">;</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-22"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">0</span><span class="p">];</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-23"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">1</span><span class="p">];</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-24"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">2</span><span class="p">];</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-25"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">4</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">3</span><span class="p">];</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-26"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">5</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">4</span><span class="p">];</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-27"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">6</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">5</span><span class="p">];</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-28"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">7</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">6</span><span class="p">];</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-29"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">8</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">7</span><span class="p">];</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-30"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">9</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">8</span><span class="p">];</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-31"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">10</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">9</span><span class="p">];</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-32"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">11</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">10</span><span class="p">];</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-33"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">12</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">11</span><span class="p">];</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-34"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">13</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">12</span><span class="p">];</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-35"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">14</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">13</span><span class="p">];</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-36"></a>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-37"></a>                     <span class="n">ibit</span> <span class="o">&lt;=</span> <span class="p">{</span><span class="n">ibit</span><span class="p">[</span><span class="mh">6</span><span class="o">:</span><span class="mh">0</span><span class="p">],</span><span class="mh">1</span><span class="mb">'b0</span><span class="p">};</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-38"></a>             <span class="k">if</span> <span class="p">(</span><span class="n">weight</span> <span class="o">&lt;=</span> <span class="mh">4'h2</span> <span class="p">)</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-39"></a>                     <span class="n">ready</span> <span class="o">&lt;=</span> <span class="mh">1</span><span class="mb">'b1</span><span class="p">;</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-40"></a>             <span class="k">end</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-41"></a>             <span class="k">else</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-42"></a>                     <span class="n">ready</span> <span class="o">&lt;=</span> <span class="mh">1</span><span class="mb">'b1</span><span class="p">;</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-43"></a>             <span class="k">end</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-44"></a>             <span class="k">else</span>
+<a name="rest_code_188b990cbeeb4876b7e144476f44cdbd-45"></a>             <span class="n">ready</span> <span class="o">&lt;=</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
+</pre></td>
+</tr></table>
+<!-- .. listing:: bch15_7_5_decode.v --><!-- :linenos: --><p>Some sample of waveforms captured  from the test bench based on this algorithm is shown for
+various situation of bit(s) error.</p>
+<div class="figure">
+<img alt="../../images/hardware/bch1575_033e.JPG" src="../../images/hardware/bch1575_033e.JPG"><p class="caption">Fig1: 15bit code word 0x033e with 2 bits error (expect 0x63)</p>
+</div>
+<div class="figure">
+<img alt="../../images/hardware/bch1575_033e_decoded.JPG" src="../../images/hardware/bch1575_033e_decoded.JPG"><p class="caption">Fig2: Coded word 0x033e with 2 bits error corrected. Output 7bit word is 0x63</p>
+</div>
+<div class="figure">
+<img alt="../../images/hardware/bch1575_633e_decoded.JPG" src="../../images/hardware/bch1575_633e_decoded.JPG"><p class="caption">Fig3: Non-error codeword, decoded as-is (0x63).</p>
+</div>
+<div class="figure">
+<img alt="../../images/hardware/bch1575_1500_decoded.JPG" src="../../images/hardware/bch1575_1500_decoded.JPG"><p class="caption">Fig3: Non-correctable code word, code word 0x00 (0x1500) with 3 bits error. Decoded as error.</p>
+</div>
+<p>It takes only one clock to decode the non-error code word, immediately after the last input bit is shifted, and
+a maximum of four clocks for returning the corrected code word for the case where two or less error bits to
+be corrected. It takes eight clocks to declare the non-correctable error.</p>
+</div>
+<div class="section" id="conclusion">
+<h3>Conclusion</h3>
+<p>It appears that the algorithm works, at least as simulated. It is a proof of concept. If the math
+is right, so will be the circuit since <em>math is everything and everything is math</em>. Timing analysis
+and adjustment may be necessary on synthesis, but I will leave it for next time.</p>
+</div>
+</div>
+</div>
+    </div>
+    
+            <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> </script><script type="text/x-mathjax-config">
+            MathJax.Hub.Config({tex2jax: {inlineMath: [['$latex ','$'], ['\\(','\\)']]}});
+            </script></article>
+</div>
+        <!--End of body content-->
+
+        <footer id="footer">
+            Contents © 2017         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+        </footer>
+</div>
+</div>
+
+
+            <script src="../../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+    moment.locale("en");
+    fancydates(0, "YYYY-MM-DD HH:mm");
+    </script><!-- end fancy dates -->
+</body>
+</html>
