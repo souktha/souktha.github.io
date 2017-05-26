@@ -119,113 +119,113 @@ wait for <em>bsy</em> to go low before inputting the new data.</p>
 to form a complete coded word in systematic form. The actual data bit is
 36-bit (9 symbols-bit), but shortened to 32-bit in this case.</p>
 <table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-1"> 1</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-2"> 2</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-3"> 3</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-4"> 4</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-5"> 5</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-6"> 6</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-7"> 7</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-8"> 8</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-9"> 9</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-10">10</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-11">11</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-12">12</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-13">13</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-14">14</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-15">15</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-16">16</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-17">17</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-18">18</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-19">19</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-20">20</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-21">21</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-22">22</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-23">23</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-24">24</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-25">25</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-26">26</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-27">27</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-28">28</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-29">29</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-30">30</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-31">31</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-32">32</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-33">33</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-34">34</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-35">35</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-36">36</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-37">37</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-38">38</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-39">39</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-40">40</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-41">41</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-42">42</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-43">43</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-44">44</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-45">45</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-46">46</a>
-<a href="#rest_code_8307cd3bfe7646a888fa2f9a583517e4-47">47</a></pre></div></td>
-<td class="code"><pre class="code verilog"><a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-1"></a> <span class="p">..</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-2"></a> <span class="k">assign</span> <span class="n">outw</span> <span class="o">=</span> <span class="n">q</span><span class="p">[</span><span class="mh">23</span><span class="o">:</span><span class="mh">0</span><span class="p">];</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-3"></a> <span class="k">assign</span> <span class="n">rtemp</span> <span class="o">=</span> <span class="n">in36</span><span class="p">[</span><span class="mh">35</span><span class="o">:</span><span class="mh">32</span><span class="p">]</span> <span class="o">^</span> <span class="n">q</span><span class="p">[</span><span class="mh">23</span><span class="o">:</span><span class="mh">20</span><span class="p">];</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-4"></a>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-5"></a> <span class="p">..</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-6"></a>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-7"></a> <span class="cm">/* Encode by generator g(x)</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-8"></a><span class="cm">     Input is 9 symbols of 4 bit = 36 bits; however, the input to be encoded</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-9"></a><span class="cm">     is 32 bit, so the four most significan bits are filled with zeros. This need</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-10"></a><span class="cm">     to be taken into account (shortened).</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-11"></a><span class="cm">     A symbol shift is a 4-bit shift.*/</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-12"></a>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-13"></a> <span class="n">a_mult_alpha4</span> <span class="n">p4</span><span class="p">(.</span><span class="n">a</span><span class="p">(</span><span class="n">rtemp</span><span class="p">),</span> <span class="p">.</span><span class="n">result</span><span class="p">(</span><span class="n">pa4</span><span class="p">));</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-14"></a> <span class="n">a_mult_alpha6</span> <span class="n">p6</span><span class="p">(.</span><span class="n">a</span><span class="p">(</span><span class="n">rtemp</span><span class="p">),</span> <span class="p">.</span><span class="n">result</span><span class="p">(</span><span class="n">pa6</span><span class="p">));</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-15"></a> <span class="n">a_mult_alpha9</span> <span class="n">p9</span><span class="p">(.</span><span class="n">a</span><span class="p">(</span><span class="n">rtemp</span><span class="p">),</span> <span class="p">.</span><span class="n">result</span><span class="p">(</span><span class="n">pa9</span><span class="p">));</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-16"></a> <span class="n">a_mult_alpha10</span> <span class="n">p10</span><span class="p">(.</span><span class="n">a</span><span class="p">(</span><span class="n">rtemp</span><span class="p">),</span> <span class="p">.</span><span class="n">result</span><span class="p">(</span><span class="n">pa10</span><span class="p">));</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-17"></a> <span class="n">a_mult_alpha14</span> <span class="n">p14</span><span class="p">(.</span><span class="n">a</span><span class="p">(</span><span class="n">rtemp</span><span class="p">),</span> <span class="p">.</span><span class="n">result</span><span class="p">(</span><span class="n">pa14</span><span class="p">));</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-18"></a>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-19"></a> <span class="cm">/* q contains the parity bits symbol*/</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-20"></a>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-21"></a> <span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">)</span> <span class="k">begin</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-22"></a>     <span class="k">if</span> <span class="p">(</span> <span class="n">encoding</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">ready</span> <span class="p">)</span> <span class="k">begin</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-23"></a>                             <span class="n">q</span><span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">pa6</span><span class="p">;</span>  <span class="c1">//b0</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-24"></a>                             <span class="n">q</span><span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">4</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">pa9</span> <span class="o">^</span> <span class="n">q</span><span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">];</span> <span class="c1">//b1</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-25"></a>                             <span class="n">q</span><span class="p">[</span><span class="mh">11</span><span class="o">:</span><span class="mh">8</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">pa6</span> <span class="o">^</span> <span class="n">q</span><span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">4</span><span class="p">]</span> <span class="p">;</span> <span class="c1">//b2</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-26"></a>                             <span class="n">q</span><span class="p">[</span><span class="mh">15</span><span class="o">:</span><span class="mh">12</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">pa4</span> <span class="o">^</span> <span class="n">q</span><span class="p">[</span><span class="mh">11</span><span class="o">:</span><span class="mh">8</span><span class="p">];</span> <span class="c1">//b3</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-27"></a>                             <span class="n">q</span><span class="p">[</span><span class="mh">19</span><span class="o">:</span><span class="mh">16</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">pa14</span> <span class="o">^</span> <span class="n">q</span><span class="p">[</span><span class="mh">15</span><span class="o">:</span><span class="mh">12</span><span class="p">];</span> <span class="c1">//b4</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-28"></a>                             <span class="n">q</span><span class="p">[</span><span class="mh">23</span><span class="o">:</span><span class="mh">20</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">pa10</span> <span class="o">^</span> <span class="n">q</span><span class="p">[</span><span class="mh">19</span><span class="o">:</span><span class="mh">16</span><span class="p">];</span> <span class="c1">//b5</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-29"></a>     <span class="k">end</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-30"></a>     <span class="k">else</span> <span class="k">begin</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-31"></a>                      <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="n">ready</span> <span class="p">)</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-32"></a>                             <span class="n">q</span> <span class="o">&lt;=</span> <span class="mh">24'h0</span><span class="p">;</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-33"></a>                     <span class="k">end</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-34"></a> <span class="k">end</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-35"></a>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-36"></a>     <span class="p">...</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-37"></a>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-38"></a>     <span class="k">module</span> <span class="n">a_mult_alpha9</span> <span class="p">(</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-39"></a>         <span class="k">input</span> <span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">a</span><span class="p">,</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-40"></a>         <span class="k">output</span> <span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">result</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-41"></a>         <span class="p">);</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-42"></a>         <span class="k">assign</span> <span class="n">result</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">^</span> <span class="n">a</span><span class="p">[</span><span class="mh">1</span><span class="p">];</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-43"></a>         <span class="k">assign</span> <span class="n">result</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">^</span> <span class="n">a</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">^</span> <span class="n">a</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span> <span class="o">^</span> <span class="n">a</span><span class="p">[</span><span class="mh">0</span><span class="p">];</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-44"></a>         <span class="k">assign</span> <span class="n">result</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">^</span> <span class="n">a</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">^</span> <span class="n">a</span><span class="p">[</span><span class="mh">1</span><span class="p">];</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-45"></a>         <span class="k">assign</span> <span class="n">result</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">^</span> <span class="n">a</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">^</span> <span class="n">a</span><span class="p">[</span><span class="mh">0</span><span class="p">];</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-46"></a>     <span class="k">endmodule</span>
-<a name="rest_code_8307cd3bfe7646a888fa2f9a583517e4-47"></a>     <span class="p">..</span>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-1"> 1</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-2"> 2</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-3"> 3</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-4"> 4</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-5"> 5</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-6"> 6</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-7"> 7</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-8"> 8</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-9"> 9</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-10">10</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-11">11</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-12">12</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-13">13</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-14">14</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-15">15</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-16">16</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-17">17</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-18">18</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-19">19</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-20">20</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-21">21</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-22">22</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-23">23</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-24">24</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-25">25</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-26">26</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-27">27</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-28">28</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-29">29</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-30">30</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-31">31</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-32">32</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-33">33</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-34">34</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-35">35</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-36">36</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-37">37</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-38">38</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-39">39</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-40">40</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-41">41</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-42">42</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-43">43</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-44">44</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-45">45</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-46">46</a>
+<a href="#rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-47">47</a></pre></div></td>
+<td class="code"><pre class="code verilog"><a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-1"></a> <span class="p">..</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-2"></a> <span class="k">assign</span> <span class="n">outw</span> <span class="o">=</span> <span class="n">q</span><span class="p">[</span><span class="mh">23</span><span class="o">:</span><span class="mh">0</span><span class="p">];</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-3"></a> <span class="k">assign</span> <span class="n">rtemp</span> <span class="o">=</span> <span class="n">in36</span><span class="p">[</span><span class="mh">35</span><span class="o">:</span><span class="mh">32</span><span class="p">]</span> <span class="o">^</span> <span class="n">q</span><span class="p">[</span><span class="mh">23</span><span class="o">:</span><span class="mh">20</span><span class="p">];</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-4"></a>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-5"></a> <span class="p">..</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-6"></a>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-7"></a> <span class="cm">/* Encode by generator g(x)</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-8"></a><span class="cm">     Input is 9 symbols of 4 bit = 36 bits; however, the input to be encoded</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-9"></a><span class="cm">     is 32 bit, so the four most significan bits are filled with zeros. This need</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-10"></a><span class="cm">     to be taken into account (shortened).</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-11"></a><span class="cm">     A symbol shift is a 4-bit shift.*/</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-12"></a>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-13"></a> <span class="n">a_mult_alpha4</span> <span class="n">p4</span><span class="p">(.</span><span class="n">a</span><span class="p">(</span><span class="n">rtemp</span><span class="p">),</span> <span class="p">.</span><span class="n">result</span><span class="p">(</span><span class="n">pa4</span><span class="p">));</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-14"></a> <span class="n">a_mult_alpha6</span> <span class="n">p6</span><span class="p">(.</span><span class="n">a</span><span class="p">(</span><span class="n">rtemp</span><span class="p">),</span> <span class="p">.</span><span class="n">result</span><span class="p">(</span><span class="n">pa6</span><span class="p">));</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-15"></a> <span class="n">a_mult_alpha9</span> <span class="n">p9</span><span class="p">(.</span><span class="n">a</span><span class="p">(</span><span class="n">rtemp</span><span class="p">),</span> <span class="p">.</span><span class="n">result</span><span class="p">(</span><span class="n">pa9</span><span class="p">));</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-16"></a> <span class="n">a_mult_alpha10</span> <span class="n">p10</span><span class="p">(.</span><span class="n">a</span><span class="p">(</span><span class="n">rtemp</span><span class="p">),</span> <span class="p">.</span><span class="n">result</span><span class="p">(</span><span class="n">pa10</span><span class="p">));</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-17"></a> <span class="n">a_mult_alpha14</span> <span class="n">p14</span><span class="p">(.</span><span class="n">a</span><span class="p">(</span><span class="n">rtemp</span><span class="p">),</span> <span class="p">.</span><span class="n">result</span><span class="p">(</span><span class="n">pa14</span><span class="p">));</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-18"></a>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-19"></a> <span class="cm">/* q contains the parity bits symbol*/</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-20"></a>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-21"></a> <span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-22"></a>     <span class="k">if</span> <span class="p">(</span> <span class="n">encoding</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">ready</span> <span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-23"></a>                             <span class="n">q</span><span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">pa6</span><span class="p">;</span>  <span class="c1">//b0</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-24"></a>                             <span class="n">q</span><span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">4</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">pa9</span> <span class="o">^</span> <span class="n">q</span><span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">];</span> <span class="c1">//b1</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-25"></a>                             <span class="n">q</span><span class="p">[</span><span class="mh">11</span><span class="o">:</span><span class="mh">8</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">pa6</span> <span class="o">^</span> <span class="n">q</span><span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">4</span><span class="p">]</span> <span class="p">;</span> <span class="c1">//b2</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-26"></a>                             <span class="n">q</span><span class="p">[</span><span class="mh">15</span><span class="o">:</span><span class="mh">12</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">pa4</span> <span class="o">^</span> <span class="n">q</span><span class="p">[</span><span class="mh">11</span><span class="o">:</span><span class="mh">8</span><span class="p">];</span> <span class="c1">//b3</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-27"></a>                             <span class="n">q</span><span class="p">[</span><span class="mh">19</span><span class="o">:</span><span class="mh">16</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">pa14</span> <span class="o">^</span> <span class="n">q</span><span class="p">[</span><span class="mh">15</span><span class="o">:</span><span class="mh">12</span><span class="p">];</span> <span class="c1">//b4</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-28"></a>                             <span class="n">q</span><span class="p">[</span><span class="mh">23</span><span class="o">:</span><span class="mh">20</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">pa10</span> <span class="o">^</span> <span class="n">q</span><span class="p">[</span><span class="mh">19</span><span class="o">:</span><span class="mh">16</span><span class="p">];</span> <span class="c1">//b5</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-29"></a>     <span class="k">end</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-30"></a>     <span class="k">else</span> <span class="k">begin</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-31"></a>                      <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="n">ready</span> <span class="p">)</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-32"></a>                             <span class="n">q</span> <span class="o">&lt;=</span> <span class="mh">24'h0</span><span class="p">;</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-33"></a>                     <span class="k">end</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-34"></a> <span class="k">end</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-35"></a>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-36"></a>     <span class="p">...</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-37"></a>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-38"></a>     <span class="k">module</span> <span class="n">a_mult_alpha9</span> <span class="p">(</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-39"></a>         <span class="k">input</span> <span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">a</span><span class="p">,</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-40"></a>         <span class="k">output</span> <span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">result</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-41"></a>         <span class="p">);</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-42"></a>         <span class="k">assign</span> <span class="n">result</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">^</span> <span class="n">a</span><span class="p">[</span><span class="mh">1</span><span class="p">];</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-43"></a>         <span class="k">assign</span> <span class="n">result</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">^</span> <span class="n">a</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">^</span> <span class="n">a</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span> <span class="o">^</span> <span class="n">a</span><span class="p">[</span><span class="mh">0</span><span class="p">];</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-44"></a>         <span class="k">assign</span> <span class="n">result</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">^</span> <span class="n">a</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">^</span> <span class="n">a</span><span class="p">[</span><span class="mh">1</span><span class="p">];</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-45"></a>         <span class="k">assign</span> <span class="n">result</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">^</span> <span class="n">a</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">^</span> <span class="n">a</span><span class="p">[</span><span class="mh">0</span><span class="p">];</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-46"></a>     <span class="k">endmodule</span>
+<a name="rest_code_7a09173b97a344f9a5ff8658a1f6fd7b-47"></a>     <span class="p">..</span>
 </pre></td>
 </tr></table>
 <ul class="simple">
-<li>Line 3 take the shifted symbol input, modulo-sum with the output of <em>b5</em>.
-Its output <em>rtemp</em> is then fed to the divider circuit.</li>
-<li>Line 13-34 perform continuous multiplication of <span class="math">\(\alpha^i\)</span> with <em>rtemp</em>
+<li>Line 3 takes the shifted symbol input, modulo-sum with the output of <em>b5</em>.
+Its output, <em>rtemp</em> is then fed to the divider circuit.</li>
+<li>Line 13-34 performs continuous multiplication of <span class="math">\(\alpha^i\)</span> with <em>rtemp</em>
 and modulo-sum to each stage of the registers where they are connected as depicted in
 my workout post for this code.
 <em>outcw</em> contains the parity check bits where it can be concatenated to the input
-word to form a complete codeword.</li>
-<li>An interface signal, <em>ready</em> is then asserted on completion of encoding for
+word to form a complete coded word.</li>
+<li>An interface signal, <em>rdy</em> is then asserted on completion of encoding for
 each input word (interface circuit modeling not shown here).</li>
-<li>Line 38-46 is the sample of one of the module that computes
+<li>Line 38-46 is the sample of one of the modules that compute
 <span class="math">\(\beta \alpha^9\)</span>.</li>
 </ul>
 <p>The external interface part of this behavorial modeling is
@@ -250,11 +250,11 @@ is the same module <span class="math">\(g_7(x)\)</span> as worked out in my othe
 <ul>
 <li>
 <p class="first">32-bit data input to be encoded.</p>
-<p>. <em>rw(1)</em>,  host write one 32-bit data at a time for data and parity. Host write
+<p>. <em>rw(1)</em>,  host writes one 32-bit data at a time for data and parity. Host writes
 sequence of two 32-bit data on deassertion of <em>bsy</em>. Host read data when
 <em>rdy</em> is asserted. If undecodable code,  <em>err</em> is asserted.</p>
-<p>. <em>bsy(1)</em> busy asserted while decoding in in progress.</p>
-<p>. <em>rdy(1)</em> asserted when data is ready.</p>
+<p>. <em>bsy(1)</em> asserts while decoding in in progress and deasserts on completion.</p>
+<p>. <em>rdy(1)</em> asserts when data is ready.</p>
 <p>. <em>decoder_enable(1)</em>, enable decoder. This shall remain asserted while
 decoding is in progress.</p>
 <p>. <em>data(31)</em> input/output data.</p>

@@ -238,19 +238,19 @@ is again tabulated below,</p>
 </table>
 <p>Note that <span class="math">\(\alpha^{15} = \alpha^0 = 1\)</span>.
 As usual, the table above can be easily generated with Octave/MATLAB,</p>
-<pre class="code text"><a name="rest_code_7c3b16599aaa482e8c8c6bb308cc37ea-1"></a>&gt; I=eye(15);I=I(15:-1:1,:);
-<a name="rest_code_7c3b16599aaa482e8c8c6bb308cc37ea-2"></a>&gt;&gt; for i=1:15
-<a name="rest_code_7c3b16599aaa482e8c8c6bb308cc37ea-3"></a>[q,r(i,:)]=deconv(I(i,:),[1 0 0 1 1]);
-<a name="rest_code_7c3b16599aaa482e8c8c6bb308cc37ea-4"></a>end
-<a name="rest_code_7c3b16599aaa482e8c8c6bb308cc37ea-5"></a>&gt;&gt; r=mod(r(:,12:15),2)
-<a name="rest_code_7c3b16599aaa482e8c8c6bb308cc37ea-6"></a>r =
-<a name="rest_code_7c3b16599aaa482e8c8c6bb308cc37ea-7"></a>
-<a name="rest_code_7c3b16599aaa482e8c8c6bb308cc37ea-8"></a>   0   0   0   1
-<a name="rest_code_7c3b16599aaa482e8c8c6bb308cc37ea-9"></a>   0   0   1   0
-<a name="rest_code_7c3b16599aaa482e8c8c6bb308cc37ea-10"></a>   0   1   0   0
-<a name="rest_code_7c3b16599aaa482e8c8c6bb308cc37ea-11"></a>   1   0   0   0
-<a name="rest_code_7c3b16599aaa482e8c8c6bb308cc37ea-12"></a>   ..
-<a name="rest_code_7c3b16599aaa482e8c8c6bb308cc37ea-13"></a>   1   0   0   1
+<pre class="code text"><a name="rest_code_eb1f19b0ecff4681918e548d85612a1a-1"></a>&gt; I=eye(15);I=I(15:-1:1,:);
+<a name="rest_code_eb1f19b0ecff4681918e548d85612a1a-2"></a>&gt;&gt; for i=1:15
+<a name="rest_code_eb1f19b0ecff4681918e548d85612a1a-3"></a>[q,r(i,:)]=deconv(I(i,:),[1 0 0 1 1]);
+<a name="rest_code_eb1f19b0ecff4681918e548d85612a1a-4"></a>end
+<a name="rest_code_eb1f19b0ecff4681918e548d85612a1a-5"></a>&gt;&gt; r=mod(r(:,12:15),2)
+<a name="rest_code_eb1f19b0ecff4681918e548d85612a1a-6"></a>r =
+<a name="rest_code_eb1f19b0ecff4681918e548d85612a1a-7"></a>
+<a name="rest_code_eb1f19b0ecff4681918e548d85612a1a-8"></a>   0   0   0   1
+<a name="rest_code_eb1f19b0ecff4681918e548d85612a1a-9"></a>   0   0   1   0
+<a name="rest_code_eb1f19b0ecff4681918e548d85612a1a-10"></a>   0   1   0   0
+<a name="rest_code_eb1f19b0ecff4681918e548d85612a1a-11"></a>   1   0   0   0
+<a name="rest_code_eb1f19b0ecff4681918e548d85612a1a-12"></a>   ..
+<a name="rest_code_eb1f19b0ecff4681918e548d85612a1a-13"></a>   1   0   0   1
 </pre>
 <p>where the result row vectors <span class="math">\(r\)</span> are the remainders from the polynomial division.</p>
 <p>For <span class="math">\(RS(2^4,5)\)</span>,  the generator polynomial is,</p>
@@ -544,8 +544,8 @@ UH^t = 0
 </div>
 <div class="section" id="burst-error-correcting-capability">
 <h2>Burst error-correcting capability</h2>
-<p>The burst length <span class="math">\(l\)</span> is defined is a vector whose zero components are confined to
-<span class="math">\(l\)</span> consecutive positions, for examle, the zero code vector of length 9 would be
+<p>The burst length <span class="math">\(l\)</span> is defined as a vector whose zero components are confined to
+<span class="math">\(l\)</span> consecutive positions, for example, the zero code vector of length 9 would be
 something like this ..0_1110_1110_1000_0000.</p>
 <p>For this RS code workout, it is capable of correction the burst lenght, <span class="math">\(l\ge9\)</span> because
 for <span class="math">\(RS(2^r,2t+1), l \ge r(t-1)+1\)</span> .

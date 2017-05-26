@@ -493,8 +493,8 @@ The equation above is in the form,
 Burst error-correcting capability
 ---------------------------------
 
-The burst length :math:`l` is defined is a vector whose zero components are confined to
-:math:`l` consecutive positions, for examle, the zero code vector of length 9 would be
+The burst length :math:`l` is defined as a vector whose zero components are confined to
+:math:`l` consecutive positions, for example, the zero code vector of length 9 would be
 something like this ..0_1110_1110_1000_0000. 
 
 For this RS code workout, it is capable of correction the burst lenght, :math:`l\ge9` because

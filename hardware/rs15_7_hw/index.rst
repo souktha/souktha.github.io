@@ -95,19 +95,19 @@ to form a complete coded word in systematic form. The actual data bit is
         ..
 
         
-* Line 3 take the shifted symbol input, modulo-sum with the output of *b5*.
-  Its output *rtemp* is then fed to the divider circuit.
+* Line 3 takes the shifted symbol input, modulo-sum with the output of *b5*.
+  Its output, *rtemp* is then fed to the divider circuit.
 
-* Line 13-34 perform continuous multiplication of :math:`\alpha^i` with *rtemp*
+* Line 13-34 performs continuous multiplication of :math:`\alpha^i` with *rtemp*
   and modulo-sum to each stage of the registers where they are connected as depicted in
   my workout post for this code.
   *outcw* contains the parity check bits where it can be concatenated to the input
-  word to form a complete codeword.
+  word to form a complete coded word.
 
-* An interface signal, *ready* is then asserted on completion of encoding for
+* An interface signal, *rdy* is then asserted on completion of encoding for
   each input word (interface circuit modeling not shown here).
 
-* Line 38-46 is the sample of one of the module that computes
+* Line 38-46 is the sample of one of the modules that compute
   :math:`\beta \alpha^9`.
 
 The external interface part of this behavorial modeling is 
@@ -138,13 +138,13 @@ is the same module :math:`g_7(x)` as worked out in my other post. Simple interfa
 
 *       32-bit data input to be encoded. 
         
-        . *rw(1)*,  host write one 32-bit data at a time for data and parity. Host write
+        . *rw(1)*,  host writes one 32-bit data at a time for data and parity. Host writes
         sequence of two 32-bit data on deassertion of *bsy*. Host read data when
         *rdy* is asserted. If undecodable code,  *err* is asserted.
 
-        . *bsy(1)* busy asserted while decoding in in progress. 
+        . *bsy(1)* asserts while decoding in in progress and deasserts on completion. 
         
-        . *rdy(1)* asserted when data is ready.
+        . *rdy(1)* asserts when data is ready.
 
         . *decoder_enable(1)*, enable decoder. This shall remain asserted while
         decoding is in progress.
