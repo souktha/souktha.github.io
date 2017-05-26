@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RS(n,k) code HDL implementation | Soukthavy Sopha</title>
+<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
+<link rel="canonical" href="http://souktha.github.io/hardware/rs15_7_hw/">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Soukthavy">
+<link rel="prev" href="../../misc/RS15_7_5/" title="RS(n,k) code for burst error-correction work out" type="text/html">
+<meta property="og:site_name" content="Soukthavy Sopha">
+<meta property="og:title" content="RS(n,k) code HDL implementation">
+<meta property="og:url" content="http://souktha.github.io/hardware/rs15_7_hw/">
+<meta property="og:description" content="This post is the implementation part of the my post on RS code workout
+where I did some math workout on the RS forward-error-correcting code (FEC). I find
+it to be simple enough to implement it in ver">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2017-05-06T14:47:03Z">
+<meta property="article:tag" content="hardware">
+<meta property="article:tag" content="latex">
+<meta property="article:tag" content="mathjax">
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-inverse navbar-static-top"><div class="container">
+<!-- This keeps the margins nice -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://souktha.github.io/">
+
+                <span id="blog-title">Soukthavy Sopha</span>
+            </a>
+        </div>
+<!-- /.navbar-header -->
+        <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
+            <ul class="nav navbar-nav">
+<li>
+<a href="../../archive.html">Archive</a>
+                </li>
+<li>
+<a href="../../categories/">Tags</a>
+                </li>
+<li>
+<a href="../../rss.xml">RSS feed</a>
+            </li>
+<li class="dropdown">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Blog <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+<li>
+<a href="../../software">Sofware</a>
+                    </li>
+<li>
+<a href="../../hardware">Hardware</a>
+                    </li>
+<li>
+<a href="../../misc">Misc</a>
+            </li>
+</ul>
+</li>
+<li>
+<a href="https://github.com/souktha">My Github</a>
+
+                
+            </li>
+</ul>
+<ul class="nav navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        <div class="row">
+            
+            
+<article class="post-text storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">RS(n,k) code HDL implementation</a></h1>
+
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>This post is the implementation part of the my post on <a class="reference external" href="http://souktha.github.io/misc/RS15_7_5">RS code workout</a>
+where I did some math workout on the RS forward-error-correcting code (FEC). I find
+it to be simple enough to implement it in verilog that can eventually be synthesized for FPGA.
+I choose the simplest algorithm to implement the RS (15,9,7) as outlined in my last post.</p>
+<!-- TEASER_END -->
+<div class="section" id="encoder">
+<h2>Encoder</h2>
+<p>For Verilog, all of these coefficient multiplications can be a modeled by the simple modules
+that can be instantiated as the components of the RS encoder. The main part of this RS
+encoder with <span class="math">\(g_7(x)\)</span> as its generator is listed below (minus the interface portion).</p>
+<ul>
+<li>
+<p class="first">32-bit data input to be encoded.</p>
+<p>. <em>encoder_enable(1)</em>, enable encoder. This shall remain asserted while
+decoding is in progress.</p>
+</li>
+<li>
+<p class="first">24-bit output parity check</p>
+<p>. <em>bsy(1)</em>, decoder status. Asserts while encoder is processing data. Host
+wait for <em>bsy</em> to go low before inputting the new data.</p>
+<p>. <em>rdy(1)</em>, data ready. Asserts on data ready upon encoding completion.</p>
+<p>. <em>outw(24)</em>, 24-bit output parity check bits.</p>
+</li>
+</ul>
+<p>Host can then append the returned parity check bits to its 32-bit input data
+to form a complete coded word in systematic form. The actual data bit is
+36-bit (9 symbols-bit), but shortened to 32-bit in this case.</p>
+<table class="codetable"><tr>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-1"> 1</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-2"> 2</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-3"> 3</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-4"> 4</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-5"> 5</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-6"> 6</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-7"> 7</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-8"> 8</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-9"> 9</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-10">10</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-11">11</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-12">12</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-13">13</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-14">14</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-15">15</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-16">16</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-17">17</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-18">18</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-19">19</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-20">20</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-21">21</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-22">22</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-23">23</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-24">24</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-25">25</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-26">26</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-27">27</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-28">28</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-29">29</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-30">30</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-31">31</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-32">32</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-33">33</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-34">34</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-35">35</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-36">36</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-37">37</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-38">38</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-39">39</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-40">40</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-41">41</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-42">42</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-43">43</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-44">44</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-45">45</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-46">46</a>
+<a href="#rest_code_386c0c01f6284b11b1eedfc0382fd3c5-47">47</a></pre></div></td>
+<td class="code"><pre class="code verilog"><a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-1"></a> <span class="p">..</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-2"></a> <span class="k">assign</span> <span class="n">outw</span> <span class="o">=</span> <span class="n">q</span><span class="p">[</span><span class="mh">23</span><span class="o">:</span><span class="mh">0</span><span class="p">];</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-3"></a> <span class="k">assign</span> <span class="n">rtemp</span> <span class="o">=</span> <span class="n">in36</span><span class="p">[</span><span class="mh">35</span><span class="o">:</span><span class="mh">32</span><span class="p">]</span> <span class="o">^</span> <span class="n">q</span><span class="p">[</span><span class="mh">23</span><span class="o">:</span><span class="mh">20</span><span class="p">];</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-4"></a>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-5"></a> <span class="p">..</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-6"></a>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-7"></a> <span class="cm">/* Encode by generator g(x)</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-8"></a><span class="cm">     Input is 9 symbols of 4 bit = 36 bits; however, the input to be encoded</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-9"></a><span class="cm">     is 32 bit, so the four most significan bits are filled with zeros. This need</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-10"></a><span class="cm">     to be taken into account (shortened).</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-11"></a><span class="cm">     A symbol shift is a 4-bit shift.*/</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-12"></a>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-13"></a> <span class="n">a_mult_alpha4</span> <span class="n">p4</span><span class="p">(.</span><span class="n">a</span><span class="p">(</span><span class="n">rtemp</span><span class="p">),</span> <span class="p">.</span><span class="n">result</span><span class="p">(</span><span class="n">pa4</span><span class="p">));</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-14"></a> <span class="n">a_mult_alpha6</span> <span class="n">p6</span><span class="p">(.</span><span class="n">a</span><span class="p">(</span><span class="n">rtemp</span><span class="p">),</span> <span class="p">.</span><span class="n">result</span><span class="p">(</span><span class="n">pa6</span><span class="p">));</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-15"></a> <span class="n">a_mult_alpha9</span> <span class="n">p9</span><span class="p">(.</span><span class="n">a</span><span class="p">(</span><span class="n">rtemp</span><span class="p">),</span> <span class="p">.</span><span class="n">result</span><span class="p">(</span><span class="n">pa9</span><span class="p">));</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-16"></a> <span class="n">a_mult_alpha10</span> <span class="n">p10</span><span class="p">(.</span><span class="n">a</span><span class="p">(</span><span class="n">rtemp</span><span class="p">),</span> <span class="p">.</span><span class="n">result</span><span class="p">(</span><span class="n">pa10</span><span class="p">));</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-17"></a> <span class="n">a_mult_alpha14</span> <span class="n">p14</span><span class="p">(.</span><span class="n">a</span><span class="p">(</span><span class="n">rtemp</span><span class="p">),</span> <span class="p">.</span><span class="n">result</span><span class="p">(</span><span class="n">pa14</span><span class="p">));</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-18"></a>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-19"></a> <span class="cm">/* q contains the parity bits symbol*/</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-20"></a>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-21"></a> <span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-22"></a>     <span class="k">if</span> <span class="p">(</span> <span class="n">encoding</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">ready</span> <span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-23"></a>                             <span class="n">q</span><span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">pa6</span><span class="p">;</span>  <span class="c1">//b0</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-24"></a>                             <span class="n">q</span><span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">4</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">pa9</span> <span class="o">^</span> <span class="n">q</span><span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">];</span> <span class="c1">//b1</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-25"></a>                             <span class="n">q</span><span class="p">[</span><span class="mh">11</span><span class="o">:</span><span class="mh">8</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">pa6</span> <span class="o">^</span> <span class="n">q</span><span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">4</span><span class="p">]</span> <span class="p">;</span> <span class="c1">//b2</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-26"></a>                             <span class="n">q</span><span class="p">[</span><span class="mh">15</span><span class="o">:</span><span class="mh">12</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">pa4</span> <span class="o">^</span> <span class="n">q</span><span class="p">[</span><span class="mh">11</span><span class="o">:</span><span class="mh">8</span><span class="p">];</span> <span class="c1">//b3</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-27"></a>                             <span class="n">q</span><span class="p">[</span><span class="mh">19</span><span class="o">:</span><span class="mh">16</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">pa14</span> <span class="o">^</span> <span class="n">q</span><span class="p">[</span><span class="mh">15</span><span class="o">:</span><span class="mh">12</span><span class="p">];</span> <span class="c1">//b4</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-28"></a>                             <span class="n">q</span><span class="p">[</span><span class="mh">23</span><span class="o">:</span><span class="mh">20</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">pa10</span> <span class="o">^</span> <span class="n">q</span><span class="p">[</span><span class="mh">19</span><span class="o">:</span><span class="mh">16</span><span class="p">];</span> <span class="c1">//b5</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-29"></a>     <span class="k">end</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-30"></a>     <span class="k">else</span> <span class="k">begin</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-31"></a>                      <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="n">ready</span> <span class="p">)</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-32"></a>                             <span class="n">q</span> <span class="o">&lt;=</span> <span class="mh">24'h0</span><span class="p">;</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-33"></a>                     <span class="k">end</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-34"></a> <span class="k">end</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-35"></a>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-36"></a>     <span class="p">...</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-37"></a>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-38"></a>     <span class="k">module</span> <span class="n">a_mult_alpha9</span> <span class="p">(</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-39"></a>         <span class="k">input</span> <span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">a</span><span class="p">,</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-40"></a>         <span class="k">output</span> <span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">result</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-41"></a>         <span class="p">);</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-42"></a>         <span class="k">assign</span> <span class="n">result</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">^</span> <span class="n">a</span><span class="p">[</span><span class="mh">1</span><span class="p">];</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-43"></a>         <span class="k">assign</span> <span class="n">result</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">^</span> <span class="n">a</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">^</span> <span class="n">a</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span> <span class="o">^</span> <span class="n">a</span><span class="p">[</span><span class="mh">0</span><span class="p">];</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-44"></a>         <span class="k">assign</span> <span class="n">result</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">^</span> <span class="n">a</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">^</span> <span class="n">a</span><span class="p">[</span><span class="mh">1</span><span class="p">];</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-45"></a>         <span class="k">assign</span> <span class="n">result</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">^</span> <span class="n">a</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">^</span> <span class="n">a</span><span class="p">[</span><span class="mh">0</span><span class="p">];</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-46"></a>     <span class="k">endmodule</span>
+<a name="rest_code_386c0c01f6284b11b1eedfc0382fd3c5-47"></a>     <span class="p">..</span>
+</pre></td>
+</tr></table>
+<ul class="simple">
+<li>Line 3 take the shifted symbol input, modulo-sum with the output of <em>b5</em>.
+Its output <em>rtemp</em> is then fed to the divider circuit.</li>
+<li>Line 13-34 perform continuous multiplication of <span class="math">\(\alpha^i\)</span> with <em>rtemp</em>
+and modulo-sum to each stage of the registers where they are connected as depicted in
+my workout post for this code.
+<em>outcw</em> contains the parity check bits where it can be concatenated to the input
+word to form a complete codeword.</li>
+<li>An interface signal, <em>ready</em> is then asserted on completion of encoding for
+each input word (interface circuit modeling not shown here).</li>
+<li>Line 38-46 is the sample of one of the module that computes
+<span class="math">\(\beta \alpha^9\)</span>.</li>
+</ul>
+<p>The external interface part of this behavorial modeling is
+subjected to the implementation. The focus here is on algorithm to prove
+that it is mathematically correct and in agreement with the implementation.</p>
+<div class="figure">
+<img alt="../../images/hardware/rs_encoded_h2401c.jpg" src="../../images/hardware/rs_encoded_h2401c.jpg"><p class="caption">Fig1: The 24-bit parity check (c21ca6)  for the encoded input word (2401c).</p>
+</div>
+<div class="figure">
+<img alt="../../images/hardware/rs_encoded_h2badbeef.jpeg" src="../../images/hardware/rs_encoded_h2badbeef.jpeg"><p class="caption">Fig1: The 24-bit parity check (df5b06)  for the encoded input word (2badbeef).</p>
+</div>
+</div>
+<div class="section" id="decoder-and-error-correction">
+<h2>Decoder and Error-Correction</h2>
+<p>The decoder takes in two 32-bit data, one is the message and one is the parity check data. The
+parity check data is 24-bit data (6 symbols of 4-tuple). In this implementation, the
+data will enter the decoder as h0002_401c and hC21C_A600.</p>
+<p>To be able to correct any error is to first detect if there is any error. The error detection
+process is simply determined right after the input symbols(15) have been shifted into the decoder.
+The decoder is the same block as used for encoding with minor interface adjustment. Basically it
+is the same module <span class="math">\(g_7(x)\)</span> as worked out in my other post. Simple interface,</p>
+<ul>
+<li>
+<p class="first">32-bit data input to be encoded.</p>
+<p>. <em>rw(1)</em>,  host write one 32-bit data at a time for data and parity. Host write
+sequence of two 32-bit data on deassertion of <em>bsy</em>. Host read data when
+<em>rdy</em> is asserted. If undecodable code,  <em>err</em> is asserted.</p>
+<p>. <em>bsy(1)</em> busy asserted while decoding in in progress.</p>
+<p>. <em>rdy(1)</em> asserted when data is ready.</p>
+<p>. <em>decoder_enable(1)</em>, enable decoder. This shall remain asserted while
+decoding is in progress.</p>
+<p>. <em>data(31)</em> input/output data.</p>
+</li>
+<li>
+<p class="first">32-bit data output.</p>
+<p>. <em>date(32)</em> input/output data. Output data from decoder when <em>bsy</em> is deasserted and <em>rdy</em> is asserted.</p>
+<p>. <em>rw(1)</em> read data when <em>rdy</em> is asserted.</p>
+</li>
+</ul>
+<p>Here is some example of its error correction,</p>
+<div class="figure">
+<img alt="../../images/hardware/rs_decoded_0ac2_421c.jpeg" src="../../images/hardware/rs_decoded_0ac2_421c.jpeg"><p class="caption">Fig1: Corrected 3 symbols(12-bit) of input coded word h0AC2_421C to h2_401C.</p>
+</div>
+<p>I can also correct burst error,</p>
+<div class="figure">
+<img alt="../../images/hardware/rs_decoded_burst_l12.jpeg" src="../../images/hardware/rs_decoded_burst_l12.jpeg"><p class="caption">Fig1: Corrected zero code word with burst error of length 12.</p>
+</div>
+</div>
+<div class="section" id="summary">
+<h2>Summary</h2>
+<p>The encoding/decoding that I implement is relatively simple, may be 200-300 lines of verilog
+code with the majority of it is for host interface. The algorighm itself is small for this
+exercise. So far it can correct error any where whether the error is in message portion
+or in parity check portion. While my implementation may not be perfect, I think it is as
+simple as I can make.</p>
+</div>
+</div>
+    </div>
+    
+            <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> </script><script type="text/x-mathjax-config">
+            MathJax.Hub.Config({tex2jax: {inlineMath: [['$latex ','$'], ['\\(','\\)']]}});
+            </script></article>
+</div>
+        <!--End of body content-->
+
+        <footer id="footer">
+            Contents © 2017         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+        </footer>
+</div>
+</div>
+
+
+            <script src="../../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+    moment.locale("en");
+    fancydates(0, "YYYY-MM-DD HH:mm");
+    </script><!-- end fancy dates -->
+</body>
+</html>

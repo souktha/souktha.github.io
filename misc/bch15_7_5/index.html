@@ -10,8 +10,7 @@
 <meta name="generator" content="Nikola (getnikola.com)">
 <link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
 <link rel="canonical" href="http://souktha.github.io/misc/bch15_7_5/">
-<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="description" itemprop="description" content="Binary BCH (15,7,5) code">
-<meta name="author" content="Soukthavy">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Soukthavy">
 <link rel="prev" href="../create-ap-linuxpc/" title="Create Wireless AP on Linux PC in 10 minutes" type="text/html">
 <link rel="next" href="../../hardware/bch15_7_5_hw/" title="Implementing BCH (15,7,5) FEC" type="text/html">
 <meta property="og:site_name" content="Soukthavy Sopha">
@@ -239,14 +238,14 @@ by opting to use the tabulated generator polynomials of <span class="math">\((n,
 <span class="math">\((15,7,5), t=2\)</span>, <span class="math">\(m_3(x)=x^4 + x^3 + x^2 + x +1\)</span></p>
 <div class="math">
 \begin{align*}
-g(x)=LCM[m_1(x)m_3(x)] \\
-= LCM[(x^4 + x + 1)(x^4 + x^3 + x^2 + x+ 1)]
+g(x)&amp;= LCM[m_1(x)m_3(x)] \\
+&amp;= LCM[(x^4 + x + 1)(x^4 + x^3 + x^2 + x+ 1)]
 \end{align*}
 </div>
 <p>Using MATLAB/Octave's <em>conv</em> to multiply the polynomial,</p>
-<pre class="code text"><a name="rest_code_53c7304dcb7d4e6d851651dfe143ee8e-1"></a>m1=[1 0 0 1 1];
-<a name="rest_code_53c7304dcb7d4e6d851651dfe143ee8e-2"></a>m3=[1 1 1 1 1];
-<a name="rest_code_53c7304dcb7d4e6d851651dfe143ee8e-3"></a>gx=mod(conv(m1,m3),2);
+<pre class="code text"><a name="rest_code_fb27d48bae0c4eb1a209498342e208a8-1"></a>m1=[1 0 0 1 1];
+<a name="rest_code_fb27d48bae0c4eb1a209498342e208a8-2"></a>m3=[1 1 1 1 1];
+<a name="rest_code_fb27d48bae0c4eb1a209498342e208a8-3"></a>gx=mod(conv(m1,m3),2);
 </pre>
 <div class="math">
 \begin{equation*}
@@ -463,15 +462,15 @@ becomes <span class="math">\([s_1,s_3]=[(\alpha)^i+\alpha^j,(\alpha^3)^i+(\alpha
 error-locating position,</p>
 <div class="math">
 \begin{align*}
-s_1 = \alpha^i + \alpha^j \\
-s_3 = (\alpha^3)^i + (\alpha^3)^j
+s_1 &amp;= \alpha^i + \alpha^j \\
+s_3 &amp;= (\alpha^3)^i + (\alpha^3)^j
 \end{align*}
 </div>
 <p>Substitute <span class="math">\(s_1 + \alpha^i = \alpha_j\)</span> into <span class="math">\(s_3\)</span>,</p>
 <div class="math">
 \begin{align*}
-s_3 = \alpha^{3i} + (s_1 + \alpha^i)^3 = \alpha^{3i} + (s_1^2 + \alpha^{2i})(s_1 + \alpha^i) \\
-    = s_1^3 + s_1 \alpha^{2i} + s_1^2 \alpha^i
+s_3 &amp;= \alpha^{3i} + (s_1 + \alpha^i)^3 = \alpha^{3i} + (s_1^2 + \alpha^{2i})(s_1 + \alpha^i) \\
+    &amp;= s_1^3 + s_1 \alpha^{2i} + s_1^2 \alpha^i
 \end{align*}
 </div>
 <p>Locating error bit position is to find which <span class="math">\(i\)</span> that makes
@@ -486,10 +485,10 @@ avoid putting myself into the deep hole that I cannot get out.</p>
 <p>To test the error correction capability of this exercise I will use code word u(100) and
 alter bit 12 and bit 13 to simulate error,</p>
 <!-- FIXME -->
-<pre class="code text"><a name="rest_code_583b176c58a149c88ccdc48b7ae26d78-1"></a>v=dec2bin(0:2^7-1)-'0'; % input code word
-<a name="rest_code_583b176c58a149c88ccdc48b7ae26d78-2"></a>u=mod(v*G,2); % BCH coded word
-<a name="rest_code_583b176c58a149c88ccdc48b7ae26d78-3"></a>w=u(100,:);w(2)=0;w(3)=1; % alter bit 13,12 for error bits
-<a name="rest_code_583b176c58a149c88ccdc48b7ae26d78-4"></a>mod(w*h,2)
+<pre class="code text"><a name="rest_code_ae36101ac1c149979b5177b64e332bd3-1"></a>v=dec2bin(0:2^7-1)-'0'; % input code word
+<a name="rest_code_ae36101ac1c149979b5177b64e332bd3-2"></a>u=mod(v*G,2); % BCH coded word
+<a name="rest_code_ae36101ac1c149979b5177b64e332bd3-3"></a>w=u(100,:);w(2)=0;w(3)=1; % alter bit 13,12 for error bits
+<a name="rest_code_ae36101ac1c149979b5177b64e332bd3-4"></a>mod(w*h,2)
 </pre>
 <p>The error syndrome from <em>mod()</em> operation is <span class="math">\(S=\{0010,0110\}\)</span>. This corresponds to
 <span class="math">\(S=\{\alpha,\alpha^5 \}\)</span> from the tabulated power of <span class="math">\(\alpha\)</span> above. The equation
@@ -553,17 +552,17 @@ u(x)=x^{14}+x^{12}+x^9+x^8+x^5+x^4+x^3+x^2+x
 <p>The computed syndrome is,</p>
 <div class="math">
 \begin{align*}
-s(x)= w(x)\ mod\ g(x) = x^6 + x^3 + x^2 +x \\
-s_1(x) = x s(x)\ mod\ g(x) = x^7 + x^4 + x^3 + x^2 \\
-s_2(x) = x^2 s(x)\ mod\ g(x) = \cdots \\
-s_3 (x) = x^3 s(x)\ mod\ g(x) = x + 1
+s(x) &amp;= w(x)\ mod\ g(x) = x^6 + x^3 + x^2 +x \\
+s_1(x) &amp;= x s(x)\ mod\ g(x) = x^7 + x^4 + x^3 + x^2 \\
+s_2(x) &amp;= x^2 s(x)\ mod\ g(x) = \cdots \\
+s_3 (x) &amp;= x^3 s(x)\ mod\ g(x) = x + 1
 \end{align*}
 </div>
 <p>weight of <span class="math">\(s_3(x) \le t\)</span> is reached, so <span class="math">\(j=3\)</span>,</p>
 <div class="math">
 \begin{align*}
-s(x) = x^{15-3}s_3(x)\ mod\ ( x^{15} + 1) \\
-= x^{13} + x^{12}
+s(x) &amp;= x^{15-3}s_3(x)\ mod\ ( x^{15} + 1) \\
+&amp;= x^{13} + x^{12}
 \end{align*}
 </div>
 <p>The most likely code word is therefore, <span class="math">\(w(x)+s(x)\)</span>. This algorithm gives me both

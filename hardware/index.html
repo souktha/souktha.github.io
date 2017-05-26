@@ -76,9 +76,25 @@
 <div class="sectionindex">
     <header><h2><a href=".">Hardware</a></h2>
     </header><div class="postindex">
-    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="bch15_7_5_hw/" class="u-url">Implementing BCH (15,7,5) FEC</a></h1>
+    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="rs15_7_hw/" class="u-url">RS(n,k) code HDL implementation</a></h1>
         <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="rs15_7_hw/" rel="bookmark"><time class="published dt-published" datetime="2017-05-06T14:47:03Z" title="2017-05-06 14:47">2017-05-06 14:47</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<p>This post is the implementation part of the my post on <a class="reference external" href="http://souktha.github.io/misc/RS15_7_5">RS code workout</a>
+where I did some math workout on the RS forward-error-correcting code (FEC). I find
+it to be simple enough to implement it in verilog that can eventually be synthesized for FPGA.
+I choose the simplest algorithm to implement the RS (15,9,7) as outlined in my last post.</p>
+<p class="more"><a href="rs15_7_hw/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="bch15_7_5_hw/" class="u-url">Implementing BCH (15,7,5) FEC</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 Soukthavy
             </span></p>
             <p class="dateline"><a href="bch15_7_5_hw/" rel="bookmark"><time class="published dt-published" datetime="2017-03-18T00:17:42Z" title="2017-03-18 00:17">2017-03-18 00:17</time></a></p>
@@ -94,7 +110,7 @@ I choose the simplest algorithm for decoding the binary BCH (15,7,5) as outlined
     </div>
     </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="cyclic_1_x_x4_hw/" class="u-url">Simple Cyclic Hamming (15,11,3) FEC</a></h1>
         <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 Soukthavy
             </span></p>
             <p class="dateline"><a href="cyclic_1_x_x4_hw/" rel="bookmark"><time class="published dt-published" datetime="2016-12-22T00:17:42Z" title="2016-12-22 00:17">2016-12-22 00:17</time></a></p>
@@ -110,7 +126,7 @@ for this exercise is <span class="math">\(g(x)=1+x+x4\)</span> for an <span clas
     </div>
     </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="zybo-spi-stepper/" class="u-url">SPI slave stepper motor with Zybo</a></h1>
         <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 Soukthavy
             </span></p>
             <p class="dateline"><a href="zybo-spi-stepper/" rel="bookmark"><time class="published dt-published" datetime="2016-11-12T15:38:09Z" title="2016-11-12 15:38">2016-11-12 15:38</time></a></p>
@@ -126,7 +142,7 @@ system without doing much useful work, I would like to extend it so that I can m
     </div>
     </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="zybo-spi-slave/" class="u-url">Zynq Zybo SPI slave via EMIO</a></h1>
         <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 Soukthavy
             </span></p>
             <p class="dateline"><a href="zybo-spi-slave/" rel="bookmark"><time class="published dt-published" datetime="2016-07-17T18:10:54Z" title="2016-07-17 18:10">2016-07-17 18:10</time></a></p>
@@ -142,7 +158,7 @@ is to create a SPI slave device (PL) that will interconnect to the SPI master of
     </div>
     </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="vga-display-xadc/" class="u-url">Displaying Xilinx XADC on VGA</a></h1>
         <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 Soukthavy
             </span></p>
             <p class="dateline"><a href="vga-display-xadc/" rel="bookmark"><time class="published dt-published" datetime="2016-04-03T21:10:14Z" title="2016-04-03 21:10">2016-04-03 21:10</time></a></p>
@@ -156,7 +172,7 @@ This blog is to follow on with that exercise, but using the actual sampled data 
     </div>
     </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="runlenth/" class="u-url">Run-length encoding with FPGA</a></h1>
         <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 Soukthavy
             </span></p>
             <p class="dateline"><a href="runlenth/" rel="bookmark"><time class="published dt-published" datetime="2016-03-26T18:40:58Z" title="2016-03-26 18:40">2016-03-26 18:40</time></a></p>
@@ -173,7 +189,7 @@ I should specify the specification of the implementation.</p>
     </div>
     </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="vga_draw_graph/" class="u-url">Drawing bargraph on VGA with Nexys4DDR</a></h1>
         <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 Soukthavy
             </span></p>
             <p class="dateline"><a href="vga_draw_graph/" rel="bookmark"><time class="published dt-published" datetime="2016-03-19T19:52:20Z" title="2016-03-19 19:52">2016-03-19 19:52</time></a></p>
@@ -193,7 +209,7 @@ required pixel clock frequency of 800 * 60 * 525 = 25.200MHZ.</p>
     </div>
     </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="servo/" class="u-url">servo driver</a></h1>
         <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 Soukthavy
             </span></p>
             <p class="dateline"><a href="servo/" rel="bookmark"><time class="published dt-published" datetime="2016-03-12T05:25:40Z" title="2016-03-12 05:25">2016-03-12 05:25</time></a></p>

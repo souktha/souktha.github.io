@@ -11,6 +11,7 @@
 <link rel="canonical" href="http://souktha.github.io/hardware/bch15_7_5_hw/">
 <!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Soukthavy">
 <link rel="prev" href="../../misc/bch15_7_5/" title="Binary BCH (15,7,5) work out" type="text/html">
+<link rel="next" href="../../misc/RS15_7_5/" title="RS(n,k) code for burst error-correction work out" type="text/html">
 <meta property="og:site_name" content="Soukthavy Sopha">
 <meta property="og:title" content="Implementing BCH (15,7,5) FEC">
 <meta property="og:url" content="http://souktha.github.io/hardware/bch15_7_5_hw/">
@@ -126,26 +127,26 @@ on completion of decoding.</p>
 </li>
 </ul>
 <table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_5c7e0538a71844159c84f7d3db73bed4-1"> 1</a>
-<a href="#rest_code_5c7e0538a71844159c84f7d3db73bed4-2"> 2</a>
-<a href="#rest_code_5c7e0538a71844159c84f7d3db73bed4-3"> 3</a>
-<a href="#rest_code_5c7e0538a71844159c84f7d3db73bed4-4"> 4</a>
-<a href="#rest_code_5c7e0538a71844159c84f7d3db73bed4-5"> 5</a>
-<a href="#rest_code_5c7e0538a71844159c84f7d3db73bed4-6"> 6</a>
-<a href="#rest_code_5c7e0538a71844159c84f7d3db73bed4-7"> 7</a>
-<a href="#rest_code_5c7e0538a71844159c84f7d3db73bed4-8"> 8</a>
-<a href="#rest_code_5c7e0538a71844159c84f7d3db73bed4-9"> 9</a>
-<a href="#rest_code_5c7e0538a71844159c84f7d3db73bed4-10">10</a></pre></div></td>
-<td class="code"><pre class="code verilog"><a name="rest_code_5c7e0538a71844159c84f7d3db73bed4-1"></a>     <span class="k">module</span> <span class="n">bch15_7_5_decode</span> <span class="p">#(</span><span class="k">parameter</span> <span class="no">IWIDTH</span><span class="o">=</span><span class="mh">15</span><span class="p">,</span> <span class="no">OWIDTH</span><span class="o">=</span><span class="mh">7</span><span class="p">)</span> <span class="p">(</span>
-<a name="rest_code_5c7e0538a71844159c84f7d3db73bed4-2"></a>         <span class="k">input</span> <span class="n">clk</span><span class="p">,</span>
-<a name="rest_code_5c7e0538a71844159c84f7d3db73bed4-3"></a>         <span class="k">input</span> <span class="n">dec_enable</span><span class="p">,</span> <span class="c1">//enable decoder</span>
-<a name="rest_code_5c7e0538a71844159c84f7d3db73bed4-4"></a>         <span class="k">input</span>  <span class="n">ibit</span><span class="p">,</span> <span class="c1">//serialize input bit input code word</span>
-<a name="rest_code_5c7e0538a71844159c84f7d3db73bed4-5"></a>         <span class="k">output</span> <span class="n">bsy</span><span class="p">,</span> <span class="c1">// state of decoder</span>
-<a name="rest_code_5c7e0538a71844159c84f7d3db73bed4-6"></a>         <span class="k">output</span> <span class="n">rdy</span><span class="p">,</span> <span class="c1">// 1 when decoded data is ready for reading.</span>
-<a name="rest_code_5c7e0538a71844159c84f7d3db73bed4-7"></a>         <span class="k">output</span> <span class="n">err</span><span class="p">,</span> <span class="c1">// error if undecodable</span>
-<a name="rest_code_5c7e0538a71844159c84f7d3db73bed4-8"></a>         <span class="k">output</span> <span class="p">[</span><span class="no">OWIDTH</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">outw</span> <span class="c1">//7 bit output decoded word</span>
-<a name="rest_code_5c7e0538a71844159c84f7d3db73bed4-9"></a>     <span class="p">);</span>
-<a name="rest_code_5c7e0538a71844159c84f7d3db73bed4-10"></a>     <span class="p">..</span>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_3f4ab924bb164736955ab349f64b95cd-1"> 1</a>
+<a href="#rest_code_3f4ab924bb164736955ab349f64b95cd-2"> 2</a>
+<a href="#rest_code_3f4ab924bb164736955ab349f64b95cd-3"> 3</a>
+<a href="#rest_code_3f4ab924bb164736955ab349f64b95cd-4"> 4</a>
+<a href="#rest_code_3f4ab924bb164736955ab349f64b95cd-5"> 5</a>
+<a href="#rest_code_3f4ab924bb164736955ab349f64b95cd-6"> 6</a>
+<a href="#rest_code_3f4ab924bb164736955ab349f64b95cd-7"> 7</a>
+<a href="#rest_code_3f4ab924bb164736955ab349f64b95cd-8"> 8</a>
+<a href="#rest_code_3f4ab924bb164736955ab349f64b95cd-9"> 9</a>
+<a href="#rest_code_3f4ab924bb164736955ab349f64b95cd-10">10</a></pre></div></td>
+<td class="code"><pre class="code verilog"><a name="rest_code_3f4ab924bb164736955ab349f64b95cd-1"></a>     <span class="k">module</span> <span class="n">bch15_7_5_decode</span> <span class="p">#(</span><span class="k">parameter</span> <span class="no">IWIDTH</span><span class="o">=</span><span class="mh">15</span><span class="p">,</span> <span class="no">OWIDTH</span><span class="o">=</span><span class="mh">7</span><span class="p">)</span> <span class="p">(</span>
+<a name="rest_code_3f4ab924bb164736955ab349f64b95cd-2"></a>         <span class="k">input</span> <span class="n">clk</span><span class="p">,</span>
+<a name="rest_code_3f4ab924bb164736955ab349f64b95cd-3"></a>         <span class="k">input</span> <span class="n">dec_enable</span><span class="p">,</span> <span class="c1">//enable decoder</span>
+<a name="rest_code_3f4ab924bb164736955ab349f64b95cd-4"></a>         <span class="k">input</span>  <span class="n">ibit</span><span class="p">,</span> <span class="c1">//serialize input bit input code word</span>
+<a name="rest_code_3f4ab924bb164736955ab349f64b95cd-5"></a>         <span class="k">output</span> <span class="n">bsy</span><span class="p">,</span> <span class="c1">// state of decoder</span>
+<a name="rest_code_3f4ab924bb164736955ab349f64b95cd-6"></a>         <span class="k">output</span> <span class="n">rdy</span><span class="p">,</span> <span class="c1">// 1 when decoded data is ready for reading.</span>
+<a name="rest_code_3f4ab924bb164736955ab349f64b95cd-7"></a>         <span class="k">output</span> <span class="n">err</span><span class="p">,</span> <span class="c1">// error if undecodable</span>
+<a name="rest_code_3f4ab924bb164736955ab349f64b95cd-8"></a>         <span class="k">output</span> <span class="p">[</span><span class="no">OWIDTH</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">outw</span> <span class="c1">//7 bit output decoded word</span>
+<a name="rest_code_3f4ab924bb164736955ab349f64b95cd-9"></a>     <span class="p">);</span>
+<a name="rest_code_3f4ab924bb164736955ab349f64b95cd-10"></a>     <span class="p">..</span>
 </pre></td>
 </tr></table>
 <p>Decoder decodes 15 bits coded word input to 7 bits output with 2 bits error forward-error correcting
@@ -177,46 +178,46 @@ bit(s) error position. The corrected codeword is returned as its
 <p>The top module, <em>bch15_7_5_decode</em>, instantiates two submodules, <em>module_gx</em>
 and <em>compute_error_cw</em>.</p>
 <table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_b36d2c9315fe4b3481bf30f85d41747d-1"> 1</a>
-<a href="#rest_code_b36d2c9315fe4b3481bf30f85d41747d-2"> 2</a>
-<a href="#rest_code_b36d2c9315fe4b3481bf30f85d41747d-3"> 3</a>
-<a href="#rest_code_b36d2c9315fe4b3481bf30f85d41747d-4"> 4</a>
-<a href="#rest_code_b36d2c9315fe4b3481bf30f85d41747d-5"> 5</a>
-<a href="#rest_code_b36d2c9315fe4b3481bf30f85d41747d-6"> 6</a>
-<a href="#rest_code_b36d2c9315fe4b3481bf30f85d41747d-7"> 7</a>
-<a href="#rest_code_b36d2c9315fe4b3481bf30f85d41747d-8"> 8</a>
-<a href="#rest_code_b36d2c9315fe4b3481bf30f85d41747d-9"> 9</a>
-<a href="#rest_code_b36d2c9315fe4b3481bf30f85d41747d-10">10</a>
-<a href="#rest_code_b36d2c9315fe4b3481bf30f85d41747d-11">11</a>
-<a href="#rest_code_b36d2c9315fe4b3481bf30f85d41747d-12">12</a>
-<a href="#rest_code_b36d2c9315fe4b3481bf30f85d41747d-13">13</a>
-<a href="#rest_code_b36d2c9315fe4b3481bf30f85d41747d-14">14</a>
-<a href="#rest_code_b36d2c9315fe4b3481bf30f85d41747d-15">15</a>
-<a href="#rest_code_b36d2c9315fe4b3481bf30f85d41747d-16">16</a>
-<a href="#rest_code_b36d2c9315fe4b3481bf30f85d41747d-17">17</a>
-<a href="#rest_code_b36d2c9315fe4b3481bf30f85d41747d-18">18</a>
-<a href="#rest_code_b36d2c9315fe4b3481bf30f85d41747d-19">19</a>
-<a href="#rest_code_b36d2c9315fe4b3481bf30f85d41747d-20">20</a></pre></div></td>
-<td class="code"><pre class="code verilog"><a name="rest_code_b36d2c9315fe4b3481bf30f85d41747d-1"></a>        <span class="p">..</span>
-<a name="rest_code_b36d2c9315fe4b3481bf30f85d41747d-2"></a>        <span class="k">assign</span> <span class="n">outw</span> <span class="o">=</span> <span class="n">cw</span><span class="p">[</span><span class="no">IWIDTH</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="no">`PBITS</span><span class="p">]</span> <span class="o">^</span> <span class="n">bit_correction</span><span class="p">[</span><span class="no">IWIDTH</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="no">`PBITS</span><span class="p">];</span>
-<a name="rest_code_b36d2c9315fe4b3481bf30f85d41747d-3"></a>        <span class="p">..</span>
-<a name="rest_code_b36d2c9315fe4b3481bf30f85d41747d-4"></a>         <span class="n">modulo_gx</span> <span class="n">syndrome</span> <span class="p">(</span>
-<a name="rest_code_b36d2c9315fe4b3481bf30f85d41747d-5"></a>             <span class="p">.</span><span class="n">clk</span><span class="p">(</span><span class="n">clk</span><span class="p">),</span>
-<a name="rest_code_b36d2c9315fe4b3481bf30f85d41747d-6"></a>             <span class="p">.</span><span class="n">enable</span><span class="p">(</span><span class="n">divider_en</span><span class="p">),</span>
-<a name="rest_code_b36d2c9315fe4b3481bf30f85d41747d-7"></a>             <span class="p">.</span><span class="n">ibit</span><span class="p">(</span><span class="n">ibit</span><span class="p">),</span>
-<a name="rest_code_b36d2c9315fe4b3481bf30f85d41747d-8"></a>             <span class="p">.</span><span class="n">weight</span><span class="p">(</span><span class="n">sweight</span><span class="p">),</span>
-<a name="rest_code_b36d2c9315fe4b3481bf30f85d41747d-9"></a>             <span class="p">.</span><span class="n">remainder</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
-<a name="rest_code_b36d2c9315fe4b3481bf30f85d41747d-10"></a>             <span class="p">);</span>
-<a name="rest_code_b36d2c9315fe4b3481bf30f85d41747d-11"></a>
-<a name="rest_code_b36d2c9315fe4b3481bf30f85d41747d-12"></a>         <span class="n">compute_error_cw</span> <span class="n">likely_bits_err</span> <span class="p">(</span>
-<a name="rest_code_b36d2c9315fe4b3481bf30f85d41747d-13"></a>             <span class="p">.</span><span class="n">clk</span><span class="p">(</span><span class="n">clk</span><span class="p">),</span>
-<a name="rest_code_b36d2c9315fe4b3481bf30f85d41747d-14"></a>             <span class="p">.</span><span class="n">enable</span><span class="p">(</span><span class="n">enable_estimate_error_bits</span><span class="p">),</span>
-<a name="rest_code_b36d2c9315fe4b3481bf30f85d41747d-15"></a>             <span class="p">.</span><span class="n">syndrome</span><span class="p">(</span><span class="n">r</span><span class="p">),</span>
-<a name="rest_code_b36d2c9315fe4b3481bf30f85d41747d-16"></a>             <span class="p">.</span><span class="n">weight</span><span class="p">(</span><span class="n">sweight</span><span class="p">),</span>
-<a name="rest_code_b36d2c9315fe4b3481bf30f85d41747d-17"></a>             <span class="p">.</span><span class="n">pos</span><span class="p">(</span><span class="n">pos</span><span class="p">),</span>
-<a name="rest_code_b36d2c9315fe4b3481bf30f85d41747d-18"></a>             <span class="p">.</span><span class="n">rdy</span><span class="p">(</span><span class="n">sready</span><span class="p">),</span>
-<a name="rest_code_b36d2c9315fe4b3481bf30f85d41747d-19"></a>             <span class="p">.</span><span class="n">err_bits</span><span class="p">(</span><span class="n">bit_correction</span><span class="p">)</span>
-<a name="rest_code_b36d2c9315fe4b3481bf30f85d41747d-20"></a>             <span class="p">);</span>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_5fe9f716da4f44bf8558b45d41455a24-1"> 1</a>
+<a href="#rest_code_5fe9f716da4f44bf8558b45d41455a24-2"> 2</a>
+<a href="#rest_code_5fe9f716da4f44bf8558b45d41455a24-3"> 3</a>
+<a href="#rest_code_5fe9f716da4f44bf8558b45d41455a24-4"> 4</a>
+<a href="#rest_code_5fe9f716da4f44bf8558b45d41455a24-5"> 5</a>
+<a href="#rest_code_5fe9f716da4f44bf8558b45d41455a24-6"> 6</a>
+<a href="#rest_code_5fe9f716da4f44bf8558b45d41455a24-7"> 7</a>
+<a href="#rest_code_5fe9f716da4f44bf8558b45d41455a24-8"> 8</a>
+<a href="#rest_code_5fe9f716da4f44bf8558b45d41455a24-9"> 9</a>
+<a href="#rest_code_5fe9f716da4f44bf8558b45d41455a24-10">10</a>
+<a href="#rest_code_5fe9f716da4f44bf8558b45d41455a24-11">11</a>
+<a href="#rest_code_5fe9f716da4f44bf8558b45d41455a24-12">12</a>
+<a href="#rest_code_5fe9f716da4f44bf8558b45d41455a24-13">13</a>
+<a href="#rest_code_5fe9f716da4f44bf8558b45d41455a24-14">14</a>
+<a href="#rest_code_5fe9f716da4f44bf8558b45d41455a24-15">15</a>
+<a href="#rest_code_5fe9f716da4f44bf8558b45d41455a24-16">16</a>
+<a href="#rest_code_5fe9f716da4f44bf8558b45d41455a24-17">17</a>
+<a href="#rest_code_5fe9f716da4f44bf8558b45d41455a24-18">18</a>
+<a href="#rest_code_5fe9f716da4f44bf8558b45d41455a24-19">19</a>
+<a href="#rest_code_5fe9f716da4f44bf8558b45d41455a24-20">20</a></pre></div></td>
+<td class="code"><pre class="code verilog"><a name="rest_code_5fe9f716da4f44bf8558b45d41455a24-1"></a>        <span class="p">..</span>
+<a name="rest_code_5fe9f716da4f44bf8558b45d41455a24-2"></a>        <span class="k">assign</span> <span class="n">outw</span> <span class="o">=</span> <span class="n">cw</span><span class="p">[</span><span class="no">IWIDTH</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="no">`PBITS</span><span class="p">]</span> <span class="o">^</span> <span class="n">bit_correction</span><span class="p">[</span><span class="no">IWIDTH</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="no">`PBITS</span><span class="p">];</span>
+<a name="rest_code_5fe9f716da4f44bf8558b45d41455a24-3"></a>        <span class="p">..</span>
+<a name="rest_code_5fe9f716da4f44bf8558b45d41455a24-4"></a>         <span class="n">modulo_gx</span> <span class="n">syndrome</span> <span class="p">(</span>
+<a name="rest_code_5fe9f716da4f44bf8558b45d41455a24-5"></a>             <span class="p">.</span><span class="n">clk</span><span class="p">(</span><span class="n">clk</span><span class="p">),</span>
+<a name="rest_code_5fe9f716da4f44bf8558b45d41455a24-6"></a>             <span class="p">.</span><span class="n">enable</span><span class="p">(</span><span class="n">divider_en</span><span class="p">),</span>
+<a name="rest_code_5fe9f716da4f44bf8558b45d41455a24-7"></a>             <span class="p">.</span><span class="n">ibit</span><span class="p">(</span><span class="n">ibit</span><span class="p">),</span>
+<a name="rest_code_5fe9f716da4f44bf8558b45d41455a24-8"></a>             <span class="p">.</span><span class="n">weight</span><span class="p">(</span><span class="n">sweight</span><span class="p">),</span>
+<a name="rest_code_5fe9f716da4f44bf8558b45d41455a24-9"></a>             <span class="p">.</span><span class="n">remainder</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+<a name="rest_code_5fe9f716da4f44bf8558b45d41455a24-10"></a>             <span class="p">);</span>
+<a name="rest_code_5fe9f716da4f44bf8558b45d41455a24-11"></a>
+<a name="rest_code_5fe9f716da4f44bf8558b45d41455a24-12"></a>         <span class="n">compute_error_cw</span> <span class="n">likely_bits_err</span> <span class="p">(</span>
+<a name="rest_code_5fe9f716da4f44bf8558b45d41455a24-13"></a>             <span class="p">.</span><span class="n">clk</span><span class="p">(</span><span class="n">clk</span><span class="p">),</span>
+<a name="rest_code_5fe9f716da4f44bf8558b45d41455a24-14"></a>             <span class="p">.</span><span class="n">enable</span><span class="p">(</span><span class="n">enable_estimate_error_bits</span><span class="p">),</span>
+<a name="rest_code_5fe9f716da4f44bf8558b45d41455a24-15"></a>             <span class="p">.</span><span class="n">syndrome</span><span class="p">(</span><span class="n">r</span><span class="p">),</span>
+<a name="rest_code_5fe9f716da4f44bf8558b45d41455a24-16"></a>             <span class="p">.</span><span class="n">weight</span><span class="p">(</span><span class="n">sweight</span><span class="p">),</span>
+<a name="rest_code_5fe9f716da4f44bf8558b45d41455a24-17"></a>             <span class="p">.</span><span class="n">pos</span><span class="p">(</span><span class="n">pos</span><span class="p">),</span>
+<a name="rest_code_5fe9f716da4f44bf8558b45d41455a24-18"></a>             <span class="p">.</span><span class="n">rdy</span><span class="p">(</span><span class="n">sready</span><span class="p">),</span>
+<a name="rest_code_5fe9f716da4f44bf8558b45d41455a24-19"></a>             <span class="p">.</span><span class="n">err_bits</span><span class="p">(</span><span class="n">bit_correction</span><span class="p">)</span>
+<a name="rest_code_5fe9f716da4f44bf8558b45d41455a24-20"></a>             <span class="p">);</span>
 </pre></td>
 </tr></table>
 <p>The submodule, <em>modulo_gx</em> performs syndrome
@@ -226,44 +227,44 @@ result. This is step 2 of the algorithm. If <span class="math">\(weight \le 2\)<
 all the input bits are in, the circuit then enable the bits error
 computation circuit. This is step 3 of the algorithm.</p>
 <table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_04221f619e894a6e9e7b9ca792bca090-1"> 1</a>
-<a href="#rest_code_04221f619e894a6e9e7b9ca792bca090-2"> 2</a>
-<a href="#rest_code_04221f619e894a6e9e7b9ca792bca090-3"> 3</a>
-<a href="#rest_code_04221f619e894a6e9e7b9ca792bca090-4"> 4</a>
-<a href="#rest_code_04221f619e894a6e9e7b9ca792bca090-5"> 5</a>
-<a href="#rest_code_04221f619e894a6e9e7b9ca792bca090-6"> 6</a>
-<a href="#rest_code_04221f619e894a6e9e7b9ca792bca090-7"> 7</a>
-<a href="#rest_code_04221f619e894a6e9e7b9ca792bca090-8"> 8</a>
-<a href="#rest_code_04221f619e894a6e9e7b9ca792bca090-9"> 9</a>
-<a href="#rest_code_04221f619e894a6e9e7b9ca792bca090-10">10</a>
-<a href="#rest_code_04221f619e894a6e9e7b9ca792bca090-11">11</a>
-<a href="#rest_code_04221f619e894a6e9e7b9ca792bca090-12">12</a>
-<a href="#rest_code_04221f619e894a6e9e7b9ca792bca090-13">13</a>
-<a href="#rest_code_04221f619e894a6e9e7b9ca792bca090-14">14</a>
-<a href="#rest_code_04221f619e894a6e9e7b9ca792bca090-15">15</a>
-<a href="#rest_code_04221f619e894a6e9e7b9ca792bca090-16">16</a>
-<a href="#rest_code_04221f619e894a6e9e7b9ca792bca090-17">17</a>
-<a href="#rest_code_04221f619e894a6e9e7b9ca792bca090-18">18</a>
-<a href="#rest_code_04221f619e894a6e9e7b9ca792bca090-19">19</a></pre></div></td>
-<td class="code"><pre class="code verilog"><a name="rest_code_04221f619e894a6e9e7b9ca792bca090-1"></a>     <span class="p">..</span>
-<a name="rest_code_04221f619e894a6e9e7b9ca792bca090-2"></a>     <span class="k">assign</span> <span class="n">weight</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">r</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">r</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">r</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">r</span><span class="p">[</span><span class="mh">4</span><span class="p">]</span> <span class="o">+</span> <span class="n">r</span><span class="p">[</span><span class="mh">5</span><span class="p">]</span> <span class="o">+</span> <span class="n">r</span><span class="p">[</span><span class="mh">6</span><span class="p">]</span> <span class="o">+</span> <span class="n">r</span><span class="p">[</span><span class="mh">7</span><span class="p">];</span>
-<a name="rest_code_04221f619e894a6e9e7b9ca792bca090-3"></a>
-<a name="rest_code_04221f619e894a6e9e7b9ca792bca090-4"></a>     <span class="o">/*</span> <span class="n">divider</span> <span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">=</span><span class="n">x</span><span class="o">^</span><span class="mh">8</span> <span class="o">+</span> <span class="n">x</span><span class="o">^</span><span class="mh">7</span> <span class="o">+</span> <span class="n">x</span><span class="o">^</span><span class="mh">6</span> <span class="o">+</span> <span class="n">x</span><span class="o">^</span><span class="mh">4</span> <span class="o">+</span> <span class="mh">1</span> <span class="o">*</span> <span class="o">/</span>
-<a name="rest_code_04221f619e894a6e9e7b9ca792bca090-5"></a>     <span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">)</span> <span class="k">begin</span>
-<a name="rest_code_04221f619e894a6e9e7b9ca792bca090-6"></a>             <span class="k">if</span> <span class="p">(</span><span class="n">enable</span> <span class="p">)</span> <span class="k">begin</span>
-<a name="rest_code_04221f619e894a6e9e7b9ca792bca090-7"></a>             <span class="n">r</span><span class="p">[</span><span class="mh">7</span><span class="p">]</span> <span class="o">&lt;=</span>  <span class="n">r</span><span class="p">[</span><span class="mh">6</span><span class="p">]</span> <span class="o">^</span> <span class="n">r</span><span class="p">[</span><span class="mh">7</span><span class="p">];</span>
-<a name="rest_code_04221f619e894a6e9e7b9ca792bca090-8"></a>             <span class="n">r</span><span class="p">[</span><span class="mh">6</span><span class="p">]</span> <span class="o">&lt;=</span>  <span class="n">r</span><span class="p">[</span><span class="mh">5</span><span class="p">]</span> <span class="o">^</span> <span class="n">r</span><span class="p">[</span><span class="mh">7</span><span class="p">];</span>
-<a name="rest_code_04221f619e894a6e9e7b9ca792bca090-9"></a>             <span class="n">r</span><span class="p">[</span><span class="mh">5</span><span class="p">]</span> <span class="o">&lt;=</span>  <span class="n">r</span><span class="p">[</span><span class="mh">4</span><span class="p">];</span>
-<a name="rest_code_04221f619e894a6e9e7b9ca792bca090-10"></a>             <span class="n">r</span><span class="p">[</span><span class="mh">4</span><span class="p">]</span> <span class="o">&lt;=</span>  <span class="n">r</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">^</span> <span class="n">r</span><span class="p">[</span><span class="mh">7</span><span class="p">];</span>
-<a name="rest_code_04221f619e894a6e9e7b9ca792bca090-11"></a>             <span class="n">r</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">&lt;=</span>  <span class="n">r</span><span class="p">[</span><span class="mh">2</span><span class="p">];</span>
-<a name="rest_code_04221f619e894a6e9e7b9ca792bca090-12"></a>             <span class="n">r</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">&lt;=</span>  <span class="n">r</span><span class="p">[</span><span class="mh">1</span><span class="p">];</span>
-<a name="rest_code_04221f619e894a6e9e7b9ca792bca090-13"></a>             <span class="n">r</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span> <span class="o">&lt;=</span>  <span class="n">r</span><span class="p">[</span><span class="mh">0</span><span class="p">];</span>
-<a name="rest_code_04221f619e894a6e9e7b9ca792bca090-14"></a>
-<a name="rest_code_04221f619e894a6e9e7b9ca792bca090-15"></a>             <span class="n">r</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span> <span class="o">&lt;=</span>  <span class="n">ibit</span> <span class="o">^</span> <span class="n">r</span><span class="p">[</span><span class="mh">7</span><span class="p">];</span>
-<a name="rest_code_04221f619e894a6e9e7b9ca792bca090-16"></a>     <span class="k">end</span>
-<a name="rest_code_04221f619e894a6e9e7b9ca792bca090-17"></a>     <span class="k">else</span>
-<a name="rest_code_04221f619e894a6e9e7b9ca792bca090-18"></a>             <span class="n">r</span> <span class="o">&lt;=</span>  <span class="mh">8'h0</span><span class="p">;</span>
-<a name="rest_code_04221f619e894a6e9e7b9ca792bca090-19"></a>     <span class="k">end</span>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_0beb12f5daa1499896e32f5f6c112be8-1"> 1</a>
+<a href="#rest_code_0beb12f5daa1499896e32f5f6c112be8-2"> 2</a>
+<a href="#rest_code_0beb12f5daa1499896e32f5f6c112be8-3"> 3</a>
+<a href="#rest_code_0beb12f5daa1499896e32f5f6c112be8-4"> 4</a>
+<a href="#rest_code_0beb12f5daa1499896e32f5f6c112be8-5"> 5</a>
+<a href="#rest_code_0beb12f5daa1499896e32f5f6c112be8-6"> 6</a>
+<a href="#rest_code_0beb12f5daa1499896e32f5f6c112be8-7"> 7</a>
+<a href="#rest_code_0beb12f5daa1499896e32f5f6c112be8-8"> 8</a>
+<a href="#rest_code_0beb12f5daa1499896e32f5f6c112be8-9"> 9</a>
+<a href="#rest_code_0beb12f5daa1499896e32f5f6c112be8-10">10</a>
+<a href="#rest_code_0beb12f5daa1499896e32f5f6c112be8-11">11</a>
+<a href="#rest_code_0beb12f5daa1499896e32f5f6c112be8-12">12</a>
+<a href="#rest_code_0beb12f5daa1499896e32f5f6c112be8-13">13</a>
+<a href="#rest_code_0beb12f5daa1499896e32f5f6c112be8-14">14</a>
+<a href="#rest_code_0beb12f5daa1499896e32f5f6c112be8-15">15</a>
+<a href="#rest_code_0beb12f5daa1499896e32f5f6c112be8-16">16</a>
+<a href="#rest_code_0beb12f5daa1499896e32f5f6c112be8-17">17</a>
+<a href="#rest_code_0beb12f5daa1499896e32f5f6c112be8-18">18</a>
+<a href="#rest_code_0beb12f5daa1499896e32f5f6c112be8-19">19</a></pre></div></td>
+<td class="code"><pre class="code verilog"><a name="rest_code_0beb12f5daa1499896e32f5f6c112be8-1"></a>     <span class="p">..</span>
+<a name="rest_code_0beb12f5daa1499896e32f5f6c112be8-2"></a>     <span class="k">assign</span> <span class="n">weight</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">r</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">r</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">r</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">r</span><span class="p">[</span><span class="mh">4</span><span class="p">]</span> <span class="o">+</span> <span class="n">r</span><span class="p">[</span><span class="mh">5</span><span class="p">]</span> <span class="o">+</span> <span class="n">r</span><span class="p">[</span><span class="mh">6</span><span class="p">]</span> <span class="o">+</span> <span class="n">r</span><span class="p">[</span><span class="mh">7</span><span class="p">];</span>
+<a name="rest_code_0beb12f5daa1499896e32f5f6c112be8-3"></a>
+<a name="rest_code_0beb12f5daa1499896e32f5f6c112be8-4"></a>     <span class="o">/*</span> <span class="n">divider</span> <span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">=</span><span class="n">x</span><span class="o">^</span><span class="mh">8</span> <span class="o">+</span> <span class="n">x</span><span class="o">^</span><span class="mh">7</span> <span class="o">+</span> <span class="n">x</span><span class="o">^</span><span class="mh">6</span> <span class="o">+</span> <span class="n">x</span><span class="o">^</span><span class="mh">4</span> <span class="o">+</span> <span class="mh">1</span> <span class="o">*</span> <span class="o">/</span>
+<a name="rest_code_0beb12f5daa1499896e32f5f6c112be8-5"></a>     <span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_0beb12f5daa1499896e32f5f6c112be8-6"></a>             <span class="k">if</span> <span class="p">(</span><span class="n">enable</span> <span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_0beb12f5daa1499896e32f5f6c112be8-7"></a>             <span class="n">r</span><span class="p">[</span><span class="mh">7</span><span class="p">]</span> <span class="o">&lt;=</span>  <span class="n">r</span><span class="p">[</span><span class="mh">6</span><span class="p">]</span> <span class="o">^</span> <span class="n">r</span><span class="p">[</span><span class="mh">7</span><span class="p">];</span>
+<a name="rest_code_0beb12f5daa1499896e32f5f6c112be8-8"></a>             <span class="n">r</span><span class="p">[</span><span class="mh">6</span><span class="p">]</span> <span class="o">&lt;=</span>  <span class="n">r</span><span class="p">[</span><span class="mh">5</span><span class="p">]</span> <span class="o">^</span> <span class="n">r</span><span class="p">[</span><span class="mh">7</span><span class="p">];</span>
+<a name="rest_code_0beb12f5daa1499896e32f5f6c112be8-9"></a>             <span class="n">r</span><span class="p">[</span><span class="mh">5</span><span class="p">]</span> <span class="o">&lt;=</span>  <span class="n">r</span><span class="p">[</span><span class="mh">4</span><span class="p">];</span>
+<a name="rest_code_0beb12f5daa1499896e32f5f6c112be8-10"></a>             <span class="n">r</span><span class="p">[</span><span class="mh">4</span><span class="p">]</span> <span class="o">&lt;=</span>  <span class="n">r</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">^</span> <span class="n">r</span><span class="p">[</span><span class="mh">7</span><span class="p">];</span>
+<a name="rest_code_0beb12f5daa1499896e32f5f6c112be8-11"></a>             <span class="n">r</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">&lt;=</span>  <span class="n">r</span><span class="p">[</span><span class="mh">2</span><span class="p">];</span>
+<a name="rest_code_0beb12f5daa1499896e32f5f6c112be8-12"></a>             <span class="n">r</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">&lt;=</span>  <span class="n">r</span><span class="p">[</span><span class="mh">1</span><span class="p">];</span>
+<a name="rest_code_0beb12f5daa1499896e32f5f6c112be8-13"></a>             <span class="n">r</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span> <span class="o">&lt;=</span>  <span class="n">r</span><span class="p">[</span><span class="mh">0</span><span class="p">];</span>
+<a name="rest_code_0beb12f5daa1499896e32f5f6c112be8-14"></a>
+<a name="rest_code_0beb12f5daa1499896e32f5f6c112be8-15"></a>             <span class="n">r</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span> <span class="o">&lt;=</span>  <span class="n">ibit</span> <span class="o">^</span> <span class="n">r</span><span class="p">[</span><span class="mh">7</span><span class="p">];</span>
+<a name="rest_code_0beb12f5daa1499896e32f5f6c112be8-16"></a>     <span class="k">end</span>
+<a name="rest_code_0beb12f5daa1499896e32f5f6c112be8-17"></a>     <span class="k">else</span>
+<a name="rest_code_0beb12f5daa1499896e32f5f6c112be8-18"></a>             <span class="n">r</span> <span class="o">&lt;=</span>  <span class="mh">8'h0</span><span class="p">;</span>
+<a name="rest_code_0beb12f5daa1499896e32f5f6c112be8-19"></a>     <span class="k">end</span>
 </pre></td>
 </tr></table>
 <p>step 3 of the algorithm performs final bit(s) error computation based on the result from
@@ -273,96 +274,96 @@ needed for correction is <em>err_bits</em> where it is added to the input code w
 correction bits error includes both the information bits and the parity bits. The
 final FEC code word is the upper 7 bits of the corrected code word.</p>
 <table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-1"> 1</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-2"> 2</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-3"> 3</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-4"> 4</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-5"> 5</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-6"> 6</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-7"> 7</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-8"> 8</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-9"> 9</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-10">10</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-11">11</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-12">12</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-13">13</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-14">14</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-15">15</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-16">16</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-17">17</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-18">18</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-19">19</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-20">20</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-21">21</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-22">22</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-23">23</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-24">24</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-25">25</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-26">26</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-27">27</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-28">28</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-29">29</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-30">30</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-31">31</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-32">32</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-33">33</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-34">34</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-35">35</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-36">36</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-37">37</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-38">38</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-39">39</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-40">40</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-41">41</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-42">42</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-43">43</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-44">44</a>
-<a href="#rest_code_76a160640b56404b8d1fae2aabc736f7-45">45</a></pre></div></td>
-<td class="code"><pre class="code verilog"><a name="rest_code_76a160640b56404b8d1fae2aabc736f7-1"></a>     <span class="p">..</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-2"></a>     <span class="k">assign</span> <span class="n">err_bits</span> <span class="o">=</span> <span class="n">bit_err</span><span class="p">[</span><span class="mh">14</span><span class="o">:</span><span class="mh">0</span><span class="p">];</span> <span class="o">/*</span> <span class="n">error</span> <span class="n">bits</span> <span class="n">are</span> <span class="n">lower</span> <span class="mh">15</span> <span class="n">bits</span> <span class="o">*</span> <span class="o">/</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-3"></a>     <span class="k">assign</span> <span class="n">rdy</span> <span class="o">=</span> <span class="n">ready</span><span class="p">;</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-4"></a>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-5"></a>     <span class="k">always</span><span class="p">@(</span><span class="n">syndrome</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">enable</span><span class="p">)</span> <span class="k">begin</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-6"></a>     <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="n">ready</span> <span class="p">)</span> <span class="k">begin</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-7"></a>             <span class="n">bit_err</span> <span class="o">=</span> <span class="n">syndrome</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="mh">5'h0f</span>  <span class="o">-</span> <span class="n">pos</span><span class="p">);</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-8"></a>             <span class="no">R</span>  <span class="o">=</span> <span class="n">bit_err</span><span class="p">[</span><span class="mh">14</span><span class="o">:</span><span class="mh">0</span><span class="p">];</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-9"></a>     <span class="k">end</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-10"></a>     <span class="k">end</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-11"></a>     <span class="p">..</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-12"></a>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-13"></a>     <span class="o">/*</span> <span class="n">Divide</span> <span class="n">by</span> <span class="mh">1</span><span class="o">+</span><span class="n">x</span><span class="o">**</span><span class="mf">15.</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-14"></a>     <span class="n">Divide</span> <span class="n">only</span> <span class="k">if</span> <span class="n">degree</span> <span class="n">of</span> <span class="n">the</span> <span class="n">computed</span> <span class="n">syndrome</span> <span class="n">Si</span> <span class="n">is</span> <span class="o">&gt;=</span> <span class="mf">15.</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-15"></a>    <span class="o">*</span> <span class="o">/</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-16"></a>     <span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">)</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-17"></a>     <span class="k">if</span> <span class="p">(</span><span class="n">enable</span><span class="p">)</span> <span class="k">begin</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-18"></a>             <span class="n">ready</span> <span class="o">&lt;=</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-19"></a>     <span class="o">/*</span> <span class="n">Divide</span> <span class="k">if</span> <span class="n">degree</span> <span class="n">is</span> <span class="o">&gt;=</span> <span class="mh">15</span> <span class="o">*</span> <span class="o">/</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-20"></a>             <span class="k">if</span> <span class="p">(</span> <span class="n">bit_err</span><span class="p">[</span><span class="mh">22</span><span class="o">:</span><span class="mh">15</span><span class="p">]</span> <span class="p">)</span> <span class="k">begin</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-21"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">14</span><span class="p">]</span> <span class="o">^</span> <span class="n">ibit</span><span class="p">;</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-22"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">0</span><span class="p">];</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-23"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">1</span><span class="p">];</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-24"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">2</span><span class="p">];</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-25"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">4</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">3</span><span class="p">];</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-26"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">5</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">4</span><span class="p">];</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-27"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">6</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">5</span><span class="p">];</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-28"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">7</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">6</span><span class="p">];</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-29"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">8</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">7</span><span class="p">];</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-30"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">9</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">8</span><span class="p">];</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-31"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">10</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">9</span><span class="p">];</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-32"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">11</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">10</span><span class="p">];</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-33"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">12</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">11</span><span class="p">];</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-34"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">13</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">12</span><span class="p">];</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-35"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">14</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">13</span><span class="p">];</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-36"></a>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-37"></a>                     <span class="n">ibit</span> <span class="o">&lt;=</span> <span class="p">{</span><span class="n">ibit</span><span class="p">[</span><span class="mh">6</span><span class="o">:</span><span class="mh">0</span><span class="p">],</span><span class="mh">1</span><span class="mb">'b0</span><span class="p">};</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-38"></a>             <span class="k">if</span> <span class="p">(</span><span class="n">weight</span> <span class="o">&lt;=</span> <span class="mh">4'h2</span> <span class="p">)</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-39"></a>                     <span class="n">ready</span> <span class="o">&lt;=</span> <span class="mh">1</span><span class="mb">'b1</span><span class="p">;</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-40"></a>             <span class="k">end</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-41"></a>             <span class="k">else</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-42"></a>                     <span class="n">ready</span> <span class="o">&lt;=</span> <span class="mh">1</span><span class="mb">'b1</span><span class="p">;</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-43"></a>             <span class="k">end</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-44"></a>             <span class="k">else</span>
-<a name="rest_code_76a160640b56404b8d1fae2aabc736f7-45"></a>             <span class="n">ready</span> <span class="o">&lt;=</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
+<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-1"> 1</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-2"> 2</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-3"> 3</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-4"> 4</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-5"> 5</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-6"> 6</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-7"> 7</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-8"> 8</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-9"> 9</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-10">10</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-11">11</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-12">12</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-13">13</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-14">14</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-15">15</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-16">16</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-17">17</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-18">18</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-19">19</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-20">20</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-21">21</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-22">22</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-23">23</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-24">24</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-25">25</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-26">26</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-27">27</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-28">28</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-29">29</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-30">30</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-31">31</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-32">32</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-33">33</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-34">34</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-35">35</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-36">36</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-37">37</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-38">38</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-39">39</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-40">40</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-41">41</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-42">42</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-43">43</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-44">44</a>
+<a href="#rest_code_0d4c04c07154431fb38a9994753e50eb-45">45</a></pre></div></td>
+<td class="code"><pre class="code verilog"><a name="rest_code_0d4c04c07154431fb38a9994753e50eb-1"></a>     <span class="p">..</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-2"></a>     <span class="k">assign</span> <span class="n">err_bits</span> <span class="o">=</span> <span class="n">bit_err</span><span class="p">[</span><span class="mh">14</span><span class="o">:</span><span class="mh">0</span><span class="p">];</span> <span class="o">/*</span> <span class="n">error</span> <span class="n">bits</span> <span class="n">are</span> <span class="n">lower</span> <span class="mh">15</span> <span class="n">bits</span> <span class="o">*</span> <span class="o">/</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-3"></a>     <span class="k">assign</span> <span class="n">rdy</span> <span class="o">=</span> <span class="n">ready</span><span class="p">;</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-4"></a>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-5"></a>     <span class="k">always</span><span class="p">@(</span><span class="n">syndrome</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">enable</span><span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-6"></a>     <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="n">ready</span> <span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-7"></a>             <span class="n">bit_err</span> <span class="o">=</span> <span class="n">syndrome</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="mh">5'h0f</span>  <span class="o">-</span> <span class="n">pos</span><span class="p">);</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-8"></a>             <span class="no">R</span>  <span class="o">=</span> <span class="n">bit_err</span><span class="p">[</span><span class="mh">14</span><span class="o">:</span><span class="mh">0</span><span class="p">];</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-9"></a>     <span class="k">end</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-10"></a>     <span class="k">end</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-11"></a>     <span class="p">..</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-12"></a>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-13"></a>     <span class="o">/*</span> <span class="n">Divide</span> <span class="n">by</span> <span class="mh">1</span><span class="o">+</span><span class="n">x</span><span class="o">**</span><span class="mf">15.</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-14"></a>     <span class="n">Divide</span> <span class="n">only</span> <span class="k">if</span> <span class="n">degree</span> <span class="n">of</span> <span class="n">the</span> <span class="n">computed</span> <span class="n">syndrome</span> <span class="n">Si</span> <span class="n">is</span> <span class="o">&gt;=</span> <span class="mf">15.</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-15"></a>    <span class="o">*</span> <span class="o">/</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-16"></a>     <span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">)</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-17"></a>     <span class="k">if</span> <span class="p">(</span><span class="n">enable</span><span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-18"></a>             <span class="n">ready</span> <span class="o">&lt;=</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-19"></a>     <span class="o">/*</span> <span class="n">Divide</span> <span class="k">if</span> <span class="n">degree</span> <span class="n">is</span> <span class="o">&gt;=</span> <span class="mh">15</span> <span class="o">*</span> <span class="o">/</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-20"></a>             <span class="k">if</span> <span class="p">(</span> <span class="n">bit_err</span><span class="p">[</span><span class="mh">22</span><span class="o">:</span><span class="mh">15</span><span class="p">]</span> <span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-21"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">14</span><span class="p">]</span> <span class="o">^</span> <span class="n">ibit</span><span class="p">;</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-22"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">0</span><span class="p">];</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-23"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">1</span><span class="p">];</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-24"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">2</span><span class="p">];</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-25"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">4</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">3</span><span class="p">];</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-26"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">5</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">4</span><span class="p">];</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-27"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">6</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">5</span><span class="p">];</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-28"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">7</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">6</span><span class="p">];</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-29"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">8</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">7</span><span class="p">];</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-30"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">9</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">8</span><span class="p">];</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-31"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">10</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">9</span><span class="p">];</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-32"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">11</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">10</span><span class="p">];</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-33"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">12</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">11</span><span class="p">];</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-34"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">13</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">12</span><span class="p">];</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-35"></a>                     <span class="no">R</span><span class="p">[</span><span class="mh">14</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="no">R</span><span class="p">[</span><span class="mh">13</span><span class="p">];</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-36"></a>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-37"></a>                     <span class="n">ibit</span> <span class="o">&lt;=</span> <span class="p">{</span><span class="n">ibit</span><span class="p">[</span><span class="mh">6</span><span class="o">:</span><span class="mh">0</span><span class="p">],</span><span class="mh">1</span><span class="mb">'b0</span><span class="p">};</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-38"></a>             <span class="k">if</span> <span class="p">(</span><span class="n">weight</span> <span class="o">&lt;=</span> <span class="mh">4'h2</span> <span class="p">)</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-39"></a>                     <span class="n">ready</span> <span class="o">&lt;=</span> <span class="mh">1</span><span class="mb">'b1</span><span class="p">;</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-40"></a>             <span class="k">end</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-41"></a>             <span class="k">else</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-42"></a>                     <span class="n">ready</span> <span class="o">&lt;=</span> <span class="mh">1</span><span class="mb">'b1</span><span class="p">;</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-43"></a>             <span class="k">end</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-44"></a>             <span class="k">else</span>
+<a name="rest_code_0d4c04c07154431fb38a9994753e50eb-45"></a>             <span class="n">ready</span> <span class="o">&lt;=</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
 </pre></td>
 </tr></table>
 <p>Some sample of waveforms captured  from the test bench based on this algorithm is shown for

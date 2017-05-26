@@ -10,8 +10,7 @@
 <meta name="generator" content="Nikola (getnikola.com)">
 <link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
 <link rel="canonical" href="http://souktha.github.io/misc/create-ap-linuxpc/">
-<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="description" itemprop="description" content="Creating wireless access point on linux PC">
-<meta name="author" content="Soukthavy">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Soukthavy">
 <link rel="prev" href="../../hardware/cyclic_1_x_x4_hw/" title="Simple Cyclic Hamming (15,11,3) FEC" type="text/html">
 <link rel="next" href="../bch15_7_5/" title="Binary BCH (15,7,5) work out" type="text/html">
 <meta property="og:site_name" content="Soukthavy Sopha">
@@ -179,18 +178,18 @@ in a shell script. Once I login as root,</p>
 <p class="first">First this is my network devices. Wireless device would not show up if Linux kernel
 is not supported it. In that case, the vendor's driver will need to ported, compiled, and
 loaded.</p>
-<pre class="code text"><a name="rest_code_d21582ffefa8439085d14a07083eee2d-1"></a>cat /proc/net/dev
-<a name="rest_code_d21582ffefa8439085d14a07083eee2d-2"></a>Inter-|   Receive                                                |  Transmit
-<a name="rest_code_d21582ffefa8439085d14a07083eee2d-3"></a> face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed
-<a name="rest_code_d21582ffefa8439085d14a07083eee2d-4"></a>    lo:    1504      22    0    0    0     0          0         0     1504      22    0    0    0     0       0          0
-<a name="rest_code_d21582ffefa8439085d14a07083eee2d-5"></a> wlan0:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0
-<a name="rest_code_d21582ffefa8439085d14a07083eee2d-6"></a>  eth0:  364234    2479    0    0    0     0          0         0   350453    3161    0    0    0     0       0          0
+<pre class="code text"><a name="rest_code_804f2b5ecc13460c8a76227cadbc474f-1"></a>cat /proc/net/dev
+<a name="rest_code_804f2b5ecc13460c8a76227cadbc474f-2"></a>Inter-|   Receive                                                |  Transmit
+<a name="rest_code_804f2b5ecc13460c8a76227cadbc474f-3"></a> face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed
+<a name="rest_code_804f2b5ecc13460c8a76227cadbc474f-4"></a>    lo:    1504      22    0    0    0     0          0         0     1504      22    0    0    0     0       0          0
+<a name="rest_code_804f2b5ecc13460c8a76227cadbc474f-5"></a> wlan0:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0
+<a name="rest_code_804f2b5ecc13460c8a76227cadbc474f-6"></a>  eth0:  364234    2479    0    0    0     0          0         0   350453    3161    0    0    0     0       0          0
 </pre>
 </li>
 <li>
 <p class="first">Set regulatory domain of <em>wlan0</em> to meet US FCC regulation (in my case) and set WDS mode,</p>
-<pre class="code text"><a name="rest_code_5bfdcfccd8754eee87c9e2c2a4b07ac3-1"></a>#iw reg set US
-<a name="rest_code_5bfdcfccd8754eee87c9e2c2a4b07ac3-2"></a>#iw dev wlan0 set 4addr on
+<pre class="code text"><a name="rest_code_0af8c84da6434021a37e3240fe01169c-1"></a>#iw reg set US
+<a name="rest_code_0af8c84da6434021a37e3240fe01169c-2"></a>#iw dev wlan0 set 4addr on
 </pre>
 </li>
 </ul>
@@ -200,12 +199,12 @@ that is needed for Tx/Rx power limit, frequency channels allowed.</p>
 <ul>
 <li>
 <p class="first">Create bridge <em>br0</em>, and add <em>wlan0</em> interface to bridge,</p>
-<pre class="code text"><a name="rest_code_93e6ceec433c4dda9fb11e09a3978851-1"></a>#brctl addbr br0
-<a name="rest_code_93e6ceec433c4dda9fb11e09a3978851-2"></a>#brctl addif br0 wlan0
-<a name="rest_code_93e6ceec433c4dda9fb11e09a3978851-3"></a>#
-<a name="rest_code_93e6ceec433c4dda9fb11e09a3978851-4"></a>#brctl show
-<a name="rest_code_93e6ceec433c4dda9fb11e09a3978851-5"></a>bridge name     bridge id               STP enabled     interfaces
-<a name="rest_code_93e6ceec433c4dda9fb11e09a3978851-6"></a>br0             8000.e8de27191e83       no              wlan0
+<pre class="code text"><a name="rest_code_4c4efbb8359c4e158070bdb843eaef35-1"></a>#brctl addbr br0
+<a name="rest_code_4c4efbb8359c4e158070bdb843eaef35-2"></a>#brctl addif br0 wlan0
+<a name="rest_code_4c4efbb8359c4e158070bdb843eaef35-3"></a>#
+<a name="rest_code_4c4efbb8359c4e158070bdb843eaef35-4"></a>#brctl show
+<a name="rest_code_4c4efbb8359c4e158070bdb843eaef35-5"></a>bridge name     bridge id               STP enabled     interfaces
+<a name="rest_code_4c4efbb8359c4e158070bdb843eaef35-6"></a>br0             8000.e8de27191e83       no              wlan0
 </pre>
 </li>
 </ul>
@@ -216,14 +215,14 @@ considered to be <em>WAN</em> for this setting. In another word, do not bond eth
 <li>Enable IP forwarding,</li>
 </ul>
 <blockquote>
-<pre class="code text"><a name="rest_code_61e90230fcca4d96ba3a7b5bce463458-1"></a># sysctl -w net.ipv4.ip_forward=1
-<a name="rest_code_61e90230fcca4d96ba3a7b5bce463458-2"></a>net.ipv4.ip_forward = 1
+<pre class="code text"><a name="rest_code_6b1bdb3ada7944ee94d5d37ed073cdf2-1"></a># sysctl -w net.ipv4.ip_forward=1
+<a name="rest_code_6b1bdb3ada7944ee94d5d37ed073cdf2-2"></a>net.ipv4.ip_forward = 1
 </pre>
 </blockquote>
 <ul>
 <li>
 <p class="first">Assign IP address to <em>br0</em> device. I choose 192.168.11.1 for my WiFi AP.</p>
-<pre class="code text"><a name="rest_code_04f93d6ec0a04bc0a3806c4dc97ba0c4-1"></a>#ifconfig br0 192.168.11.1 up
+<pre class="code text"><a name="rest_code_455e81768b0641a4860a104393553712-1"></a>#ifconfig br0 192.168.11.1 up
 </pre>
 </li>
 </ul>
@@ -232,7 +231,7 @@ The IP network address 192.168.11.1 is my new bridged WiFi network.</p>
 <ul>
 <li>
 <p class="first">Start dnsmasq,</p>
-<pre class="code text"><a name="rest_code_939b277f508c47f999839219cae4606b-1"></a>#dnsmasq -C dnsmasq.conf
+<pre class="code text"><a name="rest_code_9bc2cdd0fc8c4230a802a9177d841b64-1"></a>#dnsmasq -C dnsmasq.conf
 </pre>
 </li>
 </ul>
@@ -257,14 +256,14 @@ of x.100 - x.199 (line 6).</p>
 later. hostapd will set <em>wlan0</em> to AP mode.</li>
 </ul>
 <blockquote>
-<pre class="code text"><a name="rest_code_9ca39e19793141c3bab9e09beca7e091-1"></a>#hostapd hostapd.conf
-<a name="rest_code_9ca39e19793141c3bab9e09beca7e091-2"></a>Configuration file: hostapd-sedone.conf
-<a name="rest_code_9ca39e19793141c3bab9e09beca7e091-3"></a>wlan0: interface state UNINITIALIZED-&gt;COUNTRY_UPDATE
-<a name="rest_code_9ca39e19793141c3bab9e09beca7e091-4"></a>wlan0: interface state COUNTRY_UPDATE-&gt;HT_SCAN
-<a name="rest_code_9ca39e19793141c3bab9e09beca7e091-5"></a>20/40 MHz operation not permitted on channel pri=6 sec=10 based on overlapping BSSes
-<a name="rest_code_9ca39e19793141c3bab9e09beca7e091-6"></a>Using interface wlan0 with hwaddr e8:de:27:19:1e:83 and ssid "sedone3"
-<a name="rest_code_9ca39e19793141c3bab9e09beca7e091-7"></a>wlan0: interface state HT_SCAN-&gt;ENABLED
-<a name="rest_code_9ca39e19793141c3bab9e09beca7e091-8"></a>wlan0: AP-ENABLED
+<pre class="code text"><a name="rest_code_d2f666f8a7f7437ca901adef35db9cef-1"></a>#hostapd hostapd.conf
+<a name="rest_code_d2f666f8a7f7437ca901adef35db9cef-2"></a>Configuration file: hostapd-sedone.conf
+<a name="rest_code_d2f666f8a7f7437ca901adef35db9cef-3"></a>wlan0: interface state UNINITIALIZED-&gt;COUNTRY_UPDATE
+<a name="rest_code_d2f666f8a7f7437ca901adef35db9cef-4"></a>wlan0: interface state COUNTRY_UPDATE-&gt;HT_SCAN
+<a name="rest_code_d2f666f8a7f7437ca901adef35db9cef-5"></a>20/40 MHz operation not permitted on channel pri=6 sec=10 based on overlapping BSSes
+<a name="rest_code_d2f666f8a7f7437ca901adef35db9cef-6"></a>Using interface wlan0 with hwaddr e8:de:27:19:1e:83 and ssid "sedone3"
+<a name="rest_code_d2f666f8a7f7437ca901adef35db9cef-7"></a>wlan0: interface state HT_SCAN-&gt;ENABLED
+<a name="rest_code_d2f666f8a7f7437ca901adef35db9cef-8"></a>wlan0: AP-ENABLED
 </pre>
 </blockquote>
 <p>For this test, I do not run hostapd in background (-B) mode so I can debug if I need to.
@@ -322,11 +321,11 @@ packets are not yet routed; however, my android tablet can connect to it.</p>
 <li>Now set the IP tables rules for package forwarding,masquerading. This is essential to
 get network properly covered.</li>
 </ul>
-<pre class="code text"><a name="rest_code_d18747b37c2046f9b90e6270340f613c-1"></a># iptables -A INPUT -i br0 -j ACCEPT
-<a name="rest_code_d18747b37c2046f9b90e6270340f613c-2"></a># iptables -A FORWARD -i br0 -o eth0 -j ACCEPT
-<a name="rest_code_d18747b37c2046f9b90e6270340f613c-3"></a># iptables -A FORWARD -o br0 -i eth0 -j ACCEPT
-<a name="rest_code_d18747b37c2046f9b90e6270340f613c-4"></a># iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-<a name="rest_code_d18747b37c2046f9b90e6270340f613c-5"></a># iptables -A FORWARD -o br0 -i eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+<pre class="code text"><a name="rest_code_a0a4ce07f71444029946684a2f68239f-1"></a># iptables -A INPUT -i br0 -j ACCEPT
+<a name="rest_code_a0a4ce07f71444029946684a2f68239f-2"></a># iptables -A FORWARD -i br0 -o eth0 -j ACCEPT
+<a name="rest_code_a0a4ce07f71444029946684a2f68239f-3"></a># iptables -A FORWARD -o br0 -i eth0 -j ACCEPT
+<a name="rest_code_a0a4ce07f71444029946684a2f68239f-4"></a># iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+<a name="rest_code_a0a4ce07f71444029946684a2f68239f-5"></a># iptables -A FORWARD -o br0 -i eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
 </pre>
 <div class="figure">
 <img alt="../../images/misc/sedone3-browse.jpg" src="../../images/misc/sedone3-browse.jpg"><p class="caption">Fig4: Internet access after IP netfilter forwarding,masquerading.</p>
@@ -335,13 +334,13 @@ get network properly covered.</li>
 bridge device and the main ethernet device (WAN or eth0) with masquerading.</p>
 <p>Route for the new network is shared with <em>eth0</em>'s default gateway. There is
 no special setting for the route. Here is my route,</p>
-<pre class="code text"><a name="rest_code_48aaa6b49a6641e18e593a0067c6a655-1"></a>#route
-<a name="rest_code_48aaa6b49a6641e18e593a0067c6a655-2"></a>Kernel IP routing table
-<a name="rest_code_48aaa6b49a6641e18e593a0067c6a655-3"></a>Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
-<a name="rest_code_48aaa6b49a6641e18e593a0067c6a655-4"></a>default         netrouter       0.0.0.0         UG    1      0        0 eth0
-<a name="rest_code_48aaa6b49a6641e18e593a0067c6a655-5"></a>loopback        *               255.0.0.0       U     0      0        0 lo
-<a name="rest_code_48aaa6b49a6641e18e593a0067c6a655-6"></a>192.168.10.0    *               255.255.255.0   U     0      0        0 eth0
-<a name="rest_code_48aaa6b49a6641e18e593a0067c6a655-7"></a>192.168.11.0    *               255.255.255.0   U     0      0        0 br0
+<pre class="code text"><a name="rest_code_4a3a620801ba49c0b9e9ef69ea538d17-1"></a>#route
+<a name="rest_code_4a3a620801ba49c0b9e9ef69ea538d17-2"></a>Kernel IP routing table
+<a name="rest_code_4a3a620801ba49c0b9e9ef69ea538d17-3"></a>Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+<a name="rest_code_4a3a620801ba49c0b9e9ef69ea538d17-4"></a>default         netrouter       0.0.0.0         UG    1      0        0 eth0
+<a name="rest_code_4a3a620801ba49c0b9e9ef69ea538d17-5"></a>loopback        *               255.0.0.0       U     0      0        0 lo
+<a name="rest_code_4a3a620801ba49c0b9e9ef69ea538d17-6"></a>192.168.10.0    *               255.255.255.0   U     0      0        0 eth0
+<a name="rest_code_4a3a620801ba49c0b9e9ef69ea538d17-7"></a>192.168.11.0    *               255.255.255.0   U     0      0        0 br0
 </pre>
 <p>The IP netfilter rules added are the rules
 added on top of what I already have for my local <em>eth0</em> network. I did not flush my
@@ -352,21 +351,21 @@ More IP filter rules can be added specifically for this network if needed.</p>
 Most newer PCIe WiFi card will probably reach Gbps speed, but mine is relatively old. Perhaps
 it can reach in the hundreds Mbps.</p>
 <p>The operational state of my <em>wlan0</em> devices,</p>
-<pre class="code text"><a name="rest_code_bbeeccaa67134fb1826fd9aa4d57719a-1"></a>iw dev wlan0 info
-<a name="rest_code_bbeeccaa67134fb1826fd9aa4d57719a-2"></a>
-<a name="rest_code_bbeeccaa67134fb1826fd9aa4d57719a-3"></a>Interface wlan0
-<a name="rest_code_bbeeccaa67134fb1826fd9aa4d57719a-4"></a>        ifindex 3
-<a name="rest_code_bbeeccaa67134fb1826fd9aa4d57719a-5"></a>        wdev 0x1
-<a name="rest_code_bbeeccaa67134fb1826fd9aa4d57719a-6"></a>        addr e8:de:27:19:1e:83
-<a name="rest_code_bbeeccaa67134fb1826fd9aa4d57719a-7"></a>        ssid sedone3
-<a name="rest_code_bbeeccaa67134fb1826fd9aa4d57719a-8"></a>        type AP
-<a name="rest_code_bbeeccaa67134fb1826fd9aa4d57719a-9"></a>        wiphy 0
-<a name="rest_code_bbeeccaa67134fb1826fd9aa4d57719a-10"></a>        channel 6 (2437 MHz), width: 20 MHz, center1: 2437 MHz
-<a name="rest_code_bbeeccaa67134fb1826fd9aa4d57719a-11"></a>
-<a name="rest_code_bbeeccaa67134fb1826fd9aa4d57719a-12"></a>iwconfig wlan0
-<a name="rest_code_bbeeccaa67134fb1826fd9aa4d57719a-13"></a>        wlan0     IEEE 802.11abgn  Mode:Master  Tx-Power=16 dBm
-<a name="rest_code_bbeeccaa67134fb1826fd9aa4d57719a-14"></a>                  Retry short limit:7   RTS thr:off   Fragment thr:off
-<a name="rest_code_bbeeccaa67134fb1826fd9aa4d57719a-15"></a>                  Power Management:off
+<pre class="code text"><a name="rest_code_7e8066f9a53e483f99bcf8c4e260e6a5-1"></a>iw dev wlan0 info
+<a name="rest_code_7e8066f9a53e483f99bcf8c4e260e6a5-2"></a>
+<a name="rest_code_7e8066f9a53e483f99bcf8c4e260e6a5-3"></a>Interface wlan0
+<a name="rest_code_7e8066f9a53e483f99bcf8c4e260e6a5-4"></a>        ifindex 3
+<a name="rest_code_7e8066f9a53e483f99bcf8c4e260e6a5-5"></a>        wdev 0x1
+<a name="rest_code_7e8066f9a53e483f99bcf8c4e260e6a5-6"></a>        addr e8:de:27:19:1e:83
+<a name="rest_code_7e8066f9a53e483f99bcf8c4e260e6a5-7"></a>        ssid sedone3
+<a name="rest_code_7e8066f9a53e483f99bcf8c4e260e6a5-8"></a>        type AP
+<a name="rest_code_7e8066f9a53e483f99bcf8c4e260e6a5-9"></a>        wiphy 0
+<a name="rest_code_7e8066f9a53e483f99bcf8c4e260e6a5-10"></a>        channel 6 (2437 MHz), width: 20 MHz, center1: 2437 MHz
+<a name="rest_code_7e8066f9a53e483f99bcf8c4e260e6a5-11"></a>
+<a name="rest_code_7e8066f9a53e483f99bcf8c4e260e6a5-12"></a>iwconfig wlan0
+<a name="rest_code_7e8066f9a53e483f99bcf8c4e260e6a5-13"></a>        wlan0     IEEE 802.11abgn  Mode:Master  Tx-Power=16 dBm
+<a name="rest_code_7e8066f9a53e483f99bcf8c4e260e6a5-14"></a>                  Retry short limit:7   RTS thr:off   Fragment thr:off
+<a name="rest_code_7e8066f9a53e483f99bcf8c4e260e6a5-15"></a>                  Power Management:off
 </pre>
 </div>
 <div class="section" id="summary">

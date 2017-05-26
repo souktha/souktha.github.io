@@ -106,8 +106,8 @@ by opting to use the tabulated generator polynomials of :math:`(n,k,d)` BCH code
 
 .. math::
         
-        g(x)=LCM[m_1(x)m_3(x)] \\
-        = LCM[(x^4 + x + 1)(x^4 + x^3 + x^2 + x+ 1)] 
+        g(x)&= LCM[m_1(x)m_3(x)] \\
+        &= LCM[(x^4 + x + 1)(x^4 + x^3 + x^2 + x+ 1)] 
 
 Using MATLAB/Octave's *conv* to multiply the polynomial,
 
@@ -341,16 +341,16 @@ error-locating position,
 
 .. math::
 
-        s_1 = \alpha^i + \alpha^j \\
-        s_3 = (\alpha^3)^i + (\alpha^3)^j
+        s_1 &= \alpha^i + \alpha^j \\
+        s_3 &= (\alpha^3)^i + (\alpha^3)^j
 
         
 Substitute :math:`s_1 + \alpha^i = \alpha_j` into :math:`s_3`,
 
 .. math::
 
-        s_3 = \alpha^{3i} + (s_1 + \alpha^i)^3 = \alpha^{3i} + (s_1^2 + \alpha^{2i})(s_1 + \alpha^i) \\
-            = s_1^3 + s_1 \alpha^{2i} + s_1^2 \alpha^i
+        s_3 &= \alpha^{3i} + (s_1 + \alpha^i)^3 = \alpha^{3i} + (s_1^2 + \alpha^{2i})(s_1 + \alpha^i) \\
+            &= s_1^3 + s_1 \alpha^{2i} + s_1^2 \alpha^i
             
 
 Locating error bit position is to find which :math:`i` that makes 
@@ -448,17 +448,17 @@ The computed syndrome is,
 
 .. math::
 
-        s(x)= w(x)\ mod\ g(x) = x^6 + x^3 + x^2 +x \\
-        s_1(x) = x s(x)\ mod\ g(x) = x^7 + x^4 + x^3 + x^2 \\
-        s_2(x) = x^2 s(x)\ mod\ g(x) = \cdots \\
-        s_3 (x) = x^3 s(x)\ mod\ g(x) = x + 1
+        s(x) &= w(x)\ mod\ g(x) = x^6 + x^3 + x^2 +x \\
+        s_1(x) &= x s(x)\ mod\ g(x) = x^7 + x^4 + x^3 + x^2 \\
+        s_2(x) &= x^2 s(x)\ mod\ g(x) = \cdots \\
+        s_3 (x) &= x^3 s(x)\ mod\ g(x) = x + 1
 
 weight of :math:`s_3(x) \le t` is reached, so :math:`j=3`,
 
 .. math::
 
-        s(x) = x^{15-3}s_3(x)\ mod\ ( x^{15} + 1) \\
-        = x^{13} + x^{12}
+        s(x) &= x^{15-3}s_3(x)\ mod\ ( x^{15} + 1) \\
+        &= x^{13} + x^{12}
         
 The most likely code word is therefore, :math:`w(x)+s(x)`. This algorithm gives me both
 bit positions. :math:`s_i(x)` are the shifted version of :math:`s_{i-1}(x)` modulo of

@@ -78,9 +78,42 @@
 
     
 <div class="postindex">
-    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../hardware/bch15_7_5_hw/" class="u-url">Implementing BCH (15,7,5) FEC</a></h1>
+    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../hardware/rs15_7_hw/" class="u-url">RS(n,k) code HDL implementation</a></h1>
         <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="../hardware/rs15_7_hw/" rel="bookmark"><time class="published dt-published" datetime="2017-05-06T14:47:03Z" title="2017-05-06 14:47">2017-05-06 14:47</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<p>This post is the implementation part of the my post on <a class="reference external" href="http://souktha.github.io/misc/RS15_7_5">RS code workout</a>
+where I did some math workout on the RS forward-error-correcting code (FEC). I find
+it to be simple enough to implement it in verilog that can eventually be synthesized for FPGA.
+I choose the simplest algorithm to implement the RS (15,9,7) as outlined in my last post.</p>
+<p class="more"><a href="../hardware/rs15_7_hw/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../misc/RS15_7_5/" class="u-url">RS(n,k) code for burst error-correction work out</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="../misc/RS15_7_5/" rel="bookmark"><time class="published dt-published" datetime="2017-04-22T22:46:19Z" title="2017-04-22 22:46">2017-04-22 22:46</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<p>This is a math workout problem that is the math part of my FPGA implementation of
+another class of BCH code. The math workout of my earlier blog of a binary BCH code of
+<span class="math">\((n,k,d)=(15,7,5)\)</span> is applicable to this class of code, the RS code
+which is the non-binary version of BCH code. It will be based on the same
+primitive polynomial <span class="math">\(h(x)=1+x+x^4\)</span> as the last exercise.</p>
+<p class="more"><a href="../misc/RS15_7_5/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../hardware/bch15_7_5_hw/" class="u-url">Implementing BCH (15,7,5) FEC</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 Soukthavy
             </span></p>
             <p class="dateline"><a href="../hardware/bch15_7_5_hw/" rel="bookmark"><time class="published dt-published" datetime="2017-03-18T00:17:42Z" title="2017-03-18 00:17">2017-03-18 00:17</time></a></p>
@@ -96,7 +129,7 @@ I choose the simplest algorithm for decoding the binary BCH (15,7,5) as outlined
     </div>
     </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../misc/bch15_7_5/" class="u-url">Binary BCH (15,7,5) work out</a></h1>
         <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 Soukthavy
             </span></p>
             <p class="dateline"><a href="../misc/bch15_7_5/" rel="bookmark"><time class="published dt-published" datetime="2017-02-26T22:46:19Z" title="2017-02-26 22:46">2017-02-26 22:46</time></a></p>
@@ -112,7 +145,7 @@ BCH <span class="math">\((15,7,5), t=2\)</span>  code based on the same primitiv
     </div>
     </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../misc/create-ap-linuxpc/" class="u-url">Create Wireless AP on Linux PC in 10 minutes</a></h1>
         <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 Soukthavy
             </span></p>
             <p class="dateline"><a href="../misc/create-ap-linuxpc/" rel="bookmark"><time class="published dt-published" datetime="2017-01-15T19:14:05Z" title="2017-01-15 19:14">2017-01-15 19:14</time></a></p>
@@ -129,7 +162,7 @@ leaving it in a useless state, I choose to create a WiFi AP out of it.</p>
     </div>
     </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../hardware/cyclic_1_x_x4_hw/" class="u-url">Simple Cyclic Hamming (15,11,3) FEC</a></h1>
         <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 Soukthavy
             </span></p>
             <p class="dateline"><a href="../hardware/cyclic_1_x_x4_hw/" rel="bookmark"><time class="published dt-published" datetime="2016-12-22T00:17:42Z" title="2016-12-22 00:17">2016-12-22 00:17</time></a></p>
@@ -145,7 +178,7 @@ for this exercise is <span class="math">\(g(x)=1+x+x4\)</span> for an <span clas
     </div>
     </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../misc/cyclic_1_x_x4/" class="u-url">Simple Cyclic Hamming codes</a></h1>
         <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 Soukthavy
             </span></p>
             <p class="dateline"><a href="../misc/cyclic_1_x_x4/" rel="bookmark"><time class="published dt-published" datetime="2016-12-10T22:46:19Z" title="2016-12-10 22:46">2016-12-10 22:46</time></a></p>
@@ -161,7 +194,7 @@ out by hand and it would not take too long to implement in hardware.</p>
     </div>
     </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../software/zynq_spi_stepper_sw/" class="u-url">Zynq SPI slave stepper motor driver</a></h1>
         <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 Soukthavy
             </span></p>
             <p class="dateline"><a href="../software/zynq_spi_stepper_sw/" rel="bookmark"><time class="published dt-published" datetime="2016-11-17T00:40:47Z" title="2016-11-17 00:40">2016-11-17 00:40</time></a></p>
@@ -177,7 +210,7 @@ the step count to the stepper motor.</p>
     </div>
     </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../hardware/zybo-spi-stepper/" class="u-url">SPI slave stepper motor with Zybo</a></h1>
         <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 Soukthavy
             </span></p>
             <p class="dateline"><a href="../hardware/zybo-spi-stepper/" rel="bookmark"><time class="published dt-published" datetime="2016-11-12T15:38:09Z" title="2016-11-12 15:38">2016-11-12 15:38</time></a></p>
@@ -193,7 +226,7 @@ system without doing much useful work, I would like to extend it so that I can m
     </div>
     </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../hardware/zybo-spi-slave/" class="u-url">Zynq Zybo SPI slave via EMIO</a></h1>
         <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 Soukthavy
             </span></p>
             <p class="dateline"><a href="../hardware/zybo-spi-slave/" rel="bookmark"><time class="published dt-published" datetime="2016-07-17T18:10:54Z" title="2016-07-17 18:10">2016-07-17 18:10</time></a></p>
@@ -205,44 +238,6 @@ effort I need to get PS-PL interconnected and can be used by high level OS such 
 For this exercise, I choose to create a simplest device for the Zynq PL that interface with its PS. My choice
 is to create a SPI slave device (PL) that will interconnect to the SPI master of the Zynq (PS).</p>
 <p class="more"><a href="../hardware/zybo-spi-slave/">Read more…</a></p>
-</div>
-    </div>
-    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../software/dm814x_pcie/" class="u-url">Adding PCIe support and bring up the boot splash screen to DM814x U-Boot</a></h1>
-        <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn">
-                Soukthavy
-            </span></p>
-            <p class="dateline"><a href="../software/dm814x_pcie/" rel="bookmark"><time class="published dt-published" datetime="2016-06-11T22:18:26Z" title="2016-06-11 22:18">2016-06-11 22:18</time></a></p>
-        </div>
-    </header><div class="p-summary entry-summary">
-    <div>
-<p>It is desirable to have some visual feedback to user during system boot up process especially if the system takes more
-than few seconds to boot. For the Linux based set-top box that boot to the main GUI menu may take considerable
-amount of time depending on the number of processes it needs to start. Some system may need to program the FPGA bitmask,
-bring up the networking processes or bring up some externally connected devices. These steps add up to the total system boot up
-time. For system with video support, it is a good practice to have video up as soon as possible so that the user
-would know that the system is working and it is in the process of booting up the system. This is commonly known as
-putting the boot splash screen during boot process.</p>
-<p class="more"><a href="../software/dm814x_pcie/">Read more…</a></p>
-</div>
-    </div>
-    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../software/dm814x_sata/" class="u-url">Adding SATA HD boot support to DM814x U-Boot</a></h1>
-        <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn">
-                Soukthavy
-            </span></p>
-            <p class="dateline"><a href="../software/dm814x_sata/" rel="bookmark"><time class="published dt-published" datetime="2016-05-09T20:13:36Z" title="2016-05-09 20:13">2016-05-09 20:13</time></a></p>
-        </div>
-    </header><div class="p-summary entry-summary">
-    <div>
-<p>TI DM814x/AM287x evaluation platform (TI8148 EVM) can boot from various connected devices depending on the setting
-of the BTMode[4-0] pins as described in chapter 4.5.2.1 of its respective technical reference manual [<a class="reference internal" href="../software/dm814x_sata/#id1">1</a>]. Typically
-the EVM boot its first stage of u-boot as the minimum boot loaders. TI calls it <em>min-nand</em> boot loader
-configuration. This minimum boot then bootstraps a secondary boot phase which is a
-a full featured u-boot for this platform.
-The EV platform has SATA H/W support where I will bring up the SATA HDD in the second phase of booting so that I can load the
-Linux kernel image from HDD instead of loading it from NAND device.</p>
-<p class="more"><a href="../software/dm814x_sata/">Read more…</a></p>
 </div>
     </div>
     </article>

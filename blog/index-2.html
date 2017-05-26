@@ -79,9 +79,47 @@
 
     
 <div class="postindex">
-    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../software/zybo-quickstart/" class="u-url">Decoupling Xilinx Zynq PS and PL on Linux for Digilent Zybo</a></h1>
+    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../software/dm814x_pcie/" class="u-url">Adding PCIe support and bring up the boot splash screen to DM814x U-Boot</a></h1>
         <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="../software/dm814x_pcie/" rel="bookmark"><time class="published dt-published" datetime="2016-06-11T22:18:26Z" title="2016-06-11 22:18">2016-06-11 22:18</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<p>It is desirable to have some visual feedback to user during system boot up process especially if the system takes more
+than few seconds to boot. For the Linux based set-top box that boot to the main GUI menu may take considerable
+amount of time depending on the number of processes it needs to start. Some system may need to program the FPGA bitmask,
+bring up the networking processes or bring up some externally connected devices. These steps add up to the total system boot up
+time. For system with video support, it is a good practice to have video up as soon as possible so that the user
+would know that the system is working and it is in the process of booting up the system. This is commonly known as
+putting the boot splash screen during boot process.</p>
+<p class="more"><a href="../software/dm814x_pcie/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../software/dm814x_sata/" class="u-url">Adding SATA HD boot support to DM814x U-Boot</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                Soukthavy
+            </span></p>
+            <p class="dateline"><a href="../software/dm814x_sata/" rel="bookmark"><time class="published dt-published" datetime="2016-05-09T20:13:36Z" title="2016-05-09 20:13">2016-05-09 20:13</time></a></p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<p>TI DM814x/AM287x evaluation platform (TI8148 EVM) can boot from various connected devices depending on the setting
+of the BTMode[4-0] pins as described in chapter 4.5.2.1 of its respective technical reference manual [<a class="reference internal" href="../software/dm814x_sata/#id1">1</a>]. Typically
+the EVM boot its first stage of u-boot as the minimum boot loaders. TI calls it <em>min-nand</em> boot loader
+configuration. This minimum boot then bootstraps a secondary boot phase which is a
+a full featured u-boot for this platform.
+The EV platform has SATA H/W support where I will bring up the SATA HDD in the second phase of booting so that I can load the
+Linux kernel image from HDD instead of loading it from NAND device.</p>
+<p class="more"><a href="../software/dm814x_sata/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../software/zybo-quickstart/" class="u-url">Decoupling Xilinx Zynq PS and PL on Linux for Digilent Zybo</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 Soukthavy
             </span></p>
             <p class="dateline"><a href="../software/zybo-quickstart/" rel="bookmark"><time class="published dt-published" datetime="2016-04-23T19:08:20Z" title="2016-04-23 19:08">2016-04-23 19:08</time></a></p>

@@ -7,23 +7,23 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <url>
   <loc>http://souktha.github.io/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/2016/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/2017/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/archive.html</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:41:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/blog/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/blog/first-sample-blog-post/</loc>
@@ -31,11 +31,11 @@
  </url>
  <url>
   <loc>http://souktha.github.io/blog/index-1.html</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/blog/index-2.html</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/blog/restructuredtext-demo-import-from-demotxt/</loc>
@@ -43,7 +43,7 @@
  </url>
  <url>
   <loc>http://souktha.github.io/categories/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/categories/cat_fpga-linux/</loc>
@@ -51,35 +51,35 @@
  </url>
  <url>
   <loc>http://souktha.github.io/categories/cat_fpga/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/categories/cat_linux/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/categories/cat_math/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/categories/cat_u-boot/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/categories/hardware/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/categories/latex/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/categories/mathjax/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/categories/misc/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/categories/software-hardware/</loc>
@@ -87,15 +87,15 @@
  </url>
  <url>
   <loc>http://souktha.github.io/categories/software/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/galleries/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/hardware/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/hardware/bch15_7_5_hw.rst/</loc>
@@ -103,11 +103,11 @@
  </url>
  <url>
   <loc>http://souktha.github.io/hardware/bch15_7_5_hw/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/hardware/cyclic_1_x_x4_hw/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/hardware/hw_sample/</loc>
@@ -118,32 +118,36 @@
   <lastmod>2016-03-13T01:57:00Z</lastmod>
  </url>
  <url>
+  <loc>http://souktha.github.io/hardware/rs15_7_hw/</loc>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
+ </url>
+ <url>
   <loc>http://souktha.github.io/hardware/runlenth/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/hardware/servo/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/hardware/vga-display-xadc/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/hardware/vga_draw_graph/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/hardware/zybo-spi-slave/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/hardware/zybo-spi-stepper/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/listings/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:41:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/listings/bch15_7_5_decode.v.html</loc>
@@ -151,19 +155,23 @@
  </url>
  <url>
   <loc>http://souktha.github.io/listings/dnsmasq-sedone.conf.html</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:41:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/listings/hostapd-sedone.conf.html</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:41:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/misc/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
+ </url>
+ <url>
+  <loc>http://souktha.github.io/misc/RS15_7_5/</loc>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/misc/bch15_7_5/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/misc/bch_1_x2_x5/</loc>
@@ -175,31 +183,31 @@
  </url>
  <url>
   <loc>http://souktha.github.io/misc/class_report_503/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/misc/create-ap-linuxpc/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/misc/cyclic_1_x_x4/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/misc/repartition-boneblk/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/misc/restructuredtext-demo-import-from-demotxt/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/misc/squashfs-ubi/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/software/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/software/2016/</loc>
@@ -215,7 +223,7 @@
  </url>
  <url>
   <loc>http://souktha.github.io/software/bblk-ir/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/software/blog/</loc>
@@ -287,11 +295,11 @@
  </url>
  <url>
   <loc>http://souktha.github.io/software/dm814x_pcie/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/software/dm814x_sata/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/software/galleries/</loc>
@@ -411,14 +419,14 @@
  </url>
  <url>
   <loc>http://souktha.github.io/software/tty2comport/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/software/zybo-quickstart/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/software/zynq_spi_stepper_sw/</loc>
-  <lastmod>2017-03-25T16:34:00Z</lastmod>
+  <lastmod>2017-05-15T17:42:00Z</lastmod>
  </url>
 </urlset>

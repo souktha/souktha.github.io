@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="RS (n=15,k=9,d=7) code">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RS(n,k) code for burst error-correction work out | Soukthavy Sopha</title>
+<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
+<link rel="canonical" href="http://souktha.github.io/misc/RS15_7_5/">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Soukthavy">
+<link rel="prev" href="../../hardware/bch15_7_5_hw/" title="Implementing BCH (15,7,5) FEC" type="text/html">
+<link rel="next" href="../../hardware/rs15_7_hw/" title="RS(n,k) code HDL implementation" type="text/html">
+<meta property="og:site_name" content="Soukthavy Sopha">
+<meta property="og:title" content="RS(n,k) code for burst error-correction work out">
+<meta property="og:url" content="http://souktha.github.io/misc/RS15_7_5/">
+<meta property="og:description" content="RS (n=15,k=9,d=7) code">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2017-04-22T22:46:19Z">
+<meta property="article:tag" content="latex">
+<meta property="article:tag" content="mathjax">
+<meta property="article:tag" content="misc">
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-inverse navbar-static-top"><div class="container">
+<!-- This keeps the margins nice -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://souktha.github.io/">
+
+                <span id="blog-title">Soukthavy Sopha</span>
+            </a>
+        </div>
+<!-- /.navbar-header -->
+        <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
+            <ul class="nav navbar-nav">
+<li>
+<a href="../../archive.html">Archive</a>
+                </li>
+<li>
+<a href="../../categories/">Tags</a>
+                </li>
+<li>
+<a href="../../rss.xml">RSS feed</a>
+            </li>
+<li class="dropdown">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Blog <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+<li>
+<a href="../../software">Sofware</a>
+                    </li>
+<li>
+<a href="../../hardware">Hardware</a>
+                    </li>
+<li>
+<a href="../../misc">Misc</a>
+            </li>
+</ul>
+</li>
+<li>
+<a href="https://github.com/souktha">My Github</a>
+
+                
+            </li>
+</ul>
+<ul class="nav navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        <div class="row">
+            
+            
+<article class="post-text storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">RS(n,k) code for burst error-correction work out</a></h1>
+
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>This is a math workout problem that is the math part of my FPGA implementation of
+another class of BCH code. The math workout of my earlier blog of a binary BCH code of
+<span class="math">\((n,k,d)=(15,7,5)\)</span> is applicable to this class of code, the RS code
+which is the non-binary version of BCH code. It will be based on the same
+primitive polynomial <span class="math">\(h(x)=1+x+x^4\)</span> as the last exercise.</p>
+<!-- TEASER_END -->
+<p>Another important class of BCH codes is RS code. It is a <em>subfield subcode</em> of the
+binary BCH and has many practical real-life applications. Eventhough its digits in
+code word are not binary, they have binary representation. This exercise is
+for <span class="math">\(RS(n=15,k=9,d=7)\)</span> code.</p>
+<div class="section" id="rs-field-algebra">
+<h2>RS field algebra</h2>
+<p>Most of everything algebra in binary BCH over <span class="math">\(GF(2)=\{0,1\}\)</span> applies to this code. RS
+code generalized over <span class="math">\(GF(q)\)</span> where <span class="math">\(q\)</span> is power of prime. While the binary BCH,
+if <span class="math">\(\alpha\)</span> is a primitive elemement in the field <span class="math">\(GF(q=2)\)</span>, the binary BCH of
+<span class="math">\(2t\)</span> error-correction with <span class="math">\(g(x)=m_1(x)m_3(x)\)</span> as its generator polynomial
+will have <span class="math">\(\{\alpha,\alpha^2,\alpha^3,\alpha^4\}\)</span> as its roots. The RS code generalized
+over <span class="math">\(GF(2^4)\)</span> will also have <span class="math">\(\{\alpha,\alpha^2,\alpha^3,\alpha^4\}\)</span> as its
+roots with generator polynomial, <span class="math">\(g(x)=(\alpha+x)(\alpha^2+x)(\alpha^3+x)(\alpha^4+x)\)</span> where
+the components are chosen fromt the field elements of <span class="math">\(GF(2^4)[x]\)</span> ie.. <em>subfield subcode</em>.</p>
+<div class="section" id="some-definition">
+<h3>Some definition</h3>
+<p>A binary <em>Reed-Solomon</em> code, <span class="math">\(RS(2^r,d)\)</span> is a cyclic code over <span class="math">\(GF(2^r)\)</span> with generator polynomial
+<span class="math">\(g(x)=(\alpha^{m+1}+x)(\alpha^{m+2}+x) \cdots (\alpha^{m+d-1}+x)\)</span> for some integer <span class="math">\(m\)</span>
+and some primitive element <span class="math">\(\alpha\)</span> of <span class="math">\(GF(2^r)\)</span>.</p>
+<p><span class="math">\(RS(2^r,d)\)</span> code is defined as code having,</p>
+<ol class="loweralpha simple">
+<li><span class="math">\(n = 2^r -1\)</span></li>
+<li><span class="math">\(k = 2^r - d, n-k = 2t\)</span></li>
+<li><span class="math">\(codewords = 2^{rk}\)</span></li>
+</ol>
+<p>RS code is a <em>q-ary</em> code and is also an <em>MDS</em> code (<span class="math">\(d=n-k+1\)</span>, <em>Singleton</em> bound).
+In summary, a <span class="math">\(t\)</span> error-correcting RS code over <span class="math">\(GF(q=2^r)\)</span>,
+having <span class="math">\(\alpha\)</span> as its primitive element has generator polynomial,</p>
+<div class="math">
+\begin{align*}
+g(x) &amp;= (x+\alpha)(x+\alpha^2) \cdots (x+\alpha^{2t}) \\
+&amp;=g_0+g_1x+g_2x^2 + \cdots +g_{2t-1}x^{2t-1}+x^{2t}
+\end{align*}
+</div>
+<!-- Since the degree of of each minimal polynomial is :math:`m` or less, :math:`g(x)` has degree -->
+<!-- at most :math:`mt = (n-k)`, its parity check digits. -->
+<!-- Base on the theorem that the set of all roots of :math:`m_\alpha(x)` is -->
+<!-- :math:`\{\alpha,\alpha^2,\alpha^4,..,\alpha^{2t-1}\}`, the single error-correcting BCH codes -->
+<!-- will have the generator polynomial, :math:`g(x) = m_{\alpha^1}(x)`. The two error-correcting codes -->
+<!-- will have the generator polynomial, :math:`g(x) =  m_\alpha(x)m_{\alpha^3}(x)`. -->
+<p>The elements of <span class="math">\(GF(2^4)\)</span> based on <span class="math">\(p(x)=x^4+x+1\)</span> as generated in the old post
+is again tabulated below,</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="8%">
+<col width="50%">
+<col width="42%">
+</colgroup>
+<tbody valign="top">
+<tr>
+<td>word</td>
+<td><span class="math">\(x^i\ mod\ (1+x+x^4)\)</span></td>
+<td>power of <span class="math">\(\alpha\)</span>
+</td>
+</tr>
+<tr>
+<td>0000</td>
+<td><ul class="first last simple"><li>
+</li></ul></td>
+<td><ul class="first last simple"><li>
+</li></ul></td>
+</tr>
+<tr>
+<td>1000</td>
+<td>1</td>
+<td><span class="math">\(\alpha^0\)</span></td>
+</tr>
+<tr>
+<td>0100</td>
+<td><span class="math">\(x\)</span></td>
+<td><span class="math">\(\alpha^1\)</span></td>
+</tr>
+<tr>
+<td>0010</td>
+<td><span class="math">\(x^2\)</span></td>
+<td><span class="math">\(\alpha^2\)</span></td>
+</tr>
+<tr>
+<td>0001</td>
+<td><span class="math">\(x^3\)</span></td>
+<td><span class="math">\(\alpha^3\)</span></td>
+</tr>
+<tr>
+<td>1100</td>
+<td><span class="math">\(x^4 \equiv 1+x\)</span></td>
+<td><span class="math">\(\alpha^4\)</span></td>
+</tr>
+<tr>
+<td>0110</td>
+<td><span class="math">\(x^5 \equiv x+x^2\)</span></td>
+<td><span class="math">\(\alpha^5\)</span></td>
+</tr>
+<tr>
+<td>0011</td>
+<td><span class="math">\(x^6 \equiv x^2+x^3\)</span></td>
+<td><span class="math">\(\alpha^6\)</span></td>
+</tr>
+<tr>
+<td>1101</td>
+<td><span class="math">\(x^7 \equiv 1+x+x^3\)</span></td>
+<td><span class="math">\(\alpha^7\)</span></td>
+</tr>
+<tr>
+<td>1010</td>
+<td><span class="math">\(x^8 \equiv 1+x^2\)</span></td>
+<td><span class="math">\(\alpha^8\)</span></td>
+</tr>
+<tr>
+<td>0101</td>
+<td><span class="math">\(x^9 \equiv x+x^3\)</span></td>
+<td><span class="math">\(\alpha^9\)</span></td>
+</tr>
+<tr>
+<td>1110</td>
+<td><span class="math">\(x^{10} \equiv 1+x+x^2\)</span></td>
+<td><span class="math">\(\alpha^{10}\)</span></td>
+</tr>
+<tr>
+<td>0111</td>
+<td><span class="math">\(x^{11} \equiv x+x^2+x^3\)</span></td>
+<td><span class="math">\(\alpha^{11}\)</span></td>
+</tr>
+<tr>
+<td>1111</td>
+<td><span class="math">\(x^{12} \equiv 1+x+x^2+x^3\)</span></td>
+<td><span class="math">\(\alpha^{12}\)</span></td>
+</tr>
+<tr>
+<td>1011</td>
+<td><span class="math">\(x^{13} \equiv 1+x^2+x^3\)</span></td>
+<td><span class="math">\(\alpha^{13}\)</span></td>
+</tr>
+<tr>
+<td>1001</td>
+<td><span class="math">\(x^{14} \equiv 1+x^3\)</span></td>
+<td><span class="math">\(\alpha^{14}\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Note that <span class="math">\(\alpha^{15} = \alpha^0 = 1\)</span>.
+As usual, the table above can be easily generated with Octave/MATLAB,</p>
+<pre class="code text"><a name="rest_code_7c3b16599aaa482e8c8c6bb308cc37ea-1"></a>&gt; I=eye(15);I=I(15:-1:1,:);
+<a name="rest_code_7c3b16599aaa482e8c8c6bb308cc37ea-2"></a>&gt;&gt; for i=1:15
+<a name="rest_code_7c3b16599aaa482e8c8c6bb308cc37ea-3"></a>[q,r(i,:)]=deconv(I(i,:),[1 0 0 1 1]);
+<a name="rest_code_7c3b16599aaa482e8c8c6bb308cc37ea-4"></a>end
+<a name="rest_code_7c3b16599aaa482e8c8c6bb308cc37ea-5"></a>&gt;&gt; r=mod(r(:,12:15),2)
+<a name="rest_code_7c3b16599aaa482e8c8c6bb308cc37ea-6"></a>r =
+<a name="rest_code_7c3b16599aaa482e8c8c6bb308cc37ea-7"></a>
+<a name="rest_code_7c3b16599aaa482e8c8c6bb308cc37ea-8"></a>   0   0   0   1
+<a name="rest_code_7c3b16599aaa482e8c8c6bb308cc37ea-9"></a>   0   0   1   0
+<a name="rest_code_7c3b16599aaa482e8c8c6bb308cc37ea-10"></a>   0   1   0   0
+<a name="rest_code_7c3b16599aaa482e8c8c6bb308cc37ea-11"></a>   1   0   0   0
+<a name="rest_code_7c3b16599aaa482e8c8c6bb308cc37ea-12"></a>   ..
+<a name="rest_code_7c3b16599aaa482e8c8c6bb308cc37ea-13"></a>   1   0   0   1
+</pre>
+<p>where the result row vectors <span class="math">\(r\)</span> are the remainders from the polynomial division.</p>
+<p>For <span class="math">\(RS(2^4,5)\)</span>,  the generator polynomial is,</p>
+<div class="math">
+\begin{align*}
+g_5(x) &amp;=(\alpha + x)(\alpha^2+x)(\alpha^3+x)(\alpha^4+x) \\
+&amp;=x^4 + (\alpha^4 + \alpha^3 + \alpha^2 + \alpha)x^3 +
+(\alpha^7 + \alpha^6 + \alpha^4 + \alpha^3)x^2 +
+(\alpha^9 + \alpha^8 +\alpha^7 + \alpha^6)x + \alpha^{10}
+\end{align*}
+</div>
+<p>By using the tabulated table above for the sum of power of <span class="math">\(\alpha\)</span>, the
+generator polynomial can be simplied, for example, <span class="math">\(\alpha^4+\alpha^3+\alpha^2+\alpha
+=1+x+x^3+x^2+x=1+x^2+x^3=\alpha^{13}\)</span>,</p>
+<div class="math">
+\begin{equation*}
+g_5(x) = x^4 + \alpha^{13}x^3 + \alpha^6 x^2 + \alpha^3 x + \alpha^{10}
+\end{equation*}
+</div>
+<p>The generator matrix,</p>
+<div class="math">
+\begin{equation*}
+G= \left [
+\begin{array}{cc}
+g(x) \\
+xg(x) \\
+\cdots \\
+x^{k-1}g(x) \\
+\end{array}
+\right] =
+\end{equation*}
+</div>
+<div class="math">
+\begin{equation*}
+\left [
+\begin{array}{cc}
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; \alpha^{13} &amp; \alpha^6 &amp; \alpha^3 &amp; \alpha^{10}  \\
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; \alpha^{13} &amp; \alpha^6 &amp; \alpha^3 &amp; \alpha^{10} &amp; 0  \\
+\cdots \\
+1 &amp; \alpha^{13} &amp; \alpha^6 &amp; \alpha^3 &amp; \alpha^{10} &amp; 0 &amp; 0 &amp; 0 &amp; 0  &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+\end{array}
+\right]
+\end{equation*}
+</div>
+<!-- 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & \alpha^{13} & \alpha^6 & \alpha^3 & \alpha^{10}  \\
+0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & \alpha^{13} & \alpha^6 & \alpha^3 & \alpha^{10} & 0  \\
+0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & \alpha^{13} & \alpha^6 & \alpha^3 & \alpha^{10} & 0 & 0 \\
+0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & \alpha^{13} & \alpha^6 & \alpha^3 & \alpha^{10} & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & 0 & 0 & 1 & \alpha^{13} & \alpha^6 & \alpha^3 & \alpha^{10} & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & 0 & 1 & \alpha^{13} & \alpha^6 & \alpha^3 & \alpha^{10} & 0 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & 1 & \alpha^{13} & \alpha^6 & \alpha^3 & \alpha^{10} & 0 & 0 & 0 & 0  & 0 & 0 \\
+0 & 0 & 0 & 1 & \alpha^{13} & \alpha^6 & \alpha^3 & \alpha^{10} & 0 & 0 & 0 & 0  & 0 & 0 & 0 \\
+0 & 0 & 1 & \alpha^{13} & \alpha^6 & \alpha^3 & \alpha^{10} & 0 & 0 & 0 & 0  & 0 & 0 & 0 & 0 \\
+0 & 1 & \alpha^{13} & \alpha^6 & \alpha^3 & \alpha^{10} & 0 & 0 & 0 & 0  & 0 & 0 & 0 & 0 & 0 \\
+1 & \alpha^{13} & \alpha^6 & \alpha^3 & \alpha^{10} & 0 & 0 & 0 & 0  & 0 & 0 & 0 & 0 & 0 & 0 \\
+\end{array} -->
+<!-- 0 & \alpha^{10} & \alpha^3 & \alpha^6 & \alpha^{13} & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0  \\ -->
+<!-- 0 & 0 & \alpha^{10} & \alpha^3 & \alpha^6 & \alpha^{13} & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0  \\ -->
+<!-- 0 & 0 & 0 & \alpha^{10} & \alpha^3 & \alpha^6 & \alpha^{13} & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0  \\ -->
+<!-- 0 & 0 & 0 & 0 & \alpha^{10} & \alpha^3 & \alpha^6 & \alpha^{13} & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\ -->
+<!-- 0 & 0 & 0 & 0 & 0 & \alpha^{10} & \alpha^3 & \alpha^6 & \alpha^{13} & 1 & 0 & 0 & 0 & 0 & 0 \\ -->
+<!-- 0 & 0 & 0 & 0 & 0 & 0 & \alpha^{10} & \alpha^3 & \alpha^6 & \alpha^{13} & 1 & 0 & 0 & 0 & 0 \\ -->
+<!-- 0 & 0 & 0 & 0 & 0 & 0 & 0 & \alpha^{10} & \alpha^3 & \alpha^6 & \alpha^{13} & 1 & 0 & 0 & 0 \\ -->
+<!-- 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & \alpha^{10} & \alpha^3 & \alpha^6 & \alpha^{13} & 1 & 0 & 0 \\ -->
+<!-- 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & \alpha^{10} & \alpha^3 & \alpha^6 & \alpha^{13} & 1 & 0 \\ -->
+<!-- 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & \alpha^{10} & \alpha^3 & \alpha^6 & \alpha^{13} & 1  \\ -->
+<!-- \left [ -->
+<!-- \begin{array}{cc} -->
+<!-- \alpha^{10} & \alpha^3 & \alpha^6 & \alpha^{13} & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\ -->
+<!-- 0 & \alpha^{10} & \alpha^3 & \alpha^6 & \alpha^{13} & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0  \\ -->
+<!-- \cdots \\ -->
+<!-- 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & \alpha^{10} & \alpha^3 & \alpha^6 & \alpha^{13} & 1 & 0 \\ -->
+<!-- 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & \alpha^{10} & \alpha^3 & \alpha^6 & \alpha^{13} & 1  \\ -->
+<!-- \end{array} -->
+<!-- \right] -->
+<p>An 11-bit symbol input <span class="math">\(u=\alpha \alpha^2 0 1 \alpha^6 0 0 0 0 0 0\)</span> would be encoded by this generator matrix as,</p>
+<div class="math">
+\begin{equation*}
+v = uG = 0 0 0 0 0 0 \alpha^6 \alpha\ \alpha \alpha \alpha^{14} \alpha^7 \alpha^{13} \alpha^6 \alpha^{11}
+\end{equation*}
+</div>
+<p>Its corressponding polynomial,</p>
+<div class="math">
+\begin{equation*}
+v(x) = \alpha^{11}+\alpha^6x+\alpha^{13}x^2+\alpha^7x^3+\alpha^{14}x^4+ \alpha x^5+ \alpha x^6+ \alpha x^7+\alpha^6 x^8
+\end{equation*}
+</div>
+<p>For <span class="math">\(\alpha\)</span> as its root, by substituting <span class="math">\(x\)</span> with <span class="math">\(\alpha\)</span>, it should produce zero,</p>
+<div class="math">
+\begin{align*}
+v(\alpha) &amp;= \alpha^{11}+\alpha^7+1+\alpha^{10}+\alpha^3+\alpha^6+\alpha^7+\alpha^8+\alpha^{14} \\
+          &amp;= \alpha^{11}+1+\alpha^{10}+\alpha^3+\alpha^6+\alpha^8+\alpha^{14} \\
+          &amp;= 0
+\end{align*}
+</div>
+<p>The binary representation of <span class="math">\(v, \hat{v}\)</span> code word would have lenght of <span class="math">\(r(2^r-1) = 60\)</span> bits, that is,
+<span class="math">\(\hat{v}=\)</span> 0000 0000 ... 1100 1110  where each code symbol is mapped to its respective binary equivalent. It is
+one the reasons that <span class="math">\(\hat{v}\)</span> performs well as <em>burst error correction code</em> where group of errors occur close
+together. Clearly <span class="math">\(v\)</span> encoded this way, using <span class="math">\(G\)</span> matrix above is not in in systematic form;
+however, encoding by polynomial division will produce the systematic form. This is similar to binary BCH. Let,</p>
+<div class="math">
+\begin{equation*}
+u(x) = a_0x + a_1x + a_2x^2 + \cdots + a_{k-1}x^{k-1}
+\end{equation*}
+</div>
+<p>be the message to be encoded. The <span class="math">\(2t\)</span> parity check digits of the remainder from the division by <span class="math">\(g(x)\)</span> would be,</p>
+<div class="math">
+\begin{equation*}
+r(x) = b_0x + b_1x + b_2x^2 + \cdots + a_{2t-1}x^{2t-1}
+\end{equation*}
+</div>
+<p>For <span class="math">\(u=\alpha \alpha^2 0 1 \alpha^6 0 0 0 0 0 0\)</span>, encoding in systematic form as <span class="math">\(\frac{x^4u(x)}{g(x)}\)</span> would be,</p>
+<div class="math">
+\begin{equation*}
+v(x) = \alpha x^{14} + \alpha^2 x^{13} + x^{11} + \alpha^6 x^{10} + \alpha^4 x^3 + \alpha^{11}x^2 + \alpha^8 x
+\end{equation*}
+</div>
+<p>where the lower degree up to <span class="math">\(n-k-1\)</span> of <span class="math">\(v(x)\)</span> are the parity symbol bits. Verify that <span class="math">\(v(\alpha)\)</span> obtained
+this way is also zero,</p>
+<div class="math">
+\begin{align*}
+v(\alpha) &amp;= 1 + 1 + \alpha^{11} + \alpha + \alpha^7 + \alpha ^{13} + \alpha^9 \\
+&amp;= \alpha^{11}+ \alpha + \alpha^7 + \alpha^{13} + \alpha^9 \\
+&amp; = 0
+\end{align*}
+</div>
+<p>For <span class="math">\(RS(2^4,7)\)</span>,  the generator polynomial is,</p>
+<div class="math">
+\begin{align*}
+g_7(x) &amp;=(\alpha + x)(\alpha^2+x)(\alpha^3+x)(\alpha^4+x)(\alpha^5+x)(\alpha^6+x) \\
+     &amp;= x^6 + (\alpha+\alpha^2+\alpha^3+\alpha^4+\alpha^5+\alpha^6)x^5 + (\alpha^3+\alpha^4+\alpha^7+\alpha^{10}+\alpha^{11})x^4 + \\
+        &amp; (\alpha^6+\alpha^7+\alpha^9+\alpha^{10}+\alpha^{11}+\alpha^{12}+\alpha^{14}+\alpha^0)x^3 + \\
+        &amp; (\alpha^{10}+\alpha^{11}+\alpha^{14}+\alpha^2+\alpha^3)x^2 + \\
+        &amp; (\alpha^0+\alpha+\alpha^2+\alpha^3+\alpha^4+\alpha^5)x + \alpha^6
+\end{align*}
+</div>
+<p>Using the tabulated table above to reduce <span class="math">\(g_7(x)\)</span> to,</p>
+<div class="math">
+\begin{equation*}
+g_7(x)= x^6 + \alpha^{10}x^5 + \alpha^{14}x^4 + \alpha^4 x^3 + \alpha^6 x^2 + \alpha^9 x + \alpha^6
+\end{equation*}
+</div>
+<p>To verify that this ic correct, substitute <span class="math">\(x\)</span> by any of its roots will yield zero, for example,
+<span class="math">\(g(\alpha^2) = 0\)</span>.
+This is the generator for RS code having <span class="math">\(t=3, n=15, k=9\)</span>, but can be shortened without compromising its error
+correcting capability which is quite usual in practice and I will shorten it for my implementation.</p>
+</div>
+</div>
+<div class="section" id="encoder">
+<h2>Encoder</h2>
+<p class="graphviz">b'<?xml version="1.0" encoding="UTF-8" standalone="no"?>\nn "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"&gt;\n<!-- Generated by graphviz version 2.40.1 (20161225.0304)\n -->\n<!-- Title: gx Pages: 1 -->\n<svg width="795pt" height="296pt" viewbox="0.00 0.00 795.00 295.80" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">\n<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 291.7958)">\n<title>gx</title>\n<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-291.7958 791,-291.7958 791,4 -4,4"></polygon>\n<text text-anchor="middle" x="393.5" y="-7.8" font-family="Times,serif" font-size="14.00" fill="#000000">g_7(x) encoder</text>\n<!-- input -->\n<g id="node1" class="node">\n<title>input</title>\n<text text-anchor="middle" x="754" y="-266.0958" font-family="Times,serif" font-size="14.00" fill="#000000">input</text>\n</g>\n<!-- s6 -->\n<g id="node15" class="node">\n<title>s6</title>\n<ellipse fill="none" stroke="#000000" cx="754" cy="-197.2958" rx="18" ry="18"></ellipse>\n<text text-anchor="middle" x="754" y="-193.5958" font-family="Times,serif" font-size="14.00" fill="#000000">+</text>\n</g>\n<!-- input&#45;&gt;s6 -->\n<g id="edge33" class="edge">\n<title>input-&gt;s6</title>\n<path fill="none" stroke="#000000" d="M754,-251.501C754,-251.501 754,-225.3337 754,-225.3337"></path>\n<polygon fill="#000000" stroke="#000000" points="757.5001,-225.3336 754,-215.3337 750.5001,-225.3337 757.5001,-225.3336"></polygon>\n</g>\n<!-- parity -->\n<g id="node2" class="node">\n<title>parity</title>\n<text text-anchor="middle" x="697" y="-115.6979" font-family="Times,serif" font-size="14.00" fill="#000000">parity</text>\n</g>\n<!-- pout -->\n<g id="node3" class="node">\n<title>pout</title>\n<ellipse fill="#000000" stroke="#000000" cx="704" cy="-197.2958" rx="1.8" ry="1.8"></ellipse>\n</g>\n<!-- pout&#45;&gt;parity -->\n<g id="edge34" class="edge">\n<title>pout-&gt;parity</title>\n<path fill="none" stroke="#000000" d="M704,-195.3703C704,-195.3703 704,-147.7231 704,-147.7231"></path>\n<polygon fill="#000000" stroke="#000000" points="707.5001,-147.723 704,-137.7231 700.5001,-147.7231 707.5001,-147.723"></polygon>\n</g>\n<!-- pout&#45;&gt;s6 -->\n<g id="edge12" class="edge">\n<title>pout-&gt;s6</title>\n<path fill="none" stroke="#000000" d="M706.1484,-197C706.1484,-197 725.6658,-197 725.6658,-197"></path>\n<polygon fill="#000000" stroke="#000000" points="725.6658,-200.5001 735.6658,-197 725.6657,-193.5001 725.6658,-200.5001"></polygon>\n</g>\n<!-- b0 -->\n<g id="node4" class="node">\n<title>b0</title>\n<polygon fill="none" stroke="#000000" points="0,-179.2958 0,-215.2958 54,-215.2958 54,-179.2958 0,-179.2958"></polygon>\n<text text-anchor="middle" x="27" y="-193.5958" font-family="Times,serif" font-size="14.00" fill="#000000">b0</text>\n</g>\n<!-- s1 -->\n<g id="node10" class="node">\n<title>s1</title>\n<ellipse fill="none" stroke="#000000" cx="90" cy="-197.2958" rx="18" ry="18"></ellipse>\n<text text-anchor="middle" x="90" y="-193.5958" font-family="Times,serif" font-size="14.00" fill="#000000">+</text>\n</g>\n<!-- b0&#45;&gt;s1 -->\n<g id="edge1" class="edge">\n<title>b0-&gt;s1</title>\n<path fill="none" stroke="#000000" d="M54.0833,-197C54.0833,-197 61.8518,-197 61.8518,-197"></path>\n<polygon fill="#000000" stroke="#000000" points="61.8518,-200.5001 71.8518,-197 61.8517,-193.5001 61.8518,-200.5001"></polygon>\n</g>\n<!-- b1 -->\n<g id="node5" class="node">\n<title>b1</title>\n<polygon fill="none" stroke="#000000" points="126,-179.2958 126,-215.2958 180,-215.2958 180,-179.2958 126,-179.2958"></polygon>\n<text text-anchor="middle" x="153" y="-193.5958" font-family="Times,serif" font-size="14.00" fill="#000000">b1</text>\n</g>\n<!-- s2 -->\n<g id="node11" class="node">\n<title>s2</title>\n<ellipse fill="none" stroke="#000000" cx="216" cy="-197.2958" rx="18" ry="18"></ellipse>\n<text text-anchor="middle" x="216" y="-193.5958" font-family="Times,serif" font-size="14.00" fill="#000000">+</text>\n</g>\n<!-- b1&#45;&gt;s2 -->\n<g id="edge3" class="edge">\n<title>b1-&gt;s2</title>\n<path fill="none" stroke="#000000" d="M180.0833,-197C180.0833,-197 187.8518,-197 187.8518,-197"></path>\n<polygon fill="#000000" stroke="#000000" points="187.8518,-200.5001 197.8518,-197 187.8517,-193.5001 187.8518,-200.5001"></polygon>\n</g>\n<!-- b2 -->\n<g id="node6" class="node">\n<title>b2</title>\n<polygon fill="none" stroke="#000000" points="252,-179.2958 252,-215.2958 306,-215.2958 306,-179.2958 252,-179.2958"></polygon>\n<text text-anchor="middle" x="279" y="-193.5958" font-family="Times,serif" font-size="14.00" fill="#000000">b2</text>\n</g>\n<!-- s3 -->\n<g id="node12" class="node">\n<title>s3</title>\n<ellipse fill="none" stroke="#000000" cx="342" cy="-197.2958" rx="18" ry="18"></ellipse>\n<text text-anchor="middle" x="342" y="-193.5958" font-family="Times,serif" font-size="14.00" fill="#000000">+</text>\n</g>\n<!-- b2&#45;&gt;s3 -->\n<g id="edge5" class="edge">\n<title>b2-&gt;s3</title>\n<path fill="none" stroke="#000000" d="M306.0833,-197C306.0833,-197 313.8518,-197 313.8518,-197"></path>\n<polygon fill="#000000" stroke="#000000" points="313.8518,-200.5001 323.8518,-197 313.8517,-193.5001 313.8518,-200.5001"></polygon>\n</g>\n<!-- b3 -->\n<g id="node7" class="node">\n<title>b3</title>\n<polygon fill="none" stroke="#000000" points="378,-179.2958 378,-215.2958 432,-215.2958 432,-179.2958 378,-179.2958"></polygon>\n<text text-anchor="middle" x="405" y="-193.5958" font-family="Times,serif" font-size="14.00" fill="#000000">b3</text>\n</g>\n<!-- s4 -->\n<g id="node13" class="node">\n<title>s4</title>\n<ellipse fill="none" stroke="#000000" cx="468" cy="-197.2958" rx="18" ry="18"></ellipse>\n<text text-anchor="middle" x="468" y="-193.5958" font-family="Times,serif" font-size="14.00" fill="#000000">+</text>\n</g>\n<!-- b3&#45;&gt;s4 -->\n<g id="edge7" class="edge">\n<title>b3-&gt;s4</title>\n<path fill="none" stroke="#000000" d="M432.0833,-197C432.0833,-197 439.8518,-197 439.8518,-197"></path>\n<polygon fill="#000000" stroke="#000000" points="439.8518,-200.5001 449.8518,-197 439.8517,-193.5001 439.8518,-200.5001"></polygon>\n</g>\n<!-- b4 -->\n<g id="node8" class="node">\n<title>b4</title>\n<polygon fill="none" stroke="#000000" points="504,-179.2958 504,-215.2958 558,-215.2958 558,-179.2958 504,-179.2958"></polygon>\n<text text-anchor="middle" x="531" y="-193.5958" font-family="Times,serif" font-size="14.00" fill="#000000">b4</text>\n</g>\n<!-- s5 -->\n<g id="node14" class="node">\n<title>s5</title>\n<ellipse fill="none" stroke="#000000" cx="594" cy="-197.2958" rx="18" ry="18"></ellipse>\n<text text-anchor="middle" x="594" y="-193.5958" font-family="Times,serif" font-size="14.00" fill="#000000">+</text>\n</g>\n<!-- b4&#45;&gt;s5 -->\n<g id="edge9" class="edge">\n<title>b4-&gt;s5</title>\n<path fill="none" stroke="#000000" d="M558.0833,-197C558.0833,-197 565.8518,-197 565.8518,-197"></path>\n<polygon fill="#000000" stroke="#000000" points="565.8518,-200.5001 575.8518,-197 565.8517,-193.5001 565.8518,-200.5001"></polygon>\n</g>\n<!-- b5 -->\n<g id="node9" class="node">\n<title>b5</title>\n<polygon fill="none" stroke="#000000" points="630,-179.2958 630,-215.2958 684,-215.2958 684,-179.2958 630,-179.2958"></polygon>\n<text text-anchor="middle" x="657" y="-193.5958" font-family="Times,serif" font-size="14.00" fill="#000000">b5</text>\n</g>\n<!-- b5&#45;&gt;pout -->\n<g id="edge11" class="edge">\n<title>b5-&gt;pout</title>\n<path fill="none" stroke="#000000" d="M684.0678,-197C684.0678,-197 691.9389,-197 691.9389,-197"></path>\n<polygon fill="#000000" stroke="#000000" points="691.9389,-200.5001 701.9389,-197 691.9388,-193.5001 691.9389,-200.5001"></polygon>\n</g>\n<!-- s1&#45;&gt;b1 -->\n<g id="edge2" class="edge">\n<title>s1-&gt;b1</title>\n<path fill="none" stroke="#000000" d="M108.2222,-197C108.2222,-197 115.911,-197 115.911,-197"></path>\n<polygon fill="#000000" stroke="#000000" points="115.911,-200.5001 125.911,-197 115.911,-193.5001 115.911,-200.5001"></polygon>\n</g>\n<!-- s2&#45;&gt;b2 -->\n<g id="edge4" class="edge">\n<title>s2-&gt;b2</title>\n<path fill="none" stroke="#000000" d="M234.2222,-197C234.2222,-197 241.911,-197 241.911,-197"></path>\n<polygon fill="#000000" stroke="#000000" points="241.911,-200.5001 251.911,-197 241.911,-193.5001 241.911,-200.5001"></polygon>\n</g>\n<!-- s3&#45;&gt;b3 -->\n<g id="edge6" class="edge">\n<title>s3-&gt;b3</title>\n<path fill="none" stroke="#000000" d="M360.2222,-197C360.2222,-197 367.911,-197 367.911,-197"></path>\n<polygon fill="#000000" stroke="#000000" points="367.911,-200.5001 377.911,-197 367.911,-193.5001 367.911,-200.5001"></polygon>\n</g>\n<!-- s4&#45;&gt;b4 -->\n<g id="edge8" class="edge">\n<title>s4-&gt;b4</title>\n<path fill="none" stroke="#000000" d="M486.2222,-197C486.2222,-197 493.911,-197 493.911,-197"></path>\n<polygon fill="#000000" stroke="#000000" points="493.911,-200.5001 503.911,-197 493.911,-193.5001 493.911,-200.5001"></polygon>\n</g>\n<!-- s5&#45;&gt;b5 -->\n<g id="edge10" class="edge">\n<title>s5-&gt;b5</title>\n<path fill="none" stroke="#000000" d="M612.2222,-197C612.2222,-197 619.911,-197 619.911,-197"></path>\n<polygon fill="#000000" stroke="#000000" points="619.911,-200.5001 629.911,-197 619.911,-193.5001 619.911,-200.5001"></polygon>\n</g>\n<!-- g6 -->\n<g id="node22" class="node">\n<title>g6</title>\n<ellipse fill="none" stroke="#000000" cx="760" cy="-119.3979" rx="18" ry="18"></ellipse>\n<text text-anchor="middle" x="760" y="-115.6979" font-family="Times,serif" font-size="14.00" fill="#000000">1</text>\n</g>\n<!-- s6&#45;&gt;g6 -->\n<g id="edge20" class="edge">\n<title>s6-&gt;g6</title>\n<path fill="none" stroke="#000000" d="M757,-179.2287C757,-179.2287 757,-147.3671 757,-147.3671"></path>\n<polygon fill="#000000" stroke="#000000" points="760.5001,-147.3671 757,-137.3671 753.5001,-147.3671 760.5001,-147.3671"></polygon>\n</g>\n<!-- g0 -->\n<g id="node16" class="node">\n<title>g0</title>\n<ellipse fill="none" stroke="#000000" cx="27" cy="-119.3979" rx="18.6979" ry="18.6979"></ellipse>\n<text text-anchor="middle" x="27" y="-115.6979" font-family="Times,serif" font-size="14.00" fill="#000000">a6</text>\n</g>\n<!-- g0&#45;&gt;b0 -->\n<g id="edge14" class="edge">\n<title>g0-&gt;b0</title>\n<path fill="none" stroke="#000000" d="M27,-138.2548C27,-138.2548 27,-169.149 27,-169.149"></path>\n<polygon fill="#000000" stroke="#000000" points="23.5001,-169.1489 27,-179.149 30.5001,-169.149 23.5001,-169.1489"></polygon>\n</g>\n<!-- g1 -->\n<g id="node17" class="node">\n<title>g1</title>\n<ellipse fill="none" stroke="#000000" cx="90" cy="-119.3979" rx="18.6979" ry="18.6979"></ellipse>\n<text text-anchor="middle" x="90" y="-115.6979" font-family="Times,serif" font-size="14.00" fill="#000000">a9</text>\n</g>\n<!-- g1&#45;&gt;s1 -->\n<g id="edge15" class="edge">\n<title>g1-&gt;s1</title>\n<path fill="none" stroke="#000000" d="M90,-138.2548C90,-138.2548 90,-169.149 90,-169.149"></path>\n<polygon fill="#000000" stroke="#000000" points="86.5001,-169.1489 90,-179.149 93.5001,-169.149 86.5001,-169.1489"></polygon>\n</g>\n<!-- g2 -->\n<g id="node18" class="node">\n<title>g2</title>\n<ellipse fill="none" stroke="#000000" cx="216" cy="-119.3979" rx="18.6979" ry="18.6979"></ellipse>\n<text text-anchor="middle" x="216" y="-115.6979" font-family="Times,serif" font-size="14.00" fill="#000000">a6</text>\n</g>\n<!-- g2&#45;&gt;s2 -->\n<g id="edge16" class="edge">\n<title>g2-&gt;s2</title>\n<path fill="none" stroke="#000000" d="M216,-138.2548C216,-138.2548 216,-169.149 216,-169.149"></path>\n<polygon fill="#000000" stroke="#000000" points="212.5001,-169.1489 216,-179.149 219.5001,-169.149 212.5001,-169.1489"></polygon>\n</g>\n<!-- g3 -->\n<g id="node19" class="node">\n<title>g3</title>\n<ellipse fill="none" stroke="#000000" cx="342" cy="-119.3979" rx="18.6979" ry="18.6979"></ellipse>\n<text text-anchor="middle" x="342" y="-115.6979" font-family="Times,serif" font-size="14.00" fill="#000000">a4</text>\n</g>\n<!-- g3&#45;&gt;s3 -->\n<g id="edge17" class="edge">\n<title>g3-&gt;s3</title>\n<path fill="none" stroke="#000000" d="M342,-138.2548C342,-138.2548 342,-169.149 342,-169.149"></path>\n<polygon fill="#000000" stroke="#000000" points="338.5001,-169.1489 342,-179.149 345.5001,-169.149 338.5001,-169.1489"></polygon>\n</g>\n<!-- g4 -->\n<g id="node20" class="node">\n<title>g4</title>\n<ellipse fill="none" stroke="#000000" cx="468" cy="-119.3979" rx="23.2963" ry="23.2963"></ellipse>\n<text text-anchor="middle" x="468" y="-115.6979" font-family="Times,serif" font-size="14.00" fill="#000000">a14</text>\n</g>\n<!-- g4&#45;&gt;s4 -->\n<g id="edge18" class="edge">\n<title>g4-&gt;s4</title>\n<path fill="none" stroke="#000000" d="M468,-143.1931C468,-143.1931 468,-168.8351 468,-168.8351"></path>\n<polygon fill="#000000" stroke="#000000" points="464.5001,-168.8351 468,-178.8351 471.5001,-168.8352 464.5001,-168.8351"></polygon>\n</g>\n<!-- g5 -->\n<g id="node21" class="node">\n<title>g5</title>\n<ellipse fill="none" stroke="#000000" cx="594" cy="-119.3979" rx="23.2963" ry="23.2963"></ellipse>\n<text text-anchor="middle" x="594" y="-115.6979" font-family="Times,serif" font-size="14.00" fill="#000000">a10</text>\n</g>\n<!-- g5&#45;&gt;s5 -->\n<g id="edge19" class="edge">\n<title>g5-&gt;s5</title>\n<path fill="none" stroke="#000000" d="M594,-143.1931C594,-143.1931 594,-168.8351 594,-168.8351"></path>\n<polygon fill="#000000" stroke="#000000" points="590.5001,-168.8351 594,-178.8351 597.5001,-168.8352 590.5001,-168.8351"></polygon>\n</g>\n<!-- top -->\n<g id="node23" class="node">\n<title>top</title>\n<polygon fill="none" stroke="#000000" points="733,-23.5 733,-59.5 787,-59.5 787,-23.5 733,-23.5"></polygon>\n<text text-anchor="middle" x="760" y="-37.8" font-family="Times,serif" font-size="14.00" fill="#000000">gate</text>\n</g>\n<!-- g6&#45;&gt;top -->\n<g id="edge13" class="edge">\n<title>g6-&gt;top</title>\n<path fill="none" stroke="#000000" d="M760,-101.3308C760,-101.3308 760,-69.739 760,-69.739"></path>\n<polygon fill="#000000" stroke="#000000" points="763.5001,-69.739 760,-59.739 756.5001,-69.739 763.5001,-69.739"></polygon>\n</g>\n<!-- t5 -->\n<g id="node24" class="node">\n<title>t5</title>\n<ellipse fill="#000000" stroke="#000000" cx="594" cy="-41.5" rx="1.8" ry="1.8"></ellipse>\n</g>\n<!-- top&#45;&gt;t5 -->\n<g id="edge27" class="edge">\n<title>top-&gt;t5</title>\n<path fill="none" stroke="#000000" d="M732.9598,-41C732.9598,-41 605.9498,-41 605.9498,-41"></path>\n<polygon fill="#000000" stroke="#000000" points="605.9498,-37.5001 595.9498,-41 605.9497,-44.5001 605.9498,-37.5001"></polygon>\n</g>\n<!-- t5&#45;&gt;g5 -->\n<g id="edge21" class="edge">\n<title>t5-&gt;g5</title>\n<path fill="none" stroke="#000000" d="M594,-43.4256C594,-43.4256 594,-85.8807 594,-85.8807"></path>\n<polygon fill="#000000" stroke="#000000" points="590.5001,-85.8807 594,-95.8807 597.5001,-85.8807 590.5001,-85.8807"></polygon>\n</g>\n<!-- t4 -->\n<g id="node25" class="node">\n<title>t4</title>\n<ellipse fill="#000000" stroke="#000000" cx="468" cy="-41.5" rx="1.8" ry="1.8"></ellipse>\n</g>\n<!-- t5&#45;&gt;t4 -->\n<g id="edge28" class="edge">\n<title>t5-&gt;t4</title>\n<path fill="none" stroke="#000000" d="M592.2188,-41C592.2188,-41 479.8975,-41 479.8975,-41"></path>\n<polygon fill="#000000" stroke="#000000" points="479.8976,-37.5001 469.8975,-41 479.8975,-44.5001 479.8976,-37.5001"></polygon>\n</g>\n<!-- t4&#45;&gt;g4 -->\n<g id="edge22" class="edge">\n<title>t4-&gt;g4</title>\n<path fill="none" stroke="#000000" d="M468,-43.4256C468,-43.4256 468,-85.8807 468,-85.8807"></path>\n<polygon fill="#000000" stroke="#000000" points="464.5001,-85.8807 468,-95.8807 471.5001,-85.8807 464.5001,-85.8807"></polygon>\n</g>\n<!-- t3 -->\n<g id="node26" class="node">\n<title>t3</title>\n<ellipse fill="#000000" stroke="#000000" cx="342" cy="-41.5" rx="1.8" ry="1.8"></ellipse>\n</g>\n<!-- t4&#45;&gt;t3 -->\n<g id="edge29" class="edge">\n<title>t4-&gt;t3</title>\n<path fill="none" stroke="#000000" d="M466.2188,-41C466.2188,-41 353.8975,-41 353.8975,-41"></path>\n<polygon fill="#000000" stroke="#000000" points="353.8976,-37.5001 343.8975,-41 353.8975,-44.5001 353.8976,-37.5001"></polygon>\n</g>\n<!-- t3&#45;&gt;g3 -->\n<g id="edge23" class="edge">\n<title>t3-&gt;g3</title>\n<path fill="none" stroke="#000000" d="M342,-43.4256C342,-43.4256 342,-90.3544 342,-90.3544"></path>\n<polygon fill="#000000" stroke="#000000" points="338.5001,-90.3544 342,-100.3544 345.5001,-90.3544 338.5001,-90.3544"></polygon>\n</g>\n<!-- t2 -->\n<g id="node27" class="node">\n<title>t2</title>\n<ellipse fill="#000000" stroke="#000000" cx="216" cy="-41.5" rx="1.8" ry="1.8"></ellipse>\n</g>\n<!-- t3&#45;&gt;t2 -->\n<g id="edge30" class="edge">\n<title>t3-&gt;t2</title>\n<path fill="none" stroke="#000000" d="M340.2188,-41C340.2188,-41 227.8975,-41 227.8975,-41"></path>\n<polygon fill="#000000" stroke="#000000" points="227.8976,-37.5001 217.8975,-41 227.8975,-44.5001 227.8976,-37.5001"></polygon>\n</g>\n<!-- t2&#45;&gt;g2 -->\n<g id="edge24" class="edge">\n<title>t2-&gt;g2</title>\n<path fill="none" stroke="#000000" d="M216,-43.4256C216,-43.4256 216,-90.3544 216,-90.3544"></path>\n<polygon fill="#000000" stroke="#000000" points="212.5001,-90.3544 216,-100.3544 219.5001,-90.3544 212.5001,-90.3544"></polygon>\n</g>\n<!-- t1 -->\n<g id="node28" class="node">\n<title>t1</title>\n<ellipse fill="#000000" stroke="#000000" cx="90" cy="-41.5" rx="1.8" ry="1.8"></ellipse>\n</g>\n<!-- t2&#45;&gt;t1 -->\n<g id="edge31" class="edge">\n<title>t2-&gt;t1</title>\n<path fill="none" stroke="#000000" d="M214.2188,-41C214.2188,-41 101.8975,-41 101.8975,-41"></path>\n<polygon fill="#000000" stroke="#000000" points="101.8976,-37.5001 91.8975,-41 101.8975,-44.5001 101.8976,-37.5001"></polygon>\n</g>\n<!-- t1&#45;&gt;g1 -->\n<g id="edge25" class="edge">\n<title>t1-&gt;g1</title>\n<path fill="none" stroke="#000000" d="M90,-43.4256C90,-43.4256 90,-90.3544 90,-90.3544"></path>\n<polygon fill="#000000" stroke="#000000" points="86.5001,-90.3544 90,-100.3544 93.5001,-90.3544 86.5001,-90.3544"></polygon>\n</g>\n<!-- t0 -->\n<g id="node29" class="node">\n<title>t0</title>\n<ellipse fill="#000000" stroke="#000000" cx="27" cy="-41.5" rx="1.8" ry="1.8"></ellipse>\n</g>\n<!-- t1&#45;&gt;t0 -->\n<g id="edge32" class="edge">\n<title>t1-&gt;t0</title>\n<path fill="none" stroke="#000000" d="M88.1825,-41C88.1825,-41 39.2053,-41 39.2053,-41"></path>\n<polygon fill="#000000" stroke="#000000" points="39.2053,-37.5001 29.2053,-41 39.2052,-44.5001 39.2053,-37.5001"></polygon>\n</g>\n<!-- t0&#45;&gt;g0 -->\n<g id="edge26" class="edge">\n<title>t0-&gt;g0</title>\n<path fill="none" stroke="#000000" d="M27,-43.4256C27,-43.4256 27,-90.3544 27,-90.3544"></path>\n<polygon fill="#000000" stroke="#000000" points="23.5001,-90.3544 27,-100.3544 30.5001,-90.3544 23.5001,-90.3544"></polygon>\n</g>\n</g>\n</svg>\n'</p>
+<p>Each <span class="math">\(a_i\)</span> represents an <em>n-tuples</em> <span class="math">\(\alpha^i\)</span> coefficient of the multiplier and
+each of <span class="math">\(b_i\)</span> represents the symbol shift register at each stage. It is worth noting that,
+unlike the binary BCH, none of the coefficients of <span class="math">\(g(x)\)</span> can be zero. The encoder block
+can also be used for decoding this RS code as well.</p>
+<p>For <span class="math">\(u=0 0 0 0 \alpha \alpha^2 0 1 \alpha^6\)</span>, encoding in systematic form as <span class="math">\(\frac{x^6u(x)}{g(x)}\)</span> would yield,
+<span class="math">\(v = 0 0 0 0 \alpha \alpha^2 0 1 \alpha^6 \alpha^6 \alpha 1 \alpha^6 \alpha^9 \alpha^5\)</span> or in polynomial form,</p>
+<div class="math">
+\begin{equation*}
+v(x) = \alpha x^{10} + \alpha^2 x^9 + x^7 + \alpha^6 x^6 + \alpha^6 x^5 + \alpha  x^4 + x^3 + \alpha^6x^2 + \alpha^9 x + \alpha^5
+\end{equation*}
+</div>
+<p>or v = 0000.. _0000_0010_0100_0000_0001_1100_1100_0010_0001_1100_1010_0110.</p>
+<p>For a hexadecimal value of 0x2badbeef, <span class="math">\(u=\alpha \alpha^7 \alpha^9 \alpha^{13} \alpha^7 \alpha^{11} \alpha^{11} \alpha^{12}\)</span>, the encoded
+parity portion will be, <span class="math">\(p=\alpha^{13} \alpha^{12} \alpha^8 \alpha^7 0 \alpha^5\)</span>. The output is the concatenated
+32-bit input and 24-bit parity check bits ie.. 0x2badbeef_df5b06.</p>
+</div>
+<div class="section" id="multiplication-of-gf-2-4-elements">
+<h2>Multiplication of <span class="math">\(GF(2^4)\)</span> elements</h2>
+<p>For some <span class="math">\(\beta=[\beta_0 \beta_1 \beta_2 \beta_3 ]\)</span>, multiplied by some element of
+<span class="math">\(GF(2^4)\)</span>, for example,</p>
+<div class="math">
+\begin{equation*}
+\beta \alpha = [\beta_3 \,  \beta_2 \, \beta_1 \, \beta_0 ]
+ \left [
+\begin{array}{cc}
+0 &amp; 0 &amp; 1 &amp; 1 \\
+1 &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; 1 &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; 1 &amp; 0 \\
+\end{array}
+\right] = [\beta_2 \,  \beta_1 \,  (\beta_0+\beta_3) \,  \beta_3]
+\end{equation*}
+</div>
+<p>If <span class="math">\(\beta = \alpha^6 = \{1 1 0 0\}\)</span>, the product, <span class="math">\(\alpha^6 \alpha = \{1 0 1 1\} = \alpha^7\)</span>.
+In general,</p>
+<div class="math">
+\begin{equation*}
+\beta \alpha^p = [\beta_0 \,  \beta_1 \, \beta_2 \, \beta_3 ]
+ \left [
+\begin{array}{cc}
+\alpha^p \\
+\alpha^{p+1} \\
+\alpha^{p+2} \\
+\alpha^{p+3} \\
+\end{array}
+\right] = [c_0 \, c_1 \, c_2 \, c_3]
+\end{equation*}
+</div>
+<!-- :math:`c_i  = \sum_{j=0}^{3} \alpha_i^{p+j} \beta_j` -->
+<p>For <span class="math">\(g_7(x)\)</span>, the multiplication circuit by its coefficients can be formed as follow,</p>
+<div class="math">
+\begin{align*}
+\beta \alpha^4 &amp;= [\beta_3 \beta_2 \beta_1 \beta_0]
+\left [
+\begin{array}{cc}
+1 &amp; 0 &amp; 1 &amp; 1 \\
+1 &amp; 1 &amp; 0 &amp; 0 \\
+0 &amp; 1 &amp; 1 &amp; 0 \\
+0 &amp; 0 &amp; 1 &amp; 1 \\
+\end{array}
+\right] \\
+&amp; = [(\beta_3+\beta_2)  (\beta_2+\beta_1)  (\beta_3+\beta_1+\beta_0)  (\beta_3+\beta_0)] \\
+\\
+\beta \alpha^6 &amp;= [(\beta_3+\beta_1+\beta_0)  (\beta_2+\beta_0)  (\beta_3+\beta_1)  (\beta_2+\beta_1)] \\
+\beta \alpha^9 &amp;= [(\beta_3+\beta_2+\beta_0)  (\beta_3+\beta_2+\beta_1)  (\beta_3+\beta_2+\beta_1+\beta_0)  (\beta_3+\beta_1)] \\
+\beta \alpha^{10} &amp;= [(\beta_3+\beta_2+\beta_1)  (\beta_3+\beta_2+\beta_1+\beta_0)  (\beta_2+\beta_1+\beta_0)  (\beta_3+\beta_2+\beta_0)] \\
+\beta \alpha^{14} &amp;= [\beta_0  \beta_3  \beta_2  (\beta_1+\beta_0)]
+\end{align*}
+</div>
+<p>So if <span class="math">\(\beta = \alpha^2\)</span> is multiplied by <span class="math">\(\alpha^9\)</span>, I can use the formula above to
+achieve the desired mutiplication result by simple modulo sum,</p>
+<div class="math">
+\begin{align*}
+\beta \alpha^9 = [ 0 1 0 0 ] \alpha^9 &amp;= [ (0+1+0) (0+1+0) (0+1+0+0) (0+0) ] mod(2) \\
+&amp;= [1 1 1 0] \\
+&amp;= \alpha^{11}
+\end{align*}
+</div>
+<p>For Verilog, all of these coefficient multiplications can be a modeled by the simple modules
+that can be instantiated as the components of the RS encoder.</p>
+<!-- The element of :math:`GF(2^4)` can be formed by its basis that span these elements. There
+are many bases, 840 in all, but I can use this basis, :math:`B=\{ \alpha^5, \alpha^8, \alpha^{13},\alpha^{14} \}`.
+ This basis is obtained by eliminating the linearly dependent component of its elements. -->
+<!-- ====================      =================================================== -->
+<!-- :math:`\alpha^i`           :math:`\alpha^5 \alpha^8 \alpha^{13} \alpha^{14}` -->
+<!-- - - - - - - - - - - - - - - - - - - - -      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<!-- :math:`\alpha^0`                0 1 1 1
+:math:`\alpha^1`                1 0 1 1
+:math:`\alpha^2`                0 0 1 1
+:math:`\alpha^3`                0 1 1 0
+:math:`\alpha^4`                1 1 0 0
+:math:`\alpha^5`                1 0 0 0
+:math:`\alpha^6`                0 1 0 1
+:math:`\alpha^7`                1 0 1 0
+:math:`\alpha^8`                0 1 0 0
+:math:`\alpha^9`                1 1 0 1
+:math:`\alpha^{10}`             1 1 1 1
+:math:`\alpha^{11}`             1 1 1 0
+:math:`\alpha^{12}`             1 0 0 1
+:math:`\alpha^{13}`             0 0 1 0
+:math:`\alpha^{14}`             0 0 0 1
+====================      =================================================== -->
+<p>By definition, a t-error-correcting BCH code of lengt <span class="math">\(2^m-1\)</span> having a binary <em>n-tuple</em>
+<span class="math">\(u(X)=u_0+u_1+\cdots+u_{n-1}\)</span> is a code word iff <span class="math">\(u(X)\)</span> has <span class="math">\(\alpha,\alpha^2,
+\cdots,\alpha^{2t}\)</span> as roots, that is,</p>
+<div class="math">
+\begin{equation*}
+u(\alpha^i) = u_o + u_1(\alpha^i) + u_2(\alpha^{2i}) + \cdots + u_{n-1}(\alpha^{(n-1)i}) = 0
+\end{equation*}
+</div>
+<p>and for this exercise,</p>
+<div class="math">
+\begin{align*}
+u(\alpha) = u_o + u_1(\alpha) + u_2(\alpha^2) + \cdots + u_{n-1}(\alpha^{14}) = 0  \\
+u(\alpha^3) = u_o + u_1(\alpha^3) + u_2(\alpha^{6}) + \cdots + u_{n-1}(\alpha^{42}) = 0 \\
+\end{align*}
+</div>
+<!-- u(\alpha^5) = u_o + u_1(\alpha^5) + u_2(\alpha^{10}) + \cdots + u_{n-1}(\alpha^{150}) = 0 -->
+<p>note that the power of <span class="math">\(\alpha\)</span> will wrap on this finite field, for example,
+<span class="math">\(\alpha^{18} = \alpha^{15} \alpha^3 = \alpha^{3}\)</span>. Put it in matrix form,</p>
+<div class="math">
+\begin{equation*}
+( u_{n-1} \cdots u_1 u_0)
+\left [
+\begin{array}{cc}
+\alpha^{14} &amp; (\alpha^2)^{14} \cdots &amp; (\alpha^6)^{14} \\
+\cdots &amp; \cdots &amp;  \cdots \\
+\alpha &amp; \alpha^2  \cdots &amp; \alpha^6  \\
+1 &amp; 1  \cdots &amp; 1
+\end{array}
+\right] = 0
+\end{equation*}
+</div>
+<p>The equation above is in the form,</p>
+<div class="math">
+\begin{equation*}
+UH^t = 0
+\end{equation*}
+</div>
+</div>
+<div class="section" id="burst-error-correcting-capability">
+<h2>Burst error-correcting capability</h2>
+<p>The burst length <span class="math">\(l\)</span> is defined is a vector whose zero components are confined to
+<span class="math">\(l\)</span> consecutive positions, for examle, the zero code vector of length 9 would be
+something like this ..0_1110_1110_1000_0000.</p>
+<p>For this RS code workout, it is capable of correction the burst lenght, <span class="math">\(l\ge9\)</span> because
+for <span class="math">\(RS(2^r,2t+1), l \ge r(t-1)+1\)</span> .
+My implementation will show that it can indeed forward-error-correcting
+such burst error. The length here is binary bit length, but it is confined within three symbols
+of this q-ary code which is also its limit, twelve bits.</p>
+</div>
+<div class="section" id="decoder-and-errors-locator">
+<h2>Decoder and errors locator</h2>
+<p>I will reuse the same algorithm that I used before and it will work just as well for
+this RS workout exercise. The only exception is that I that I am dealing with the
+4-tuple symbols, not plain binary bits.</p>
+<p>Let <span class="math">\(w(x)\)</span> be the received code word where
+<span class="math">\(w(x)=u(x)+e(x)\)</span>. <span class="math">\(u(x)\)</span> and <span class="math">\(e(x)\)</span> are the transmitted code word and
+error respectively.</p>
+<p>. Calculate syndrome <span class="math">\(s(x) = w(x)\ mod\ g(x)\)</span></p>
+<p>. For <span class="math">\(i \ge 0\)</span>, calculate <span class="math">\(s_i(x)=x^i s(x)\ mod\ g(x)\)</span> until <span class="math">\(s_j(x)\)</span> is found
+with <span class="math">\(degree(s_j(x))) \le l-1\)</span>. I can instead use the weight of the symbols, <span class="math">\(weight(s_j(x)) \le 2t\)</span>.
+This should work as well.</p>
+<p>. Once <span class="math">\(s_j(x)\)</span> is located, <span class="math">\(e(x)=x^{n-j}s_j(x)\ mod\ (x^n + 1)\)</span> are the most likely
+error symbols .</p>
+<p>Every algorithm is iterative as far as division is involved. The iteration for this one is at most <span class="math">\(2t\)</span> because
+if there are <span class="math">\(\nu \le t\)</span> error positions, the iteration is <span class="math">\(\nu + t\)</span>.</p>
+<p>Again, assume the transmitted code word is as shown in the encoder section
+( v = 0000_0000_0000_0010__0100_0000_0001_1100__1100_0010_0001_1100_1010_0110 or h0002_401C ), but with
+three symbols error in the message area of code,h0AC2_421c,</p>
+<div class="math">
+\begin{equation*}
+w(x) = \underline{\alpha^9 x^{12} + \alpha^6 x^{11}} + \alpha x^{10} + \alpha^2 x^9 + \underline{\alpha x^8} +  x^7 + \alpha^6 x^6 + \alpha^6 x^5 + \alpha  x^4 + x^3 + \alpha^6x^2 + \alpha^9 x + \alpha^5
+\end{equation*}
+</div>
+<p>The computed syndrome is h76_0523, or in polynomial form,</p>
+<div class="math">
+\begin{align*}
+s(x)= w(x)\ mod\ g(x) = \alpha^{10}x^5 +\alpha^5 x^4 + \alpha^8 x^2 + \alpha x^2 + \alpha^4 \\
+s_1(x) = x s(x)\ mod\ g(x) = \alpha^4 x^4 + \alpha^6 x^3 + \alpha \\
+\end{align*}
+</div>
+<p>weight of <span class="math">\(s_1(x) \le t\)</span> is reached, <span class="math">\(j=1\)</span>.</p>
+<!-- .. math::
+s(x) = x^{15-3}s_1(x)\ mod\ ( x^{15} + 1) \\
+= x^{13} + x^{12} -->
+<p>The most likely code word is therefore, <span class="math">\(w(x)\)</span> plus the shifted value of <span class="math">\(s_1(x)\)</span>. In this
+example, it corrects 3 symbols or 12 binary bits for a 36 bits encoded codeword (plus partity check bits)
+. I will shorten it to 32 bits when implementating this RS code without impairing its FEC capability.</p>
+<!-- How to detect an uncorrectable code word ? For this implementation, if the iteration
+exceed 4, then declare error. I experiment with larger than :math:`t` errors and I
+find out that the process just go on an on withouth reaching minimum weight.
+Any solution for any algorithm needs to take into account that there is the possibility that there
+may be fewer errors than the maximum correctble errors. -->
+<!-- For fun and for speed I will have an HDL implementation of this algorithm when time
+permits and I will update this post with the link to it. -->
+<!-- The encoded words are the contatenation of the input word and the parity bits. The HDL implementation -->
+<!-- of this FEC exercise is `Simple Cyclic Hamming FEC`_ -->
+<!-- .. _Simple Cyclic Hamming FEC: http://souktha.github.io/hardware/cyclic_1_x_x4_hw -->
+<!-- .. _link: `Simple Cyclic Hamming FEC`_ -->
+</div>
+<div class="section" id="summary">
+<h2>Summary</h2>
+<p>RS code is one class of powerful forward-error-correcting code and it has wide variety
+of applications such as those found in communication systems and in data storage subsystems.
+Knowing the basic mathematic behind it, one can implement RS code of any <span class="math">\(GF(2^r)\)</span> field.
+Math is everything and everything is math. <em>It is generally recognized that it is dangerous
+to apply any part of science without undertanding what is behing
+the theory</em> (Richard W. Hamming).</p>
+<p>There are many excellent text books and articles on this subject. Listed in the reference
+are only a few that I have. For EE, <a class="citation-reference" href="#cit003" id="id1">[CIT003]</a> is a very well known text book on this
+subject.</p>
+<p>The HDL implementation of this FEC exercise is <a class="reference external" href="http://souktha.github.io/hardware/rs15_7_hw">RS burst error FEC</a></p>
+</div>
+<div class="section" id="reference">
+<h2>Reference</h2>
+<!-- all the references books, articles etc -->
+<table class="docutils citation" frame="void" id="cit001" rules="none">
+<colgroup>
+<col class="label">
+<col>
+</colgroup>
+<tbody valign="top"><tr>
+<td class="label">[CIT001]</td>
+<td>Digital Communications Fundamentals and Applications, 2nd Ed, Bernard Sklar.</td>
+</tr></tbody>
+</table>
+<table class="docutils citation" frame="void" id="cit002" rules="none">
+<colgroup>
+<col class="label">
+<col>
+</colgroup>
+<tbody valign="top"><tr>
+<td class="label">[CIT002]</td>
+<td>Coding Theory The Essentials, D.G Hoffman, 1991.</td>
+</tr></tbody>
+</table>
+<table class="docutils citation" frame="void" id="cit003" rules="none">
+<colgroup>
+<col class="label">
+<col>
+</colgroup>
+<tbody valign="top"><tr>
+<td class="label"><a class="fn-backref" href="#id1">[CIT003]</a></td>
+<td>Error Control Coding Fundamental And Applications, Shu Lin, Daniel J. Costello Jr, 1983</td>
+</tr></tbody>
+</table>
+</div>
+</div>
+    </div>
+    
+            <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> </script><script type="text/x-mathjax-config">
+            MathJax.Hub.Config({tex2jax: {inlineMath: [['$latex ','$'], ['\\(','\\)']]}});
+            </script></article>
+</div>
+        <!--End of body content-->
+
+        <footer id="footer">
+            Contents © 2017         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+        </footer>
+</div>
+</div>
+
+
+            <script src="../../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+    moment.locale("en");
+    fancydates(0, "YYYY-MM-DD HH:mm");
+    </script><!-- end fancy dates -->
+</body>
+</html>
