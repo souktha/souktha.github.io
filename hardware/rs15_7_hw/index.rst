@@ -164,7 +164,7 @@ Here is some example of its error correction,
 
         Fig1: Corrected 3 symbols(12-bit) of input coded word h0AC2_421C to h2_401C. 
 
-I can also correct burst error,
+It can also correct burst error,
 
 .. figure:: ../../images/hardware/rs_decoded_burst_l12.jpeg
 
