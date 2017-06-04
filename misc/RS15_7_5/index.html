@@ -238,19 +238,19 @@ is again tabulated below,</p>
 </table>
 <p>Note that <span class="math">\(\alpha^{15} = \alpha^0 = 1\)</span>.
 As usual, the table above can be easily generated with Octave/MATLAB,</p>
-<pre class="code text"><a name="rest_code_eb1f19b0ecff4681918e548d85612a1a-1"></a>&gt; I=eye(15);I=I(15:-1:1,:);
-<a name="rest_code_eb1f19b0ecff4681918e548d85612a1a-2"></a>&gt;&gt; for i=1:15
-<a name="rest_code_eb1f19b0ecff4681918e548d85612a1a-3"></a>[q,r(i,:)]=deconv(I(i,:),[1 0 0 1 1]);
-<a name="rest_code_eb1f19b0ecff4681918e548d85612a1a-4"></a>end
-<a name="rest_code_eb1f19b0ecff4681918e548d85612a1a-5"></a>&gt;&gt; r=mod(r(:,12:15),2)
-<a name="rest_code_eb1f19b0ecff4681918e548d85612a1a-6"></a>r =
-<a name="rest_code_eb1f19b0ecff4681918e548d85612a1a-7"></a>
-<a name="rest_code_eb1f19b0ecff4681918e548d85612a1a-8"></a>   0   0   0   1
-<a name="rest_code_eb1f19b0ecff4681918e548d85612a1a-9"></a>   0   0   1   0
-<a name="rest_code_eb1f19b0ecff4681918e548d85612a1a-10"></a>   0   1   0   0
-<a name="rest_code_eb1f19b0ecff4681918e548d85612a1a-11"></a>   1   0   0   0
-<a name="rest_code_eb1f19b0ecff4681918e548d85612a1a-12"></a>   ..
-<a name="rest_code_eb1f19b0ecff4681918e548d85612a1a-13"></a>   1   0   0   1
+<pre class="code text"><a name="rest_code_5f33f08e150b4e5cb1fd112ab2753063-1"></a>&gt; I=eye(15);I=I(15:-1:1,:);
+<a name="rest_code_5f33f08e150b4e5cb1fd112ab2753063-2"></a>&gt;&gt; for i=1:15
+<a name="rest_code_5f33f08e150b4e5cb1fd112ab2753063-3"></a>[q,r(i,:)]=deconv(I(i,:),[1 0 0 1 1]);
+<a name="rest_code_5f33f08e150b4e5cb1fd112ab2753063-4"></a>end
+<a name="rest_code_5f33f08e150b4e5cb1fd112ab2753063-5"></a>&gt;&gt; r=mod(r(:,12:15),2)
+<a name="rest_code_5f33f08e150b4e5cb1fd112ab2753063-6"></a>r =
+<a name="rest_code_5f33f08e150b4e5cb1fd112ab2753063-7"></a>
+<a name="rest_code_5f33f08e150b4e5cb1fd112ab2753063-8"></a>   0   0   0   1
+<a name="rest_code_5f33f08e150b4e5cb1fd112ab2753063-9"></a>   0   0   1   0
+<a name="rest_code_5f33f08e150b4e5cb1fd112ab2753063-10"></a>   0   1   0   0
+<a name="rest_code_5f33f08e150b4e5cb1fd112ab2753063-11"></a>   1   0   0   0
+<a name="rest_code_5f33f08e150b4e5cb1fd112ab2753063-12"></a>   ..
+<a name="rest_code_5f33f08e150b4e5cb1fd112ab2753063-13"></a>   1   0   0   1
 </pre>
 <p>where the result row vectors <span class="math">\(r\)</span> are the remainders from the polynomial division.</p>
 <p>For <span class="math">\(RS(2^4,5)\)</span>,  the generator polynomial is,</p>
@@ -609,7 +609,7 @@ permits and I will update this post with the link to it. -->
 of applications such as those found in communication systems and in data storage subsystems.
 Knowing the basic mathematic behind it, one can implement RS code of any <span class="math">\(GF(2^r)\)</span> field.
 Math is everything and everything is math. <em>It is generally recognized that it is dangerous
-to apply any part of science without undertanding what is behing
+to apply any part of science without undertanding what is behind
 the theory</em> (Richard W. Hamming).</p>
 <p>There are many excellent text books and articles on this subject. Listed in the reference
 are only a few that I have. For EE, <a class="citation-reference" href="#cit003" id="id1">[CIT003]</a> is a very well known text book on this

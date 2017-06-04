@@ -573,7 +573,7 @@ RS code is one class of powerful forward-error-correcting code and it has wide v
 of applications such as those found in communication systems and in data storage subsystems.
 Knowing the basic mathematic behind it, one can implement RS code of any :math:`GF(2^r)` field.
 Math is everything and everything is math. *It is generally recognized that it is dangerous
-to apply any part of science without undertanding what is behing 
+to apply any part of science without undertanding what is behind 
 the theory* (Richard W. Hamming).
 
 There are many excellent text books and articles on this subject. Listed in the reference
