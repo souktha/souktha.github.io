@@ -238,19 +238,19 @@ is again tabulated below,</p>
 </table>
 <p>Note that <span class="math">\(\alpha^{15} = \alpha^0 = 1\)</span>.
 As usual, the table above can be easily generated with Octave/MATLAB,</p>
-<pre class="code text"><a name="rest_code_5f33f08e150b4e5cb1fd112ab2753063-1"></a>&gt; I=eye(15);I=I(15:-1:1,:);
-<a name="rest_code_5f33f08e150b4e5cb1fd112ab2753063-2"></a>&gt;&gt; for i=1:15
-<a name="rest_code_5f33f08e150b4e5cb1fd112ab2753063-3"></a>[q,r(i,:)]=deconv(I(i,:),[1 0 0 1 1]);
-<a name="rest_code_5f33f08e150b4e5cb1fd112ab2753063-4"></a>end
-<a name="rest_code_5f33f08e150b4e5cb1fd112ab2753063-5"></a>&gt;&gt; r=mod(r(:,12:15),2)
-<a name="rest_code_5f33f08e150b4e5cb1fd112ab2753063-6"></a>r =
-<a name="rest_code_5f33f08e150b4e5cb1fd112ab2753063-7"></a>
-<a name="rest_code_5f33f08e150b4e5cb1fd112ab2753063-8"></a>   0   0   0   1
-<a name="rest_code_5f33f08e150b4e5cb1fd112ab2753063-9"></a>   0   0   1   0
-<a name="rest_code_5f33f08e150b4e5cb1fd112ab2753063-10"></a>   0   1   0   0
-<a name="rest_code_5f33f08e150b4e5cb1fd112ab2753063-11"></a>   1   0   0   0
-<a name="rest_code_5f33f08e150b4e5cb1fd112ab2753063-12"></a>   ..
-<a name="rest_code_5f33f08e150b4e5cb1fd112ab2753063-13"></a>   1   0   0   1
+<pre class="code text"><a name="rest_code_0b34754d28504761891614df5fcead90-1"></a>&gt; I=eye(15);I=I(15:-1:1,:);
+<a name="rest_code_0b34754d28504761891614df5fcead90-2"></a>&gt;&gt; for i=1:15
+<a name="rest_code_0b34754d28504761891614df5fcead90-3"></a>[q,r(i,:)]=deconv(I(i,:),[1 0 0 1 1]);
+<a name="rest_code_0b34754d28504761891614df5fcead90-4"></a>end
+<a name="rest_code_0b34754d28504761891614df5fcead90-5"></a>&gt;&gt; r=mod(r(:,12:15),2)
+<a name="rest_code_0b34754d28504761891614df5fcead90-6"></a>r =
+<a name="rest_code_0b34754d28504761891614df5fcead90-7"></a>
+<a name="rest_code_0b34754d28504761891614df5fcead90-8"></a>   0   0   0   1
+<a name="rest_code_0b34754d28504761891614df5fcead90-9"></a>   0   0   1   0
+<a name="rest_code_0b34754d28504761891614df5fcead90-10"></a>   0   1   0   0
+<a name="rest_code_0b34754d28504761891614df5fcead90-11"></a>   1   0   0   0
+<a name="rest_code_0b34754d28504761891614df5fcead90-12"></a>   ..
+<a name="rest_code_0b34754d28504761891614df5fcead90-13"></a>   1   0   0   1
 </pre>
 <p>where the result row vectors <span class="math">\(r\)</span> are the remainders from the polynomial division.</p>
 <p>For <span class="math">\(RS(2^4,5)\)</span>,  the generator polynomial is,</p>
@@ -349,8 +349,19 @@ v(\alpha) &amp;= \alpha^{11}+\alpha^7+1+\alpha^{10}+\alpha^3+\alpha^6+\alpha^7+\
 <p>The binary representation of <span class="math">\(v, \hat{v}\)</span> code word would have lenght of <span class="math">\(r(2^r-1) = 60\)</span> bits, that is,
 <span class="math">\(\hat{v}=\)</span> 0000 0000 ... 1100 1110  where each code symbol is mapped to its respective binary equivalent. It is
 one the reasons that <span class="math">\(\hat{v}\)</span> performs well as <em>burst error correction code</em> where group of errors occur close
-together. Clearly <span class="math">\(v\)</span> encoded this way, using <span class="math">\(G\)</span> matrix above is not in in systematic form;
-however, encoding by polynomial division will produce the systematic form. This is similar to binary BCH. Let,</p>
+together. Clearly <span class="math">\(v\)</span> encode by using <span class="math">\(G\)</span> matrix above is not in in systematic form unless the
+<span class="math">\(G\)</span> matrix is reformulated into the form of,</p>
+<div class="math">
+\begin{equation*}
+G =
+\left[
+\begin{array}{c|cc}
+ I_k &amp;  P_{n-k}
+\end{array}
+\right]
+\end{equation*}
+</div>
+<p>Encoding by polynomial division will also produce the systematic form. This is similar to binary BCH. Let,</p>
 <div class="math">
 \begin{equation*}
 u(x) = a_0x + a_1x + a_2x^2 + \cdots + a_{k-1}x^{k-1}
@@ -396,7 +407,38 @@ g_7(x)= x^6 + \alpha^{10}x^5 + \alpha^{14}x^4 + \alpha^4 x^3 + \alpha^6 x^2 + \a
 <p>To verify that this ic correct, substitute <span class="math">\(x\)</span> by any of its roots will yield zero, for example,
 <span class="math">\(g(\alpha^2) = 0\)</span>.
 This is the generator for RS code having <span class="math">\(t=3, n=15, k=9\)</span>, but can be shortened without compromising its error
-correcting capability which is quite usual in practice and I will shorten it for my implementation.</p>
+correcting capability which is quite usual in practice and I will shorten it for my implementation. The systematic
+form of the generator matrix for this <span class="math">\(g_7(x)\)</span> is,</p>
+<div class="math">
+\begin{equation*}
+G =
+\left[
+\begin{array}{c|cc}
+ I_k &amp;  P_{n-k}
+\end{array}
+\right]
+=\left[
+\begin{array}{c|c}
+I_{9 \times 9} &amp;  P_{9 \times 6}
+\end{array}
+\right]
+ =\left[
+\begin{array}{c|cc}
+  &amp; \alpha^9 &amp; \alpha^4 &amp; \alpha^8 &amp; \alpha^{13} &amp; 1 &amp; \alpha^3 \\
+  &amp; \alpha^{12} &amp; 1 &amp; \alpha^{13} &amp; \alpha^{10} &amp; \alpha^8 &amp; \alpha^{13} \\
+  &amp; \alpha^7 &amp; \alpha^7 &amp; \alpha^{13} &amp; \alpha^4 &amp; \alpha^9 &amp; \alpha^{10} \\
+  &amp; \alpha^4 &amp; \alpha &amp; \alpha^4 &amp; \alpha^2 &amp; \alpha^2 &amp; \alpha^{10} \\
+I_k  &amp; \alpha^4 &amp; \alpha^9 &amp;  \alpha^9 &amp; \alpha^5 &amp; \alpha^{12} &amp; \alpha^{14} \\
+  &amp; \alpha^8 &amp; \alpha^7 &amp; 1 &amp; \alpha^8 &amp; \alpha^{12} &amp; \alpha^7 \\
+  &amp; \alpha &amp; \alpha^7 &amp; \alpha^9 &amp; \alpha^{10} &amp; \alpha^{11} &amp; \alpha^3 \\
+  &amp; \alpha^{12} &amp; \alpha^{14} &amp; \alpha^8 &amp; \alpha^3 &amp; \alpha^{12} &amp; \alpha \\
+  &amp; \alpha^{10} &amp; \alpha^{14} &amp; \alpha^4 &amp; \alpha^6 &amp; \alpha^9 &amp; \alpha^6 \\
+\end{array}
+\right]
+\end{equation*}
+</div>
+<p>where the <span class="math">\(P\)</span> matrix is obtained by polynomial division in similar way that was done for
+the cyclic BCH code.</p>
 </div>
 </div>
 <div class="section" id="encoder">
@@ -417,6 +459,19 @@ v(x) = \alpha x^{10} + \alpha^2 x^9 + x^7 + \alpha^6 x^6 + \alpha^6 x^5 + \alpha
 <p>For a hexadecimal value of 0x2badbeef, <span class="math">\(u=\alpha \alpha^7 \alpha^9 \alpha^{13} \alpha^7 \alpha^{11} \alpha^{11} \alpha^{12}\)</span>, the encoded
 parity portion will be, <span class="math">\(p=\alpha^{13} \alpha^{12} \alpha^8 \alpha^7 0 \alpha^5\)</span>. The output is the concatenated
 32-bit input and 24-bit parity check bits ie.. 0x2badbeef_df5b06.</p>
+<p>The same result can be obtained by using the <span class="math">\(G\)</span> matrix, for example, the fist parity check symbol can be
+obtained by mutiplying the input word with the first column of the <span class="math">\(P\)</span> matrix,</p>
+<div class="math">
+\begin{align*}
+p_1 &amp;= \alpha^{13} + \alpha^{14} + \alpha^{13} + \alpha^2 + 1 + \alpha^{12} + \alpha^8 + \alpha^7 \\
+&amp;= \alpha^2 + \alpha^{14} + \alpha^{11} + \alpha^{11} \\
+&amp;= \alpha^{13} \\
+&amp;= d (hex)
+\end{align*}
+</div>
+<p><span class="math">\(p_2 .. p_6\)</span> can be computed the same way to eventually produce the parity check hdf5b06 for this input word.
+Note: Since the input word is 32-bit (8 symbols), the multiplication only accounts for row 2 to row 9 of the
+<span class="math">\(G\)</span> matrix.</p>
 </div>
 <div class="section" id="multiplication-of-gf-2-4-elements">
 <h2>Multiplication of <span class="math">\(GF(2^4)\)</span> elements</h2>

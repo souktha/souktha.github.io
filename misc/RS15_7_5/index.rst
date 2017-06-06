@@ -221,8 +221,20 @@ For :math:`\alpha` as its root, by substituting :math:`x` with :math:`\alpha`, i
 The binary representation of :math:`v, \hat{v}` code word would have lenght of :math:`r(2^r-1) = 60` bits, that is,
 :math:`\hat{v}=` 0000 0000 ... 1100 1110  where each code symbol is mapped to its respective binary equivalent. It is
 one the reasons that :math:`\hat{v}` performs well as *burst error correction code* where group of errors occur close
-together. Clearly :math:`v` encoded this way, using :math:`G` matrix above is not in in systematic form;
-however, encoding by polynomial division will produce the systematic form. This is similar to binary BCH. Let,
+together. Clearly :math:`v` encode by using :math:`G` matrix above is not in in systematic form unless the 
+:math:`G` matrix is reformulated into the form of,
+
+.. math::
+
+        G = 
+        \left[
+        \begin{array}{c|cc}
+         I_k &  P_{n-k} 
+        \end{array}
+        \right]
+       
+
+Encoding by polynomial division will also produce the systematic form. This is similar to binary BCH. Let,
 
 .. math::
 
@@ -269,7 +281,40 @@ Using the tabulated table above to reduce :math:`g_7(x)` to,
 To verify that this ic correct, substitute :math:`x` by any of its roots will yield zero, for example,
 :math:`g(\alpha^2) = 0`.
 This is the generator for RS code having :math:`t=3, n=15, k=9`, but can be shortened without compromising its error
-correcting capability which is quite usual in practice and I will shorten it for my implementation.
+correcting capability which is quite usual in practice and I will shorten it for my implementation. The systematic
+form of the generator matrix for this :math:`g_7(x)` is,
+
+.. math::
+
+        G = 
+        \left[
+        \begin{array}{c|cc}
+         I_k &  P_{n-k} 
+        \end{array}
+        \right]
+        =\left[
+        \begin{array}{c|c}
+        I_{9 \times 9} &  P_{9 \times 6} 
+        \end{array}
+        \right]
+         =\left[
+        \begin{array}{c|cc}
+	  & \alpha^9 & \alpha^4 & \alpha^8 & \alpha^{13} & 1 & \alpha^3 \\
+	  & \alpha^{12} & 1 & \alpha^{13} & \alpha^{10} & \alpha^8 & \alpha^{13} \\
+	  & \alpha^7 & \alpha^7 & \alpha^{13} & \alpha^4 & \alpha^9 & \alpha^{10} \\
+	  & \alpha^4 & \alpha & \alpha^4 & \alpha^2 & \alpha^2 & \alpha^{10} \\
+	I_k  & \alpha^4 & \alpha^9 &  \alpha^9 & \alpha^5 & \alpha^{12} & \alpha^{14} \\
+	  & \alpha^8 & \alpha^7 & 1 & \alpha^8 & \alpha^{12} & \alpha^7 \\
+	  & \alpha & \alpha^7 & \alpha^9 & \alpha^{10} & \alpha^{11} & \alpha^3 \\
+	  & \alpha^{12} & \alpha^{14} & \alpha^8 & \alpha^3 & \alpha^{12} & \alpha \\
+	  & \alpha^{10} & \alpha^{14} & \alpha^4 & \alpha^6 & \alpha^9 & \alpha^6 \\
+        \end{array}
+        \right]
+        
+
+where the :math:`P` matrix is obtained by polynomial division in similar way that was done for 
+the cyclic BCH code.
+
 
 Encoder
 -------
@@ -360,6 +405,19 @@ For a hexadecimal value of 0x2badbeef, :math:`u=\alpha \alpha^7 \alpha^9 \alpha^
 parity portion will be, :math:`p=\alpha^{13} \alpha^{12} \alpha^8 \alpha^7 0 \alpha^5`. The output is the concatenated
 32-bit input and 24-bit parity check bits ie.. 0x2badbeef_df5b06. 
 
+The same result can be obtained by using the :math:`G` matrix, for example, the fist parity check symbol can be 
+obtained by mutiplying the input word with the first column of the :math:`P` matrix,
+
+.. math::
+
+        p_1 &= \alpha^{13} + \alpha^{14} + \alpha^{13} + \alpha^2 + 1 + \alpha^{12} + \alpha^8 + \alpha^7 \\
+        &= \alpha^2 + \alpha^{14} + \alpha^{11} + \alpha^{11} \\
+        &= \alpha^{13} \\
+        &= d (hex)
+        
+:math:`p_2 .. p_6` can be computed the same way to eventually produce the parity check hdf5b06 for this input word.
+Note: Since the input word is 32-bit (8 symbols), the multiplication only accounts for row 2 to row 9 of the 
+:math:`G` matrix.
 
 Multiplication of :math:`GF(2^4)` elements
 -------------------------------------------
