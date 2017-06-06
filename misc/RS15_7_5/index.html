@@ -238,19 +238,19 @@ is again tabulated below,</p>
 </table>
 <p>Note that <span class="math">\(\alpha^{15} = \alpha^0 = 1\)</span>.
 As usual, the table above can be easily generated with Octave/MATLAB,</p>
-<pre class="code text"><a name="rest_code_0b34754d28504761891614df5fcead90-1"></a>&gt; I=eye(15);I=I(15:-1:1,:);
-<a name="rest_code_0b34754d28504761891614df5fcead90-2"></a>&gt;&gt; for i=1:15
-<a name="rest_code_0b34754d28504761891614df5fcead90-3"></a>[q,r(i,:)]=deconv(I(i,:),[1 0 0 1 1]);
-<a name="rest_code_0b34754d28504761891614df5fcead90-4"></a>end
-<a name="rest_code_0b34754d28504761891614df5fcead90-5"></a>&gt;&gt; r=mod(r(:,12:15),2)
-<a name="rest_code_0b34754d28504761891614df5fcead90-6"></a>r =
-<a name="rest_code_0b34754d28504761891614df5fcead90-7"></a>
-<a name="rest_code_0b34754d28504761891614df5fcead90-8"></a>   0   0   0   1
-<a name="rest_code_0b34754d28504761891614df5fcead90-9"></a>   0   0   1   0
-<a name="rest_code_0b34754d28504761891614df5fcead90-10"></a>   0   1   0   0
-<a name="rest_code_0b34754d28504761891614df5fcead90-11"></a>   1   0   0   0
-<a name="rest_code_0b34754d28504761891614df5fcead90-12"></a>   ..
-<a name="rest_code_0b34754d28504761891614df5fcead90-13"></a>   1   0   0   1
+<pre class="code text"><a name="rest_code_2425a4a668ba499baa4fc309349549e9-1"></a>&gt; I=eye(15);I=I(15:-1:1,:);
+<a name="rest_code_2425a4a668ba499baa4fc309349549e9-2"></a>&gt;&gt; for i=1:15
+<a name="rest_code_2425a4a668ba499baa4fc309349549e9-3"></a>[q,r(i,:)]=deconv(I(i,:),[1 0 0 1 1]);
+<a name="rest_code_2425a4a668ba499baa4fc309349549e9-4"></a>end
+<a name="rest_code_2425a4a668ba499baa4fc309349549e9-5"></a>&gt;&gt; r=mod(r(:,12:15),2)
+<a name="rest_code_2425a4a668ba499baa4fc309349549e9-6"></a>r =
+<a name="rest_code_2425a4a668ba499baa4fc309349549e9-7"></a>
+<a name="rest_code_2425a4a668ba499baa4fc309349549e9-8"></a>   0   0   0   1
+<a name="rest_code_2425a4a668ba499baa4fc309349549e9-9"></a>   0   0   1   0
+<a name="rest_code_2425a4a668ba499baa4fc309349549e9-10"></a>   0   1   0   0
+<a name="rest_code_2425a4a668ba499baa4fc309349549e9-11"></a>   1   0   0   0
+<a name="rest_code_2425a4a668ba499baa4fc309349549e9-12"></a>   ..
+<a name="rest_code_2425a4a668ba499baa4fc309349549e9-13"></a>   1   0   0   1
 </pre>
 <p>where the result row vectors <span class="math">\(r\)</span> are the remainders from the polynomial division.</p>
 <p>For <span class="math">\(RS(2^4,5)\)</span>,  the generator polynomial is,</p>
@@ -427,7 +427,7 @@ I_{9 \times 9} &amp;  P_{9 \times 6}
   &amp; \alpha^9 &amp; \alpha^4 &amp; \alpha^8 &amp; \alpha^{13} &amp; 1 &amp; \alpha^3 \\
   &amp; \alpha^{12} &amp; 1 &amp; \alpha^{13} &amp; \alpha^{10} &amp; \alpha^8 &amp; \alpha^{13} \\
   &amp; \alpha^7 &amp; \alpha^7 &amp; \alpha^{13} &amp; \alpha^4 &amp; \alpha^9 &amp; \alpha^{10} \\
-  &amp; \alpha^4 &amp; \alpha &amp; \alpha^4 &amp; \alpha^2 &amp; \alpha^2 &amp; \alpha^{10} \\
+  &amp; \alpha^4 &amp; \alpha &amp; \alpha^4 &amp; \alpha^3 &amp; \alpha^2 &amp; \alpha^{10} \\
 I_k  &amp; \alpha^4 &amp; \alpha^9 &amp;  \alpha^9 &amp; \alpha^5 &amp; \alpha^{12} &amp; \alpha^{14} \\
   &amp; \alpha^8 &amp; \alpha^7 &amp; 1 &amp; \alpha^8 &amp; \alpha^{12} &amp; \alpha^7 \\
   &amp; \alpha &amp; \alpha^7 &amp; \alpha^9 &amp; \alpha^{10} &amp; \alpha^{11} &amp; \alpha^3 \\

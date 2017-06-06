@@ -302,7 +302,7 @@ form of the generator matrix for this :math:`g_7(x)` is,
 	  & \alpha^9 & \alpha^4 & \alpha^8 & \alpha^{13} & 1 & \alpha^3 \\
 	  & \alpha^{12} & 1 & \alpha^{13} & \alpha^{10} & \alpha^8 & \alpha^{13} \\
 	  & \alpha^7 & \alpha^7 & \alpha^{13} & \alpha^4 & \alpha^9 & \alpha^{10} \\
-	  & \alpha^4 & \alpha & \alpha^4 & \alpha^2 & \alpha^2 & \alpha^{10} \\
+	  & \alpha^4 & \alpha & \alpha^4 & \alpha^3 & \alpha^2 & \alpha^{10} \\
 	I_k  & \alpha^4 & \alpha^9 &  \alpha^9 & \alpha^5 & \alpha^{12} & \alpha^{14} \\
 	  & \alpha^8 & \alpha^7 & 1 & \alpha^8 & \alpha^{12} & \alpha^7 \\
 	  & \alpha & \alpha^7 & \alpha^9 & \alpha^{10} & \alpha^{11} & \alpha^3 \\
