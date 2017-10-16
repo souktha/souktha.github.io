@@ -30,7 +30,7 @@ if :math:`\alpha` is a primitive elemement in the field :math:`GF(q=2)`, the bin
 will have :math:`\{\alpha,\alpha^2,\alpha^3,\alpha^4\}` as its roots. The RS code generalized
 over :math:`GF(2^4)` will also have :math:`\{\alpha,\alpha^2,\alpha^3,\alpha^4\}` as its
 roots with generator polynomial, :math:`g(x)=(\alpha+x)(\alpha^2+x)(\alpha^3+x)(\alpha^4+x)` where
-the components are chosen fromt the field elements of :math:`GF(2^4)[x]` ie.. *subfield subcode*.
+the components are chosen from the field elements of :math:`GF(2^4)[x]` ie.. *subfield subcode*.
 
 Some definition
 ================

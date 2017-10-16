@@ -110,7 +110,7 @@ if <span class="math">\(\alpha\)</span> is a primitive elemement in the field <s
 will have <span class="math">\(\{\alpha,\alpha^2,\alpha^3,\alpha^4\}\)</span> as its roots. The RS code generalized
 over <span class="math">\(GF(2^4)\)</span> will also have <span class="math">\(\{\alpha,\alpha^2,\alpha^3,\alpha^4\}\)</span> as its
 roots with generator polynomial, <span class="math">\(g(x)=(\alpha+x)(\alpha^2+x)(\alpha^3+x)(\alpha^4+x)\)</span> where
-the components are chosen fromt the field elements of <span class="math">\(GF(2^4)[x]\)</span> ie.. <em>subfield subcode</em>.</p>
+the components are chosen from the field elements of <span class="math">\(GF(2^4)[x]\)</span> ie.. <em>subfield subcode</em>.</p>
 <div class="section" id="some-definition">
 <h3>Some definition</h3>
 <p>A binary <em>Reed-Solomon</em> code, <span class="math">\(RS(2^r,d)\)</span> is a cyclic code over <span class="math">\(GF(2^r)\)</span> with generator polynomial
@@ -238,19 +238,19 @@ is again tabulated below,</p>
 </table>
 <p>Note that <span class="math">\(\alpha^{15} = \alpha^0 = 1\)</span>.
 As usual, the table above can be easily generated with Octave/MATLAB,</p>
-<pre class="code text"><a name="rest_code_2425a4a668ba499baa4fc309349549e9-1"></a>&gt; I=eye(15);I=I(15:-1:1,:);
-<a name="rest_code_2425a4a668ba499baa4fc309349549e9-2"></a>&gt;&gt; for i=1:15
-<a name="rest_code_2425a4a668ba499baa4fc309349549e9-3"></a>[q,r(i,:)]=deconv(I(i,:),[1 0 0 1 1]);
-<a name="rest_code_2425a4a668ba499baa4fc309349549e9-4"></a>end
-<a name="rest_code_2425a4a668ba499baa4fc309349549e9-5"></a>&gt;&gt; r=mod(r(:,12:15),2)
-<a name="rest_code_2425a4a668ba499baa4fc309349549e9-6"></a>r =
-<a name="rest_code_2425a4a668ba499baa4fc309349549e9-7"></a>
-<a name="rest_code_2425a4a668ba499baa4fc309349549e9-8"></a>   0   0   0   1
-<a name="rest_code_2425a4a668ba499baa4fc309349549e9-9"></a>   0   0   1   0
-<a name="rest_code_2425a4a668ba499baa4fc309349549e9-10"></a>   0   1   0   0
-<a name="rest_code_2425a4a668ba499baa4fc309349549e9-11"></a>   1   0   0   0
-<a name="rest_code_2425a4a668ba499baa4fc309349549e9-12"></a>   ..
-<a name="rest_code_2425a4a668ba499baa4fc309349549e9-13"></a>   1   0   0   1
+<pre class="code text"><a name="rest_code_b19d0dff95ac46499f31a3a8315f916d-1"></a>&gt; I=eye(15);I=I(15:-1:1,:);
+<a name="rest_code_b19d0dff95ac46499f31a3a8315f916d-2"></a>&gt;&gt; for i=1:15
+<a name="rest_code_b19d0dff95ac46499f31a3a8315f916d-3"></a>[q,r(i,:)]=deconv(I(i,:),[1 0 0 1 1]);
+<a name="rest_code_b19d0dff95ac46499f31a3a8315f916d-4"></a>end
+<a name="rest_code_b19d0dff95ac46499f31a3a8315f916d-5"></a>&gt;&gt; r=mod(r(:,12:15),2)
+<a name="rest_code_b19d0dff95ac46499f31a3a8315f916d-6"></a>r =
+<a name="rest_code_b19d0dff95ac46499f31a3a8315f916d-7"></a>
+<a name="rest_code_b19d0dff95ac46499f31a3a8315f916d-8"></a>   0   0   0   1
+<a name="rest_code_b19d0dff95ac46499f31a3a8315f916d-9"></a>   0   0   1   0
+<a name="rest_code_b19d0dff95ac46499f31a3a8315f916d-10"></a>   0   1   0   0
+<a name="rest_code_b19d0dff95ac46499f31a3a8315f916d-11"></a>   1   0   0   0
+<a name="rest_code_b19d0dff95ac46499f31a3a8315f916d-12"></a>   ..
+<a name="rest_code_b19d0dff95ac46499f31a3a8315f916d-13"></a>   1   0   0   1
 </pre>
 <p>where the result row vectors <span class="math">\(r\)</span> are the remainders from the polynomial division.</p>
 <p>For <span class="math">\(RS(2^4,5)\)</span>,  the generator polynomial is,</p>
