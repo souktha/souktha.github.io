@@ -68,7 +68,8 @@ matter what version of Linksys firmware it is running. To install,
 
 - Click on *connectivity* on the left panel below *Router Settings*. The *connectivity* will show up. On the right pane, there is 
   *Router Firmware Update*. Under it, there is *Manual* box. Select *Choose File* where you can pick the file you downloaded
-  from my git repository. This is the file to flash into the router.
+  from my git repository. This is the file to flash into the router. To prevent Linksys automatic firmware update from
+  overwriting OpenWRT firmware to be installed, *automatic* should be unchecked.
 
 - After choosing file (LINKSYS_EA8300-openwrt.img), choose *start* to program the flash. Flashing will be on the partitions
   that is not the current set of root file system (Linksys). It will be automatically chosen for you. The OpenWRT image
@@ -253,6 +254,10 @@ firmware. To do that,
 
 
 * Change the *boot_partxx* parameters with *fw_setenv* to switch the firmware.
+
+Before the router is rebooted to run Linksys firmware you might want to enable its *ssh* service by performing
+the processes as mentioned above otherwise you will not be able to switch to OpenWRT firmware unless you start
+the installation process of OpenWRT all over again.
 
 This concluded the installation of OpenWRT into the Linksys EA8300 Wi-Fi router and hopefully you did not brick your
 router !
