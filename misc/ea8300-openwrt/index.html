@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenWRT (Chaos Calmer) on Linksys EA8300 | Soukthavy Sopha</title>
+<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
+<link rel="canonical" href="http://souktha.github.io/misc/ea8300-openwrt/">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Soukthavy">
+<link rel="prev" href="../../hardware/rs15_7_hw/" title="RS(n,k) code HDL implementation" type="text/html">
+<meta property="og:site_name" content="Soukthavy Sopha">
+<meta property="og:title" content="OpenWRT (Chaos Calmer) on Linksys EA8300">
+<meta property="og:url" content="http://souktha.github.io/misc/ea8300-openwrt/">
+<meta property="og:description" content="This blog is about installing the OpenWRT firmware into Linksys EA8300 Max-Stream AC200 Tri-Band Wi-Fi router. The firmware is
+a customized version of OpenWRT Chaos Calmer for this platform. It serves">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2017-11-17T22:15:05Z">
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-inverse navbar-static-top"><div class="container">
+<!-- This keeps the margins nice -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://souktha.github.io/">
+
+                <span id="blog-title">Soukthavy Sopha</span>
+            </a>
+        </div>
+<!-- /.navbar-header -->
+        <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
+            <ul class="nav navbar-nav">
+<li>
+<a href="../../archive.html">Archive</a>
+                </li>
+<li>
+<a href="../../categories/">Tags</a>
+                </li>
+<li>
+<a href="../../rss.xml">RSS feed</a>
+            </li>
+<li class="dropdown">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Blog <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+<li>
+<a href="../../software">Sofware</a>
+                    </li>
+<li>
+<a href="../../hardware">Hardware</a>
+                    </li>
+<li>
+<a href="../../misc">Misc</a>
+            </li>
+</ul>
+</li>
+<li>
+<a href="https://github.com/souktha">My Github</a>
+
+                
+            </li>
+</ul>
+<ul class="nav navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        <div class="row">
+            
+            
+<article class="post-text storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">OpenWRT (Chaos Calmer) on Linksys EA8300</a></h1>
+
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>This blog is about installing the OpenWRT firmware into Linksys EA8300 Max-Stream AC200 Tri-Band Wi-Fi router. The firmware is
+a customized version of OpenWRT Chaos Calmer for this platform. It serves as an alternative to the proprietary
+firmware where one can further customizes it as needed.</p>
+<!-- TEASER_END -->
+<div class="section" id="linksys-ea8300-max-stream-ac200-tri-band-wi-fi-router">
+<h2>Linksys EA8300 Max-Stream AC200 Tri-Band Wi-Fi router</h2>
+<p>Linksys EA8300 main features summary:</p>
+<ul class="simple">
+<li>Qualcomm Atheros IPQ4019 Quad-Core ARM based SoC.</li>
+<li>256MB NAND storage, 256MB DRAM</li>
+<li>Concurrent tri-band 2.4Ghz MIMO 2x2 (802.11ng), 2-5Ghz MIMO 2x2 (802.11ac)</li>
+<li>4x1Gb LAN ports, 1 Gb WAN port, 1 USB2 port.</li>
+</ul>
+<div class="section" id="software">
+<h3>Software</h3>
+<p>There are two sets of factory installed kernel+rootfs on EA8300.
+These two sets of kernel+rootfs enable it to recover in case something goes wrong during the
+firmware upgrade or even during the normal operation.</p>
+<p>The OpenWRT firmware is to be installed (replaced) one of these sets. Once the installation is completed (takes &lt; 30s)
+the router will reboot to the newly installed OpenWRT firmware. How does anybody know which set of firmware
+the router is running ? You don't and neither do I ! Linksys router's WebUI f/w update process will
+pick the set of partitions on which the new firmware is to be installed for you.</p>
+</div>
+<div class="section" id="what-you-don-t-need">
+<h3>What you don't need</h3>
+<p>You don't need to physically hack the router box by putting the serial console port into it. The OpenWRT installation
+will be done through Linksys's firmware update procedure via its Web UI, no special tool is required.</p>
+</div>
+<div class="section" id="what-you-need">
+<h3>what you need</h3>
+<ul class="simple">
+<li>Download the customized version of OpenWRT firmware from my git hub repository <a class="reference external" href="http://github.com/souktha/OpenWRT_EA8300">link here</a>. This is an OpenWRT Chaos Calmer for EA8300.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="openwrt-installation">
+<h2>OpenWRT installation</h2>
+<p>Of course, the liability clause,</p>
+<p><strong>Everything that you do from this point on is at your own risk whether you brick it or void its
+warranty ! If you are not willing to take some risk to experiment or if you are not sure then stop.</strong></p>
+<p>Base on the assumption that the EA8300 is running the manufacturer's firmware (Linksys). It does not
+matter what version of Linksys firmware it is running. To install,</p>
+<ul class="simple">
+<li>Login to the router that is currently running Linksys firmware via its Web UI with the web browser (Chrome/firefox etc).</li>
+<li>Click on <em>connectivity</em> on the left panel below <em>Router Settings</em>. The <em>connectivity</em> will show up. On the right pane, there is
+<em>Router Firmware Update</em>. Under it, there is <em>Manual</em> box. Select <em>Choose File</em> where you can pick the file you downloaded
+from my git repository. This is the file to flash into the router.</li>
+<li>After choosing file (LINKSYS_EA8300-openwrt.img), choose <em>start</em> to program the flash. Flashing will be on the partitions
+that is not the current set of root file system (Linksys). It will be automatically chosen for you. The OpenWRT image
+contains both kernel and rootfs so everything is OpenWRT.</li>
+<li>Click <em>yes</em> to continue on <em>Important</em> pop-up warning message.</li>
+<li>Firmware updating process will take place and the EA8300 router will reboot. This process should take less than 30s.
+Click <em>ok</em> when pop-up message tells you that it is rebooting (to new OpenWRT firmware).</li>
+</ul>
+</div>
+<div class="section" id="configuring-the-openwrt">
+<h2>Configuring the OpenWRT</h2>
+<p>Linksys firmware will switch to the new set of partition upon completion of f/w update process. The router is now running the
+OpenWRT once rebooted. At this stage, there are two sets of firmware in the router. One is OpenWRT (currently running) while the other is
+Linksys f/w. To switch back and forth between these two sets is by changing its boot environment variables. I will cover it
+later, but first thing first,</p>
+<div class="section" id="how-to-configure-openwrt">
+<h3>How to configure OpenWRT</h3>
+<p>This image of OpenWRT is pre-configured with WiFi's SSIDs as 'OpenWrt_EA8300' for 11ng and
+'OpenWrt_EA8300_5g' for 11ac and they should be up. Its encryption is set to <em>none</em>, meaning it is open-access.
+Also it has no root password. To connect to OpenWRT WiFi AP,</p>
+<p>1. Use your host PC to connect to one of its SSID. Suppose that your host is Linux PC, you can use <em>wpa_supplicant</em>
+to connect to it. This <em>wpa_supplicant.conf</em> would be sufficient for you (refer to <em>wpa_supplicant</em>),</p>
+<pre class="code text"><a name="rest_code_e13da9b41b67411da70390551c30cf5f-1"></a>ctrl_interface=/var/run/wpa_supplicant
+<a name="rest_code_e13da9b41b67411da70390551c30cf5f-2"></a>ctrl_interface_group=root
+<a name="rest_code_e13da9b41b67411da70390551c30cf5f-3"></a>network={
+<a name="rest_code_e13da9b41b67411da70390551c30cf5f-4"></a>ssid="OpenWrt_EA8300"
+<a name="rest_code_e13da9b41b67411da70390551c30cf5f-5"></a>scan_ssid=1
+<a name="rest_code_e13da9b41b67411da70390551c30cf5f-6"></a>key_mgmt=NONE
+<a name="rest_code_e13da9b41b67411da70390551c30cf5f-7"></a>}
+</pre>
+<p>2. Connect your host to it via WiFi access and use this access to configure the EA8300 openwrt (telnet/webUI). You may
+connect to the router via <em>dhcp</em> or by static IP. Since the default LAN IP address is <em>192.168.2.1</em> for this
+firmware, you can just <em>ifconfig wlan0 192.168.2.3 up</em> to bring up your host Wi-Fi interface then <em>telnet 192.168.2.1</em> to
+the router. It should get you the OpenWrt prompt. You cannot <em>ssh</em> just yet, not until you configure root password.
+You can also access its WebUI by <em>http://192.168.2.1</em> if you prefer.</p>
+</div>
+<div class="section" id="minimum-configuration">
+<h3>Minimum configuration</h3>
+<p>After you connect to <em>OpenWrt_EA8300xx</em> AP by telnet to it.  As mentioned, its initial AP's address is set to <em>192.168.2.1</em>.
+From here on you can configure the AP via command line (telnet or webUI), but first thing first,</p>
+<ol class="arabic simple">
+<li>You need to edit <em>/etc/config/wireless</em> to set the SSID you need, its encryption and pass phrase. You also need to change <em>macaddr</em> to
+fit your Linksys's assigned MAC addresses. The MAC address for your router is printed on the same side of box where UPC code is located. It
+probably be some thing like <em>1491xxx</em>. Assign this MAC address to LAN, increment by one for each Wi-Fi MAC addresses.
+For LAN/Bridge configuration, you need to edit <em>/etc/config/network</em> to set your local
+network IP address if you need to. You can also close the WAN port that I opened in <em>/etc/config/firewall</em>. These are the
+minimum configurations that you need to do because what's in this image is generic and without security. Refer to OpenWRT on
+configuring the network and its security. MAC addresses must be unique for your router so you <strong>must</strong> change them.</li>
+<li>Check to make sure that <em>/etc/fw_env.config</em> has the correct configuration for this platform. It should have only one line in it.</li>
+</ol>
+<pre class="code text"><a name="rest_code_ca7929271d1549b3a9ae05c13a193fdf-1"></a>/dev/mtd7 0 0x40000 0x20000
+</pre>
+<p>That is to say that mtd7 is the u-boot environment block. This is where you need to access in order to switch booting between the
+Linksys firmware and the OpenWRT firmware. This will be useful later. The command <em>fw_printenv</em> will list the u-boot settings
+correctly if its <em>fw_env.config</em> file is correct.</p>
+<ol class="arabic simple">
+<li>You need to use Linksys EA8300's factory radio calibration data that fits your regulatory domain. To do that you
+need to figure out what partition the OpenWRT firmware was flashed into. For this step, <em>fw_printenv</em>  will show you what
+variable <em>bootpart</em> and <em>boot_part_ready</em> is set to. <em>boot_part</em> indicates currently boot partition set (kernel+rootfs),
+for example, if <em>bootpart=1</em>, then the Linksys F/W rootfs must be on <em>mtd13</em>. If <em>bootpart=2</em>, then it is on <em>mtd11</em>. I will
+use <em>mtd11</em> as an example to get the Linksys factory radio calibration data for the EA8300.</li>
+<li>Mount Linksys rootfs to access radio data (change mtd number to fit your current boot partition set). The
+example below shows how to attach MTD partition where Linksys rootfs is located, create temporary mount point
+and mount its UBIFS.</li>
+</ol>
+<pre class="code text"><a name="rest_code_b53696650ee342d6abe3dc21391d286b-1"></a>ubiattach -m11
+<a name="rest_code_b53696650ee342d6abe3dc21391d286b-2"></a>mkdir /mnt/ubi
+<a name="rest_code_b53696650ee342d6abe3dc21391d286b-3"></a>mount -t ubifs /dev/ubi1_0 /mnt/ubi
+</pre>
+<ol class="arabic simple">
+<li>Copy factory's RF calibration data and regulatory domain data to OpenWRT. This will enable your router to
+operate optimally.</li>
+</ol>
+<pre class="code text"><a name="rest_code_51cd03072d1546dd8891e41054356a25-1"></a>cp /mnt/ubi/lib/firmware/IPQ4019/FCC/* /lib/firmware/IPQ4019/hw.1/
+<a name="rest_code_51cd03072d1546dd8891e41054356a25-2"></a>cp /mnt/ubi/lib/firmware/QCA9888/FCC/* /lib/firmware/QCA9888/hw.2/
+</pre>
+<p><em>FCC</em> is for U.S region. Replace it with your region, for example, EU for Europe, AU for Australia etc.</p>
+<p>Do not forget to set the root password. It will run ssh service once root password is set (after service restarted).
+Reboot the box is recommended; however, <em>/etc/init.d/network reload</em> might as well works.</p>
+</div>
+<div class="section" id="how-to-switch-to-linksys-firmware-from-openwrt">
+<h3>How to switch to Linksys firmware from OpenWRT</h3>
+<p>There are two u-boot parameters use for switching the firmware boot between Linksys and OpenWRT. You can see them when login to the box
+and issuing <em>fw_printenv</em>. The variables <em>boot_part</em> is either 1 or 2, for example, if <em>boot_part=1</em> while running OpenWRT
+that's mean the Linksys f/w is on 2 so to switch it to 2,</p>
+<pre class="code text"><a name="rest_code_2dc001d9eabc40e296329b78df6eae8f-1"></a>fw_setenv boot_part 2
+<a name="rest_code_2dc001d9eabc40e296329b78df6eae8f-2"></a>fw_setenv boot_part_ready 2
+</pre>
+<p>After reboot, the EA8300 will boot up with Linksys f/w.</p>
+</div>
+<div class="section" id="how-to-switch-to-openwrt-from-linksys">
+<h3>How to switch to OpenWRT from Linksys</h3>
+<p>When you flash the OpenWRT the first time, the Linksys f/w switch partition on the box for you. After running OpenWRT for
+a while then decide to switch back to Linksys f/w, you can do so using the steps above. Now the box is running Linksys
+f/w. How do you switch to OpenWRT again without flashing which will wipe out everything you configured ?</p>
+<p>This is tricky part since Linksys f/w does not have option in its Web UI that you can switch the boot/root partition, also
+you cannot SSH to it. Basically it is sealed.  You can give the capability by performing these steps while you are login to OpenWRT.</p>
+<p><strong>Important:</strong> Do this before you ever switch back to Linksys firmware or you will end up flashing the OpenWRT for the
+second time !</p>
+<ol class="arabic simple">
+<li>Mount the Linksys rootfs partition (as shown above) to copy OpenWRT's <em>dropbear</em> into it.</li>
+</ol>
+<pre class="code text"><a name="rest_code_3e43d4b5adc3447d853410e8377542a6-1"></a>cp /usr/sbin/dropbear /mnt/ubi/usr/sbin
+</pre>
+<ol class="arabic simple" start="2">
+<li>Create script to run <em>dropbear</em> on Linksys f/w when you switch later on.</li>
+</ol>
+<pre class="code text"><a name="rest_code_036fd667ee114d35b2f5f453dd68454a-1"></a>echo "/usr/sbin/dropbear -d /etc/dropbear_dss_host_key -r /etc/dropbear_rsa_host_key"&gt;/mnt/ubi/etc/dropbear.sh
+<a name="rest_code_036fd667ee114d35b2f5f453dd68454a-2"></a>chmod +x /mnt/ubi/etc/dropbear.sh
+</pre>
+<p>You can edit this file the way you like as long as you can assure that SSH will be running after you make the switch. The
+dropbear's keys existed in Linksys f/w. It just does not have the accompanied <em>dropbear</em> that uses it. Basically use
+the existing Linksys's own keys and enable it.</p>
+<ol class="arabic simple" start="3">
+<li>Add to start-up list,</li>
+</ol>
+<pre class="code text"><a name="rest_code_be8dc51e7c9a4e59ba17c301382e8481-1"></a>cd /mnt/ubi/etc/registration.d
+<a name="rest_code_be8dc51e7c9a4e59ba17c301382e8481-2"></a>ln -s ../init.d/dropbear.sh 99_sshd
+</pre>
+<p>Next time you router run its factory f/w, it will have ssh capability where you can login. The factory ssh login
+used to be <em>ssh root@&lt;your box ip&gt;</em>. Its password was <em>admin</em>. From this point onward you can safely
+switch between Linksys and OpenWRT firmware using <em>boot_partxx</em> environments. If you forgot your Linksys password
+you can always factory reset it !</p>
+</div>
+<div class="section" id="update-linksys-firmware-with-openwrt">
+<h3>Update Linksys firmware with OpenWRT</h3>
+<p><strong>Try to be extremely careful with *flash_erase* command where you could easily brick the box if you mistype MTD number !</strong></p>
+<p>Remember that whenever you run Linksys f/w, the f/w upgrade will always be on the other set of kernel+rootfs
+partitions. This means that it will overwrite the partitions where OpenWRT resides !</p>
+<p>You can also update Linksys f/w while running OpenWRT without the need to switch to running Linksys
+firmware. To do that,</p>
+<ul class="simple">
+<li>Download the Linksys firmware to your host PC for your local copy.</li>
+<li>Login to the your router (running OpenWRT) with ssh.</li>
+<li>
+<em>scp</em> Linksys firmware file to your box and use <em>flash_erase</em> and <em>nandwrite</em> to update the firmware. Of course,
+you should identify where the new firmware should be in particular partitions. For Linksys firmware, it
+will be in either <em>mtd10</em> or <em>mtd13</em>, for example, if <em>boot_part=1</em>, you need to flash to 2nd set of partition
+that will overwrite the old Linksys f/w. To do this,</li>
+</ul>
+<pre class="code text"><a name="rest_code_82ab077a60fb44d8b6ea99bd51ec7f3f-1"></a>#scp file from your host into /tmp directory (it should fit).
+<a name="rest_code_82ab077a60fb44d8b6ea99bd51ec7f3f-2"></a>flash_erase /dev/mtd13 0 0  (if boot_part=1 )
+<a name="rest_code_82ab077a60fb44d8b6ea99bd51ec7f3f-3"></a>nandwrite -p -q /dev/mtd13 /tmp/&lt;fw image&gt; (assume it is in /tmp)
+</pre>
+<ul class="simple">
+<li>Change the <em>boot_partxx</em> parameters with <em>fw_setenv</em> to switch the firmware.</li>
+</ul>
+<p>This concluded the installation of OpenWRT into the Linksys EA8300 Wi-Fi router and hopefully you did not brick your
+router !</p>
+<!-- Using the toolchain from my git repository where you downloaded the OpenWRT, you can build and install OpenWRT apps. -->
+</div>
+</div>
+</div>
+    </div>
+    
+
+</article>
+</div>
+        <!--End of body content-->
+
+        <footer id="footer">
+            Contents © 2017         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+        </footer>
+</div>
+</div>
+
+
+            <script src="../../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+    moment.locale("en");
+    fancydates(0, "YYYY-MM-DD HH:mm");
+    </script><!-- end fancy dates -->
+</body>
+</html>

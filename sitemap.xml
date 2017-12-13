@@ -19,7 +19,7 @@
  </url>
  <url>
   <loc>http://souktha.github.io/archive.html</loc>
-  <lastmod>2017-05-15T17:41:00Z</lastmod>
+  <lastmod>2017-12-11T22:56:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/blog/</loc>
@@ -35,7 +35,7 @@
  </url>
  <url>
   <loc>http://souktha.github.io/blog/index-2.html</loc>
-  <lastmod>2017-05-15T17:42:00Z</lastmod>
+  <lastmod>2017-12-11T22:56:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/blog/restructuredtext-demo-import-from-demotxt/</loc>
@@ -163,7 +163,7 @@
  </url>
  <url>
   <loc>http://souktha.github.io/misc/</loc>
-  <lastmod>2017-05-15T17:42:00Z</lastmod>
+  <lastmod>2017-12-11T22:56:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/misc/RS15_7_5/</loc>
@@ -192,6 +192,10 @@
  <url>
   <loc>http://souktha.github.io/misc/cyclic_1_x_x4/</loc>
   <lastmod>2017-05-15T17:42:00Z</lastmod>
+ </url>
+ <url>
+  <loc>http://souktha.github.io/misc/ea8300-openwrt/</loc>
+  <lastmod>2017-12-11T22:56:00Z</lastmod>
  </url>
  <url>
   <loc>http://souktha.github.io/misc/repartition-boneblk/</loc>
