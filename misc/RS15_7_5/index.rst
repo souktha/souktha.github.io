@@ -278,7 +278,7 @@ Using the tabulated table above to reduce :math:`g_7(x)` to,
         g_7(x)= x^6 + \alpha^{10}x^5 + \alpha^{14}x^4 + \alpha^4 x^3 + \alpha^6 x^2 + \alpha^9 x + \alpha^6
 
 
-To verify that this ic correct, substitute :math:`x` by any of its roots will yield zero, for example,
+To verify that this is correct, substitute :math:`x` by any of its roots will yield zero, for example,
 :math:`g(\alpha^2) = 0`.
 This is the generator for RS code having :math:`t=3, n=15, k=9`, but can be shortened without compromising its error
 correcting capability which is quite usual in practice and I will shorten it for my implementation. The systematic

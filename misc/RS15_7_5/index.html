@@ -238,19 +238,19 @@ is again tabulated below,</p>
 </table>
 <p>Note that <span class="math">\(\alpha^{15} = \alpha^0 = 1\)</span>.
 As usual, the table above can be easily generated with Octave/MATLAB,</p>
-<pre class="code text"><a name="rest_code_b19d0dff95ac46499f31a3a8315f916d-1"></a>&gt; I=eye(15);I=I(15:-1:1,:);
-<a name="rest_code_b19d0dff95ac46499f31a3a8315f916d-2"></a>&gt;&gt; for i=1:15
-<a name="rest_code_b19d0dff95ac46499f31a3a8315f916d-3"></a>[q,r(i,:)]=deconv(I(i,:),[1 0 0 1 1]);
-<a name="rest_code_b19d0dff95ac46499f31a3a8315f916d-4"></a>end
-<a name="rest_code_b19d0dff95ac46499f31a3a8315f916d-5"></a>&gt;&gt; r=mod(r(:,12:15),2)
-<a name="rest_code_b19d0dff95ac46499f31a3a8315f916d-6"></a>r =
-<a name="rest_code_b19d0dff95ac46499f31a3a8315f916d-7"></a>
-<a name="rest_code_b19d0dff95ac46499f31a3a8315f916d-8"></a>   0   0   0   1
-<a name="rest_code_b19d0dff95ac46499f31a3a8315f916d-9"></a>   0   0   1   0
-<a name="rest_code_b19d0dff95ac46499f31a3a8315f916d-10"></a>   0   1   0   0
-<a name="rest_code_b19d0dff95ac46499f31a3a8315f916d-11"></a>   1   0   0   0
-<a name="rest_code_b19d0dff95ac46499f31a3a8315f916d-12"></a>   ..
-<a name="rest_code_b19d0dff95ac46499f31a3a8315f916d-13"></a>   1   0   0   1
+<pre class="code text"><a name="rest_code_e9e0934c3b1f401c9b678be5c8fe55dd-1"></a>&gt; I=eye(15);I=I(15:-1:1,:);
+<a name="rest_code_e9e0934c3b1f401c9b678be5c8fe55dd-2"></a>&gt;&gt; for i=1:15
+<a name="rest_code_e9e0934c3b1f401c9b678be5c8fe55dd-3"></a>[q,r(i,:)]=deconv(I(i,:),[1 0 0 1 1]);
+<a name="rest_code_e9e0934c3b1f401c9b678be5c8fe55dd-4"></a>end
+<a name="rest_code_e9e0934c3b1f401c9b678be5c8fe55dd-5"></a>&gt;&gt; r=mod(r(:,12:15),2)
+<a name="rest_code_e9e0934c3b1f401c9b678be5c8fe55dd-6"></a>r =
+<a name="rest_code_e9e0934c3b1f401c9b678be5c8fe55dd-7"></a>
+<a name="rest_code_e9e0934c3b1f401c9b678be5c8fe55dd-8"></a>   0   0   0   1
+<a name="rest_code_e9e0934c3b1f401c9b678be5c8fe55dd-9"></a>   0   0   1   0
+<a name="rest_code_e9e0934c3b1f401c9b678be5c8fe55dd-10"></a>   0   1   0   0
+<a name="rest_code_e9e0934c3b1f401c9b678be5c8fe55dd-11"></a>   1   0   0   0
+<a name="rest_code_e9e0934c3b1f401c9b678be5c8fe55dd-12"></a>   ..
+<a name="rest_code_e9e0934c3b1f401c9b678be5c8fe55dd-13"></a>   1   0   0   1
 </pre>
 <p>where the result row vectors <span class="math">\(r\)</span> are the remainders from the polynomial division.</p>
 <p>For <span class="math">\(RS(2^4,5)\)</span>,  the generator polynomial is,</p>
@@ -404,7 +404,7 @@ g_7(x) &amp;=(\alpha + x)(\alpha^2+x)(\alpha^3+x)(\alpha^4+x)(\alpha^5+x)(\alpha
 g_7(x)= x^6 + \alpha^{10}x^5 + \alpha^{14}x^4 + \alpha^4 x^3 + \alpha^6 x^2 + \alpha^9 x + \alpha^6
 \end{equation*}
 </div>
-<p>To verify that this ic correct, substitute <span class="math">\(x\)</span> by any of its roots will yield zero, for example,
+<p>To verify that this is correct, substitute <span class="math">\(x\)</span> by any of its roots will yield zero, for example,
 <span class="math">\(g(\alpha^2) = 0\)</span>.
 This is the generator for RS code having <span class="math">\(t=3, n=15, k=9\)</span>, but can be shortened without compromising its error
 correcting capability which is quite usual in practice and I will shorten it for my implementation. The systematic
@@ -715,7 +715,7 @@ subject.</p>
         <!--End of body content-->
 
         <footer id="footer">
-            Contents © 2017         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            Contents © 2018         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
             
         </footer>
 </div>
