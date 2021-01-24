@@ -89,6 +89,10 @@ Will list the ARM platforms supported, for examples,
         connex               Gumstix Connex (PXA255)
         ..
 
+You can find images of the supported platforms that you could run with QEMU in their respective websites with
+the instructions on what specific command parameters you need to supply. The images can be just the boot code images
+or full disk images completed with OS.  
+
 Adding platform to QEMU
 =======================
 
@@ -167,8 +171,8 @@ to add them to your platform.
 Simply create *rtx-soc.c* source file in QEMU's */hw/arm/* directory. The edited configuration already made
 as described above will compile this source into QEMU to support this platform. 
 
-Implementation of *rtx-soc.c* for Cortex-R5 platform
-=====================================================
+Implementation of RTX platform Cortex-R5
+=========================================
 
 Instead of creating *rtx-soc.c* from scratch, it is best to clone it from the one of the existing file
 in *hw/arm/* directory. Browsing through these files, I choose ARM Versatile Express emulation, *vexpress.c*,
@@ -180,7 +184,7 @@ in my platform will be removed and the components that I need will be added.
 Steps involved
 ---------------
 
-*  Copy *vexpress.c* to *rtx-soc.c* - start of with this cloned file.
+*  Copy *vexpress.c* to *rtx-soc.c* - start off with this cloned file.
         
 *  Edit the clone file, *rtx-soc.c* :
 
@@ -320,6 +324,8 @@ Steps involved
             OBJECT_GET_CLASS(VexpressMachineClass, obj, TYPE_RTX_MACHINE)
         #define RTX_MACHINE_CLASS(klass) \
             OBJECT_CLASS_CHECK(VexpressMachineClass, klass, TYPE_RTX_MACHINE)
+
+   Line 2 defines the name of the emulated platform, *rtx-r5*. The QEMU's '-M help' option will list it in its supported platform list.
 
    * When machine class is initialized, *rtx_soc_common_init()* function is called so we need to implement this function. The *vexpress_common_init()* is renamed and edited to become this function. This function is for instantiating devices defined for the target platform. For RTX platform, the clocks and voltage sensors remain the same as the Vexpress's. MMC, Keyboard, VRAM devices are commented out. Only one UART0 is used so UART1-3 are not instantiated. 
 
@@ -479,6 +485,7 @@ Testing
 Once the built is complete and installed, I can use it to emulate the hardware platform to test my *FreeRTOS* port
 for this RTX SoC. The *freertos-nga* is the ELF binary of the ported RTOS for this platform. Porting the *FreeRTOS* will be
 in another post of this two parts series.
+Here is the console output where QEMU emulates *rtx-r5* with 2MB of on-chip RAM running FreeRTOS,
 
 .. code-block:: console
 
@@ -502,7 +509,7 @@ in another post of this two parts series.
         Timer ulCount   : 62
         nga>    
 
-QEMU can be use along with GDB such as *arm-eabi-gdb* to debug the OS port. The *-s -S* options use for QEMU is to single step and connect 
+QEMU can be use along with GDB such as *arm-eabi-gdb* to debug the OS port. The '*-s -S*' options use with QEMU is to single step and connect 
 to GDB, for example,
 
 .. code-block:: console
