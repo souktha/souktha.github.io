@@ -1,7 +1,8 @@
 .. title: RS(n,k) code for burst error-correction work out 
 .. slug: RS15_7_5
 .. date: 2017-04-22 22:46:19 UTC
-.. tags: misc, mathjax, latex
+.. tags: misc,latex
+.. has_math: true
 .. category: math 
 .. link: 
 .. description: RS (n=15,k=9,d=7) code

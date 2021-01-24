@@ -1,7 +1,8 @@
 .. title: Binary BCH (15,7,5) work out 
 .. slug: bch15_7_5
 .. date: 2017-2-26 22:46:19 UTC
-.. tags: misc, mathjax, latex
+.. tags: misc,  latex
+.. has_math: true
 .. category: math 
 .. link: 
 .. description: Binary BCH (15,7,5) code

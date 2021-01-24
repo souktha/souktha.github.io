@@ -1,7 +1,8 @@
 .. title: RS(n,k) code HDL implementation
 .. slug: rs15_7_hw
 .. date: 2017-05-06 14:47:03 UTC
-.. tags: hardware, mathjax, latex
+.. tags: hardware, latex
+.. has_math: true
 .. category: FPGA
 .. link: 
 .. description: 

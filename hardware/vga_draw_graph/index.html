@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,7 +7,7 @@
 <link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
 <meta name="theme-color" content="#5670d4">
 <meta name="generator" content="Nikola (getnikola.com)">
-<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../../rss.xml">
 <link rel="canonical" href="http://souktha.github.io/hardware/vga_draw_graph/">
 <!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Soukthavy">
 <link rel="prev" href="../../software/tty2comport/" title="Redirect tty login from ssh to UART port" type="text/html">
@@ -104,8 +104,8 @@ can lock to the sync signals quite easily. There are some website to visit with 
 <h2>Implementation</h2>
 <p>Divide 100 MHZ  down to 25MHZ as pixel tick and have two counters to keep track of horizontal and vertical pixel counts. The counters will
 then be compared to horizontal retrace value and vertical retrace value. The horizontal end value and the vertical end value would be,</p>
-<pre class="code verilog"><a name="rest_code_ef9bac93a3c04de7a184b45792c90d2b-1"></a><span class="k">assign</span> <span class="n">h_end</span> <span class="o">=</span> <span class="p">(</span><span class="n">hcnt</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="no">HD</span> <span class="o">+</span> <span class="no">HF</span> <span class="o">+</span> <span class="no">HB</span> <span class="o">+</span> <span class="no">HR</span> <span class="o">-</span> <span class="mh">1</span> <span class="p">));</span>
-<a name="rest_code_ef9bac93a3c04de7a184b45792c90d2b-2"></a><span class="k">assign</span> <span class="n">v_end</span> <span class="o">=</span> <span class="p">(</span><span class="n">vcnt</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="no">VD</span> <span class="o">+</span> <span class="no">VF</span> <span class="o">+</span> <span class="no">VB</span> <span class="o">+</span> <span class="no">VR</span><span class="p">));</span>
+<pre class="code verilog"><a name="rest_code_12189ce2c950499a84a62abde5c3af28-1"></a><span class="k">assign</span> <span class="n">h_end</span> <span class="o">=</span> <span class="p">(</span><span class="n">hcnt</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="n">HD</span> <span class="o">+</span> <span class="n">HF</span> <span class="o">+</span> <span class="n">HB</span> <span class="o">+</span> <span class="n">HR</span> <span class="o">-</span> <span class="mh">1</span> <span class="p">));</span>
+<a name="rest_code_12189ce2c950499a84a62abde5c3af28-2"></a><span class="k">assign</span> <span class="n">v_end</span> <span class="o">=</span> <span class="p">(</span><span class="n">vcnt</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="n">VD</span> <span class="o">+</span> <span class="n">VF</span> <span class="o">+</span> <span class="n">VB</span> <span class="o">+</span> <span class="n">VR</span><span class="p">));</span>
 </pre>
 <p>where HD = 640 (displayable Horizontal), HB = 48 (Horiz back porch), HF = 16 (Horz front porch), HR = 96 (Horz retrace). These are all in
 pixels. Because the pixel counter is clocked by the pixel clock, p_tick, their values also represent time. The similar description goes
@@ -115,36 +115,35 @@ board is programmed with the bitmask, these will be the data to display. The 10-
 area beyond 640 will not be used. This is rom_lookup.v content.</p>
 <p>Next comes the top module that instanstiates these simple modules to draw the graph from top of the screen down until it hits the center
 of the screen. Where it places each pixel is determined by rom_data.</p>
-<pre class="code verilog"><a name="rest_code_0f425247f69a41ef96e946877238634b-1"></a><span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">p_tick</span><span class="p">)</span>
-<a name="rest_code_0f425247f69a41ef96e946877238634b-2"></a>    <span class="k">if</span> <span class="p">(</span><span class="n">video_on</span> <span class="p">)</span> <span class="k">begin</span>
-<a name="rest_code_0f425247f69a41ef96e946877238634b-3"></a><span class="k">if</span> <span class="p">(</span> <span class="p">(</span><span class="n">y</span> <span class="o">&gt;=</span> <span class="mh">10</span><span class="mi">'d239</span><span class="o">-</span><span class="n">data</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">y</span> <span class="o">&lt;</span> <span class="mh">10</span><span class="mi">'d239</span><span class="p">)</span> <span class="p">)</span>
-<a name="rest_code_0f425247f69a41ef96e946877238634b-4"></a>    <span class="n">rgb</span> <span class="o">&lt;=</span> <span class="mh">12'hf00</span><span class="p">;</span>
-<a name="rest_code_0f425247f69a41ef96e946877238634b-5"></a><span class="k">else</span>
-<a name="rest_code_0f425247f69a41ef96e946877238634b-6"></a>    <span class="k">if</span> <span class="p">(</span> <span class="n">y</span> <span class="o">==</span> <span class="mh">10</span><span class="mi">'d239</span> <span class="p">)</span> <span class="c1">//middle screen horizontal line (x,239)</span>
-<a name="rest_code_0f425247f69a41ef96e946877238634b-7"></a>        <span class="n">rgb</span> <span class="o">&lt;=</span> <span class="mh">12'h0f0</span><span class="p">;</span>
-<a name="rest_code_0f425247f69a41ef96e946877238634b-8"></a>    <span class="k">else</span>
-<a name="rest_code_0f425247f69a41ef96e946877238634b-9"></a>        <span class="n">rgb</span> <span class="o">&lt;=</span> <span class="mh">12'h0</span><span class="p">;</span> <span class="c1">//nothing pass horizontal line</span>
-<a name="rest_code_0f425247f69a41ef96e946877238634b-10"></a>    <span class="k">end</span> <span class="k">else</span>
-<a name="rest_code_0f425247f69a41ef96e946877238634b-11"></a>            <span class="n">rgb</span> <span class="o">&lt;=</span> <span class="mh">12'h0</span><span class="p">;</span>
+<pre class="code verilog"><a name="rest_code_38f4f7a1b02e4ba781dca7d0e774850f-1"></a><span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">p_tick</span><span class="p">)</span>
+<a name="rest_code_38f4f7a1b02e4ba781dca7d0e774850f-2"></a>    <span class="k">if</span> <span class="p">(</span><span class="n">video_on</span> <span class="p">)</span> <span class="k">begin</span>
+<a name="rest_code_38f4f7a1b02e4ba781dca7d0e774850f-3"></a><span class="k">if</span> <span class="p">(</span> <span class="p">(</span><span class="n">y</span> <span class="o">&gt;=</span> <span class="mh">10</span><span class="mi">'d239</span><span class="o">-</span><span class="n">data</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">y</span> <span class="o">&lt;</span> <span class="mh">10</span><span class="mi">'d239</span><span class="p">)</span> <span class="p">)</span>
+<a name="rest_code_38f4f7a1b02e4ba781dca7d0e774850f-4"></a>    <span class="n">rgb</span> <span class="o">&lt;=</span> <span class="mh">12'hf00</span><span class="p">;</span>
+<a name="rest_code_38f4f7a1b02e4ba781dca7d0e774850f-5"></a><span class="k">else</span>
+<a name="rest_code_38f4f7a1b02e4ba781dca7d0e774850f-6"></a>    <span class="k">if</span> <span class="p">(</span> <span class="n">y</span> <span class="o">==</span> <span class="mh">10</span><span class="mi">'d239</span> <span class="p">)</span> <span class="c1">//middle screen horizontal line (x,239)</span>
+<a name="rest_code_38f4f7a1b02e4ba781dca7d0e774850f-7"></a>        <span class="n">rgb</span> <span class="o">&lt;=</span> <span class="mh">12'h0f0</span><span class="p">;</span>
+<a name="rest_code_38f4f7a1b02e4ba781dca7d0e774850f-8"></a>    <span class="k">else</span>
+<a name="rest_code_38f4f7a1b02e4ba781dca7d0e774850f-9"></a>        <span class="n">rgb</span> <span class="o">&lt;=</span> <span class="mh">12'h0</span><span class="p">;</span> <span class="c1">//nothing pass horizontal line</span>
+<a name="rest_code_38f4f7a1b02e4ba781dca7d0e774850f-10"></a>    <span class="k">end</span> <span class="k">else</span>
+<a name="rest_code_38f4f7a1b02e4ba781dca7d0e774850f-11"></a>            <span class="n">rgb</span> <span class="o">&lt;=</span> <span class="mh">12'h0</span><span class="p">;</span>
 </pre>
 </div>
 <div class="section" id="tools-used">
 <h2>Tools used</h2>
 <ol class="arabic simple">
-<li>Xilinx Vivado 2015.4 Webpack</li>
-<li>Digilent Nexys4DDR</li>
-<li>VGA monitor and cable.</li>
+<li><p>Xilinx Vivado 2015.4 Webpack</p></li>
+<li><p>Digilent Nexys4DDR</p></li>
+<li><p>VGA monitor and cable.</p></li>
 </ol>
 <div class="section" id="synthesize-the-circuit">
 <h3>Synthesize the circuit</h3>
 <ol class="arabic simple">
-<li>Get the code in <a class="reference external" href="https://github.com/souktha/vga_draw_graph">https://github.com/souktha/vga_draw_graph</a>
-</li>
-<li>Start Vivado --&gt; Tools --&gt;  Run Tcl script..</li>
-<li>click setup-vga-draw.tcl to create work space</li>
-<li>Synthesize and generate Bitstream</li>
-<li>Open Hardware Manager --&gt; Open targe --&gt; Program device.</li>
-<li>Choose the board and download Bitstream.</li>
+<li><p>Get the code in <a class="reference external" href="https://github.com/souktha/vga_draw_graph">https://github.com/souktha/vga_draw_graph</a></p></li>
+<li><p>Start Vivado --&gt; Tools --&gt;  Run Tcl script..</p></li>
+<li><p>click setup-vga-draw.tcl to create work space</p></li>
+<li><p>Synthesize and generate Bitstream</p></li>
+<li><p>Open Hardware Manager --&gt; Open targe --&gt; Program device.</p></li>
+<li><p>Choose the board and download Bitstream.</p></li>
 </ol>
 <div class="figure">
 <img alt="../../images/hardware/vga_draw_graph.jpeg" src="../../images/hardware/vga_draw_graph.jpeg"><p class="caption">Simple drawing on <a class="reference external" href="mailto:640x480@60HZ">640x480@60HZ</a></p>
@@ -157,36 +156,20 @@ to me as well as I make more progress.</p>
 </div>
 <div class="section" id="citations">
 <h3>Citations</h3>
-<table class="docutils footnote" frame="void" id="id1" rules="none">
-<colgroup>
-<col class="label">
-<col>
-</colgroup>
-<tbody valign="top"><tr>
-<td class="label">[1]</td>
-<td>www.fpga4fun.com - has lot of informations about various IOs and tutorials.</td>
-</tr></tbody>
-</table>
-<table class="docutils footnote" frame="void" id="id2" rules="none">
-<colgroup>
-<col class="label">
-<col>
-</colgroup>
-<tbody valign="top"><tr>
-<td class="label">[2]</td>
-<td>www.digilent.com - FPGA boards vendor with many useful articles.</td>
-</tr></tbody>
-</table>
-<table class="docutils footnote" frame="void" id="id3" rules="none">
-<colgroup>
-<col class="label">
-<col>
-</colgroup>
-<tbody valign="top"><tr>
-<td class="label">[3]</td>
-<td>www.xilinx.com - FPGA chip vendor.</td>
-</tr></tbody>
-</table>
+<dl class="footnote brackets">
+<dt class="label" id="id1"><span class="brackets">1</span></dt>
+<dd>
+<p>www.fpga4fun.com - has lot of informations about various IOs and tutorials.</p>
+</dd>
+<dt class="label" id="id2"><span class="brackets">2</span></dt>
+<dd>
+<p>www.digilent.com - FPGA boards vendor with many useful articles.</p>
+</dd>
+<dt class="label" id="id3"><span class="brackets">3</span></dt>
+<dd>
+<p>www.xilinx.com - FPGA chip vendor.</p>
+</dd>
+</dl>
 </div>
 </div>
 </div>
@@ -198,7 +181,7 @@ to me as well as I make more progress.</p>
         <!--End of body content-->
 
         <footer id="footer">
-            Contents © 2018         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            Contents © 2021         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
             
         </footer>
 </div>

@@ -7,130 +7,134 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <sitemap>
   <loc>http://souktha.github.io/categories/cat_fpga-linux.xml</loc>
-  <lastmod>2016-12-14T15:49:00Z</lastmod>
+  <lastmod>2019-07-14T17:53:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/categories/cat_fpga.xml</loc>
-  <lastmod>2018-05-13T16:04:00Z</lastmod>
+  <lastmod>2021-01-23T17:49:00Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>http://souktha.github.io/categories/cat_hardware.xml</loc>
+  <lastmod>2021-01-23T17:49:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/categories/cat_linux.xml</loc>
-  <lastmod>2018-05-13T16:04:00Z</lastmod>
+  <lastmod>2021-01-23T17:49:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/categories/cat_math.xml</loc>
-  <lastmod>2018-05-13T16:05:00Z</lastmod>
+  <lastmod>2021-01-23T17:49:00Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>http://souktha.github.io/categories/cat_misc.xml</loc>
+  <lastmod>2021-01-23T17:49:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/categories/cat_u-boot.xml</loc>
-  <lastmod>2018-05-13T16:04:00Z</lastmod>
+  <lastmod>2021-01-23T17:49:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/categories/hardware.xml</loc>
-  <lastmod>2018-05-13T16:04:00Z</lastmod>
+  <lastmod>2021-01-23T17:49:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/categories/latex.xml</loc>
-  <lastmod>2018-05-13T16:05:00Z</lastmod>
- </sitemap>
- <sitemap>
-  <loc>http://souktha.github.io/categories/mathjax.xml</loc>
-  <lastmod>2018-05-13T16:05:00Z</lastmod>
+  <lastmod>2021-01-23T17:49:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/categories/misc.xml</loc>
-  <lastmod>2018-05-13T16:05:00Z</lastmod>
+  <lastmod>2021-01-23T17:49:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/categories/software-hardware.xml</loc>
-  <lastmod>2016-04-24T21:52:00Z</lastmod>
+  <lastmod>2019-07-14T17:53:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/categories/software.xml</loc>
-  <lastmod>2018-05-13T16:04:00Z</lastmod>
+  <lastmod>2021-01-23T17:49:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/galleries/rss.xml</loc>
-  <lastmod>2018-05-13T16:05:00Z</lastmod>
+  <lastmod>2021-01-23T17:49:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/hardware/rss.xml</loc>
-  <lastmod>2017-05-26T19:16:00Z</lastmod>
+  <lastmod>2019-07-14T17:53:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/misc/rss.xml</loc>
-  <lastmod>2018-05-13T16:05:00Z</lastmod>
+  <lastmod>2019-07-14T17:53:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/rss.xml</loc>
-  <lastmod>2018-05-13T16:05:00Z</lastmod>
+  <lastmod>2021-01-23T17:49:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/sitemap.xml</loc>
-  <lastmod>2018-05-13T16:05:00Z</lastmod>
+  <lastmod>2021-01-23T17:49:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/software/categories/cat_fpga-linux.xml</loc>
-  <lastmod>2017-03-25T04:02:00Z</lastmod>
+  <lastmod>2019-07-14T17:53:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/software/categories/cat_fpga.xml</loc>
-  <lastmod>2017-03-25T04:02:00Z</lastmod>
+  <lastmod>2019-07-14T17:53:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/software/categories/cat_linux.xml</loc>
-  <lastmod>2017-03-25T04:02:00Z</lastmod>
+  <lastmod>2019-07-14T17:53:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/software/categories/cat_math.xml</loc>
-  <lastmod>2017-03-25T04:02:00Z</lastmod>
+  <lastmod>2019-07-14T17:53:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/software/categories/cat_u-boot.xml</loc>
-  <lastmod>2017-03-25T04:02:00Z</lastmod>
+  <lastmod>2019-07-14T17:53:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/software/categories/hardware.xml</loc>
-  <lastmod>2017-03-25T04:02:00Z</lastmod>
+  <lastmod>2019-07-14T17:53:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/software/categories/latex.xml</loc>
-  <lastmod>2017-03-25T04:02:00Z</lastmod>
+  <lastmod>2019-07-14T17:53:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/software/categories/mathjax.xml</loc>
-  <lastmod>2017-03-25T04:02:00Z</lastmod>
+  <lastmod>2019-07-14T17:53:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/software/categories/misc.xml</loc>
-  <lastmod>2017-03-25T04:02:00Z</lastmod>
+  <lastmod>2019-07-14T17:53:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/software/categories/software-hardware.xml</loc>
-  <lastmod>2017-03-25T04:02:00Z</lastmod>
+  <lastmod>2019-07-14T17:53:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/software/categories/software.xml</loc>
-  <lastmod>2017-03-25T04:02:00Z</lastmod>
+  <lastmod>2019-07-14T17:53:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/software/galleries/rss.xml</loc>
-  <lastmod>2017-03-25T04:02:00Z</lastmod>
+  <lastmod>2019-07-14T17:53:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/software/hardware/rss.xml</loc>
-  <lastmod>2017-03-25T04:02:00Z</lastmod>
+  <lastmod>2019-07-14T17:53:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/software/misc/rss.xml</loc>
-  <lastmod>2017-03-25T04:02:00Z</lastmod>
+  <lastmod>2019-07-14T17:53:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/software/rss.xml</loc>
-  <lastmod>2017-05-15T17:42:00Z</lastmod>
+  <lastmod>2019-07-14T17:53:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/software/sitemap.xml</loc>
-  <lastmod>2017-03-25T04:02:00Z</lastmod>
+  <lastmod>2019-07-14T17:53:00Z</lastmod>
  </sitemap>
 </sitemapindex>

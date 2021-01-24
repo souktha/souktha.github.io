@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="description" content="driving servo with FPGA">
@@ -8,7 +8,7 @@
 <link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
 <meta name="theme-color" content="#5670d4">
 <meta name="generator" content="Nikola (getnikola.com)">
-<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../../rss.xml">
 <link rel="canonical" href="http://souktha.github.io/hardware/servo/">
 <!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Soukthavy">
 <link rel="prev" href="../../misc/class_report_503/" title="LaTeX conversion" type="text/html">
@@ -88,7 +88,8 @@
         
 
     </header><div class="e-content entry-content" itemprop="articleBody text">
-    <div>
+    <div class="section" id="servo">
+<h2>Servo</h2>
 <p>Servo motor is an electromechanical drive that is relatively simple to operate. A
 typically servo motor has relatively few movements, namely left, right and center.
 Controlling its movement is to send the periodic pulse width of about 1.5ms, 1ms or 2ms for
@@ -96,64 +97,64 @@ the center, left, and the right movement respectively.
 In this demo, I use a very simple verilog code to control its movement.</p>
 <!-- TEASER_END -->
 <div class="section" id="tool-use">
-<h2>Tool use</h2>
+<h3>Tool use</h3>
 <ul class="simple">
-<li>Xilinx Vivado 2015.4</li>
-<li>Siglent 100MHZ DSO (optional)</li>
+<li><p>Xilinx Vivado 2015.4</p></li>
+<li><p>Siglent 100MHZ DSO (optional)</p></li>
 </ul>
 </div>
 <div class="section" id="hardware-component">
-<h2>Hardware component</h2>
+<h3>Hardware component</h3>
 <ul class="simple">
-<li>Digilent Nexys4DDR</li>
-<li>Servo motor (SG90, or HS-311).</li>
-<li>External 5V power supply needed for the servo.</li>
-<li>Wires and cables for connections.</li>
+<li><p>Digilent Nexys4DDR</p></li>
+<li><p>Servo motor (SG90, or HS-311).</p></li>
+<li><p>External 5V power supply needed for the servo.</p></li>
+<li><p>Wires and cables for connections.</p></li>
 </ul>
 </div>
 <div class="section" id="interface">
-<h2>Interface</h2>
+<h3>Interface</h3>
 <ul class="simple">
-<li>sw[1:0] are for position control</li>
-<li>led[1:0] are connected to sw[1:0]</li>
-<li>ja[0] for motor drive</li>
+<li><p>sw[1:0] are for position control</p></li>
+<li><p>led[1:0] are connected to sw[1:0]</p></li>
+<li><p>ja[0] for motor drive</p></li>
 </ul>
 </div>
 <div class="section" id="h-w-synthesis">
-<h2>H/W Synthesis</h2>
+<h3>H/W Synthesis</h3>
 <ul class="simple">
-<li>cd to my local directory where the verilog source files reside (Code available in my respoitory  <a class="reference external" href="https://github.com/souktha/servo">https://github.com/souktha/servo</a>)</li>
-<li>start vivado,</li>
+<li><p>cd to my local directory where the verilog source files reside (Code available in my respoitory  <a class="reference external" href="https://github.com/souktha/servo">https://github.com/souktha/servo</a>)</p></li>
+<li><p>start vivado,</p></li>
 </ul>
 <!-- .. image:: ../../images/servo/tcltool.png --><ul class="simple">
-<li>select Tools -&gt; Run Tcl Script...</li>
-<li>Click  setup-servo.tcl to run the setup.</li>
-<li>'create' at tcl shell command window. Vivado will create the project for this demo.</li>
+<li><p>select Tools -&gt; Run Tcl Script...</p></li>
+<li><p>Click  setup-servo.tcl to run the setup.</p></li>
+<li><p>'create' at tcl shell command window. Vivado will create the project for this demo.</p></li>
 </ul>
 <div class="figure">
 <img alt="../../images/servo/create.png" src="../../images/servo/create.png">
 </div>
 <ul class="simple">
-<li>On Vivado, generate bitstream</li>
+<li><p>On Vivado, generate bitstream</p></li>
 </ul>
 <div class="figure">
 <img alt="../../images/servo/genbitstream.png" src="../../images/servo/genbitstream.png"><p class="caption">instead of step-by-step go straight to generate bitstream</p>
 </div>
 <!-- only figure has caption, not image ! -->
 <ul class="simple">
-<li>Once completed (do not expect error), with the board connected, open the hardware manager and download the bitstream to the Nexys4DDR.
-Board will be up and running with the synthesized FPGA code.</li>
+<li><p>Once completed (do not expect error), with the board connected, open the hardware manager and download the bitstream to the Nexys4DDR.
+Board will be up and running with the synthesized FPGA code.</p></li>
 </ul>
 <div class="figure">
 <img alt="../../images/servo/openhwmgr.png" src="../../images/servo/openhwmgr.png"><p class="caption">bitstream generation complete</p>
 </div>
 </div>
 <div class="section" id="the-set-up">
-<h2>The set-up</h2>
+<h3>The set-up</h3>
 <img alt="../../images/servo/hwsetup.jpeg" src="../../images/servo/hwsetup.jpeg">
 </div>
 <div class="section" id="output-waveform">
-<h2>Output waveform</h2>
+<h3>Output waveform</h3>
 <p>For this servo motor, it is powered externally by a 5V power supply; however, the driving pulse is directly from ja[0] pin of the FPGA.
 Using sw[1:0] I can control its movement.</p>
 <div class="figure">
@@ -161,24 +162,20 @@ Using sw[1:0] I can control its movement.</p>
 </div>
 </div>
 <div class="section" id="conclusion">
-<h2>Conclusion</h2>
+<h3>Conclusion</h3>
 <p>Servo motor of this type is very easy to operate and it can tolerate a small variation of the periodic frequency. Having the right
 duty cycles for the controlling signal is more important. In this experiment I use 50HZ periodic frequency to keep the coil
 energized as required by its specfication. The HITec HS-311 works the same way as this SG90 servo.
 Stepper motor will require more complicated controlling phases. This will be my next post.</p>
 </div>
 <div class="section" id="citations">
-<h2>Citations</h2>
-<table class="docutils citation" frame="void" id="ref" rules="none">
-<colgroup>
-<col class="label">
-<col>
-</colgroup>
-<tbody valign="top"><tr>
-<td class="label">[ref]</td>
-<td>SG90Servo.pdf - Servo motor spec</td>
-</tr></tbody>
-</table>
+<h3>Citations</h3>
+<dl class="citation">
+<dt class="label" id="ref"><span class="brackets">ref</span></dt>
+<dd>
+<p>SG90Servo.pdf - Servo motor spec</p>
+</dd>
+</dl>
 </div>
 </div>
     </div>
@@ -189,7 +186,7 @@ Stepper motor will require more complicated controlling phases. This will be my 
         <!--End of body content-->
 
         <footer id="footer">
-            Contents © 2018         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            Contents © 2021         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
             
         </footer>
 </div>

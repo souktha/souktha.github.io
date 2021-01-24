@@ -1,7 +1,8 @@
 .. title: LaTeX conversion
 .. slug: class_report_503
 .. date: 2016-03-06 15:56:21 UTC
-.. tags: misc, mathjax, latex
+.. tags: misc, latex
+.. has_math: true
 .. category: 
 .. link: 
 .. description: 

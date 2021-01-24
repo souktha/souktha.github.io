@@ -1,0 +1,1678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Adding a custom ARM platform to QEMU 5.2.0 | Soukthavy Sopha</title>
+<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../../rss.xml">
+<link rel="canonical" href="http://souktha.github.io/software/qemu-port/">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Soukthavy">
+<link rel="prev" href="../../misc/ea8300-openwrt/" title="OpenWRT (Chaos Calmer) on Linksys EA8300" type="text/html">
+<meta property="og:site_name" content="Soukthavy Sopha">
+<meta property="og:title" content="Adding a custom ARM platform to QEMU 5.2.0">
+<meta property="og:url" content="http://souktha.github.io/software/qemu-port/">
+<meta property="og:description" content="The SoC is being developed by the ASIC team, but the software team wants to develop the software concurrently
+for the hardware that is not yet available, at least not for another 3 months or longer. I">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2021-01-02T17:19:03Z">
+<meta property="article:tag" content="software">
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-inverse navbar-static-top"><div class="container">
+<!-- This keeps the margins nice -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://souktha.github.io/">
+
+                <span id="blog-title">Soukthavy Sopha</span>
+            </a>
+        </div>
+<!-- /.navbar-header -->
+        <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
+            <ul class="nav navbar-nav">
+<li>
+<a href="../../archive.html">Archive</a>
+                </li>
+<li>
+<a href="../../categories/">Tags</a>
+                </li>
+<li>
+<a href="../../rss.xml">RSS feed</a>
+            </li>
+<li class="dropdown">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Blog <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+<li>
+<a href="../../software">Sofware</a>
+                    </li>
+<li>
+<a href="../../hardware">Hardware</a>
+                    </li>
+<li>
+<a href="../../misc">Misc</a>
+            </li>
+</ul>
+</li>
+<li>
+<a href="https://github.com/souktha">My Github</a>
+
+                
+            </li>
+</ul>
+<ul class="nav navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        <div class="row">
+            
+            
+<article class="post-text storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Adding a custom ARM platform to QEMU 5.2.0</a></h1>
+
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>The SoC is being developed by the ASIC team, but the software team wants to develop the software concurrently
+for the hardware that is not yet available, at least not for another 3 months or longer. In this situation what do
+you do ?</p>
+<!-- TEASER_END -->
+<p>In the early phase of SoC development you don't usually have hardware available, but you want to develop the software
+concurrently with the ASIC development. One option is to find the platform with the closest architecture and develop
+the software based on that platform, but it not always that easy to find. If you could, why would you want to continue
+with your SoC development ? You are already steps behind your competitors. This option will also come with a lot of clean-up
+work later on. The other option is to software emulated your platform such that we can develop and test your software
+implementation to its nearest target platform. This is what QEMU comes in to play. This blog is one of two parts series.
+One is to add new ARM platform into QEMU to emulate the hardware while the other part is to port <em>FreeRTOS</em> to support
+the new platform.</p>
+<p>An open source, QEMU from <em>qemu.org</em> is a generic machine emulator and virtualizer that supports various CPU architectures and platforms.
+QEMU runs on most mainstream OS, Linux, Windows, and MacOS. Since it is an open source, you can customize by adding the
+new platform into this package, build, install and use it. This blogs documents about how I add a custom ARM Cortex R-5
+platform in to the existing package. I call it <em>real-time experimental SoC, rtx-soc</em> platform. This platform will be added
+to the supported ARM CPU architectur the <em>QEMU</em>.</p>
+<div class="section" id="components">
+<h2>Components</h2>
+<p>Two main components needed: <em>QEMU</em> package (and other s/w dependencies required by this package) and the host PC (Linux).
+The software packages required by QEMU are listed in its respective QEMU site for building the QEMU. It is most likely
+that the needed dependencies are met if you fully installed the Linux distribution. If not, only minimal effort is needed.
+I choose the latest release version <em>qemu-5.2.0</em> of early 2021 since I find it to be
+easier than the earlier version for adding new target. I have actually done this with version <em>qemu-5.1.0</em> and found that
+the latest version is easier to port.</p>
+<p>The host PC is for building and running the QEMU to virtualize the h/w platform. For my case I use Linux x64 Slackware with kernel built
+to support virtualization. The PC BIOS should have virtualization enable as well.</p>
+<div class="section" id="qemu">
+<h3>QEMU</h3>
+<ul class="simple">
+<li>
+<p>QEMU</p>
+<ul>
+<li><p>version: qemu-5.2.0, which is the latest as of Jan 2021.</p></li>
+<li><p>Emulation: ARM and AARCH64 on Linux x64 host.</p></li>
+</ul>
+</li>
+<li>
+<p>SoC target plaform to be added:</p>
+<ul>
+<li><p>ARM Cortex-R5 with 4MB on-chip RAM (OCR).</p></li>
+<li><p>APB peripherals: UART, Timer, I2C</p></li>
+<li><p>GICv2 Interrupt controller</p></li>
+<li><p>Flash and others</p></li>
+</ul>
+</li>
+</ul>
+<p>Before you begin the work, you might as well test build the stock release as-is for the ARM emulation. If all the dependencies
+are met the package should build successfully. To build as-is for ARM, extract the package then <em>cd qemu-5.2.0</em> to configure
+and build,</p>
+<pre class="code text"><a name="rest_code_6a55c5d8437b4362b1a51b571a0d9aa3-1"></a>./configure --target-list=arm-softmmu,arm-linux-user,aarch64-softmmu,aarch64-linux-user --prefix=/opt/qemu-5.2.0/
+</pre>
+<p>This configure for ARMv7 and ARMv8 and install to <em>/opt/qemu-5.2.0</em> when you do <em>make install</em>. The output of the built
+QEMU is in its <em>build/</em> directory. You can as well run QEMU from this directory without having to install it to the
+desired location.</p>
+<p>Check the machines supported by this build,</p>
+<pre class="code text"><a name="rest_code_f69af9c64e6b4202be285fbe52837390-1"></a>qemu-system-aarch64 -M help
+</pre>
+<p>Will list the ARM platforms supported, for examples,</p>
+<pre class="code text"><a name="rest_code_c968e597cb3841898a8f4a6c54936c9f-1"></a>Supported machines are:
+<a name="rest_code_c968e597cb3841898a8f4a6c54936c9f-2"></a>akita                Sharp SL-C1000 (Akita) PDA (PXA270)
+<a name="rest_code_c968e597cb3841898a8f4a6c54936c9f-3"></a>ast2500-evb          Aspeed AST2500 EVB (ARM1176)
+<a name="rest_code_c968e597cb3841898a8f4a6c54936c9f-4"></a>ast2600-evb          Aspeed AST2600 EVB (Cortex A7)
+<a name="rest_code_c968e597cb3841898a8f4a6c54936c9f-5"></a>borzoi               Sharp SL-C3100 (Borzoi) PDA (PXA270)
+<a name="rest_code_c968e597cb3841898a8f4a6c54936c9f-6"></a>canon-a1100          Canon PowerShot A1100 IS
+<a name="rest_code_c968e597cb3841898a8f4a6c54936c9f-7"></a>cheetah              Palm Tungsten|E aka. Cheetah PDA (OMAP310)
+<a name="rest_code_c968e597cb3841898a8f4a6c54936c9f-8"></a>collie               Sharp SL-5500 (Collie) PDA (SA-1110)
+<a name="rest_code_c968e597cb3841898a8f4a6c54936c9f-9"></a>connex               Gumstix Connex (PXA255)
+<a name="rest_code_c968e597cb3841898a8f4a6c54936c9f-10"></a>..
+</pre>
+</div>
+</div>
+<div class="section" id="adding-platform-to-qemu">
+<h2>Adding platform to QEMU</h2>
+<p>In QEMU directories structure, I only need to work in two directories, <em>hw/arm/</em> and <em>default-configs/devices/</em> to add
+the new target platform and to modified the existing configuration incorporating new platform.</p>
+<div class="section" id="adding-rtx-soc-to-configuration">
+<h3>Adding <em>rtx-soc</em> to configuration</h3>
+<p>1) Specify QEMU platform and what the platform needs for its basic peripherals. To do this, add <em>config RTX_SOC</em>
+block which is a custom platform to <em>hw/arm/Kconfig</em> by editing this file (line 8-15),</p>
+<div class="code"><table class="codetable">
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_a4ef7e4242644005bb9cad30b3a0e197-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_a4ef7e4242644005bb9cad30b3a0e197-1"></a>..
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_a4ef7e4242644005bb9cad30b3a0e197-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_a4ef7e4242644005bb9cad30b3a0e197-2"></a>config NETDUINOPLUS2
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_a4ef7e4242644005bb9cad30b3a0e197-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_a4ef7e4242644005bb9cad30b3a0e197-3"></a>    bool
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_a4ef7e4242644005bb9cad30b3a0e197-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_a4ef7e4242644005bb9cad30b3a0e197-4"></a>    select STM32F405_SOC
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_a4ef7e4242644005bb9cad30b3a0e197-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_a4ef7e4242644005bb9cad30b3a0e197-5"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_a4ef7e4242644005bb9cad30b3a0e197-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_a4ef7e4242644005bb9cad30b3a0e197-6"></a>#add RTX_SOC block here
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_a4ef7e4242644005bb9cad30b3a0e197-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_a4ef7e4242644005bb9cad30b3a0e197-7"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_a4ef7e4242644005bb9cad30b3a0e197-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_a4ef7e4242644005bb9cad30b3a0e197-8"></a>config RTX_SOC
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_a4ef7e4242644005bb9cad30b3a0e197-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_a4ef7e4242644005bb9cad30b3a0e197-9"></a>    bool
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_a4ef7e4242644005bb9cad30b3a0e197-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_a4ef7e4242644005bb9cad30b3a0e197-10"></a>    select ARM_MPTIMER
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_a4ef7e4242644005bb9cad30b3a0e197-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_a4ef7e4242644005bb9cad30b3a0e197-11"></a>    select ARM_TIMER # sp804
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_a4ef7e4242644005bb9cad30b3a0e197-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_a4ef7e4242644005bb9cad30b3a0e197-12"></a>    select PL011 # UART
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_a4ef7e4242644005bb9cad30b3a0e197-13"><code data-line-number="13"></code></a></td>
+<td class="code"><code><a name="rest_code_a4ef7e4242644005bb9cad30b3a0e197-13"></a>    select ARM_GIC
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_a4ef7e4242644005bb9cad30b3a0e197-14"><code data-line-number="14"></code></a></td>
+<td class="code"><code><a name="rest_code_a4ef7e4242644005bb9cad30b3a0e197-14"></a>    select VIRTIO_MMIO
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_a4ef7e4242644005bb9cad30b3a0e197-15"><code data-line-number="15"></code></a></td>
+<td class="code"><code><a name="rest_code_a4ef7e4242644005bb9cad30b3a0e197-15"></a>    select UNIMP
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_a4ef7e4242644005bb9cad30b3a0e197-16"><code data-line-number="16"></code></a></td>
+<td class="code"><code><a name="rest_code_a4ef7e4242644005bb9cad30b3a0e197-16"></a>#end  of block added
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_a4ef7e4242644005bb9cad30b3a0e197-17"><code data-line-number="17"></code></a></td>
+<td class="code"><code><a name="rest_code_a4ef7e4242644005bb9cad30b3a0e197-17"></a>config NSERIES
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_a4ef7e4242644005bb9cad30b3a0e197-18"><code data-line-number="18"></code></a></td>
+<td class="code"><code><a name="rest_code_a4ef7e4242644005bb9cad30b3a0e197-18"></a>    bool
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_a4ef7e4242644005bb9cad30b3a0e197-19"><code data-line-number="19"></code></a></td>
+<td class="code"><code><a name="rest_code_a4ef7e4242644005bb9cad30b3a0e197-19"></a>    ..
+</code></td>
+</tr>
+</table></div>
+<p>The components chosen by <em>select</em> are the peripherals that my platform needs to instantiate on board bring-up. They
+are the QEMU objects to be invoked in the source code so they too need to be configured as default devices. More
+peripherals can be added in the future, but it is adequate for my need at the time being.</p>
+<p>2) Adding to <em>CONFIG_RTX_SOC</em> to <em>default-configs/devices/arm-softmmu.mak</em> file for the above configuration.
+QEMU will build RTX_SOC platform as a default supported platform among others (line 3).</p>
+<div class="code"><table class="codetable">
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_4e32aff719e248d2af42f8273042a024-1"><code data-line-number="1"></code></a></td>
+<td class="code"><code><a name="rest_code_4e32aff719e248d2af42f8273042a024-1"></a>..
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_4e32aff719e248d2af42f8273042a024-2"><code data-line-number="2"></code></a></td>
+<td class="code"><code><a name="rest_code_4e32aff719e248d2af42f8273042a024-2"></a>CONFIG_TOSA=y
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_4e32aff719e248d2af42f8273042a024-3"><code data-line-number="3"></code></a></td>
+<td class="code"><code><a name="rest_code_4e32aff719e248d2af42f8273042a024-3"></a>CONFIG_RTX_SOC=y
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_4e32aff719e248d2af42f8273042a024-4"><code data-line-number="4"></code></a></td>
+<td class="code"><code><a name="rest_code_4e32aff719e248d2af42f8273042a024-4"></a>CONFIG_Z2=y
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_4e32aff719e248d2af42f8273042a024-5"><code data-line-number="5"></code></a></td>
+<td class="code"><code><a name="rest_code_4e32aff719e248d2af42f8273042a024-5"></a>..
+</code></td>
+</tr>
+</table></div>
+<p>3) Add file name <em>rtx-soc.c</em> to be compiled to QEMU 5.2.0's <em>hw/arm/meson.build</em> script. This is the
+emulated Cortex-R5 RTX_SOC target platform (line 3).</p>
+<div class="code"><table class="codetable">
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_cf223715a9c447be832535c1c815e34d-1"><code data-line-number="1"></code></a></td>
+<td class="code"><code><a name="rest_code_cf223715a9c447be832535c1c815e34d-1"></a>..
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_cf223715a9c447be832535c1c815e34d-2"><code data-line-number="2"></code></a></td>
+<td class="code"><code><a name="rest_code_cf223715a9c447be832535c1c815e34d-2"></a>arm_ss.add(when: 'CONFIG_REALVIEW', if_true: files('realview.c'))
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_cf223715a9c447be832535c1c815e34d-3"><code data-line-number="3"></code></a></td>
+<td class="code"><code><a name="rest_code_cf223715a9c447be832535c1c815e34d-3"></a>arm_ss.add(when: 'CONFIG_RTX_SOC', if_true: files('rtx-soc.c'))
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_cf223715a9c447be832535c1c815e34d-4"><code data-line-number="4"></code></a></td>
+<td class="code"><code><a name="rest_code_cf223715a9c447be832535c1c815e34d-4"></a>arm_ss.add(when: 'CONFIG_SBSA_REF', if_true: files('sbsa-ref.c'))
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_cf223715a9c447be832535c1c815e34d-5"><code data-line-number="5"></code></a></td>
+<td class="code"><code><a name="rest_code_cf223715a9c447be832535c1c815e34d-5"></a>..
+</code></td>
+</tr>
+</table></div>
+<p>The configuration part of this package is complete. Next is to add platform machine file.</p>
+</div>
+<div class="section" id="creating-and-adding-platform-file">
+<h3>Creating and adding platform file</h3>
+<p><em>rtx-soc.c</em> is source file to describe the ARM Cortex-R5 platform to be added to the supported platform as described in
+the section above. The Cortex-R5 CPU support is in <em>target/arm</em> directory of the QEMU. There is no need
+to do anything with respect to this directory or any subdirectory in <em>target/</em>. All other peripheral
+components are in <em>hw/</em> subdirectories, for example, <em>hw/char/</em> (serial port), <em>hw/net/</em> (Ethernet network),
+<em>/hw/block/</em> (flash) etc... You can explore the subdirectories of <em>hw/</em> to find out what you need
+to add them to your platform.</p>
+<p>Simply create <em>rtx-soc.c</em> source file in QEMU's <em>/hw/arm/</em> directory. The edited configuration already made
+as described above will compile this source into QEMU to support this platform.</p>
+</div>
+</div>
+<div class="section" id="implementation-of-rtx-soc-c-for-cortex-r5-platform">
+<h2>Implementation of <em>rtx-soc.c</em> for Cortex-R5 platform</h2>
+<p>Instead of creating <em>rtx-soc.c</em> from scratch, it is best to clone it from the one of the existing file
+in <em>hw/arm/</em> directory. Browsing through these files, I choose ARM Versatile Express emulation, <em>vexpress.c</em>,
+as the base line and clone it to be <em>rtx-soc.c</em> because it has many similar peripherals that I need and
+having the content that is easier to understand. The <em>vexpress</em> is based on Cortex-A9 and Cortex-A15 multicore
+h/w platform. I will replace these ARM cores in <em>rtx-soc.c</em> for Cortex-R5. The components that do not exist
+in my platform will be removed and the components that I need will be added.</p>
+<div class="section" id="steps-involved">
+<h3>Steps involved</h3>
+<ul>
+<li><p>Copy <em>vexpress.c</em> to <em>rtx-soc.c</em> - start of with this cloned file.</p></li>
+<li>
+<p>Edit the clone file, <em>rtx-soc.c</em> :</p>
+<ul class="simple">
+<li><p>Create the <em>hwaddr</em> structure that defines my platform need to be created to match the phyiscal addresses of the memory and peripheral devices. I can edit the existing structure to fit my need,</p></li>
+</ul>
+<div class="code"><table class="codetable">
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_cdf7b748ac98465ba76736026a3c1f65-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_cdf7b748ac98465ba76736026a3c1f65-1"></a><span class="k">static</span> <span class="n">hwaddr</span> <span class="n">motherboard_rtx_r5_map</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_cdf7b748ac98465ba76736026a3c1f65-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_cdf7b748ac98465ba76736026a3c1f65-2"></a><span class="cm">/* clone from legacy map . For RTX R5, it has</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_cdf7b748ac98465ba76736026a3c1f65-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_cdf7b748ac98465ba76736026a3c1f65-3"></a><span class="cm"> * no northbridge/southbridge interface complexity. */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_cdf7b748ac98465ba76736026a3c1f65-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_cdf7b748ac98465ba76736026a3c1f65-4"></a>    <span class="p">[</span><span class="n">VE_NORFLASHALIAS</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_cdf7b748ac98465ba76736026a3c1f65-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_cdf7b748ac98465ba76736026a3c1f65-5"></a>    <span class="p">[</span><span class="n">VE_UART0</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x58000000</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_cdf7b748ac98465ba76736026a3c1f65-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_cdf7b748ac98465ba76736026a3c1f65-6"></a>    <span class="p">[</span><span class="n">VE_UART1</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x58010000</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_cdf7b748ac98465ba76736026a3c1f65-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_cdf7b748ac98465ba76736026a3c1f65-7"></a>    <span class="p">[</span><span class="n">VE_UART2</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x58020000</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_cdf7b748ac98465ba76736026a3c1f65-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_cdf7b748ac98465ba76736026a3c1f65-8"></a>    <span class="p">[</span><span class="n">VE_UART3</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x58030000</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_cdf7b748ac98465ba76736026a3c1f65-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_cdf7b748ac98465ba76736026a3c1f65-9"></a>    <span class="p">[</span><span class="n">VE_TIMER01</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x580a0000</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_cdf7b748ac98465ba76736026a3c1f65-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_cdf7b748ac98465ba76736026a3c1f65-10"></a>    <span class="p">[</span><span class="n">VE_VIRTIO</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x10013000</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_cdf7b748ac98465ba76736026a3c1f65-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_cdf7b748ac98465ba76736026a3c1f65-11"></a>    <span class="p">[</span><span class="n">VE_RTC</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x10017000</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_cdf7b748ac98465ba76736026a3c1f65-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_cdf7b748ac98465ba76736026a3c1f65-12"></a>    <span class="cm">/* CS0: 0x40000000 .. 0x44000000 */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_cdf7b748ac98465ba76736026a3c1f65-13"><code data-line-number="13"></code></a></td>
+<td class="code"><code><a name="rest_code_cdf7b748ac98465ba76736026a3c1f65-13"></a>    <span class="p">[</span><span class="n">VE_NORFLASH0</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x40000000</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_cdf7b748ac98465ba76736026a3c1f65-14"><code data-line-number="14"></code></a></td>
+<td class="code"><code><a name="rest_code_cdf7b748ac98465ba76736026a3c1f65-14"></a>    <span class="p">[</span><span class="n">VE_USB</span><span class="p">]</span> <span class="o">=</span> <span class="mh">0x58140000</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_cdf7b748ac98465ba76736026a3c1f65-15"><code data-line-number="15"></code></a></td>
+<td class="code"><code><a name="rest_code_cdf7b748ac98465ba76736026a3c1f65-15"></a><span class="p">};</span>
+</code></td>
+</tr>
+</table></div>
+<p>More elements can be added as needed.</p>
+<ul class="simple">
+<li><p>Create/edit <em>VEDBoardInfo</em> structure for this platform and specify to use motherboard map as defined above,</p></li>
+</ul>
+<div class="code"><table class="codetable">
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_063be492996c4111aefa2d82b9902d54-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_063be492996c4111aefa2d82b9902d54-1"></a>    <span class="k">static</span> <span class="n">VEDBoardInfo</span> <span class="n">r5_daughterboard</span> <span class="o">=</span> <span class="p">{</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_063be492996c4111aefa2d82b9902d54-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_063be492996c4111aefa2d82b9902d54-2"></a>        <span class="p">.</span><span class="n">motherboard_map</span> <span class="o">=</span> <span class="n">motherboard_rtx_r5_map</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_063be492996c4111aefa2d82b9902d54-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_063be492996c4111aefa2d82b9902d54-3"></a>        <span class="p">.</span><span class="n">loader_start</span> <span class="o">=</span> <span class="mh">0x00000000</span><span class="p">,</span> <span class="cm">/* use same loader start address */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_063be492996c4111aefa2d82b9902d54-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_063be492996c4111aefa2d82b9902d54-4"></a>        <span class="p">.</span><span class="n">gic_cpu_if_addr</span> <span class="o">=</span> <span class="mh">0x58200000</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_063be492996c4111aefa2d82b9902d54-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_063be492996c4111aefa2d82b9902d54-5"></a>        <span class="p">.</span><span class="n">proc_id</span> <span class="o">=</span> <span class="mh">0x14000237</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_063be492996c4111aefa2d82b9902d54-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_063be492996c4111aefa2d82b9902d54-6"></a>        <span class="cm">/* use same voltage and clocks as in A15's */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_063be492996c4111aefa2d82b9902d54-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_063be492996c4111aefa2d82b9902d54-7"></a>        <span class="p">.</span><span class="n">num_voltage_sensors</span> <span class="o">=</span> <span class="n">ARRAY_SIZE</span><span class="p">(</span><span class="n">a15_voltages</span><span class="p">),</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_063be492996c4111aefa2d82b9902d54-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_063be492996c4111aefa2d82b9902d54-8"></a>        <span class="p">.</span><span class="n">voltages</span> <span class="o">=</span> <span class="n">a15_voltages</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_063be492996c4111aefa2d82b9902d54-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_063be492996c4111aefa2d82b9902d54-9"></a>        <span class="p">.</span><span class="n">num_clocks</span> <span class="o">=</span> <span class="n">ARRAY_SIZE</span><span class="p">(</span><span class="n">a15_clocks</span><span class="p">),</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_063be492996c4111aefa2d82b9902d54-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_063be492996c4111aefa2d82b9902d54-10"></a>        <span class="p">.</span><span class="n">clocks</span> <span class="o">=</span> <span class="n">a15_clocks</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_063be492996c4111aefa2d82b9902d54-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_063be492996c4111aefa2d82b9902d54-11"></a>        <span class="p">.</span><span class="n">init</span> <span class="o">=</span> <span class="n">r5_daughterboard_init</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_063be492996c4111aefa2d82b9902d54-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_063be492996c4111aefa2d82b9902d54-12"></a>    <span class="p">};</span>
+</code></td>
+</tr>
+</table></div>
+<ul class="simple">
+<li><p>Create/edit the rtx-soc machine classes and information structures for initialization. For machine state, use <em>VexpressMachineState</em> since it is not necessary to rename it.</p></li>
+</ul>
+<div class="code"><table class="codetable">
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-1"></a>    <span class="k">static</span> <span class="kt">void</span> <span class="n">rtx_soc_class_init</span><span class="p">(</span><span class="n">ObjectClass</span> <span class="o">*</span><span class="n">oc</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">)</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-2"></a>    <span class="p">{</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-3"></a>        <span class="n">MachineClass</span> <span class="o">*</span><span class="n">mc</span> <span class="o">=</span> <span class="n">MACHINE_CLASS</span><span class="p">(</span><span class="n">oc</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-4"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-5"></a>        <span class="n">mc</span><span class="o">-&gt;</span><span class="n">desc</span> <span class="o">=</span> <span class="s">"ARM Real Time Experiment (RTX)"</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-6"></a>        <span class="n">mc</span><span class="o">-&gt;</span><span class="n">init</span> <span class="o">=</span> <span class="n">rtx_soc_common_init</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-7"></a>        <span class="n">mc</span><span class="o">-&gt;</span><span class="n">max_cpus</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// single core</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-8"></a>        <span class="n">mc</span><span class="o">-&gt;</span><span class="n">ignore_memory_transaction_failures</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-9"></a>        <span class="n">mc</span><span class="o">-&gt;</span><span class="n">default_ram_id</span> <span class="o">=</span> <span class="s">"rtx_soc.highmem"</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-10"></a>    <span class="p">}</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-11"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-12"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-13"><code data-line-number="13"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-13"></a>    <span class="k">static</span> <span class="kt">void</span> <span class="n">rtx_soc_instance_init</span><span class="p">(</span><span class="n">Object</span> <span class="o">*</span><span class="n">obj</span><span class="p">)</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-14"><code data-line-number="14"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-14"></a>    <span class="p">{</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-15"><code data-line-number="15"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-15"></a>        <span class="n">VexpressMachineState</span> <span class="o">*</span><span class="n">vms</span> <span class="o">=</span> <span class="n">RTX_MACHINE</span><span class="p">(</span><span class="n">obj</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-16"><code data-line-number="16"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-16"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-17"><code data-line-number="17"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-17"></a>        <span class="cm">/* EL3 is enabled by default on rtx_soc */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-18"><code data-line-number="18"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-18"></a>        <span class="n">vms</span><span class="o">-&gt;</span><span class="n">secure</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-19"><code data-line-number="19"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-19"></a>        <span class="n">object_property_add_bool</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s">"secure"</span><span class="p">,</span> <span class="n">rtx_soc_get_secure</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-20"><code data-line-number="20"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-20"></a>                         <span class="n">rtx_soc_set_secure</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-21"><code data-line-number="21"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-21"></a>        <span class="n">object_property_set_description</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s">"secure"</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-22"><code data-line-number="22"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-22"></a>                                <span class="s">"Set on/off to enable/disable the ARM "</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-23"><code data-line-number="23"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-23"></a>                                <span class="s">"Security Extensions (TrustZone)"</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-24"><code data-line-number="24"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-24"></a>    <span class="p">}</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-25"><code data-line-number="25"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-25"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-26"><code data-line-number="26"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-26"></a>    <span class="k">static</span> <span class="kt">void</span> <span class="n">rtx_soc_r5_instance_init</span><span class="p">(</span><span class="n">Object</span> <span class="o">*</span><span class="n">obj</span><span class="p">)</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-27"><code data-line-number="27"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-27"></a>    <span class="p">{</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-28"><code data-line-number="28"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-28"></a>        <span class="n">VexpressMachineState</span> <span class="o">*</span><span class="n">vms</span> <span class="o">=</span> <span class="n">RTX_MACHINE</span><span class="p">(</span><span class="n">obj</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-29"><code data-line-number="29"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-29"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-30"><code data-line-number="30"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-30"></a>        <span class="n">vms</span><span class="o">-&gt;</span><span class="n">virt</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-31"><code data-line-number="31"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-31"></a>        <span class="n">vms</span><span class="o">-&gt;</span><span class="n">secure</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-32"><code data-line-number="32"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-32"></a>    <span class="p">}</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-33"><code data-line-number="33"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-33"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-34"><code data-line-number="34"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-34"></a>    <span class="k">static</span> <span class="kt">void</span> <span class="n">rtx_soc_r5_class_init</span><span class="p">(</span><span class="n">ObjectClass</span> <span class="o">*</span><span class="n">oc</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">)</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-35"><code data-line-number="35"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-35"></a>    <span class="p">{</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-36"><code data-line-number="36"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-36"></a>        <span class="n">MachineClass</span> <span class="o">*</span><span class="n">mc</span> <span class="o">=</span> <span class="n">MACHINE_CLASS</span><span class="p">(</span><span class="n">oc</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-37"><code data-line-number="37"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-37"></a>        <span class="n">VexpressMachineClass</span> <span class="o">*</span><span class="n">vmc</span> <span class="o">=</span> <span class="n">RTX_MACHINE_CLASS</span><span class="p">(</span><span class="n">oc</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-38"><code data-line-number="38"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-38"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-39"><code data-line-number="39"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-39"></a>        <span class="n">mc</span><span class="o">-&gt;</span><span class="n">desc</span> <span class="o">=</span> <span class="s">"ARM Real Time Experiment (RTX) Cortex-r5f"</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-40"><code data-line-number="40"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-40"></a>        <span class="n">mc</span><span class="o">-&gt;</span><span class="n">default_cpu_type</span> <span class="o">=</span> <span class="n">ARM_CPU_TYPE_NAME</span><span class="p">(</span><span class="s">"cortex-r5f"</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-41"><code data-line-number="41"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-41"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-42"><code data-line-number="42"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-42"></a>        <span class="n">vmc</span><span class="o">-&gt;</span><span class="n">daughterboard</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">r5_daughterboard</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-43"><code data-line-number="43"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-43"></a>    <span class="p">}</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-44"><code data-line-number="44"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-44"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-45"><code data-line-number="45"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-45"></a>    <span class="k">static</span> <span class="k">const</span> <span class="n">TypeInfo</span> <span class="n">rtx_soc_info</span> <span class="o">=</span> <span class="p">{</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-46"><code data-line-number="46"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-46"></a>        <span class="p">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">TYPE_RTX_MACHINE</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-47"><code data-line-number="47"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-47"></a>        <span class="p">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">TYPE_MACHINE</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-48"><code data-line-number="48"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-48"></a>        <span class="p">.</span><span class="n">abstract</span> <span class="o">=</span> <span class="nb">true</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-49"><code data-line-number="49"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-49"></a>        <span class="cm">/* use the same Machine state clone from vexpress */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-50"><code data-line-number="50"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-50"></a>        <span class="p">.</span><span class="n">instance_size</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">VexpressMachineState</span><span class="p">),</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-51"><code data-line-number="51"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-51"></a>        <span class="p">.</span><span class="n">instance_init</span> <span class="o">=</span> <span class="n">rtx_soc_instance_init</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-52"><code data-line-number="52"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-52"></a>        <span class="p">.</span><span class="n">class_size</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">VexpressMachineClass</span><span class="p">),</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-53"><code data-line-number="53"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-53"></a>        <span class="p">.</span><span class="n">class_init</span> <span class="o">=</span> <span class="n">rtx_soc_class_init</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-54"><code data-line-number="54"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-54"></a>    <span class="p">};</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-55"><code data-line-number="55"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-55"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-56"><code data-line-number="56"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-56"></a>    <span class="k">static</span> <span class="k">const</span> <span class="n">TypeInfo</span> <span class="n">rtx_soc_r5_info</span> <span class="o">=</span> <span class="p">{</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-57"><code data-line-number="57"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-57"></a>        <span class="p">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">TYPE_RTX_R5_MACHINE</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-58"><code data-line-number="58"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-58"></a>        <span class="p">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">TYPE_RTX_MACHINE</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-59"><code data-line-number="59"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-59"></a>        <span class="p">.</span><span class="n">class_init</span> <span class="o">=</span> <span class="n">rtx_soc_r5_class_init</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-60"><code data-line-number="60"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-60"></a>        <span class="p">.</span><span class="n">instance_init</span> <span class="o">=</span> <span class="n">rtx_soc_r5_instance_init</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_40c33c49a4634008886c40f0df4e1d6e-61"><code data-line-number="61"></code></a></td>
+<td class="code"><code><a name="rest_code_40c33c49a4634008886c40f0df4e1d6e-61"></a>    <span class="p">};</span>
+</code></td>
+</tr>
+</table></div>
+<ul class="simple">
+<li><p>Create/edit <em>type_init()</em> macro to invoke machine initialization for this platform.</p></li>
+</ul>
+<div class="code"><table class="codetable">
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0a165c4ba7ed46e99ba48d09b8d3bde4-1"><code data-line-number="1"></code></a></td>
+<td class="code"><code><a name="rest_code_0a165c4ba7ed46e99ba48d09b8d3bde4-1"></a>  <span class="k">static</span> <span class="kt">void</span> <span class="n">rtx_soc_machine_init</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0a165c4ba7ed46e99ba48d09b8d3bde4-2"><code data-line-number="2"></code></a></td>
+<td class="code"><code><a name="rest_code_0a165c4ba7ed46e99ba48d09b8d3bde4-2"></a>   <span class="p">{</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0a165c4ba7ed46e99ba48d09b8d3bde4-3"><code data-line-number="3"></code></a></td>
+<td class="code"><code><a name="rest_code_0a165c4ba7ed46e99ba48d09b8d3bde4-3"></a>       <span class="n">type_register_static</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rtx_soc_info</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0a165c4ba7ed46e99ba48d09b8d3bde4-4"><code data-line-number="4"></code></a></td>
+<td class="code"><code><a name="rest_code_0a165c4ba7ed46e99ba48d09b8d3bde4-4"></a>       <span class="n">type_register_static</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rtx_soc_r5_info</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0a165c4ba7ed46e99ba48d09b8d3bde4-5"><code data-line-number="5"></code></a></td>
+<td class="code"><code><a name="rest_code_0a165c4ba7ed46e99ba48d09b8d3bde4-5"></a>   <span class="p">}</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0a165c4ba7ed46e99ba48d09b8d3bde4-6"><code data-line-number="6"></code></a></td>
+<td class="code"><code><a name="rest_code_0a165c4ba7ed46e99ba48d09b8d3bde4-6"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0a165c4ba7ed46e99ba48d09b8d3bde4-7"><code data-line-number="7"></code></a></td>
+<td class="code"><code><a name="rest_code_0a165c4ba7ed46e99ba48d09b8d3bde4-7"></a> <span class="n">type_init</span><span class="p">(</span><span class="n">rtx_soc_machine_init</span><span class="p">);</span>
+</code></td>
+</tr>
+</table></div>
+<ul class="simple">
+<li><p>Define the machine type and object macros used in the structures above,</p></li>
+</ul>
+<div class="code"><table class="codetable">
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_51f919d694644a05b61cddff57a02443-1"><code data-line-number="1"></code></a></td>
+<td class="code"><code><a name="rest_code_51f919d694644a05b61cddff57a02443-1"></a><span class="cp">#define TYPE_RTX_MACHINE   "rtx"</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_51f919d694644a05b61cddff57a02443-2"><code data-line-number="2"></code></a></td>
+<td class="code"><code><a name="rest_code_51f919d694644a05b61cddff57a02443-2"></a><span class="cp">#define TYPE_RTX_R5_MACHINE   MACHINE_TYPE_NAME("rtx-r5")</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_51f919d694644a05b61cddff57a02443-3"><code data-line-number="3"></code></a></td>
+<td class="code"><code><a name="rest_code_51f919d694644a05b61cddff57a02443-3"></a><span class="cp">#define RTX_MACHINE(obj) \</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_51f919d694644a05b61cddff57a02443-4"><code data-line-number="4"></code></a></td>
+<td class="code"><code><a name="rest_code_51f919d694644a05b61cddff57a02443-4"></a><span class="cp">    OBJECT_CHECK(VexpressMachineState, (obj), TYPE_RTX_MACHINE)</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_51f919d694644a05b61cddff57a02443-5"><code data-line-number="5"></code></a></td>
+<td class="code"><code><a name="rest_code_51f919d694644a05b61cddff57a02443-5"></a><span class="cp">#define RTX_MACHINE_GET_CLASS(obj) \</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_51f919d694644a05b61cddff57a02443-6"><code data-line-number="6"></code></a></td>
+<td class="code"><code><a name="rest_code_51f919d694644a05b61cddff57a02443-6"></a><span class="cp">    OBJECT_GET_CLASS(VexpressMachineClass, obj, TYPE_RTX_MACHINE)</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_51f919d694644a05b61cddff57a02443-7"><code data-line-number="7"></code></a></td>
+<td class="code"><code><a name="rest_code_51f919d694644a05b61cddff57a02443-7"></a><span class="cp">#define RTX_MACHINE_CLASS(klass) \</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_51f919d694644a05b61cddff57a02443-8"><code data-line-number="8"></code></a></td>
+<td class="code"><code><a name="rest_code_51f919d694644a05b61cddff57a02443-8"></a><span class="cp">    OBJECT_CLASS_CHECK(VexpressMachineClass, klass, TYPE_RTX_MACHINE)</span>
+</code></td>
+</tr>
+</table></div>
+<ul class="simple">
+<li><p>When machine class is initialized, <em>rtx_soc_common_init()</em> function is called so we need to implement this function. The <em>vexpress_common_init()</em> is renamed and edited to become this function. This function is for instantiating devices defined for the target platform. For RTX platform, the clocks and voltage sensors remain the same as the Vexpress's. MMC, Keyboard, VRAM devices are commented out. Only one UART0 is used so UART1-3 are not instantiated.</p></li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<div class="code"><table class="codetable">
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-1"><code data-line-number="  1"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-1"></a><span class="k">static</span> <span class="kt">void</span> <span class="n">rtx_soc_common_init</span><span class="p">(</span><span class="n">MachineState</span> <span class="o">*</span> <span class="n">machine</span><span class="p">)</span> <span class="p">{</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-2"><code data-line-number="  2"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-2"></a>  <span class="n">VexpressMachineState</span> <span class="o">*</span> <span class="n">vms</span> <span class="o">=</span> <span class="n">RTX_MACHINE</span><span class="p">(</span><span class="n">machine</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-3"><code data-line-number="  3"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-3"></a>  <span class="n">VexpressMachineClass</span> <span class="o">*</span> <span class="n">vmc</span> <span class="o">=</span> <span class="n">RTX_MACHINE_GET_CLASS</span><span class="p">(</span><span class="n">machine</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-4"><code data-line-number="  4"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-4"></a>  <span class="n">VEDBoardInfo</span> <span class="o">*</span> <span class="n">daughterboard</span> <span class="o">=</span> <span class="n">vmc</span> <span class="o">-&gt;</span> <span class="n">daughterboard</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-5"><code data-line-number="  5"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-5"></a>  <span class="n">DeviceState</span> <span class="o">*</span> <span class="n">dev</span><span class="p">,</span> <span class="o">*</span> <span class="n">sysctl</span><span class="p">,</span> <span class="o">*</span> <span class="n">pl041</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-6"><code data-line-number="  6"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-6"></a>  <span class="n">qemu_irq</span> <span class="n">pic</span><span class="p">[</span><span class="mi">64</span><span class="p">];</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-7"><code data-line-number="  7"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-7"></a>  <span class="kt">uint32_t</span> <span class="n">sys_id</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-8"><code data-line-number="  8"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-8"></a>  <span class="n">I2CBus</span> <span class="o">*</span> <span class="n">i2c</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-9"><code data-line-number="  9"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-9"></a>  <span class="n">ram_addr_t</span> <span class="n">sram_size</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-10"><code data-line-number=" 10"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-10"></a>  <span class="n">MemoryRegion</span> <span class="o">*</span> <span class="n">sysmem</span> <span class="o">=</span> <span class="n">get_system_memory</span><span class="p">();</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-11"><code data-line-number=" 11"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-11"></a>  <span class="n">MemoryRegion</span> <span class="o">*</span> <span class="n">sram</span> <span class="o">=</span> <span class="n">g_new</span><span class="p">(</span><span class="n">MemoryRegion</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-12"><code data-line-number=" 12"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-12"></a>  <span class="k">const</span> <span class="n">hwaddr</span> <span class="o">*</span> <span class="n">map</span> <span class="o">=</span> <span class="n">daughterboard</span> <span class="o">-&gt;</span> <span class="n">motherboard_map</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-13"><code data-line-number=" 13"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-13"></a>  <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-14"><code data-line-number=" 14"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-14"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-15"><code data-line-number=" 15"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-15"></a>  <span class="n">daughterboard</span> <span class="o">-&gt;</span> <span class="n">init</span><span class="p">(</span><span class="n">vms</span><span class="p">,</span> <span class="n">machine</span> <span class="o">-&gt;</span> <span class="n">ram_size</span><span class="p">,</span> <span class="n">machine</span> <span class="o">-&gt;</span> <span class="n">cpu_type</span><span class="p">,</span> <span class="n">pic</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-16"><code data-line-number=" 16"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-16"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-17"><code data-line-number=" 17"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-17"></a>  <span class="cm">/*</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-18"><code data-line-number=" 18"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-18"></a><span class="cm">   * If a bios file was provided, attempt to map it into memory</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-19"><code data-line-number=" 19"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-19"></a><span class="cm">   */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-20"><code data-line-number=" 20"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-20"></a>  <span class="k">if</span> <span class="p">(</span><span class="n">bios_name</span><span class="p">)</span> <span class="p">{</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-21"><code data-line-number=" 21"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-21"></a>    <span class="kt">char</span> <span class="o">*</span> <span class="n">fn</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-22"><code data-line-number=" 22"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-22"></a>    <span class="kt">int</span> <span class="n">image_size</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-23"><code data-line-number=" 23"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-23"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-24"><code data-line-number=" 24"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-24"></a>    <span class="k">if</span> <span class="p">(</span><span class="n">drive_get</span><span class="p">(</span><span class="n">IF_PFLASH</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="p">{</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-25"><code data-line-number=" 25"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-25"></a>      <span class="n">error_report</span><span class="p">(</span><span class="s">"The contents of the first flash device may be "</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-26"><code data-line-number=" 26"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-26"></a>        <span class="s">"specified with -bios or with -drive if=pflash... "</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-27"><code data-line-number=" 27"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-27"></a>        <span class="s">"but you cannot use both options at once"</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-28"><code data-line-number=" 28"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-28"></a>      <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-29"><code data-line-number=" 29"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-29"></a>    <span class="p">}</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-30"><code data-line-number=" 30"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-30"></a>    <span class="n">fn</span> <span class="o">=</span> <span class="n">qemu_find_file</span><span class="p">(</span><span class="n">QEMU_FILE_TYPE_BIOS</span><span class="p">,</span> <span class="n">bios_name</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-31"><code data-line-number=" 31"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-31"></a>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">fn</span><span class="p">)</span> <span class="p">{</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-32"><code data-line-number=" 32"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-32"></a>      <span class="n">error_report</span><span class="p">(</span><span class="s">"Could not find ROM image '%s'"</span><span class="p">,</span> <span class="n">bios_name</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-33"><code data-line-number=" 33"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-33"></a>      <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-34"><code data-line-number=" 34"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-34"></a>    <span class="p">}</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-35"><code data-line-number=" 35"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-35"></a>    <span class="n">image_size</span> <span class="o">=</span> <span class="n">load_image_targphys</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">map</span><span class="p">[</span><span class="n">VE_NORFLASH0</span><span class="p">],</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-36"><code data-line-number=" 36"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-36"></a>      <span class="n">RTX_FLASH_SIZE</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-37"><code data-line-number=" 37"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-37"></a>    <span class="n">g_free</span><span class="p">(</span><span class="n">fn</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-38"><code data-line-number=" 38"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-38"></a>    <span class="k">if</span> <span class="p">(</span><span class="n">image_size</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-39"><code data-line-number=" 39"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-39"></a>      <span class="n">error_report</span><span class="p">(</span><span class="s">"Could not load ROM image '%s'"</span><span class="p">,</span> <span class="n">bios_name</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-40"><code data-line-number=" 40"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-40"></a>      <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-41"><code data-line-number=" 41"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-41"></a>    <span class="p">}</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-42"><code data-line-number=" 42"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-42"></a>  <span class="p">}</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-43"><code data-line-number=" 43"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-43"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-44"><code data-line-number=" 44"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-44"></a>  <span class="cm">/* Motherboard peripherals: the wiring is the same but the</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-45"><code data-line-number=" 45"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-45"></a><span class="cm">   * addresses vary between the legacy and A-Series memory maps.</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-46"><code data-line-number=" 46"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-46"></a><span class="cm">   */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-47"><code data-line-number=" 47"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-47"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-48"><code data-line-number=" 48"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-48"></a>  <span class="n">sys_id</span> <span class="o">=</span> <span class="mh">0x1190f500</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-49"><code data-line-number=" 49"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-49"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-50"><code data-line-number=" 50"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-50"></a>  <span class="n">sysctl</span> <span class="o">=</span> <span class="n">qdev_new</span><span class="p">(</span><span class="s">"realview_sysctl"</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-51"><code data-line-number=" 51"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-51"></a>  <span class="n">qdev_prop_set_uint32</span><span class="p">(</span><span class="n">sysctl</span><span class="p">,</span> <span class="s">"sys_id"</span><span class="p">,</span> <span class="n">sys_id</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-52"><code data-line-number=" 52"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-52"></a>  <span class="n">qdev_prop_set_uint32</span><span class="p">(</span><span class="n">sysctl</span><span class="p">,</span> <span class="s">"proc_id"</span><span class="p">,</span> <span class="n">daughterboard</span> <span class="o">-&gt;</span> <span class="n">proc_id</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-53"><code data-line-number=" 53"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-53"></a>  <span class="n">qdev_prop_set_uint32</span><span class="p">(</span><span class="n">sysctl</span><span class="p">,</span> <span class="s">"len-db-voltage"</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-54"><code data-line-number=" 54"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-54"></a>  <span class="n">daughterboard</span> <span class="o">-&gt;</span> <span class="n">num_voltage_sensors</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-55"><code data-line-number=" 55"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-55"></a>  <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">daughterboard</span> <span class="o">-&gt;</span> <span class="n">num_voltage_sensors</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-56"><code data-line-number=" 56"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-56"></a>    <span class="kt">char</span> <span class="o">*</span> <span class="n">propname</span> <span class="o">=</span> <span class="n">g_strdup_printf</span><span class="p">(</span><span class="s">"db-voltage[%d]"</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-57"><code data-line-number=" 57"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-57"></a>    <span class="n">qdev_prop_set_uint32</span><span class="p">(</span><span class="n">sysctl</span><span class="p">,</span> <span class="n">propname</span><span class="p">,</span> <span class="n">daughterboard</span> <span class="o">-&gt;</span> <span class="n">voltages</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-58"><code data-line-number=" 58"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-58"></a>    <span class="n">g_free</span><span class="p">(</span><span class="n">propname</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-59"><code data-line-number=" 59"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-59"></a>  <span class="p">}</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-60"><code data-line-number=" 60"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-60"></a>  <span class="n">qdev_prop_set_uint32</span><span class="p">(</span><span class="n">sysctl</span><span class="p">,</span> <span class="s">"len-db-clock"</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-61"><code data-line-number=" 61"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-61"></a>  <span class="n">daughterboard</span> <span class="o">-&gt;</span> <span class="n">num_clocks</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-62"><code data-line-number=" 62"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-62"></a>  <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">daughterboard</span> <span class="o">-&gt;</span> <span class="n">num_clocks</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-63"><code data-line-number=" 63"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-63"></a>    <span class="kt">char</span> <span class="o">*</span> <span class="n">propname</span> <span class="o">=</span> <span class="n">g_strdup_printf</span><span class="p">(</span><span class="s">"db-clock[%d]"</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-64"><code data-line-number=" 64"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-64"></a>    <span class="n">qdev_prop_set_uint32</span><span class="p">(</span><span class="n">sysctl</span><span class="p">,</span> <span class="n">propname</span><span class="p">,</span> <span class="n">daughterboard</span> <span class="o">-&gt;</span> <span class="n">clocks</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-65"><code data-line-number=" 65"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-65"></a>    <span class="n">g_free</span><span class="p">(</span><span class="n">propname</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-66"><code data-line-number=" 66"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-66"></a>  <span class="p">}</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-67"><code data-line-number=" 67"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-67"></a>  <span class="n">sysbus_realize_and_unref</span><span class="p">(</span><span class="n">SYS_BUS_DEVICE</span><span class="p">(</span><span class="n">sysctl</span><span class="p">),</span> <span class="o">&amp;</span> <span class="n">error_fatal</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-68"><code data-line-number=" 68"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-68"></a>  <span class="n">sysbus_mmio_map</span><span class="p">(</span><span class="n">SYS_BUS_DEVICE</span><span class="p">(</span><span class="n">sysctl</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">map</span><span class="p">[</span><span class="n">VE_SYSREGS</span><span class="p">]);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-69"><code data-line-number=" 69"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-69"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-70"><code data-line-number=" 70"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-70"></a>  <span class="cm">/* VE_SP810: not modelled */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-71"><code data-line-number=" 71"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-71"></a>  <span class="cm">/* VE_SERIALPCI: not modelled */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-72"><code data-line-number=" 72"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-72"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-73"><code data-line-number=" 73"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-73"></a>  <span class="n">pl041</span> <span class="o">=</span> <span class="n">qdev_new</span><span class="p">(</span><span class="s">"pl041"</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-74"><code data-line-number=" 74"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-74"></a>  <span class="n">qdev_prop_set_uint32</span><span class="p">(</span><span class="n">pl041</span><span class="p">,</span> <span class="s">"nc_fifo_depth"</span><span class="p">,</span> <span class="mi">512</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-75"><code data-line-number=" 75"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-75"></a>  <span class="n">sysbus_realize_and_unref</span><span class="p">(</span><span class="n">SYS_BUS_DEVICE</span><span class="p">(</span><span class="n">pl041</span><span class="p">),</span> <span class="o">&amp;</span> <span class="n">error_fatal</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-76"><code data-line-number=" 76"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-76"></a>  <span class="n">sysbus_mmio_map</span><span class="p">(</span><span class="n">SYS_BUS_DEVICE</span><span class="p">(</span><span class="n">pl041</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">map</span><span class="p">[</span><span class="n">VE_PL041</span><span class="p">]);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-77"><code data-line-number=" 77"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-77"></a>  <span class="n">sysbus_connect_irq</span><span class="p">(</span><span class="n">SYS_BUS_DEVICE</span><span class="p">(</span><span class="n">pl041</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">pic</span><span class="p">[</span><span class="mi">11</span><span class="p">]);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-78"><code data-line-number=" 78"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-78"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-79"><code data-line-number=" 79"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-79"></a>  <span class="n">pl011_create</span><span class="p">(</span><span class="n">map</span><span class="p">[</span><span class="n">VE_UART0</span><span class="p">],</span> <span class="n">pic</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">serial_hd</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-80"><code data-line-number=" 80"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-80"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-81"><code data-line-number=" 81"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-81"></a>  <span class="n">sysbus_create_simple</span><span class="p">(</span><span class="s">"sp804"</span><span class="p">,</span> <span class="n">map</span><span class="p">[</span><span class="n">VE_TIMER01</span><span class="p">],</span> <span class="n">pic</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-82"><code data-line-number=" 82"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-82"></a>  <span class="n">sysbus_create_simple</span><span class="p">(</span><span class="s">"sp804"</span><span class="p">,</span> <span class="n">map</span><span class="p">[</span><span class="n">VE_TIMER23</span><span class="p">],</span> <span class="n">pic</span><span class="p">[</span><span class="mi">3</span><span class="p">]);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-83"><code data-line-number=" 83"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-83"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-84"><code data-line-number=" 84"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-84"></a>  <span class="n">dev</span> <span class="o">=</span> <span class="n">sysbus_create_simple</span><span class="p">(</span><span class="n">TYPE_VERSATILE_I2C</span><span class="p">,</span> <span class="n">map</span><span class="p">[</span><span class="n">VE_SERIALDVI</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-85"><code data-line-number=" 85"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-85"></a>  <span class="n">i2c</span> <span class="o">=</span> <span class="p">(</span><span class="n">I2CBus</span> <span class="o">*</span> <span class="p">)</span> <span class="n">qdev_get_child_bus</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="s">"i2c"</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-86"><code data-line-number=" 86"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-86"></a>  <span class="n">i2c_slave_create_simple</span><span class="p">(</span><span class="n">i2c</span><span class="p">,</span> <span class="s">"sii9022"</span><span class="p">,</span> <span class="mh">0x39</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-87"><code data-line-number=" 87"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-87"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-88"><code data-line-number=" 88"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-88"></a>  <span class="n">sysbus_create_simple</span><span class="p">(</span><span class="s">"pl031"</span><span class="p">,</span> <span class="n">map</span><span class="p">[</span><span class="n">VE_RTC</span><span class="p">],</span> <span class="n">pic</span><span class="p">[</span><span class="mi">4</span><span class="p">]);</span> <span class="cm">/* RTC */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-89"><code data-line-number=" 89"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-89"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-90"><code data-line-number=" 90"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-90"></a>  <span class="cm">/* VE_COMPACTFLASH: not modelled */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-91"><code data-line-number=" 91"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-91"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-92"><code data-line-number=" 92"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-92"></a>  <span class="n">sram_size</span> <span class="o">=</span> <span class="mh">0x200000</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-93"><code data-line-number=" 93"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-93"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-94"><code data-line-number=" 94"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-94"></a>  <span class="n">memory_region_init_ram</span><span class="p">(</span><span class="n">sram</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="s">"rtx_soc.sram"</span><span class="p">,</span> <span class="n">sram_size</span><span class="p">,</span> <span class="o">&amp;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-95"><code data-line-number=" 95"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-95"></a>    <span class="n">error_fatal</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-96"><code data-line-number=" 96"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-96"></a>  <span class="n">memory_region_add_subregion</span><span class="p">(</span><span class="n">sysmem</span><span class="p">,</span> <span class="n">map</span><span class="p">[</span><span class="n">VE_SRAM</span><span class="p">],</span> <span class="n">sram</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-97"><code data-line-number=" 97"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-97"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-98"><code data-line-number=" 98"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-98"></a>  <span class="cm">/* VE_USB: not modelled */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-99"><code data-line-number=" 99"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-99"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-100"><code data-line-number="100"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-100"></a>  <span class="cm">/* VE_DAPROM: not modelled */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-101"><code data-line-number="101"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-101"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-102"><code data-line-number="102"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-102"></a>  <span class="cm">/* Create mmio transports, so the user can create virtio backends</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-103"><code data-line-number="103"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-103"></a><span class="cm">   * (which will be automatically plugged in to the transports). If</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-104"><code data-line-number="104"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-104"></a><span class="cm">   * no backend is created the transport will just sit harmlessly idle.</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-105"><code data-line-number="105"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-105"></a><span class="cm">   */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-106"><code data-line-number="106"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-106"></a>  <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NUM_VIRTIO_TRANSPORTS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-107"><code data-line-number="107"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-107"></a>    <span class="n">sysbus_create_simple</span><span class="p">(</span><span class="s">"virtio-mmio"</span><span class="p">,</span> <span class="n">map</span><span class="p">[</span><span class="n">VE_VIRTIO</span><span class="p">]</span> <span class="o">+</span> <span class="mh">0x200</span> <span class="o">*</span> <span class="n">i</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-108"><code data-line-number="108"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-108"></a>      <span class="n">pic</span><span class="p">[</span><span class="mi">40</span> <span class="o">+</span> <span class="n">i</span><span class="p">]);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-109"><code data-line-number="109"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-109"></a>  <span class="p">}</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-110"><code data-line-number="110"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-110"></a>  <span class="n">daughterboard</span> <span class="o">-&gt;</span> <span class="n">bootinfo</span><span class="p">.</span><span class="n">ram_size</span> <span class="o">=</span> <span class="n">machine</span> <span class="o">-&gt;</span> <span class="n">ram_size</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-111"><code data-line-number="111"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-111"></a>  <span class="n">daughterboard</span> <span class="o">-&gt;</span> <span class="n">bootinfo</span><span class="p">.</span><span class="n">nb_cpus</span> <span class="o">=</span> <span class="n">machine</span> <span class="o">-&gt;</span> <span class="n">smp</span><span class="p">.</span><span class="n">cpus</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-112"><code data-line-number="112"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-112"></a>  <span class="n">daughterboard</span> <span class="o">-&gt;</span> <span class="n">bootinfo</span><span class="p">.</span><span class="n">board_id</span> <span class="o">=</span> <span class="n">RTX_BOARD_ID</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-113"><code data-line-number="113"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-113"></a>  <span class="n">daughterboard</span> <span class="o">-&gt;</span> <span class="n">bootinfo</span><span class="p">.</span><span class="n">loader_start</span> <span class="o">=</span> <span class="n">daughterboard</span> <span class="o">-&gt;</span> <span class="n">loader_start</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-114"><code data-line-number="114"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-114"></a>  <span class="n">daughterboard</span> <span class="o">-&gt;</span> <span class="n">bootinfo</span><span class="p">.</span><span class="n">smp_loader_start</span> <span class="o">=</span> <span class="n">map</span><span class="p">[</span><span class="n">VE_SRAM</span><span class="p">];</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-115"><code data-line-number="115"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-115"></a>  <span class="n">daughterboard</span> <span class="o">-&gt;</span> <span class="n">bootinfo</span><span class="p">.</span><span class="n">smp_bootreg_addr</span> <span class="o">=</span> <span class="n">map</span><span class="p">[</span><span class="n">VE_SYSREGS</span><span class="p">]</span> <span class="o">+</span> <span class="mh">0x30</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-116"><code data-line-number="116"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-116"></a>  <span class="n">daughterboard</span> <span class="o">-&gt;</span> <span class="n">bootinfo</span><span class="p">.</span><span class="n">gic_cpu_if_addr</span> <span class="o">=</span> <span class="n">daughterboard</span> <span class="o">-&gt;</span> <span class="n">gic_cpu_if_addr</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-117"><code data-line-number="117"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-117"></a>  <span class="n">daughterboard</span> <span class="o">-&gt;</span> <span class="n">bootinfo</span><span class="p">.</span><span class="n">modify_dtb</span> <span class="o">=</span> <span class="n">rtx_soc_modify_dtb</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-118"><code data-line-number="118"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-118"></a>  <span class="cm">/* When booting Linux we should be in secure state if the CPU has one. */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-119"><code data-line-number="119"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-119"></a>  <span class="n">daughterboard</span> <span class="o">-&gt;</span> <span class="n">bootinfo</span><span class="p">.</span><span class="n">secure_boot</span> <span class="o">=</span> <span class="n">vms</span> <span class="o">-&gt;</span> <span class="n">secure</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-120"><code data-line-number="120"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-120"></a>  <span class="n">arm_load_kernel</span><span class="p">(</span><span class="n">ARM_CPU</span><span class="p">(</span><span class="n">first_cpu</span><span class="p">),</span> <span class="n">machine</span><span class="p">,</span> <span class="o">&amp;</span> <span class="n">daughterboard</span> <span class="o">-&gt;</span> <span class="n">bootinfo</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-121"><code data-line-number="121"></code></a></td>
+<td class="code"><code><a name="rest_code_7e1d6a8f5a4e40719e0e5a39ee0bef8b-121"></a><span class="p">}</span>
+</code></td>
+</tr>
+</table></div>
+</blockquote>
+<ul class="simple">
+<li><p>Configure and build QEMU at top directory to populate the build directory by <em>cmake</em>.</p></li>
+</ul>
+<blockquote>
+<pre class="code console"><a name="rest_code_546d50b70af24a6f9e5e045b59d220ad-1"></a><span class="go">qemu-5.2.0/$./configure --target-list=arm-softmmu,arm-linux-user,aarch64-softmmu,aarch64-linux-user --prefix=/opt/qemu-5.2.0/</span>
+<a name="rest_code_546d50b70af24a6f9e5e045b59d220ad-2"></a><span class="go">qemu-5.2.0/$make &amp;&amp; make install</span>
+</pre>
+</blockquote>
+<p>More elements can be added as needed.*make install* to install the s/w binaries into the directory in <em>/opt/qemu-5.2.0</em>. QEMU binary can also be run within <em>build/</em> directory. The successfully created platform would show up on the supported list of ARM machines (line 8),</p>
+<blockquote>
+<div class="code"><table class="codetable">
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_540a3e84564149d0970b2d282dfaf9d7-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_540a3e84564149d0970b2d282dfaf9d7-1"></a><span class="go">qemu-5.2.0$ build/qemu-system-aarch64 -M help</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_540a3e84564149d0970b2d282dfaf9d7-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_540a3e84564149d0970b2d282dfaf9d7-2"></a><span class="go">Supported machines are:</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_540a3e84564149d0970b2d282dfaf9d7-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_540a3e84564149d0970b2d282dfaf9d7-3"></a><span class="go">akita                Sharp SL-C1000 (Akita) PDA (PXA270)</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_540a3e84564149d0970b2d282dfaf9d7-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_540a3e84564149d0970b2d282dfaf9d7-4"></a><span class="go">ast2500-evb          Aspeed AST2500 EVB (ARM1176)</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_540a3e84564149d0970b2d282dfaf9d7-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_540a3e84564149d0970b2d282dfaf9d7-5"></a><span class="go">..</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_540a3e84564149d0970b2d282dfaf9d7-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_540a3e84564149d0970b2d282dfaf9d7-6"></a><span class="go">realview-pbx-a9      ARM RealView Platform Baseboard Explore for Cortex-A9</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_540a3e84564149d0970b2d282dfaf9d7-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_540a3e84564149d0970b2d282dfaf9d7-7"></a><span class="go">romulus-bmc          OpenPOWER Romulus BMC (ARM1176)</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_540a3e84564149d0970b2d282dfaf9d7-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_540a3e84564149d0970b2d282dfaf9d7-8"></a><span class="go">rtx-r5               ARM Real Time Experiment (RTX) Cortex-r5f</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_540a3e84564149d0970b2d282dfaf9d7-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_540a3e84564149d0970b2d282dfaf9d7-9"></a><span class="go">sabrelite            Freescale i.MX6 Quad SABRE Lite Board (Cortex A9)</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_540a3e84564149d0970b2d282dfaf9d7-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_540a3e84564149d0970b2d282dfaf9d7-10"></a><span class="go">..</span>
+</code></td>
+</tr>
+</table></div>
+</blockquote>
+</div>
+</div>
+<div class="section" id="testing">
+<h2>Testing</h2>
+<p>Once the built is complete and installed, I can use it to emulate the hardware platform to test my <em>FreeRTOS</em> port
+for this RTX SoC. The <em>freertos-nga</em> is the ELF binary of the ported RTOS for this platform. Porting the <em>FreeRTOS</em> will be
+in another post of this two parts series.</p>
+<pre class="code console"><a name="rest_code_8e7dc9a2511a49c8bf675754f88d0694-1"></a><span class="go">qemu-system-aarch64 -M rtx-r5 -m 2m -nographic -no-reboot -kernel build/freertos-nga</span>
+<a name="rest_code_8e7dc9a2511a49c8bf675754f88d0694-2"></a><span class="go">machine cpu_type cortex-r5f-arm-cpu</span>
+<a name="rest_code_8e7dc9a2511a49c8bf675754f88d0694-3"></a><span class="go">UART base 0x58000000 created for serial0.</span>
+<a name="rest_code_8e7dc9a2511a49c8bf675754f88d0694-4"></a><span class="go">main: Entering main(265)</span>
+<a name="rest_code_8e7dc9a2511a49c8bf675754f88d0694-5"></a><span class="go">init_console, line 222</span>
+<a name="rest_code_8e7dc9a2511a49c8bf675754f88d0694-6"></a><span class="go">current state: standby, last_state initialize</span>
+<a name="rest_code_8e7dc9a2511a49c8bf675754f88d0694-7"></a><span class="go">Entering app_main(33686018), 3.141590</span>
+<a name="rest_code_8e7dc9a2511a49c8bf675754f88d0694-8"></a><span class="go">nga&gt; tasks</span>
+<a name="rest_code_8e7dc9a2511a49c8bf675754f88d0694-9"></a><span class="go">Task Name       Status  Prio    HWM     Task Number</span>
+<a name="rest_code_8e7dc9a2511a49c8bf675754f88d0694-10"></a><span class="go">app_main        X       1       323     3</span>
+<a name="rest_code_8e7dc9a2511a49c8bf675754f88d0694-11"></a><span class="go">IDLE            R       0       478     6</span>
+<a name="rest_code_8e7dc9a2511a49c8bf675754f88d0694-12"></a><span class="go">uart_rx_poll    B       1       471     4</span>
+<a name="rest_code_8e7dc9a2511a49c8bf675754f88d0694-13"></a><span class="go">Tmr Svc         B       4       451     7</span>
+<a name="rest_code_8e7dc9a2511a49c8bf675754f88d0694-14"></a><span class="go">TX              B       2       472     2</span>
+<a name="rest_code_8e7dc9a2511a49c8bf675754f88d0694-15"></a><span class="go">Rx              B       1       468     1</span>
+<a name="rest_code_8e7dc9a2511a49c8bf675754f88d0694-16"></a><span class="go">regi_state_mon  B       2       335     5</span>
+<a name="rest_code_8e7dc9a2511a49c8bf675754f88d0694-17"></a>
+<a name="rest_code_8e7dc9a2511a49c8bf675754f88d0694-18"></a><span class="go">Timer ulCount   : 62</span>
+<a name="rest_code_8e7dc9a2511a49c8bf675754f88d0694-19"></a><span class="go">nga&gt;</span>
+</pre>
+<p>QEMU can be use along with GDB such as <em>arm-eabi-gdb</em> to debug the OS port. The <em>-s -S</em> options use for QEMU is to single step and connect
+to GDB, for example,</p>
+<pre class="code console"><a name="rest_code_23a1fed1cdb241d98afdef5086e28ff6-1"></a><span class="gp">$ </span>qemu-system-aarch64 -M rtx-r5 -m 2m -nographic -no-reboot -kernel build/freertos-nga -s -S
+<a name="rest_code_23a1fed1cdb241d98afdef5086e28ff6-2"></a><span class="go">machine cpu_type cortex-r5f-arm-cpu</span>
+<a name="rest_code_23a1fed1cdb241d98afdef5086e28ff6-3"></a><span class="go">UART base 0x58000000 created for serial0.</span>
+</pre>
+<p>At this stage, QEMU is waiting for GDB connection. To connect, open another shell and start GDB,</p>
+<pre class="code console"><a name="rest_code_bc180ad4dca1478c88c18026e9ee138d-1"></a><span class="gp">$ </span>arm-eabi-gdb build/freertos-nga
+<a name="rest_code_bc180ad4dca1478c88c18026e9ee138d-2"></a><span class="go">GNU gdb (GDB) 9.2</span>
+<a name="rest_code_bc180ad4dca1478c88c18026e9ee138d-3"></a><span class="go">Copyright (C) 2020 Free Software Foundation, Inc.</span>
+<a name="rest_code_bc180ad4dca1478c88c18026e9ee138d-4"></a><span class="go">License GPLv3+: GNU GPL version 3 or later &lt;http://gnu.org/licenses/gpl.html&gt;</span>
+<a name="rest_code_bc180ad4dca1478c88c18026e9ee138d-5"></a><span class="go">This is free software: you are free to change and redistribute it.</span>
+<a name="rest_code_bc180ad4dca1478c88c18026e9ee138d-6"></a><span class="go">There is NO WARRANTY, to the extent permitted by law.</span>
+<a name="rest_code_bc180ad4dca1478c88c18026e9ee138d-7"></a><span class="go">Type "show copying" and "show warranty" for details.</span>
+<a name="rest_code_bc180ad4dca1478c88c18026e9ee138d-8"></a><span class="go">This GDB was configured as "--host=x86_64-pc-linux-gnu --target=arm-eabi".</span>
+<a name="rest_code_bc180ad4dca1478c88c18026e9ee138d-9"></a><span class="go">Type "show configuration" for configuration details.</span>
+<a name="rest_code_bc180ad4dca1478c88c18026e9ee138d-10"></a><span class="go">For bug reporting instructions, please see:</span>
+<a name="rest_code_bc180ad4dca1478c88c18026e9ee138d-11"></a><span class="go">&lt;http://www.gnu.org/software/gdb/bugs/&gt;.</span>
+<a name="rest_code_bc180ad4dca1478c88c18026e9ee138d-12"></a><span class="go">Find the GDB manual and other documentation resources online at:</span>
+<a name="rest_code_bc180ad4dca1478c88c18026e9ee138d-13"></a><span class="go">    &lt;http://www.gnu.org/software/gdb/documentation/&gt;.</span>
+<a name="rest_code_bc180ad4dca1478c88c18026e9ee138d-14"></a>
+<a name="rest_code_bc180ad4dca1478c88c18026e9ee138d-15"></a><span class="go">For help, type "help".</span>
+<a name="rest_code_bc180ad4dca1478c88c18026e9ee138d-16"></a><span class="go">Type "apropos word" to search for commands related to "word"...</span>
+<a name="rest_code_bc180ad4dca1478c88c18026e9ee138d-17"></a><span class="go">Reading symbols from build/freertos-nga...</span>
+<a name="rest_code_bc180ad4dca1478c88c18026e9ee138d-18"></a><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">target remote :1234</span>
+<a name="rest_code_bc180ad4dca1478c88c18026e9ee138d-19"></a><span class="go">Remote debugging using :1234</span>
+<a name="rest_code_bc180ad4dca1478c88c18026e9ee138d-20"></a><span class="go">_freertos_vector_table () at /home/ssop/NGA/freertos-nga/platform/FreeRTOS_asm_vectors.S:82</span>
+<a name="rest_code_bc180ad4dca1478c88c18026e9ee138d-21"></a><span class="go">82              B         _boot</span>
+<a name="rest_code_bc180ad4dca1478c88c18026e9ee138d-22"></a><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">b main</span>
+<a name="rest_code_bc180ad4dca1478c88c18026e9ee138d-23"></a><span class="go">Breakpoint 1 at 0xd8c: file /home/ssop/NGA/freertos-nga/app/main.c, line 246.</span>
+<a name="rest_code_bc180ad4dca1478c88c18026e9ee138d-24"></a><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">c</span>
+<a name="rest_code_bc180ad4dca1478c88c18026e9ee138d-25"></a><span class="go">Continuing.</span>
+<a name="rest_code_bc180ad4dca1478c88c18026e9ee138d-26"></a>
+<a name="rest_code_bc180ad4dca1478c88c18026e9ee138d-27"></a><span class="go">Breakpoint 1, main () at /home/ssop/NGA/freertos-nga/app/main.c:246</span>
+<a name="rest_code_bc180ad4dca1478c88c18026e9ee138d-28"></a><span class="go">246             xQueue = xQueueCreate( mainQUEUE_LENGTH, sizeof( uint32_t ) );</span>
+<a name="rest_code_bc180ad4dca1478c88c18026e9ee138d-29"></a><span class="gp gp-VirtualEnv">(gdb)</span>
+</pre>
+</div>
+<div class="section" id="conclusion">
+<h2>Conclusion</h2>
+<p>Without hardware available, I can use QEMU to emulate a virtual hardware with almost everything, CPU and peripherals that I need to get going for software development. For a faster Linux host, the clock cycles for slower ARM core frequency ~20MHZ -40MHZ is probably very close to the physical hardware although I did not take any measurement. QEMU is a powerful software tool and more than adequate for majority of software work such as board bring up and low-level firmware development. Its MMU support is very machine accurate. It can emulate PC to run the full blown OS such as Windows or Linux without problem.</p>
+</div>
+<div class="section" id="citations">
+<h2>Citations</h2>
+<dl class="footnote brackets">
+<dt class="label" id="id1"><span class="brackets">1</span></dt>
+<dd>
+<p><a class="reference external" href="https://qemu.org">https://qemu.org</a> QEMU portal</p>
+</dd>
+<dt class="label" id="id2"><span class="brackets">2</span></dt>
+<dd>
+<p>ARM Ltd, for all ARM Architecture.</p>
+</dd>
+</dl>
+</div>
+</div>
+    </div>
+    
+
+</article>
+</div>
+        <!--End of body content-->
+
+        <footer id="footer">
+            Contents © 2021         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+        </footer>
+</div>
+</div>
+
+
+            <script src="../../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+    moment.locale("en");
+    fancydates(0, "YYYY-MM-DD HH:mm");
+    </script><!-- end fancy dates -->
+</body>
+</html>

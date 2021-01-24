@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,7 +7,7 @@
 <link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
 <meta name="theme-color" content="#5670d4">
 <meta name="generator" content="Nikola (getnikola.com)">
-<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../../rss.xml">
 <link rel="canonical" href="http://souktha.github.io/software/tty2comport/">
 <!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Soukthavy">
 <link rel="prev" href="../../hardware/servo/" title="servo driver" type="text/html">
@@ -117,7 +117,7 @@ application then open up the ttyUSB0 and exchange data with STDIN_FILENO which i
 my session between the two hosts remain secured by ssh.
 It is tranparent for the entire session. Once I want to quit, I hit 'esc q', then logout from ssh session.
 The program is not complicate and use only Unix standard library and does not require any library package outside
-of what is readily available to Unix <a class="footnote-reference" href="#id2" id="id1">[1]</a>. Only one source file with less than 300 lines of code to do this !
+of what is readily available to Unix <a class="footnote-reference brackets" href="#id2" id="id1">1</a>. Only one source file with less than 300 lines of code to do this !
 <a class="reference external" href="http://github.com/souktha/tty2comport">http://github.com/souktha/tty2comport</a></p>
 </div>
 <div class="section" id="setup">
@@ -130,9 +130,9 @@ feature. This is where my home PC with beaglebone black connected to its ttyUSB0
 service for the new feature to take effect.</p>
 <p>2) Having this environment ready to be picked up in by login profile. For my case it is ".bash_profile", so I
 edit to add</p>
-<pre class="code bash"><a name="rest_code_79a509336b544fb789b039d0557253dd-1"></a><span class="k">case</span> <span class="nv">$DIRECTPORT</span> in
-<a name="rest_code_79a509336b544fb789b039d0557253dd-2"></a>        <span class="s2">"USB0"</span><span class="o">)</span> /usr/bin/tty2comport <span class="nv">$DIRECTPORT</span><span class="p">;;</span>
-<a name="rest_code_79a509336b544fb789b039d0557253dd-3"></a><span class="k">esac</span>
+<pre class="code bash"><a name="rest_code_0ec3ca6a159d437abbebadbfa42da4a4-1"></a><span class="k">case</span> <span class="nv">$DIRECTPORT</span> <span class="k">in</span>
+<a name="rest_code_0ec3ca6a159d437abbebadbfa42da4a4-2"></a>        <span class="s2">"USB0"</span><span class="o">)</span> /usr/bin/tty2comport <span class="nv">$DIRECTPORT</span><span class="p">;;</span>
+<a name="rest_code_0ec3ca6a159d437abbebadbfa42da4a4-3"></a><span class="k">esac</span>
 </pre>
 <p>I could add more option such as "S0" for ttyS0. This time I use ttyUSB0 for my serial console connection. Once
 the ssh session is established, the DIRECTPORT enviroment will be passed to the bash profile. With this information,
@@ -142,14 +142,14 @@ the tty2comport is launched.</p>
 <h3>Remote host</h3>
 <p>On the remote host, I need to make sure I have the DIRECTPORT environment variable set. If not yet set, I
 would do,</p>
-<pre class="code bash"><a name="rest_code_cd78eb1a2dd646b4ba42ee841b5186a6-1"></a><span class="nv">$set</span> <span class="nv">DIRECTPORT</span><span class="o">=</span>USB0
+<pre class="code bash"><a name="rest_code_42d16572d8f94f6696c58295ed057b7b-1"></a><span class="nv">$set</span> <span class="nv">DIRECTPORT</span><span class="o">=</span>USB0
 </pre>
 <p>Once this is set, I can do ssh to my remote</p>
 </div>
 <div class="section" id="connecting-via-ssh">
 <h3>Connecting via ssh</h3>
 <p>After the above settings is done, I should be able to connect,</p>
-<pre class="code bash"><a name="rest_code_566daaa2d7b74f0f9a1b1a3f4429d675-1"></a><span class="nv">$ssh</span> -o <span class="nv">SendEnv</span><span class="o">=</span>DIRECTPORT myusername@myhost
+<pre class="code bash"><a name="rest_code_4b8cb668222149c6b4e662a0ac08cc69-1"></a><span class="nv">$ssh</span> -o <span class="nv">SendEnv</span><span class="o">=</span>DIRECTPORT myusername@myhost
 </pre>
 <div class="figure">
 <img alt="../../images/misc/snapshot-tty2.png" src="../../images/misc/snapshot-tty2.png"><p class="caption">Accessing ttyUSB0 connected device (bblk's u-boot shell)</p>
@@ -157,16 +157,12 @@ would do,</p>
 </div>
 <div class="section" id="citations">
 <h3>Citations</h3>
-<table class="docutils footnote" frame="void" id="id2" rules="none">
-<colgroup>
-<col class="label">
-<col>
-</colgroup>
-<tbody valign="top"><tr>
-<td class="label"><a class="fn-backref" href="#id1">[1]</a></td>
-<td>Advanced Programming in the UNIX Environment, W. Richard Stevens, 1992, Addison Wesley.</td>
-</tr></tbody>
-</table>
+<dl class="footnote brackets">
+<dt class="label" id="id2"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd>
+<p>Advanced Programming in the UNIX Environment, W. Richard Stevens, 1992, Addison Wesley.</p>
+</dd>
+</dl>
 </div>
 </div>
 </div>
@@ -178,7 +174,7 @@ would do,</p>
         <!--End of body content-->
 
         <footer id="footer">
-            Contents © 2018         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            Contents © 2021         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
             
         </footer>
 </div>

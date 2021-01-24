@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="description" content="Cyclic codes with min polyn 1+x+x**4">
@@ -8,7 +8,7 @@
 <link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
 <meta name="theme-color" content="#5670d4">
 <meta name="generator" content="Nikola (getnikola.com)">
-<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../../rss.xml">
 <link rel="canonical" href="http://souktha.github.io/misc/cyclic_1_x_x4/">
 <!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Soukthavy">
 <link rel="prev" href="../../software/zynq_spi_stepper_sw/" title="Zynq SPI slave stepper motor driver" type="text/html">
@@ -20,7 +20,6 @@
 <meta property="og:type" content="article">
 <meta property="article:published_time" content="2016-12-10T22:46:19Z">
 <meta property="article:tag" content="latex">
-<meta property="article:tag" content="mathjax">
 <meta property="article:tag" content="misc">
 </head>
 <body>
@@ -104,12 +103,12 @@ field (GF), <span class="math">\(GF(q)\)</span>, if <span class="math">\(a\)</sp
 An irreducible polynomial always divides <span class="math">\(1+x^m\)</span> for
 <span class="math">\(m = 2^n - 1\)</span> (exact). For this exercise, <span class="math">\(h(x)=1+x+x^4\)</span>, does not divide <span class="math">\((1+x^m)\)</span> for any
 <span class="math">\(m &lt; 2^4 -1 ( m &lt; 15)\)</span>. It will divide <span class="math">\((1+x^{15})\)</span> though (is a factor). I can use MATLAB to verify this,</p>
-<pre class="code text"><a name="rest_code_4e12679736674169888992b861221e53-1"></a>&gt;&gt; h=[ 0 0 0 1];
-<a name="rest_code_4e12679736674169888992b861221e53-2"></a>&gt;&gt; test=[1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1];
-<a name="rest_code_4e12679736674169888992b861221e53-3"></a>&gt;&gt; [qr] = deconv(test,h);
-<a name="rest_code_4e12679736674169888992b861221e53-4"></a>&gt;&gt; mod(r,2)
-<a name="rest_code_4e12679736674169888992b861221e53-5"></a>&gt;&gt; s =
-<a name="rest_code_4e12679736674169888992b861221e53-6"></a> 0 0 .... 0
+<pre class="code text"><a name="rest_code_dd5d65c72c9343d18a5c68ac335afb46-1"></a>&gt;&gt; h=[ 0 0 0 1];
+<a name="rest_code_dd5d65c72c9343d18a5c68ac335afb46-2"></a>&gt;&gt; test=[1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1];
+<a name="rest_code_dd5d65c72c9343d18a5c68ac335afb46-3"></a>&gt;&gt; [qr] = deconv(test,h);
+<a name="rest_code_dd5d65c72c9343d18a5c68ac335afb46-4"></a>&gt;&gt; mod(r,2)
+<a name="rest_code_dd5d65c72c9343d18a5c68ac335afb46-5"></a>&gt;&gt; s =
+<a name="rest_code_dd5d65c72c9343d18a5c68ac335afb46-6"></a> 0 0 .... 0
 </pre>
 <p>The remainder from the division over <em>Galois</em> field (GF) yields zeros vector from the MATHLAB operations.
 Next is to construct the parity check matrix, <span class="math">\(H^t\)</span> over <span class="math">\(GF(2^r)\)</span>. From parity check matrix, the generator
@@ -117,11 +116,11 @@ matrix for the code can be found. First, let <span class="math">\(\beta\)</span>
 <span class="math">\(x mod h(x)\)</span> so that, <span class="math">\(\beta^i \equiv x^i mod h(x)\)</span>. This means that every non-zero can be represented
 by the power of <span class="math">\(\beta\)</span>, for example, <span class="math">\(\beta^5 \equiv x^5 mod (1+x+x^4) = x+x^2\)</span>.
 Verify it with MATHLAB operation,</p>
-<pre class="code text"><a name="rest_code_527060cfb84e4d2b866af03c32cd2465-1"></a>&gt;&gt; beta5=[1 0 0 0 0 0];
-<a name="rest_code_527060cfb84e4d2b866af03c32cd2465-2"></a>&gt;&gt; [q,r] = deconv(beta5,h);
-<a name="rest_code_527060cfb84e4d2b866af03c32cd2465-3"></a>&gt;&gt; mod(r,2)
-<a name="rest_code_527060cfb84e4d2b866af03c32cd2465-4"></a>ans =
-<a name="rest_code_527060cfb84e4d2b866af03c32cd2465-5"></a>    0 0 0 1 1 0
+<pre class="code text"><a name="rest_code_e7c5ac54d9fb4bec81fa97a2a7f7de44-1"></a>&gt;&gt; beta5=[1 0 0 0 0 0];
+<a name="rest_code_e7c5ac54d9fb4bec81fa97a2a7f7de44-2"></a>&gt;&gt; [q,r] = deconv(beta5,h);
+<a name="rest_code_e7c5ac54d9fb4bec81fa97a2a7f7de44-3"></a>&gt;&gt; mod(r,2)
+<a name="rest_code_e7c5ac54d9fb4bec81fa97a2a7f7de44-4"></a>ans =
+<a name="rest_code_e7c5ac54d9fb4bec81fa97a2a7f7de44-5"></a>    0 0 0 1 1 0
 </pre>
 <p>I need to generate all powers of <span class="math">\(\beta\)</span>, from <span class="math">\(\beta^0\)</span> to <span class="math">\(\beta^{14}\)</span>. I can use MATLAB
 operations to do that.</p>
@@ -135,93 +134,92 @@ is used to generate an arrary or matrix of base code words 0 to <span class="mat
 <!-- - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 <!-- 1000    1                                             :math:`\beta^0` -->
 <!-- =====   =================================  ============================ -->
-<table border="1" class="docutils">
+<table>
 <colgroup>
-<col width="8%">
-<col width="50%">
-<col width="42%">
+<col style="width: 8%">
+<col style="width: 50%">
+<col style="width: 42%">
 </colgroup>
-<tbody valign="top">
+<tbody>
 <tr>
-<td>word</td>
-<td><span class="math">\(x^i mod (1+x+x^4)\)</span></td>
-<td>power of <span class="math">\(\beta\)</span>
-</td>
+<td><p>word</p></td>
+<td><p><span class="math">\(x^i mod (1+x+x^4)\)</span></p></td>
+<td><p>power of <span class="math">\(\beta\)</span></p></td>
 </tr>
 <tr>
-<td>1000</td>
-<td>1</td>
-<td><span class="math">\(\beta^0\)</span></td>
+<td><p>1000</p></td>
+<td><p>1</p></td>
+<td><p><span class="math">\(\beta^0\)</span></p></td>
 </tr>
 <tr>
-<td>0100</td>
-<td><span class="math">\(x\)</span></td>
-<td><span class="math">\(\beta^1\)</span></td>
+<td><p>0100</p></td>
+<td><p><span class="math">\(x\)</span></p></td>
+<td><p><span class="math">\(\beta^1\)</span></p></td>
 </tr>
 <tr>
-<td>0010</td>
-<td><span class="math">\(x^2\)</span></td>
-<td><span class="math">\(\beta^2\)</span></td>
+<td><p>0010</p></td>
+<td><p><span class="math">\(x^2\)</span></p></td>
+<td><p><span class="math">\(\beta^2\)</span></p></td>
 </tr>
 <tr>
-<td>0001</td>
-<td><span class="math">\(x^3\)</span></td>
-<td><span class="math">\(\beta^3\)</span></td>
+<td><p>0001</p></td>
+<td><p><span class="math">\(x^3\)</span></p></td>
+<td><p><span class="math">\(\beta^3\)</span></p></td>
 </tr>
 <tr>
-<td>1100</td>
-<td><span class="math">\(x^4 \equiv 1+x\)</span></td>
-<td><span class="math">\(\beta^4\)</span></td>
+<td><p>1100</p></td>
+<td><p><span class="math">\(x^4 \equiv 1+x\)</span></p></td>
+<td><p><span class="math">\(\beta^4\)</span></p></td>
 </tr>
 <tr>
-<td>0110</td>
-<td><span class="math">\(x^5 \equiv x+x^2\)</span></td>
-<td><span class="math">\(\beta^5\)</span></td>
+<td><p>0110</p></td>
+<td><p><span class="math">\(x^5 \equiv x+x^2\)</span></p></td>
+<td><p><span class="math">\(\beta^5\)</span></p></td>
 </tr>
 <tr>
-<td>0011</td>
-<td><span class="math">\(x^6 \equiv x^2+x^3\)</span></td>
-<td><span class="math">\(\beta^6\)</span></td>
+<td><p>0011</p></td>
+<td><p><span class="math">\(x^6 \equiv x^2+x^3\)</span></p></td>
+<td><p><span class="math">\(\beta^6\)</span></p></td>
 </tr>
 <tr>
-<td>1101</td>
-<td><span class="math">\(x^7 \equiv 1+x+x^3\)</span></td>
-<td><span class="math">\(\beta^7\)</span></td>
+<td><p>1101</p></td>
+<td><p><span class="math">\(x^7 \equiv 1+x+x^3\)</span></p></td>
+<td><p><span class="math">\(\beta^7\)</span></p></td>
 </tr>
 <tr>
-<td>1010</td>
-<td><span class="math">\(x^8 \equiv 1+x^2\)</span></td>
-<td><span class="math">\(\beta^8\)</span></td>
+<td><p>1010</p></td>
+<td><p><span class="math">\(x^8 \equiv 1+x^2\)</span></p></td>
+<td><p><span class="math">\(\beta^8\)</span></p></td>
 </tr>
 <tr>
-<td>0101</td>
-<td><span class="math">\(x^9 \equiv x+x^3\)</span></td>
-<td><span class="math">\(\beta^9\)</span></td>
+<td><p>0101</p></td>
+<td><p><span class="math">\(x^9 \equiv x+x^3\)</span></p></td>
+<td><p><span class="math">\(\beta^9\)</span></p></td>
 </tr>
 <tr>
-<td>1110</td>
-<td><span class="math">\(x^{10} \equiv 1+x+x^2\)</span></td>
-<td><span class="math">\(\beta^{10}\)</span></td>
+<td><p>1110</p></td>
+<td><p><span class="math">\(x^{10} \equiv 1+x+x^2\)</span></p></td>
+<td><p><span class="math">\(\beta^{10}\)</span></p></td>
 </tr>
 <tr>
-<td>0111</td>
-<td><span class="math">\(x^{11} \equiv x+x^2+x^3\)</span></td>
-<td><span class="math">\(\beta^{11}\)</span></td>
+<td><p>0111</p></td>
+<td><p><span class="math">\(x^{11} \equiv x+x^2+x^3\)</span></p></td>
+<td><p><span class="math">\(\beta^{11}\)</span></p></td>
 </tr>
 <tr>
-<td>1111</td>
-<td><span class="math">\(x^{12} \equiv 1+x+x^2+x^3\)</span></td>
-<td><span class="math">\(\beta^{12}\)</span></td>
+<td><p>1111</p></td>
+<td><p><span class="math">\(x^{12} \equiv 1+x+x^2+x^3\)</span></p></td>
+<td><p><span class="math">\(\beta^{12}\)</span></p></td>
 </tr>
 <tr>
-<td>1011</td>
-<td><span class="math">\(x^{13} \equiv 1+x^2+x^3\)</span></td>
-<td><span class="math">\(\beta^{13}\)</span></td>
+<td><p>1011</p></td>
+<td><p><span class="math">\(x^{13} \equiv 1+x^2+x^3\)</span></p></td>
+<td><p><span class="math">\(\beta^{13}\)</span></p></td>
 </tr>
 <tr>
-<td>1001</td>
-<td><span class="math">\(x^{14} \equiv 1+x^3\)</span></td>
-<td><span class="math">\(\beta^{14}\)</span></td>
+<td><p>1001</p></td>
+<td><p><span class="math">\(x^{14} \equiv 1+x^3\)</span></p></td>
+<td><p><span class="math">\(\beta^{14}\)</span></p></td>
 </tr>
 </tbody>
 </table>
@@ -315,17 +313,17 @@ u = vG
 </div>
 <p>where <span class="math">\(v\)</span> is the 11-bit source code word to be encoded. I use MATLAB to create the matrices
 for the parity(11x4), parity check(15x4) and generator respectively(11x15).</p>
-<pre class="code text"><a name="rest_code_78828bf823ce49e7bf2b4edf725262c6-1"></a>&gt;&gt; p=[1 0 0 1;1 1 0 1;1 1 1 1;1 1 1 0;0 1 1 1;1 0 1 0;0 1 0 1;1 0 1 1;1 1 0 0 ;0 1 1 0;0 0 1 1];
-<a name="rest_code_78828bf823ce49e7bf2b4edf725262c6-2"></a>&gt;&gt; G=[eye(11) p];
-<a name="rest_code_78828bf823ce49e7bf2b4edf725262c6-3"></a>&gt;&gt; ht=vertcat(eye(4),p);
-<a name="rest_code_78828bf823ce49e7bf2b4edf725262c6-4"></a>&gt;&gt; mod(G*ht,2)
-<a name="rest_code_78828bf823ce49e7bf2b4edf725262c6-5"></a>
-<a name="rest_code_78828bf823ce49e7bf2b4edf725262c6-6"></a>ans =
-<a name="rest_code_78828bf823ce49e7bf2b4edf725262c6-7"></a>
-<a name="rest_code_78828bf823ce49e7bf2b4edf725262c6-8"></a>     0     0     0     0
-<a name="rest_code_78828bf823ce49e7bf2b4edf725262c6-9"></a>     0     0     0     0
-<a name="rest_code_78828bf823ce49e7bf2b4edf725262c6-10"></a>     ..
-<a name="rest_code_78828bf823ce49e7bf2b4edf725262c6-11"></a>     0     0     0     0
+<pre class="code text"><a name="rest_code_1ac11af1b33f451e8aaf122c0a3ed675-1"></a>&gt;&gt; p=[1 0 0 1;1 1 0 1;1 1 1 1;1 1 1 0;0 1 1 1;1 0 1 0;0 1 0 1;1 0 1 1;1 1 0 0 ;0 1 1 0;0 0 1 1];
+<a name="rest_code_1ac11af1b33f451e8aaf122c0a3ed675-2"></a>&gt;&gt; G=[eye(11) p];
+<a name="rest_code_1ac11af1b33f451e8aaf122c0a3ed675-3"></a>&gt;&gt; ht=vertcat(eye(4),p);
+<a name="rest_code_1ac11af1b33f451e8aaf122c0a3ed675-4"></a>&gt;&gt; mod(G*ht,2)
+<a name="rest_code_1ac11af1b33f451e8aaf122c0a3ed675-5"></a>
+<a name="rest_code_1ac11af1b33f451e8aaf122c0a3ed675-6"></a>ans =
+<a name="rest_code_1ac11af1b33f451e8aaf122c0a3ed675-7"></a>
+<a name="rest_code_1ac11af1b33f451e8aaf122c0a3ed675-8"></a>     0     0     0     0
+<a name="rest_code_1ac11af1b33f451e8aaf122c0a3ed675-9"></a>     0     0     0     0
+<a name="rest_code_1ac11af1b33f451e8aaf122c0a3ed675-10"></a>     ..
+<a name="rest_code_1ac11af1b33f451e8aaf122c0a3ed675-11"></a>     0     0     0     0
 </pre>
 <p>The error bit syndrome can then be computed for the FEC,</p>
 <!-- fixme: this is the same as I * Ht = Ht !? -->
@@ -365,34 +363,34 @@ The most likely code word with the closest distance would then be the correspond
 exercise, there will be 16 correctable patterns and they are the patterns of the identity matrix.</p>
 <p>Using MATLAB to generate the input words to be encoded for all <span class="math">\(2^{11}\)</span> possible values then
 encoded it with the <span class="math">\(G\)</span> matrix following by 1 bit error simulation for error correction,</p>
-<pre class="code text"><a name="rest_code_86fe3c6edf8b490f9001371f3f720b1d-1"></a>&gt;&gt; v=dec2bin(0:2^11-1)-'0';
-<a name="rest_code_86fe3c6edf8b490f9001371f3f720b1d-2"></a>&gt;&gt; u=mod(v*G,2);
-<a name="rest_code_86fe3c6edf8b490f9001371f3f720b1d-3"></a>&gt;&gt; mod(u(100,:)*ht,2)
-<a name="rest_code_86fe3c6edf8b490f9001371f3f720b1d-4"></a>
-<a name="rest_code_86fe3c6edf8b490f9001371f3f720b1d-5"></a>ans =
-<a name="rest_code_86fe3c6edf8b490f9001371f3f720b1d-6"></a>
-<a name="rest_code_86fe3c6edf8b490f9001371f3f720b1d-7"></a>    0     0     0     0
+<pre class="code text"><a name="rest_code_07131b94c7d74a9a871727e2539a0fb3-1"></a>&gt;&gt; v=dec2bin(0:2^11-1)-'0';
+<a name="rest_code_07131b94c7d74a9a871727e2539a0fb3-2"></a>&gt;&gt; u=mod(v*G,2);
+<a name="rest_code_07131b94c7d74a9a871727e2539a0fb3-3"></a>&gt;&gt; mod(u(100,:)*ht,2)
+<a name="rest_code_07131b94c7d74a9a871727e2539a0fb3-4"></a>
+<a name="rest_code_07131b94c7d74a9a871727e2539a0fb3-5"></a>ans =
+<a name="rest_code_07131b94c7d74a9a871727e2539a0fb3-6"></a>
+<a name="rest_code_07131b94c7d74a9a871727e2539a0fb3-7"></a>    0     0     0     0
 </pre>
 <p>Simulate 1 bit error from one of the encoded words will result in syndrome of,</p>
-<pre class="code text"><a name="rest_code_c3a2dcee8a3c4be5967bd136123f9c54-1"></a>&gt;&gt; a=u(100,:);
-<a name="rest_code_c3a2dcee8a3c4be5967bd136123f9c54-2"></a>&gt;&gt; a(1)=1
-<a name="rest_code_c3a2dcee8a3c4be5967bd136123f9c54-3"></a>
-<a name="rest_code_c3a2dcee8a3c4be5967bd136123f9c54-4"></a>a =
-<a name="rest_code_c3a2dcee8a3c4be5967bd136123f9c54-5"></a>
-<a name="rest_code_c3a2dcee8a3c4be5967bd136123f9c54-6"></a>     1     0     0     0     1     1     0     0     0     1     1     1     0     0     0
-<a name="rest_code_c3a2dcee8a3c4be5967bd136123f9c54-7"></a>
-<a name="rest_code_c3a2dcee8a3c4be5967bd136123f9c54-8"></a>&gt;&gt; mod(a*Ht,2)
-<a name="rest_code_c3a2dcee8a3c4be5967bd136123f9c54-9"></a>
-<a name="rest_code_c3a2dcee8a3c4be5967bd136123f9c54-10"></a>ans =
-<a name="rest_code_c3a2dcee8a3c4be5967bd136123f9c54-11"></a>
-<a name="rest_code_c3a2dcee8a3c4be5967bd136123f9c54-12"></a>    1     0     0     1
+<pre class="code text"><a name="rest_code_86e328b46b3b40658c14e956535e4620-1"></a>&gt;&gt; a=u(100,:);
+<a name="rest_code_86e328b46b3b40658c14e956535e4620-2"></a>&gt;&gt; a(1)=1
+<a name="rest_code_86e328b46b3b40658c14e956535e4620-3"></a>
+<a name="rest_code_86e328b46b3b40658c14e956535e4620-4"></a>a =
+<a name="rest_code_86e328b46b3b40658c14e956535e4620-5"></a>
+<a name="rest_code_86e328b46b3b40658c14e956535e4620-6"></a>     1     0     0     0     1     1     0     0     0     1     1     1     0     0     0
+<a name="rest_code_86e328b46b3b40658c14e956535e4620-7"></a>
+<a name="rest_code_86e328b46b3b40658c14e956535e4620-8"></a>&gt;&gt; mod(a*Ht,2)
+<a name="rest_code_86e328b46b3b40658c14e956535e4620-9"></a>
+<a name="rest_code_86e328b46b3b40658c14e956535e4620-10"></a>ans =
+<a name="rest_code_86e328b46b3b40658c14e956535e4620-11"></a>
+<a name="rest_code_86e328b46b3b40658c14e956535e4620-12"></a>    1     0     0     1
 </pre>
 <p>This syndrome will correspond to the first row of <span class="math">\(I_{15}\)</span>, so the corrected code word would be,</p>
-<pre class="code text"><a name="rest_code_a2f021d990624dde8e6e52eb72fbfd58-1"></a>&gt;&gt; mod(a(1:11) + I11(1,:),2)
-<a name="rest_code_a2f021d990624dde8e6e52eb72fbfd58-2"></a>
-<a name="rest_code_a2f021d990624dde8e6e52eb72fbfd58-3"></a>ans =
-<a name="rest_code_a2f021d990624dde8e6e52eb72fbfd58-4"></a>
-<a name="rest_code_a2f021d990624dde8e6e52eb72fbfd58-5"></a>     0     0     0     0     1     1     0     0     0     1     1
+<pre class="code text"><a name="rest_code_dadae790967e4e1ebb1f6bd9d3b88500-1"></a>&gt;&gt; mod(a(1:11) + I11(1,:),2)
+<a name="rest_code_dadae790967e4e1ebb1f6bd9d3b88500-2"></a>
+<a name="rest_code_dadae790967e4e1ebb1f6bd9d3b88500-3"></a>ans =
+<a name="rest_code_dadae790967e4e1ebb1f6bd9d3b88500-4"></a>
+<a name="rest_code_dadae790967e4e1ebb1f6bd9d3b88500-5"></a>     0     0     0     0     1     1     0     0     0     1     1
 </pre>
 <p>which is the same as the original unaltered test code word. This is also based on the fundamental
 assumption that bit error occurs independently and that the most likely error pattern is the one
@@ -449,50 +447,36 @@ subject.</p>
 <div class="section" id="reference">
 <h3>Reference</h3>
 <!-- all the references books, articles etc -->
-<table class="docutils citation" frame="void" id="cit001" rules="none">
-<colgroup>
-<col class="label">
-<col>
-</colgroup>
-<tbody valign="top"><tr>
-<td class="label">[CIT001]</td>
-<td>Digital Communications Fundamentals and Applications, 2nd Ed, Bernard Sklar.</td>
-</tr></tbody>
-</table>
-<table class="docutils citation" frame="void" id="cit002" rules="none">
-<colgroup>
-<col class="label">
-<col>
-</colgroup>
-<tbody valign="top"><tr>
-<td class="label">[CIT002]</td>
-<td>Coding Theory The Essentials, D.G Hoffman, 1991.</td>
-</tr></tbody>
-</table>
-<table class="docutils citation" frame="void" id="cit003" rules="none">
-<colgroup>
-<col class="label">
-<col>
-</colgroup>
-<tbody valign="top"><tr>
-<td class="label">[CIT003]</td>
-<td>
-<em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>)</em> Error Control Coding Fundamental And Applications, Shu Lin, Daniel J. Costello Jr, 1983</td>
-</tr></tbody>
-</table>
+<dl class="citation">
+<dt class="label" id="cit001"><span class="brackets">CIT001</span></dt>
+<dd>
+<p>Digital Communications Fundamentals and Applications, 2nd Ed, Bernard Sklar.</p>
+</dd>
+<dt class="label" id="cit002"><span class="brackets">CIT002</span></dt>
+<dd>
+<p>Coding Theory The Essentials, D.G Hoffman, 1991.</p>
+</dd>
+<dt class="label" id="cit003">
+<span class="brackets">CIT003</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id2">2</a>)</span>
+</dt>
+<dd>
+<p>Error Control Coding Fundamental And Applications, Shu Lin, Daniel J. Costello Jr, 1983</p>
+</dd>
+</dl>
 </div>
 </div>
 </div>
     </div>
     
-            <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> </script><script type="text/x-mathjax-config">
-            MathJax.Hub.Config({tex2jax: {inlineMath: [['$latex ','$'], ['\\(','\\)']]}});
-            </script></article>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML" integrity="sha384-3lJUsx1TJHt7BA4udB5KPnDrlkO8T6J6v/op7ui0BbCjvZ9WqV4Xm6DTP6kQ/iBH" crossorigin="anonymous"></script><script type="text/x-mathjax-config">
+        MathJax.Hub.Config({tex2jax: {inlineMath: [['$latex ','$'], ['\\(','\\)']]}});
+        </script></article>
 </div>
         <!--End of body content-->
 
         <footer id="footer">
-            Contents © 2018         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            Contents © 2021         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
             
         </footer>
 </div>

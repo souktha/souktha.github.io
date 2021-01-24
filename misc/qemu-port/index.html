@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Adding ARM platform to QEMU 5.2.0 | Soukthavy Sopha</title>
+<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../../rss.xml">
+<link rel="canonical" href="http://souktha.github.io/misc/qemu-port/">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Soukthavy">
+<link rel="prev" href="../ea8300-openwrt/" title="OpenWRT (Chaos Calmer) on Linksys EA8300" type="text/html">
+<meta property="og:site_name" content="Soukthavy Sopha">
+<meta property="og:title" content="Adding ARM platform to QEMU 5.2.0">
+<meta property="og:url" content="http://souktha.github.io/misc/qemu-port/">
+<meta property="og:description" content="The SoC is being developed by the ASIC team, but the software team wants to develop the software concurrently
+for the hardware that is not yet available, at least not for another 3 months or longer. I">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2021-01-02T17:19:03Z">
+<meta property="article:tag" content="software">
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-inverse navbar-static-top"><div class="container">
+<!-- This keeps the margins nice -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://souktha.github.io/">
+
+                <span id="blog-title">Soukthavy Sopha</span>
+            </a>
+        </div>
+<!-- /.navbar-header -->
+        <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
+            <ul class="nav navbar-nav">
+<li>
+<a href="../../archive.html">Archive</a>
+                </li>
+<li>
+<a href="../../categories/">Tags</a>
+                </li>
+<li>
+<a href="../../rss.xml">RSS feed</a>
+            </li>
+<li class="dropdown">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Blog <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+<li>
+<a href="../../software">Sofware</a>
+                    </li>
+<li>
+<a href="../../hardware">Hardware</a>
+                    </li>
+<li>
+<a href="../../misc">Misc</a>
+            </li>
+</ul>
+</li>
+<li>
+<a href="https://github.com/souktha">My Github</a>
+
+                
+            </li>
+</ul>
+<ul class="nav navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        <div class="row">
+            
+            
+<article class="post-text storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Adding ARM platform to QEMU 5.2.0</a></h1>
+
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>The SoC is being developed by the ASIC team, but the software team wants to develop the software concurrently
+for the hardware that is not yet available, at least not for another 3 months or longer. In this situation what do
+you do ?</p>
+<!-- TEASER_END -->
+<p>In the early phase of SoC development you don't usually have hardware available, but you want to develop the software
+concurrently with the ASIC development. One option is to find the platform with the closest architecture and develop
+the software based on that platform, but it not always that easy to find. If you could, why would you want to continue
+with your SoC development ? You are already steps behind your competitors. This option will also come with a lot of clean-up
+work later on. The other option is to software emulated your platform such that we can develop and test your software
+implementation to its nearest target platform. This is what QEMU comes in to play. This blog is one of two parts series.
+One is to add new ARM platform into QEMU to emulate the hardware while the other part is to port <em>FreeRTOS</em> to support
+the new platform.</p>
+<p>An open source, QEMU from <em>qemu.org</em> is a generic machine emulator and virtualizer that supports various CPU architectures and platforms.
+QEMU runs on most mainstream OS, Linux, Windows, and MacOS. Since it is an open source, you can customize by adding the
+new platform into this package, build, install and use it. This blogs documents about how I add a custom ARM Cortex R-5
+platform in to the existing package. I call it <em>real-time experimental SoC, rtx-soc</em> platform. This platform will be added
+to the supported ARM CPU architectur the <em>QEMU</em>.</p>
+<div class="section" id="components">
+<h2>Components</h2>
+<p>Two main components needed: <em>QEMU</em> package (and other s/w dependencies required by this package) and the host PC (Linux).
+The software packages required by QEMU are listed in its respective QEMU site for building the QEMU. It is most likely
+that the needed dependencies are met if you fully installed the Linux distribution. If not, only minimal effort is needed.
+I choose the latest release version <em>qemu-5.2.0</em> of early 2021 since I find it to be
+easier than the earlier version for adding new target. I have actually done this with version <em>qemu-5.1.0</em> and found that
+the latest version is easier to port.</p>
+<p>The host PC is for building and running the QEMU to virtualize the h/w platform. For my case I use Linux x64 Slackware with kernel built
+to support virtualization. The PC BIOS should have virtualization enable as well.</p>
+<div class="section" id="qemu">
+<h3>QEMU</h3>
+<ul class="simple">
+<li>
+<p>QEMU</p>
+<ul>
+<li><p>version: qemu-5.2.0, which is the latest as of Jan 2021.</p></li>
+<li><p>Emulation: ARM and AARCH64 on Linux x64 host.</p></li>
+</ul>
+</li>
+<li>
+<p>SoC target plaform to be added:</p>
+<ul>
+<li><p>ARM Cortex-R5 with 4MB on-chip RAM (OCR).</p></li>
+<li><p>APB peripherals: UART, Timer, I2C</p></li>
+<li><p>GICv2 Interrupt controller</p></li>
+<li><p>Flash and others</p></li>
+</ul>
+</li>
+</ul>
+<p>Before you begin the work, you might as well test build the stock release as-is for the ARM emulation. If all the dependencies
+are met the package should be built successfully. To build as-is for ARM, extract the package then <em>cd qemu-5.2.0</em> to configure
+and build,</p>
+<pre class="code text"><a name="rest_code_6ee03c6dcba348398fc09c08a891fcbe-1"></a>./configure --target-list=arm-softmmu,arm-linux-user,aarch64-softmmu,aarch64-linux-user --prefix=/opt/qemu-5.2.0/
+</pre>
+<p>This configure for ARMv7 and ARMv8 and install to <em>/opt/qemu-5.2.0</em> when you do <em>make install</em>. The output of the built
+QEMU is in its <em>build/</em> directory. You can as well run QEMU from this directory without having to install it to the
+desired location.</p>
+<p>Check the machines supported by this build,</p>
+<pre class="code text"><a name="rest_code_071a32775e1d4ccda31149e449bb003a-1"></a>qemu-system-aarch64 -M help
+</pre>
+<p>Will list the ARM platforms supported, for examples,</p>
+<pre class="code text"><a name="rest_code_533a0f2651da4827a91d704d3045e6ca-1"></a>Supported machines are:
+<a name="rest_code_533a0f2651da4827a91d704d3045e6ca-2"></a>akita                Sharp SL-C1000 (Akita) PDA (PXA270)
+<a name="rest_code_533a0f2651da4827a91d704d3045e6ca-3"></a>ast2500-evb          Aspeed AST2500 EVB (ARM1176)
+<a name="rest_code_533a0f2651da4827a91d704d3045e6ca-4"></a>ast2600-evb          Aspeed AST2600 EVB (Cortex A7)
+<a name="rest_code_533a0f2651da4827a91d704d3045e6ca-5"></a>borzoi               Sharp SL-C3100 (Borzoi) PDA (PXA270)
+<a name="rest_code_533a0f2651da4827a91d704d3045e6ca-6"></a>canon-a1100          Canon PowerShot A1100 IS
+<a name="rest_code_533a0f2651da4827a91d704d3045e6ca-7"></a>cheetah              Palm Tungsten|E aka. Cheetah PDA (OMAP310)
+<a name="rest_code_533a0f2651da4827a91d704d3045e6ca-8"></a>collie               Sharp SL-5500 (Collie) PDA (SA-1110)
+<a name="rest_code_533a0f2651da4827a91d704d3045e6ca-9"></a>connex               Gumstix Connex (PXA255)
+<a name="rest_code_533a0f2651da4827a91d704d3045e6ca-10"></a>..
+</pre>
+</div>
+</div>
+<div class="section" id="adding-platform-to-qemu">
+<h2>Adding platform to QEMU</h2>
+<p>In QEMU directories structure, I only needed to work in two directories, <em>hw/arm</em> and <em>default-configs/devices</em> to add
+the new target platform and to modified the existing configuration incorporating new platform.</p>
+<div class="section" id="ir-device">
+<h3>IR device</h3>
+<p>For this work, I am using a VS1838B IR receiver having three pins, power, ground, and output. I do not even have the datasheet of it. I hook
+it up and get the scope output and from what I see I know that it will work for what I want to do.</p>
+<div class="figure">
+<img alt="../../images/hardware/IR.BMP" src="../../images/hardware/IR.BMP"><p class="caption">IR signal from its output pin</p>
+</div>
+<p>This device is probably equivalent to TSOP4838 or TSOP1738 type of IR receiver, an integrated circuit with AGC and BP filter.</p>
+<div class="figure">
+<img alt="../../images/hardware/connecting-ir.jpg" src="../../images/hardware/connecting-ir.jpg"><p class="caption">This is how easy it is to connect. Two pins plug straight to header with the signal pin to UART4_RXD.</p>
+</div>
+</div>
+</div>
+<div class="section" id="tools-software-and-accessory">
+<h2>Tools, software and accessory</h2>
+<ul class="simple">
+<li><p>IR receiver</p></li>
+<li><p>Wires</p></li>
+<li><p>Any IR remote controller transmitter (from old VCR or old TV etc..)</p></li>
+<li><p>v4l-utils tool, ir-keytable for testing.</p></li>
+<li><p>BeagleBone Black</p></li>
+</ul>
+</div>
+<div class="section" id="implementation">
+<h2>Implementation</h2>
+<div class="section" id="pinmuxing">
+<h3>pinmuxing</h3>
+<p>The IR driver will be running on the current kernel version of my BBLK board which is 4.1.13. The kernel source file is in <em>am335x-evm-sdk-src-02.00.01.07</em> of TI.
+First thing I need to do is to redo pinmux for <em>T17</em> (Table 4.1, page 29) <a class="footnote-reference brackets" href="#id8" id="id1">4</a>. <em>T17</em> is the ball pin of Am3358, not the BBLK P9's header pin. On P9 it is pin 11.
+This is the pin for UART4_RXD. For this pin to function as UART4_RXD, it needs to be muxed to mode 6 of operation.
+To pinmux, I need to edit the device tree source, am335x-boneblack.dts, and add to '&amp;am33xx_pinmux' block to override their default settings.
+I do not need TX operation of this UART since it is only for RX operation.</p>
+<pre class="code text"><a name="rest_code_01d237f3d43c49f9b34e966238670d45-1"></a>&amp;am33xx_pinmux {
+<a name="rest_code_01d237f3d43c49f9b34e966238670d45-2"></a>         ..
+<a name="rest_code_01d237f3d43c49f9b34e966238670d45-3"></a>
+<a name="rest_code_01d237f3d43c49f9b34e966238670d45-4"></a>         uart4_pins: pinmux_uart4_pins {
+<a name="rest_code_01d237f3d43c49f9b34e966238670d45-5"></a>         pinctrl-single,pins = &lt;
+<a name="rest_code_01d237f3d43c49f9b34e966238670d45-6"></a>                 0x70 (PIN_INPUT_PULLUP | MUX_MODE6)     /* uart4_rxd.uart4_rxd*/
+<a name="rest_code_01d237f3d43c49f9b34e966238670d45-7"></a>         &gt;;
+<a name="rest_code_01d237f3d43c49f9b34e966238670d45-8"></a>        };
+<a name="rest_code_01d237f3d43c49f9b34e966238670d45-9"></a> };
+</pre>
+<p>I also need to enable UART4 that was defined, but was marked disabled otherwise I will not be able to use it. I can override this setting by
+adding the following to the dts file,</p>
+<pre class="code text"><a name="rest_code_40dff4ab00a94ee6a4f3bffc44d95bd4-1"></a>&amp;uart4 {
+<a name="rest_code_40dff4ab00a94ee6a4f3bffc44d95bd4-2"></a>        pinctrl-names = "default";
+<a name="rest_code_40dff4ab00a94ee6a4f3bffc44d95bd4-3"></a>        pinctrl-0 = &lt;&amp;uart4_pins&gt;;
+<a name="rest_code_40dff4ab00a94ee6a4f3bffc44d95bd4-4"></a>        compatible = "cir-uart";
+<a name="rest_code_40dff4ab00a94ee6a4f3bffc44d95bd4-5"></a>        status = "okay";
+<a name="rest_code_40dff4ab00a94ee6a4f3bffc44d95bd4-6"></a>};
+</pre>
+<p>So I add the block shown above just below '&amp;mcasp0' block. This is to set 'uart4' to use the pinmux that I define and set its status to be okay (enable).
+I also set the platform driver compatibilty to 'cir-uart'. This is going to be my new IR driver. The platform driver will invoke my driver upon
+<em>insmod</em>. I am done with pinmuxing and enabling UART4 device as far as device tree is concerned.</p>
+<p>I recompile the device tree and add to the zImage as an FDT. On reboot, the new MUX will take effect.
+The simple part is done, now come the hard part. Getting the UART4 to work the way I want to.</p>
+</div>
+<div class="section" id="kernel-driver">
+<h3>kernel driver</h3>
+<p>In reference to TI's AM335x <a class="footnote-reference brackets" href="#id5" id="id2">1</a>, chapter 19, Universal Receiver/Transmitter, the clock for this UART is the external <em>PER_CLKOUTM2</em> <em>PRCM / 4</em> that feeds the UART's <em>fclk</em>.  The UART has to be clocked for the driver to be able to access its registers and configure it for use.</p>
+<p>The first thing this driver does is to register with the kernel platform framework having this <em>platform_driver</em> table,</p>
+<div class="code"><table class="codetable">
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_ca32e9a594904ea09b2637811b69e614-1"><code data-line-number="1"></code></a></td>
+<td class="code"><code><a name="rest_code_ca32e9a594904ea09b2637811b69e614-1"></a>       <span class="k">static</span> <span class="k">struct</span> <span class="nc">platform_driver</span> <span class="n">cir_platform_driver</span> <span class="o">=</span> <span class="p">{</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_ca32e9a594904ea09b2637811b69e614-2"><code data-line-number="2"></code></a></td>
+<td class="code"><code><a name="rest_code_ca32e9a594904ea09b2637811b69e614-2"></a>               <span class="p">.</span><span class="n">driver</span> <span class="o">=</span> <span class="p">{</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_ca32e9a594904ea09b2637811b69e614-3"><code data-line-number="3"></code></a></td>
+<td class="code"><code><a name="rest_code_ca32e9a594904ea09b2637811b69e614-3"></a>               <span class="p">.</span><span class="n">name</span>           <span class="o">=</span> <span class="s">"cir-uart"</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_ca32e9a594904ea09b2637811b69e614-4"><code data-line-number="4"></code></a></td>
+<td class="code"><code><a name="rest_code_ca32e9a594904ea09b2637811b69e614-4"></a>               <span class="p">.</span><span class="n">of_match_table</span> <span class="o">=</span> <span class="n">cir_dt_ids</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_ca32e9a594904ea09b2637811b69e614-5"><code data-line-number="5"></code></a></td>
+<td class="code"><code><a name="rest_code_ca32e9a594904ea09b2637811b69e614-5"></a>               <span class="p">},</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_ca32e9a594904ea09b2637811b69e614-6"><code data-line-number="6"></code></a></td>
+<td class="code"><code><a name="rest_code_ca32e9a594904ea09b2637811b69e614-6"></a>               <span class="p">.</span><span class="n">probe</span>                  <span class="o">=</span> <span class="n">cir_probe</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_ca32e9a594904ea09b2637811b69e614-7"><code data-line-number="7"></code></a></td>
+<td class="code"><code><a name="rest_code_ca32e9a594904ea09b2637811b69e614-7"></a>               <span class="p">.</span><span class="n">remove</span>                 <span class="o">=</span> <span class="n">cir_remove</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_ca32e9a594904ea09b2637811b69e614-8"><code data-line-number="8"></code></a></td>
+<td class="code"><code><a name="rest_code_ca32e9a594904ea09b2637811b69e614-8"></a>       <span class="p">};</span>
+</code></td>
+</tr>
+</table></div>
+<p>The <em>cir-uart</em> matches to what I defined in the device tree earlier. The will enable the platform driver framework to call
+its <em>cir_probe</em> for device probing and initializing the device.</p>
+<div class="code"><table class="codetable">
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0270da3f80944475854189874374b332-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_0270da3f80944475854189874374b332-1"></a>       <span class="k">static</span> <span class="kt">int</span> <span class="n">cir_probe</span><span class="p">(</span><span class="k">struct</span> <span class="nc">platform_device</span> <span class="o">*</span> <span class="n">pdev</span><span class="p">)</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0270da3f80944475854189874374b332-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_0270da3f80944475854189874374b332-2"></a>       <span class="p">{</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0270da3f80944475854189874374b332-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_0270da3f80944475854189874374b332-3"></a>               <span class="p">...</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0270da3f80944475854189874374b332-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_0270da3f80944475854189874374b332-4"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0270da3f80944475854189874374b332-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_0270da3f80944475854189874374b332-5"></a>               <span class="k">struct</span> <span class="nc">resource</span> <span class="o">*</span> <span class="n">regs</span> <span class="o">=</span> <span class="n">platform_get_resource</span><span class="p">(</span><span class="n">pdev</span><span class="p">,</span> <span class="n">IORESOURCE_MEM</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0270da3f80944475854189874374b332-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_0270da3f80944475854189874374b332-6"></a>               <span class="k">struct</span> <span class="nc">resource</span> <span class="o">*</span> <span class="n">irq</span> <span class="o">=</span> <span class="n">platform_get_resource</span><span class="p">(</span><span class="n">pdev</span><span class="p">,</span> <span class="n">IORESOURCE_IRQ</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0270da3f80944475854189874374b332-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_0270da3f80944475854189874374b332-7"></a>               <span class="p">...</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0270da3f80944475854189874374b332-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_0270da3f80944475854189874374b332-8"></a>               <span class="cm">/* use uart4_fck*/</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0270da3f80944475854189874374b332-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_0270da3f80944475854189874374b332-9"></a>               <span class="n">clk</span> <span class="o">=</span> <span class="n">clk_get</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pdev</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">,</span><span class="s">"dpll_per_m2_div4_ck"</span><span class="p">);</span> <span class="c1">//expect 48MHZ clock feed</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0270da3f80944475854189874374b332-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_0270da3f80944475854189874374b332-10"></a>               <span class="p">..</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0270da3f80944475854189874374b332-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_0270da3f80944475854189874374b332-11"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0270da3f80944475854189874374b332-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_0270da3f80944475854189874374b332-12"></a>               <span class="n">device_init_wakeup</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pdev</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0270da3f80944475854189874374b332-13"><code data-line-number="13"></code></a></td>
+<td class="code"><code><a name="rest_code_0270da3f80944475854189874374b332-13"></a>               <span class="n">pm_runtime_use_autosuspend</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pdev</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0270da3f80944475854189874374b332-14"><code data-line-number="14"></code></a></td>
+<td class="code"><code><a name="rest_code_0270da3f80944475854189874374b332-14"></a>               <span class="n">pm_runtime_set_autosuspend_delay</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pdev</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">,</span><span class="mi">-1</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0270da3f80944475854189874374b332-15"><code data-line-number="15"></code></a></td>
+<td class="code"><code><a name="rest_code_0270da3f80944475854189874374b332-15"></a>               <span class="n">pm_runtime_irq_safe</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pdev</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0270da3f80944475854189874374b332-16"><code data-line-number="16"></code></a></td>
+<td class="code"><code><a name="rest_code_0270da3f80944475854189874374b332-16"></a>               <span class="n">pm_runtime_enable</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pdev</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0270da3f80944475854189874374b332-17"><code data-line-number="17"></code></a></td>
+<td class="code"><code><a name="rest_code_0270da3f80944475854189874374b332-17"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0270da3f80944475854189874374b332-18"><code data-line-number="18"></code></a></td>
+<td class="code"><code><a name="rest_code_0270da3f80944475854189874374b332-18"></a>               <span class="n">pm_runtime_get_sync</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pdev</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0270da3f80944475854189874374b332-19"><code data-line-number="19"></code></a></td>
+<td class="code"><code><a name="rest_code_0270da3f80944475854189874374b332-19"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0270da3f80944475854189874374b332-20"><code data-line-number="20"></code></a></td>
+<td class="code"><code><a name="rest_code_0270da3f80944475854189874374b332-20"></a>               <span class="n">cirdev</span><span class="o">-&gt;</span><span class="n">clk</span> <span class="o">=</span> <span class="n">clk</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0270da3f80944475854189874374b332-21"><code data-line-number="21"></code></a></td>
+<td class="code"><code><a name="rest_code_0270da3f80944475854189874374b332-21"></a>               <span class="n">clk_prepare_enable</span><span class="p">(</span><span class="n">clk</span><span class="p">);</span>
+</code></td>
+</tr>
+</table></div>
+<p>The device probe get the device resource information from the platfrom framework. I look up the source
+code in <em>arch/arm/mach-omap2</em> to find out the name of the clock that is the most likely be the one I should be
+using. This happens to be <em>dll_per_m2_div4_ck</em> clock. The driver will get this clock line, wakeup the device and
+ask <em>pm_runtime..</em> to put it into use. The remaining part is the typical drill, memory mapped I/O device, request IRQ
+line etc..</p>
+<p>Next the driver allocates RC device structure, fills in the RC device operations and its information and register
+for service with the RC framework driver. In the RC device structure, I have mostly empty functions
+defined since the device does not need special handling. It is only for the formality. I have it mapped to
+<em>RC_MAP_RC6_MCE</em>, but it can be changed at run-time. Work queue is also used for this
+driver for input event processing as the BH portion of interrupt handling.</p>
+<div class="code"><table class="codetable">
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7283aeeb28db44c2996bae13c2623948-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_7283aeeb28db44c2996bae13c2623948-1"></a>       <span class="n">ir_props</span> <span class="o">=</span> <span class="n">rc_allocate_device</span><span class="p">();</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7283aeeb28db44c2996bae13c2623948-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_7283aeeb28db44c2996bae13c2623948-2"></a>       <span class="p">..</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7283aeeb28db44c2996bae13c2623948-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_7283aeeb28db44c2996bae13c2623948-3"></a>       <span class="n">ir_props</span><span class="o">-&gt;</span><span class="n">driver_type</span> <span class="o">=</span> <span class="n">RC_DRIVER_IR_RAW</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7283aeeb28db44c2996bae13c2623948-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_7283aeeb28db44c2996bae13c2623948-4"></a>       <span class="n">ir_props</span><span class="o">-&gt;</span><span class="n">allowed_protocols</span> <span class="o">=</span> <span class="n">RC_BIT_ALL</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7283aeeb28db44c2996bae13c2623948-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_7283aeeb28db44c2996bae13c2623948-5"></a>       <span class="n">ir_props</span><span class="o">-&gt;</span><span class="n">priv</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span> <span class="p">)</span><span class="n">cirdev</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7283aeeb28db44c2996bae13c2623948-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_7283aeeb28db44c2996bae13c2623948-6"></a>       <span class="n">ir_props</span><span class="o">-&gt;</span><span class="n">s_idle</span> <span class="o">=</span> <span class="n">cir_set_idle</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7283aeeb28db44c2996bae13c2623948-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_7283aeeb28db44c2996bae13c2623948-7"></a>       <span class="n">ir_props</span><span class="o">-&gt;</span><span class="n">open</span> <span class="o">=</span> <span class="n">cir_open</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7283aeeb28db44c2996bae13c2623948-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_7283aeeb28db44c2996bae13c2623948-8"></a>       <span class="n">ir_props</span><span class="o">-&gt;</span><span class="n">close</span> <span class="o">=</span> <span class="n">cir_close</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7283aeeb28db44c2996bae13c2623948-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_7283aeeb28db44c2996bae13c2623948-9"></a>       <span class="p">..</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7283aeeb28db44c2996bae13c2623948-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_7283aeeb28db44c2996bae13c2623948-10"></a>       <span class="n">ir_props</span><span class="o">-&gt;</span><span class="n">map_name</span> <span class="o">=</span> <span class="n">RC_MAP_RC6_MCE</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7283aeeb28db44c2996bae13c2623948-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_7283aeeb28db44c2996bae13c2623948-11"></a>       <span class="p">..</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7283aeeb28db44c2996bae13c2623948-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_7283aeeb28db44c2996bae13c2623948-12"></a>       <span class="n">INIT_WORK</span><span class="p">((</span><span class="k">struct</span> <span class="nc">work_struct</span> <span class="o">*</span> <span class="p">)</span><span class="o">&amp;</span><span class="n">cirdev</span><span class="o">-&gt;</span><span class="n">bh</span><span class="p">,</span><span class="n">irevent_bh</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7283aeeb28db44c2996bae13c2623948-13"><code data-line-number="13"></code></a></td>
+<td class="code"><code><a name="rest_code_7283aeeb28db44c2996bae13c2623948-13"></a>       <span class="n">INIT_LIST_HEAD</span><span class="p">((</span><span class="k">struct</span> <span class="nc">list_head</span> <span class="o">*</span> <span class="p">)</span><span class="o">&amp;</span><span class="n">cirdev</span><span class="o">-&gt;</span><span class="n">head</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7283aeeb28db44c2996bae13c2623948-14"><code data-line-number="14"></code></a></td>
+<td class="code"><code><a name="rest_code_7283aeeb28db44c2996bae13c2623948-14"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_7283aeeb28db44c2996bae13c2623948-15"><code data-line-number="15"></code></a></td>
+<td class="code"><code><a name="rest_code_7283aeeb28db44c2996bae13c2623948-15"></a>       <span class="n">err</span> <span class="o">=</span> <span class="n">rc_register_device</span><span class="p">(</span><span class="n">cirdev</span><span class="o">-&gt;</span><span class="n">irprops</span><span class="p">);</span>
+</code></td>
+</tr>
+</table></div>
+<p>The UART is at the reset state and won't get initialized until the RC called its <em>cir_open()</em> operation. This will happen
+when <em>/dev/input/eventx</em> is opened by external application to make use of it.</p>
+<p>Once the IR stream bits is received and decoded by the UART, the RX interrupt will be generated and will be serviced
+by <em>cir_irq_handler</em> interrupt handler. The handler put the received byte into the buffer and schedule the BH workqueue.
+The BH handler then takes the byte off from the buffer and pushes it upstream to the IR core driver.</p>
+<div class="code"><table class="codetable">
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_e20959771034484eb561750818229ccc-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_e20959771034484eb561750818229ccc-1"></a>       <span class="p">..</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_e20959771034484eb561750818229ccc-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_e20959771034484eb561750818229ccc-2"></a>       <span class="k">if</span> <span class="p">(</span> <span class="p">(</span><span class="n">pulse</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">pulse</span> <span class="o">==</span> <span class="mh">0xff</span><span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_e20959771034484eb561750818229ccc-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_e20959771034484eb561750818229ccc-3"></a>               <span class="n">ev</span><span class="p">.</span><span class="n">pulse</span> <span class="o">=</span> <span class="n">pulse</span> <span class="o">?</span> <span class="mi">1</span> <span class="o">:</span> <span class="mi">0</span> <span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_e20959771034484eb561750818229ccc-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_e20959771034484eb561750818229ccc-4"></a>               <span class="n">ev</span><span class="p">.</span><span class="n">duration</span> <span class="o">=</span> <span class="p">(</span><span class="n">protocol</span> <span class="o">==</span> <span class="n">RC_TYPE_SONY12</span> <span class="p">)</span> <span class="o">?</span> <span class="mi">600000</span> <span class="o">*</span> <span class="mi">8</span><span class="o">:</span> <span class="mi">562500</span> <span class="o">*</span> <span class="mi">8</span> <span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_e20959771034484eb561750818229ccc-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_e20959771034484eb561750818229ccc-5"></a>               <span class="n">ir_raw_event_store_with_filter</span><span class="p">(</span><span class="n">cirdev</span><span class="o">-&gt;</span><span class="n">irprops</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ev</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_e20959771034484eb561750818229ccc-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_e20959771034484eb561750818229ccc-6"></a>               <span class="k">continue</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_e20959771034484eb561750818229ccc-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_e20959771034484eb561750818229ccc-7"></a>       <span class="p">}</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_e20959771034484eb561750818229ccc-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_e20959771034484eb561750818229ccc-8"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_e20959771034484eb561750818229ccc-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_e20959771034484eb561750818229ccc-9"></a>       <span class="k">for</span> <span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_e20959771034484eb561750818229ccc-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_e20959771034484eb561750818229ccc-10"></a>               <span class="n">ev</span><span class="p">.</span><span class="n">pulse</span> <span class="o">=</span> <span class="n">pulse</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_e20959771034484eb561750818229ccc-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_e20959771034484eb561750818229ccc-11"></a>               <span class="n">pulse</span> <span class="o">=</span> <span class="n">pulse</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_e20959771034484eb561750818229ccc-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_e20959771034484eb561750818229ccc-12"></a>               <span class="k">if</span> <span class="p">(</span><span class="n">protocol</span> <span class="o">==</span> <span class="n">RC_TYPE_SONY12</span><span class="p">)</span> <span class="p">{</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_e20959771034484eb561750818229ccc-13"><code data-line-number="13"></code></a></td>
+<td class="code"><code><a name="rest_code_e20959771034484eb561750818229ccc-13"></a>                       <span class="n">ev</span><span class="p">.</span><span class="n">duration</span> <span class="o">=</span> <span class="mi">600000</span> <span class="p">;</span> <span class="c1">//duration * 1000; //in ns</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_e20959771034484eb561750818229ccc-14"><code data-line-number="14"></code></a></td>
+<td class="code"><code><a name="rest_code_e20959771034484eb561750818229ccc-14"></a>               <span class="p">}</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_e20959771034484eb561750818229ccc-15"><code data-line-number="15"></code></a></td>
+<td class="code"><code><a name="rest_code_e20959771034484eb561750818229ccc-15"></a>               <span class="k">else</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_e20959771034484eb561750818229ccc-16"><code data-line-number="16"></code></a></td>
+<td class="code"><code><a name="rest_code_e20959771034484eb561750818229ccc-16"></a>                       <span class="n">ev</span><span class="p">.</span><span class="n">duration</span> <span class="o">=</span> <span class="mi">562500</span><span class="p">;</span> <span class="c1">//duration * 1000; //in ns</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_e20959771034484eb561750818229ccc-17"><code data-line-number="17"></code></a></td>
+<td class="code"><code><a name="rest_code_e20959771034484eb561750818229ccc-17"></a>                       <span class="n">ir_raw_event_store_with_filter</span><span class="p">(</span><span class="n">cirdev</span><span class="o">-&gt;</span><span class="n">irprops</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ev</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_e20959771034484eb561750818229ccc-18"><code data-line-number="18"></code></a></td>
+<td class="code"><code><a name="rest_code_e20959771034484eb561750818229ccc-18"></a>               <span class="p">}</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_e20959771034484eb561750818229ccc-19"><code data-line-number="19"></code></a></td>
+<td class="code"><code><a name="rest_code_e20959771034484eb561750818229ccc-19"></a>                <span class="p">..</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_e20959771034484eb561750818229ccc-20"><code data-line-number="20"></code></a></td>
+<td class="code"><code><a name="rest_code_e20959771034484eb561750818229ccc-20"></a>       <span class="n">ir_raw_event_handle</span><span class="p">(</span><span class="n">cirdev</span><span class="o">-&gt;</span><span class="n">irprops</span><span class="p">);</span>
+</code></td>
+</tr>
+</table></div>
+<p>For simplicity, I omit the sleep/wakeup support in the driver, instead I add proc file interface for
+debugging purpose. The proc file is a simple registers dump using sequential file mechanism.</p>
+<div class="code"><table class="codetable">
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_39b9921c50a34d23a06c44c3cc30603a-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_39b9921c50a34d23a06c44c3cc30603a-1"></a>       <span class="k">struct</span> <span class="nc">file_operations</span> <span class="n">proc_regs_fops</span> <span class="o">=</span> <span class="p">{</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_39b9921c50a34d23a06c44c3cc30603a-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_39b9921c50a34d23a06c44c3cc30603a-2"></a>               <span class="p">.</span><span class="n">open</span> <span class="o">=</span>  <span class="n">proc_seq_open</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_39b9921c50a34d23a06c44c3cc30603a-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_39b9921c50a34d23a06c44c3cc30603a-3"></a>               <span class="p">.</span><span class="n">read</span> <span class="o">=</span> <span class="n">seq_read</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_39b9921c50a34d23a06c44c3cc30603a-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_39b9921c50a34d23a06c44c3cc30603a-4"></a>               <span class="p">.</span><span class="n">llseek</span> <span class="o">=</span> <span class="n">seq_lseek</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_39b9921c50a34d23a06c44c3cc30603a-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_39b9921c50a34d23a06c44c3cc30603a-5"></a>               <span class="p">.</span><span class="n">write</span> <span class="o">=</span> <span class="n">proc_reg_write</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_39b9921c50a34d23a06c44c3cc30603a-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_39b9921c50a34d23a06c44c3cc30603a-6"></a>               <span class="p">.</span><span class="n">owner</span> <span class="o">=</span> <span class="n">THIS_MODULE</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_39b9921c50a34d23a06c44c3cc30603a-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_39b9921c50a34d23a06c44c3cc30603a-7"></a>       <span class="p">};</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_39b9921c50a34d23a06c44c3cc30603a-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_39b9921c50a34d23a06c44c3cc30603a-8"></a>       <span class="p">..</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_39b9921c50a34d23a06c44c3cc30603a-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_39b9921c50a34d23a06c44c3cc30603a-9"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_39b9921c50a34d23a06c44c3cc30603a-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_39b9921c50a34d23a06c44c3cc30603a-10"></a>       <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">cir_procdir_entry</span> <span class="o">=</span> <span class="n">proc_mkdir</span><span class="p">(</span><span class="s">"cir"</span><span class="p">,</span><span class="nb">NULL</span><span class="p">)))</span> <span class="p">{</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_39b9921c50a34d23a06c44c3cc30603a-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_39b9921c50a34d23a06c44c3cc30603a-11"></a>               <span class="k">goto</span> <span class="n">exit_free_data</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_39b9921c50a34d23a06c44c3cc30603a-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_39b9921c50a34d23a06c44c3cc30603a-12"></a>       <span class="p">}</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_39b9921c50a34d23a06c44c3cc30603a-13"><code data-line-number="13"></code></a></td>
+<td class="code"><code><a name="rest_code_39b9921c50a34d23a06c44c3cc30603a-13"></a>       <span class="n">cirdev</span><span class="o">-&gt;</span><span class="n">proc_entry</span> <span class="o">=</span> <span class="n">cir_procdir_entry</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_39b9921c50a34d23a06c44c3cc30603a-14"><code data-line-number="14"></code></a></td>
+<td class="code"><code><a name="rest_code_39b9921c50a34d23a06c44c3cc30603a-14"></a>       <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">entry</span> <span class="o">=</span> <span class="n">proc_create_data</span><span class="p">(</span><span class="s">"regs"</span><span class="p">,</span><span class="n">S_IFREG</span> <span class="o">|</span> <span class="n">S_IRUGO</span> <span class="o">|</span> <span class="n">S_IWUSR</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_39b9921c50a34d23a06c44c3cc30603a-15"><code data-line-number="15"></code></a></td>
+<td class="code"><code><a name="rest_code_39b9921c50a34d23a06c44c3cc30603a-15"></a>                                                                  <span class="n">cirdev</span><span class="o">-&gt;</span><span class="n">proc_entry</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_39b9921c50a34d23a06c44c3cc30603a-16"><code data-line-number="16"></code></a></td>
+<td class="code"><code><a name="rest_code_39b9921c50a34d23a06c44c3cc30603a-16"></a>                                                                  <span class="o">&amp;</span><span class="n">proc_regs_fops</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_39b9921c50a34d23a06c44c3cc30603a-17"><code data-line-number="17"></code></a></td>
+<td class="code"><code><a name="rest_code_39b9921c50a34d23a06c44c3cc30603a-17"></a>                                                                  <span class="nb">NULL</span><span class="p">))</span> <span class="p">)</span> <span class="p">{</span>
+</code></td>
+</tr>
+</table></div>
+<p>Once I compile the driver, <em>cir.ko</em>, I can load and test it. As part of input event, the input event driver, <em>evdev</em> is also used.</p>
+<pre class="code console"><a name="rest_code_a7bc60672fec427f8b7ee3547e621843-1"></a><span class="gp"># </span>modprobe evdev
+<a name="rest_code_a7bc60672fec427f8b7ee3547e621843-2"></a><span class="gp"># </span>insmod cir.ko
+</pre>
+</div>
+</div>
+<div class="section" id="testing">
+<h2>Testing</h2>
+<p>Having the debug code, upon driver loading I can see that the platform framework call it with,</p>
+<pre class="code console"><a name="rest_code_653b7968559b4d4fa76c23ff71fb2fc4-1"></a><span class="gp"># </span>insmod ci# insmod cir.ko
+<a name="rest_code_653b7968559b4d4fa76c23ff71fb2fc4-2"></a><span class="go">[   40.972690] cir_probe: entering with regs start 0x481a8000, size 0x2000, irq 156</span>
+<a name="rest_code_653b7968559b4d4fa76c23ff71fb2fc4-3"></a><span class="go">[   40.980266] cir_probe:uartclk 48000000, wakeirq 0, id   (null), sbase 0xfa1a8000, mapbase 481a8000</span>
+<a name="rest_code_653b7968559b4d4fa76c23ff71fb2fc4-4"></a><span class="go">[   40.990945] cir_probe: fck rate 48000000</span>
+</pre>
+<p>So far so good. My debugging messages indicate that I get the UART4 resource information correctly.To make sure I get what
+I think I really get is to add few extra debug code to actually read the AM3358 registers <a class="footnote-reference brackets" href="#id5" id="id3">1</a> just to verify the setting.</p>
+<pre class="code console"><a name="rest_code_4785f901c0d24b3da865b63ddb98a0d2-1"></a><span class="go">[   99.034228] get_uart_clock, CM_PER_L4LS_CLKCTRL=0x4502</span>
+<a name="rest_code_4785f901c0d24b3da865b63ddb98a0d2-2"></a><span class="go">[   99.039409] get_uart_clock, CM_PER_UART4_CLKCTRL=0x2</span>
+<a name="rest_code_4785f901c0d24b3da865b63ddb98a0d2-3"></a><span class="go">[   99.045336] get_uart_clock: MDR1 reg = 0x7, CFPS 0x69</span>
+</pre>
+<p>The first two lines is the value of <em>CM_PER_L4LS_CLKCTRL</em> <a class="footnote-reference brackets" href="#id5" id="id4">1</a> and <em>CM_PER_UART4_CLKCTRL</em> respectively. This is the
+indication that clock line is activated correctly. The last line is to read two UART registers, <em>MDR1</em> and
+<em>CFPS</em>. If clock line is not activated, reading the two UART registers would have resulted in kernel crash
+because the IO bus would be stuck and cause I/O fault to happen. It is the painful way to know something is wrong.</p>
+<p>I can check IRQ45 of UART4 is registered with the kernel correctly.</p>
+<pre class="code console"><a name="rest_code_d1129f1a4e6f4e879af6f8429cf66c0f-1"></a><span class="gp"># </span>cat /proc/interrupts
+<a name="rest_code_d1129f1a4e6f4e879af6f8429cf66c0f-2"></a><span class="go">           CPU0</span>
+<a name="rest_code_d1129f1a4e6f4e879af6f8429cf66c0f-3"></a><span class="go"> 16:       3050      INTC  68 Level     gp_timer</span>
+<a name="rest_code_d1129f1a4e6f4e879af6f8429cf66c0f-4"></a><span class="go"> ...</span>
+<a name="rest_code_d1129f1a4e6f4e879af6f8429cf66c0f-5"></a><span class="go">156:          0      INTC  45 Level     cir</span>
+<a name="rest_code_d1129f1a4e6f4e879af6f8429cf66c0f-6"></a><span class="go">...</span>
+</pre>
+<p>There is my interrupt handler and current count is at 0. While at it I can check my proc file for registers dump at
+the device's idle state.</p>
+<pre class="code console"><a name="rest_code_c52f0a650b154b87ac2481273277bcb0-1"></a><span class="gp"># </span>cat /proc/cir/regs
+<a name="rest_code_c52f0a650b154b87ac2481273277bcb0-2"></a><span class="go">rhr                      0x44</span>
+<a name="rest_code_c52f0a650b154b87ac2481273277bcb0-3"></a><span class="go">acreg                    0x10</span>
+<a name="rest_code_c52f0a650b154b87ac2481273277bcb0-4"></a><span class="go">..</span>
+</pre>
+<p>Having verify the information that I expect, I have more confident to do further test. The next step is to
+test with <em>ir-keytable</em> utility.</p>
+<pre class="code console"><a name="rest_code_9a53def3f3b148f897251d11d7badf7f-1"></a><span class="gp"># </span>ir-keytable
+<a name="rest_code_9a53def3f3b148f897251d11d7badf7f-2"></a><span class="go">Found /sys/class/rc/rc0/ (/dev/input/event0) with:</span>
+<a name="rest_code_9a53def3f3b148f897251d11d7badf7f-3"></a><span class="go">        Driver (null), table rc-rc6-mce</span>
+<a name="rest_code_9a53def3f3b148f897251d11d7badf7f-4"></a><span class="go">        Supported protocols: unknown other lirc rc-5 jvc sony nec sanyo mce-kbd rc-6 sharp xmp</span>
+<a name="rest_code_9a53def3f3b148f897251d11d7badf7f-5"></a><span class="go">        Enabled protocols: lirc rc-6</span>
+<a name="rest_code_9a53def3f3b148f897251d11d7badf7f-6"></a><span class="go">        Name: CIR Infrared Remote Receiver</span>
+<a name="rest_code_9a53def3f3b148f897251d11d7badf7f-7"></a><span class="go">        bus: 0, vendor/product: 0000:0000, version: 0x0000</span>
+<a name="rest_code_9a53def3f3b148f897251d11d7badf7f-8"></a><span class="go">        Repeat delay = 500 ms, repeat period = 125 ms</span>
+</pre>
+<p>Looks like the tool recognize the registered IR device. I will change to use SONY protocol instead of
+<em>lirc rc-6</em> so I issue this command,</p>
+<pre class="code console"><a name="rest_code_99941e7a53d24113b6027462a1e8763b-1"></a><span class="gp"># </span>ir-keytable -c -p SONY
+<a name="rest_code_99941e7a53d24113b6027462a1e8763b-2"></a><span class="go">Old keytable cleared</span>
+<a name="rest_code_99941e7a53d24113b6027462a1e8763b-3"></a><span class="go">Protocols changed to sony</span>
+<a name="rest_code_99941e7a53d24113b6027462a1e8763b-4"></a><span class="gp"># </span>ir-keytable
+<a name="rest_code_99941e7a53d24113b6027462a1e8763b-5"></a><span class="go">Found /sys/class/rc/rc0/ (/dev/input/event0) with:</span>
+<a name="rest_code_99941e7a53d24113b6027462a1e8763b-6"></a><span class="go">        Driver (null), table rc-rc6-mce</span>
+<a name="rest_code_99941e7a53d24113b6027462a1e8763b-7"></a><span class="go">        Supported protocols: unknown other lirc rc-5 jvc sony nec sanyo mce-kbd rc-6 sharp xmp</span>
+<a name="rest_code_99941e7a53d24113b6027462a1e8763b-8"></a><span class="go">        Enabled protocols: sony</span>
+<a name="rest_code_99941e7a53d24113b6027462a1e8763b-9"></a><span class="go">        Name: CIR Infrared Remote Receiver</span>
+<a name="rest_code_99941e7a53d24113b6027462a1e8763b-10"></a><span class="go">        bus: 0, vendor/product: 0000:0000, version: 0x0000</span>
+<a name="rest_code_99941e7a53d24113b6027462a1e8763b-11"></a><span class="go">        Repeat delay = 500 ms, repeat period = 125 ms</span>
+</pre>
+<p>So far so good. Next is to run the test with the IR receiver and SONY based remote control I found
+in my junk box.</p>
+<pre class="code console"><a name="rest_code_d0aa2ba3040948309a0beec7049c209b-1"></a><span class="gp"># </span>ir-keytable -t
+<a name="rest_code_d0aa2ba3040948309a0beec7049c209b-2"></a><span class="go">Testing events. Please, press CTRL-C to abort.</span>
+<a name="rest_code_d0aa2ba3040948309a0beec7049c209b-3"></a><span class="go">1214.743017: event type EV_MSC(0x04): scancode = 0x19000a</span>
+<a name="rest_code_d0aa2ba3040948309a0beec7049c209b-4"></a><span class="go">1214.743017: event type EV_SYN(0x00).</span>
+<a name="rest_code_d0aa2ba3040948309a0beec7049c209b-5"></a><span class="go">...</span>
+<a name="rest_code_d0aa2ba3040948309a0beec7049c209b-6"></a><span class="go">218.540761: event type EV_MSC(0x04): scancode = 0x19000b</span>
+<a name="rest_code_d0aa2ba3040948309a0beec7049c209b-7"></a><span class="go">1218.540761: event type EV_SYN(0x00).</span>
+<a name="rest_code_d0aa2ba3040948309a0beec7049c209b-8"></a><span class="go">1218.585536: event type EV_MSC(0x04): scancode = 0x19000b</span>
+</pre>
+<p>Scan code of SONY remote control is detected and decoded. For <em>power</em> button it is 0x1900a and for <em>menu</em>
+button it is 0x19000b. With this information, I can create the keymaps for it. Luckily this remote control
+has only a small number of buttons so it is created quickly. I store this keymap file as <em>sony</em> in
+<em>/etc/rc_keymaps</em>.</p>
+<pre class="code console"><a name="rest_code_1eb8695d796a4dbbafde4b142eb4fcae-1"></a><span class="gp"># </span>cat /etc/rc_keymaps/sony
+<a name="rest_code_1eb8695d796a4dbbafde4b142eb4fcae-2"></a><span class="go">0x19000a KEY_POWER</span>
+<a name="rest_code_1eb8695d796a4dbbafde4b142eb4fcae-3"></a><span class="go">0x19000b KEY_MENU</span>
+<a name="rest_code_1eb8695d796a4dbbafde4b142eb4fcae-4"></a><span class="go">0x19000c KEY_UP</span>
+<a name="rest_code_1eb8695d796a4dbbafde4b142eb4fcae-5"></a><span class="go">0x19000d KEY_REWIND</span>
+<a name="rest_code_1eb8695d796a4dbbafde4b142eb4fcae-6"></a><span class="go">0x19000e KEY_ENTER</span>
+<a name="rest_code_1eb8695d796a4dbbafde4b142eb4fcae-7"></a><span class="go">0x19000f KEY_FORWARD</span>
+<a name="rest_code_1eb8695d796a4dbbafde4b142eb4fcae-8"></a><span class="go">0x190010 KEY_DOWN</span>
+</pre>
+<p>Next I load the keymap mapping for the next test.</p>
+<pre class="code console"><a name="rest_code_618e26b110364b238ca24c3a4fee5436-1"></a><span class="gp"># </span>ir-keytable -c -p sony -w /etc/rc_keymaps/sony
+<a name="rest_code_618e26b110364b238ca24c3a4fee5436-2"></a><span class="go">Old keytable cleared</span>
+<a name="rest_code_618e26b110364b238ca24c3a4fee5436-3"></a><span class="go">Wrote 7 keycode(s) to driver</span>
+<a name="rest_code_618e26b110364b238ca24c3a4fee5436-4"></a><span class="go">Protocols changed to sony</span>
+<a name="rest_code_618e26b110364b238ca24c3a4fee5436-5"></a><span class="gp"># </span>ir-keytable -t
+<a name="rest_code_618e26b110364b238ca24c3a4fee5436-6"></a><span class="go">Testing events. Please, press CTRL-C to abort.</span>
+<a name="rest_code_618e26b110364b238ca24c3a4fee5436-7"></a><span class="go">1608.313105: event type EV_MSC(0x04): scancode = 0x19000a</span>
+<a name="rest_code_618e26b110364b238ca24c3a4fee5436-8"></a><span class="go">1608.313105: event type EV_KEY(0x01) key_down: KEY_POWER(0x0001)</span>
+<a name="rest_code_618e26b110364b238ca24c3a4fee5436-9"></a><span class="go">1608.313105: event type EV_SYN(0x00).</span>
+<a name="rest_code_618e26b110364b238ca24c3a4fee5436-10"></a><span class="go">...</span>
+<a name="rest_code_618e26b110364b238ca24c3a4fee5436-11"></a><span class="go">1613.269840: event type EV_MSC(0x04): scancode = 0x190010</span>
+<a name="rest_code_618e26b110364b238ca24c3a4fee5436-12"></a><span class="go">1613.269840: event type EV_KEY(0x01) key_down: KEY_DOWN(0x0001)</span>
+<a name="rest_code_618e26b110364b238ca24c3a4fee5436-13"></a><span class="go">1613.269840: event type EV_SYN(0x00).</span>
+</pre>
+<p>Now that I can see that the key events are generated with respect to their scancodes. Changing
+protocol to match the type of remote control is also flexible, for example, I can change
+protocol to NEC, <em>nec</em> to use with an old TV remote control that uses NEC protocol,</p>
+<pre class="code console"><a name="rest_code_71c048c8ebbe4a52b756ddd3bd05d229-1"></a><span class="gp"># </span>ir-keytable -c -p nec
+<a name="rest_code_71c048c8ebbe4a52b756ddd3bd05d229-2"></a><span class="go">Old keytable cleared</span>
+<a name="rest_code_71c048c8ebbe4a52b756ddd3bd05d229-3"></a><span class="go">Protocols changed to nec</span>
+<a name="rest_code_71c048c8ebbe4a52b756ddd3bd05d229-4"></a><span class="gp"># </span>ir-keytable -t
+<a name="rest_code_71c048c8ebbe4a52b756ddd3bd05d229-5"></a><span class="go">Testing events. Please, press CTRL-C to abort.</span>
+<a name="rest_code_71c048c8ebbe4a52b756ddd3bd05d229-6"></a><span class="go">2280.369927: event type EV_MSC(0x04): scancode = 0x847904</span>
+<a name="rest_code_71c048c8ebbe4a52b756ddd3bd05d229-7"></a><span class="go">2280.369927: event type EV_SYN(0x00).</span>
+<a name="rest_code_71c048c8ebbe4a52b756ddd3bd05d229-8"></a><span class="go">2285.859057: event type EV_MSC(0x04): scancode = 0x84790a</span>
+<a name="rest_code_71c048c8ebbe4a52b756ddd3bd05d229-9"></a><span class="go">2285.859057: event type EV_SYN(0x00).</span>
+</pre>
+<p>Should I need to use this remote control, I would want to create the keymap for its scancodes; however,
+this remote control has too many buttons, I will not create keymap for it for the time being. The scancodes
+above are for <em>play</em> and <em>stop</em> buttons respectively. They would be mapped to <em>KEY_PLAY</em> and <em>KEY_STOP</em> of
+the map file.</p>
+</div>
+<div class="section" id="conclusion">
+<h2>Conclusion</h2>
+<p>While there are many choices to use the IR of this type. One would be the GPIO type of driver to handle the
+IR stream, perhaps bit-banging it. If there is a small piece of hardware that left unused, it is better
+to use it. Since it is already included in the cost of the product, I better find the use of it.</p>
+<p>This driver is available in my github repository, <a class="reference external" href="https://github.com/souktha/ir">https://github.com/souktha/ir</a>. There is a lot of room to
+improve and it is not yet robust. If I load/unload multiple times, it would crash. Once I have enough time
+in my hand, I will fix it. Perhaps it is because I oversimplify it by ignoring certain aspect of <em>pm_runtime</em>.</p>
+</div>
+<div class="section" id="citations">
+<h2>Citations</h2>
+<dl class="footnote brackets">
+<dt class="label" id="id5">
+<span class="brackets">1</span><span class="fn-backref">(<a href="#id2">1</a>,<a href="#id3">2</a>,<a href="#id4">3</a>)</span>
+</dt>
+<dd>
+<p>AM335x Sitara Processors Technical Reference Manual, Literature number: SPRUH73M, October 2011 - Revised January 2016, Texas Instruments.</p>
+</dd>
+<dt class="label" id="id6"><span class="brackets">2</span></dt>
+<dd>
+<p>BeagleBone Black System Reference Manual, Revision C.1, May 22, 2014, Gerald Coley, Robert P J Day (BBB_SRM.pdf)</p>
+</dd>
+<dt class="label" id="id7"><span class="brackets">3</span></dt>
+<dd>
+<p>BeagleBone Black Document Number 450-5500-001, Rev C, March 21, 2014 (BBB_SCH.pdf)</p>
+</dd>
+<dt class="label" id="id8"><span class="brackets"><a class="fn-backref" href="#id1">4</a></span></dt>
+<dd>
+<p>AM335x Sitara Processors, Rev I, Texas Instruments, SPRS7171 (am3358.pdf)</p>
+</dd>
+</dl>
+</div>
+</div>
+    </div>
+    
+
+</article>
+</div>
+        <!--End of body content-->
+
+        <footer id="footer">
+            Contents © 2021         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+        </footer>
+</div>
+</div>
+
+
+            <script src="../../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+    moment.locale("en");
+    fancydates(0, "YYYY-MM-DD HH:mm");
+    </script><!-- end fancy dates -->
+</body>
+</html>

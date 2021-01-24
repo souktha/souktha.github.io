@@ -1,7 +1,8 @@
 .. title: Implementing BCH (15,7,5) FEC
 .. slug: bch15_7_5_hw
 .. date: 2017-03-18 00:17:42 UTC
-.. tags: hardware, mathjax, latex
+.. tags: hardware, latex
+.. has_math: true
 .. category: FPGA
 .. link: 
 .. description: 

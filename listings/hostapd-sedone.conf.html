@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="description" content="hostapd-sedone.conf">
@@ -8,7 +8,7 @@
 <link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
 <meta name="theme-color" content="#5670d4">
 <meta name="generator" content="Nikola (getnikola.com)">
-<link rel="alternate" type="application/rss+xml" title="RSS" href="../rss.xml">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../rss.xml">
 <link rel="canonical" href="http://souktha.github.io/listings/hostapd-sedone.conf.html">
 <!--[if lt IE 9]><script src="../assets/js/html5.js"></script><![endif]-->
 </head>
@@ -75,86 +75,186 @@
             
             
 
+
 <nav class="breadcrumbs"><ul class="breadcrumb">
 <li><a href=".">listings</a></li>
                 <li>hostapd-sedone.conf</li>
 </ul></nav><h1>hostapd-sedone.conf
         <small><a href="hostapd-sedone.conf">(Source)</a></small>
     </h1>
-    <table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#listingshostapd-sedoneconf-1"> 1</a>
-<a href="#listingshostapd-sedoneconf-2"> 2</a>
-<a href="#listingshostapd-sedoneconf-3"> 3</a>
-<a href="#listingshostapd-sedoneconf-4"> 4</a>
-<a href="#listingshostapd-sedoneconf-5"> 5</a>
-<a href="#listingshostapd-sedoneconf-6"> 6</a>
-<a href="#listingshostapd-sedoneconf-7"> 7</a>
-<a href="#listingshostapd-sedoneconf-8"> 8</a>
-<a href="#listingshostapd-sedoneconf-9"> 9</a>
-<a href="#listingshostapd-sedoneconf-10">10</a>
-<a href="#listingshostapd-sedoneconf-11">11</a>
-<a href="#listingshostapd-sedoneconf-12">12</a>
-<a href="#listingshostapd-sedoneconf-13">13</a>
-<a href="#listingshostapd-sedoneconf-14">14</a>
-<a href="#listingshostapd-sedoneconf-15">15</a>
-<a href="#listingshostapd-sedoneconf-16">16</a>
-<a href="#listingshostapd-sedoneconf-17">17</a>
-<a href="#listingshostapd-sedoneconf-18">18</a>
-<a href="#listingshostapd-sedoneconf-19">19</a>
-<a href="#listingshostapd-sedoneconf-20">20</a>
-<a href="#listingshostapd-sedoneconf-21">21</a>
-<a href="#listingshostapd-sedoneconf-22">22</a>
-<a href="#listingshostapd-sedoneconf-23">23</a>
-<a href="#listingshostapd-sedoneconf-24">24</a>
-<a href="#listingshostapd-sedoneconf-25">25</a>
-<a href="#listingshostapd-sedoneconf-26">26</a>
-<a href="#listingshostapd-sedoneconf-27">27</a>
-<a href="#listingshostapd-sedoneconf-28">28</a>
-<a href="#listingshostapd-sedoneconf-29">29</a>
-<a href="#listingshostapd-sedoneconf-30">30</a>
-<a href="#listingshostapd-sedoneconf-31">31</a>
-<a href="#listingshostapd-sedoneconf-32">32</a>
-<a href="#listingshostapd-sedoneconf-33">33</a></pre></div></td>
-<td class="code"><pre class="code literal-block"><a name="listingshostapd-sedoneconf-1"></a>interface=wlan0
-<a name="listingshostapd-sedoneconf-2"></a>bridge=br0
-<a name="listingshostapd-sedoneconf-3"></a>logger_syslog=127
-<a name="listingshostapd-sedoneconf-4"></a>logger_syslog_level=2
-<a name="listingshostapd-sedoneconf-5"></a>logger_stdout=127
-<a name="listingshostapd-sedoneconf-6"></a>logger_stdout_level=2
-<a name="listingshostapd-sedoneconf-7"></a>ctrl_interface=/var/run/hostapd
-<a name="listingshostapd-sedoneconf-8"></a>ctrl_interface_group=0
-<a name="listingshostapd-sedoneconf-9"></a>ssid=sedone3
-<a name="listingshostapd-sedoneconf-10"></a>hw_mode=g
-<a name="listingshostapd-sedoneconf-11"></a>macaddr_acl=0
-<a name="listingshostapd-sedoneconf-12"></a>auth_algs=1
-<a name="listingshostapd-sedoneconf-13"></a>ieee8021x=1
-<a name="listingshostapd-sedoneconf-14"></a>eapol_key_index_workaround=0
-<a name="listingshostapd-sedoneconf-15"></a>eap_server=1
-<a name="listingshostapd-sedoneconf-16"></a>country_code=US
-<a name="listingshostapd-sedoneconf-17"></a>channel=6
-<a name="listingshostapd-sedoneconf-18"></a>
-<a name="listingshostapd-sedoneconf-19"></a>beacon_int=100
-<a name="listingshostapd-sedoneconf-20"></a>hw_mode=g
-<a name="listingshostapd-sedoneconf-21"></a>wpa=2
-<a name="listingshostapd-sedoneconf-22"></a>ieee80211n=1
-<a name="listingshostapd-sedoneconf-23"></a>wme_enabled=1
-<a name="listingshostapd-sedoneconf-24"></a>ht_capab=[SHORT-GI-20][SHORT-GI-40][HT40+]
-<a name="listingshostapd-sedoneconf-25"></a>wpa_key_mgmt=WPA-PSK
-<a name="listingshostapd-sedoneconf-26"></a>wpa_pairwise=CCMP
-<a name="listingshostapd-sedoneconf-27"></a>max_num_sta=8
-<a name="listingshostapd-sedoneconf-28"></a>wpa_group_rekey=86400
-<a name="listingshostapd-sedoneconf-29"></a>wpa_passphrase=87654321
-<a name="listingshostapd-sedoneconf-30"></a>
-<a name="listingshostapd-sedoneconf-31"></a>upnp_iface=br0
-<a name="listingshostapd-sedoneconf-32"></a>friendly_name=sedone3
-<a name="listingshostapd-sedoneconf-33"></a>model_description=Slackware WiFi AP
-</pre></td>
-</tr></table>
-</div>
+    <div class="code"><table class="codetable">
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-1"></a><span class="n">interface</span><span class="o">=</span><span class="n">wlan0</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-2"></a><span class="n">bridge</span><span class="o">=</span><span class="n">br0</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-3"></a><span class="n">logger_syslog</span><span class="o">=</span><span class="mi">127</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-4"></a><span class="n">logger_syslog_level</span><span class="o">=</span><span class="mi">2</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-5"></a><span class="n">logger_stdout</span><span class="o">=</span><span class="mi">127</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-6"></a><span class="n">logger_stdout_level</span><span class="o">=</span><span class="mi">2</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-7"></a><span class="n">ctrl_interface</span><span class="o">=/</span><span class="k">var</span><span class="o">/</span><span class="n">run</span><span class="o">/</span><span class="n">hostapd</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-8"></a><span class="n">ctrl_interface_group</span><span class="o">=</span><span class="mi">0</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-9"></a><span class="n">ssid</span><span class="o">=</span><span class="n">sedone3</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-10"></a><span class="n">hw_mode</span><span class="o">=</span><span class="n">g</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-11"></a><span class="n">macaddr_acl</span><span class="o">=</span><span class="mi">0</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-12"></a><span class="n">auth_algs</span><span class="o">=</span><span class="mi">1</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-13"><code data-line-number="13"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-13"></a><span class="n">ieee8021x</span><span class="o">=</span><span class="mi">1</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-14"><code data-line-number="14"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-14"></a><span class="n">eapol_key_index_workaround</span><span class="o">=</span><span class="mi">0</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-15"><code data-line-number="15"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-15"></a><span class="n">eap_server</span><span class="o">=</span><span class="mi">1</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-16"><code data-line-number="16"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-16"></a><span class="n">country_code</span><span class="o">=</span><span class="n">US</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-17"><code data-line-number="17"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-17"></a><span class="n">channel</span><span class="o">=</span><span class="mi">6</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-18"><code data-line-number="18"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-18"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-19"><code data-line-number="19"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-19"></a><span class="n">beacon_int</span><span class="o">=</span><span class="mi">100</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-20"><code data-line-number="20"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-20"></a><span class="n">hw_mode</span><span class="o">=</span><span class="n">g</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-21"><code data-line-number="21"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-21"></a><span class="n">wpa</span><span class="o">=</span><span class="mi">2</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-22"><code data-line-number="22"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-22"></a><span class="n">ieee80211n</span><span class="o">=</span><span class="mi">1</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-23"><code data-line-number="23"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-23"></a><span class="n">wme_enabled</span><span class="o">=</span><span class="mi">1</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-24"><code data-line-number="24"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-24"></a><span class="n">ht_capab</span><span class="o">=</span><span class="p">[</span><span class="n">SHORT</span><span class="o">-</span><span class="n">GI</span><span class="o">-</span><span class="mi">20</span><span class="p">][</span><span class="n">SHORT</span><span class="o">-</span><span class="n">GI</span><span class="o">-</span><span class="mi">40</span><span class="p">][</span><span class="n">HT40</span><span class="o">+</span><span class="p">]</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-25"><code data-line-number="25"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-25"></a><span class="n">wpa_key_mgmt</span><span class="o">=</span><span class="n">WPA</span><span class="o">-</span><span class="n">PSK</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-26"><code data-line-number="26"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-26"></a><span class="n">wpa_pairwise</span><span class="o">=</span><span class="n">CCMP</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-27"><code data-line-number="27"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-27"></a><span class="n">max_num_sta</span><span class="o">=</span><span class="mi">8</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-28"><code data-line-number="28"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-28"></a><span class="n">wpa_group_rekey</span><span class="o">=</span><span class="mi">86400</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-29"><code data-line-number="29"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-29"></a><span class="n">wpa_passphrase</span><span class="o">=</span><span class="mi">87654321</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-30"><code data-line-number="30"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-30"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-31"><code data-line-number="31"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-31"></a><span class="n">upnp_iface</span><span class="o">=</span><span class="n">br0</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-32"><code data-line-number="32"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-32"></a><span class="n">friendly_name</span><span class="o">=</span><span class="n">sedone3</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#listingshostapd-sedoneconf-33"><code data-line-number="33"></code></a></td>
+<td class="code"><code><a name="listingshostapd-sedoneconf-33"></a><span class="n">model_description</span><span class="o">=</span><span class="n">Slackware</span> <span class="n">WiFi</span> <span class="n">AP</span>
+</code></td>
+</tr>
+</table></div>
+
+        </div>
         <!--End of body content-->
 
         <footer id="footer">
-            Contents © 2018         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            Contents © 2021         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
             
         </footer>
 </div>

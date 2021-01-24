@@ -1,7 +1,8 @@
 .. title: Simple Cyclic Hamming codes
 .. slug: cyclic_1_x_x4
 .. date: 2016-12-10 22:46:19 UTC
-.. tags: misc, mathjax, latex
+.. tags: misc, latex
+.. has_math: true
 .. category: math 
 .. link: 
 .. description: Cyclic codes with min polyn 1+x+x**4

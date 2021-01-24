@@ -1,7 +1,8 @@
 .. title: ReStructuredText Demo (import from demo.txt)
 .. slug: restructuredtext-demo-import-from-demotxt
 .. date: 2016-03-04 22:47:22 UTC
-.. tags: mathjax, misc
+.. tags:  misc
+.. has_math: true
 .. category: 
 .. link: 
 .. description: 

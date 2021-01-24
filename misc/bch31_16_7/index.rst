@@ -1,7 +1,8 @@
 .. title: Binary BCH (31,16,7) linear cyclic code work out
 .. slug: bch31_16_7
 .. date: 2017-01-16 23:39:17 UTC
-.. tags: misc, mathjax, latex, draft
+.. tags: misc, latex
+.. has_math: true
 .. category: math 
 .. link: 
 .. description: BCH code based on g(x)=1+x**2+x**5

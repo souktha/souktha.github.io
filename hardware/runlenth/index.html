@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,7 +7,7 @@
 <link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
 <meta name="theme-color" content="#5670d4">
 <meta name="generator" content="Nikola (getnikola.com)">
-<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../../rss.xml">
 <link rel="canonical" href="http://souktha.github.io/hardware/runlenth/">
 <!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Soukthavy">
 <link rel="prev" href="../../misc/repartition-boneblk/" title="Repartitioning 4GB Beaglebone Black eMMC flash" type="text/html">
@@ -98,13 +98,13 @@ I should specify the specification of the implementation.</p>
 <div class="section" id="design-specification">
 <h2>Design Specification</h2>
 <ul class="simple">
-<li>Host shall assert RTS as a request to send.</li>
-<li>In response to RTS, the target shall assert CTS if it is ready to process the incoming stream.</li>
-<li>Host shall transmit on CTS response, place data to din, and strobe data with den as its clock. Host
-drives din and den signals. Host shall not drive din and den on deassertion of CTS.</li>
-<li>Host shall latch the byte count on the rising edge of drdy, and the byte value on its falling edge.</li>
-<li>At any time, host may terminate transmission by deasserting RTS. In response to the deassertion of RTS,
-target shall terminate its RLE process by returning all the remaining bytes count and byte value.</li>
+<li><p>Host shall assert RTS as a request to send.</p></li>
+<li><p>In response to RTS, the target shall assert CTS if it is ready to process the incoming stream.</p></li>
+<li><p>Host shall transmit on CTS response, place data to din, and strobe data with den as its clock. Host
+drives din and den signals. Host shall not drive din and den on deassertion of CTS.</p></li>
+<li><p>Host shall latch the byte count on the rising edge of drdy, and the byte value on its falling edge.</p></li>
+<li><p>At any time, host may terminate transmission by deasserting RTS. In response to the deassertion of RTS,
+target shall terminate its RLE process by returning all the remaining bytes count and byte value.</p></li>
 </ul>
 <p>Host refers to the source of input data stream while target is this simulated target circuit.</p>
 </div>
@@ -117,19 +117,19 @@ of the main clock. These two state machines represent the input state machine an
 <div class="section" id="tool-and-source-files">
 <h2>Tool and source files</h2>
 <ul class="simple">
-<li>Vivado 2015.4</li>
-<li>source files: rle.v, rle_tb.v. No constraint file is required as it is only for simulation. Script file
-is also provided to set up the simulation (<a class="reference external" href="https://github.com/souktha/RLE">https://github.com/souktha/RLE</a>).</li>
+<li><p>Vivado 2015.4</p></li>
+<li><p>source files: rle.v, rle_tb.v. No constraint file is required as it is only for simulation. Script file
+is also provided to set up the simulation (<a class="reference external" href="https://github.com/souktha/RLE">https://github.com/souktha/RLE</a>).</p></li>
 </ul>
 <div class="section" id="running-simulation">
 <h3>Running simulation</h3>
 <ul class="simple">
-<li>cd to source.</li>
-<li>Start vivado.</li>
-<li>Select 'Tools-&gt;Run Tcl script'</li>
-<li>Select setup-rle.tcl</li>
-<li>On tcl console, 'create' to setup.</li>
-<li>'Project Manager -&gt; Run Simulation -&gt; Run Behavioral Simulation'.</li>
+<li><p>cd to source.</p></li>
+<li><p>Start vivado.</p></li>
+<li><p>Select 'Tools-&gt;Run Tcl script'</p></li>
+<li><p>Select setup-rle.tcl</p></li>
+<li><p>On tcl console, 'create' to setup.</p></li>
+<li><p>'Project Manager -&gt; Run Simulation -&gt; Run Behavioral Simulation'.</p></li>
 </ul>
 </div>
 </div>
@@ -137,27 +137,27 @@ is also provided to set up the simulation (<a class="reference external" href="h
 <h2>Simulation result</h2>
 <p>The following figures show the result of my simulation. Fig 1 is the response of non repeated stream of
 charater bytes.</p>
-<pre class="code text"><a name="rest_code_32222c1d9e344229b2057f156e091e20-1"></a>wait(cts)@(posedge fast_ck) begin
-<a name="rest_code_32222c1d9e344229b2057f156e091e20-2"></a>    #1 din = 8'hAD;
-<a name="rest_code_32222c1d9e344229b2057f156e091e20-3"></a>    #5 data_ck = 1'b1;
-<a name="rest_code_32222c1d9e344229b2057f156e091e20-4"></a>    end
-<a name="rest_code_32222c1d9e344229b2057f156e091e20-5"></a>wait(cts)@(posedge fast_ck) begin
-<a name="rest_code_32222c1d9e344229b2057f156e091e20-6"></a>#5 data_ck = 1'b0;
-<a name="rest_code_32222c1d9e344229b2057f156e091e20-7"></a>    #1 din = 8'h5E;
-<a name="rest_code_32222c1d9e344229b2057f156e091e20-8"></a>    #5 data_ck = 1'b1;
-<a name="rest_code_32222c1d9e344229b2057f156e091e20-9"></a>    end
+<pre class="code text"><a name="rest_code_898d92bb03cf4984b0f03c9314d256f6-1"></a>wait(cts)@(posedge fast_ck) begin
+<a name="rest_code_898d92bb03cf4984b0f03c9314d256f6-2"></a>    #1 din = 8'hAD;
+<a name="rest_code_898d92bb03cf4984b0f03c9314d256f6-3"></a>    #5 data_ck = 1'b1;
+<a name="rest_code_898d92bb03cf4984b0f03c9314d256f6-4"></a>    end
+<a name="rest_code_898d92bb03cf4984b0f03c9314d256f6-5"></a>wait(cts)@(posedge fast_ck) begin
+<a name="rest_code_898d92bb03cf4984b0f03c9314d256f6-6"></a>#5 data_ck = 1'b0;
+<a name="rest_code_898d92bb03cf4984b0f03c9314d256f6-7"></a>    #1 din = 8'h5E;
+<a name="rest_code_898d92bb03cf4984b0f03c9314d256f6-8"></a>    #5 data_ck = 1'b1;
+<a name="rest_code_898d92bb03cf4984b0f03c9314d256f6-9"></a>    end
 </pre>
 <div class="figure">
 <img alt="../../images/hardware/case1.png" src="../../images/hardware/case1.png"><p class="caption">Fig1: input ad.5e output 01.ad</p>
 </div>
 <p>and the case where maximum bytes count per transaction is reached. In this case the host send 258 bytes, Fig2.</p>
-<pre class="code text"><a name="rest_code_aa206d47c2f742c9b13e691221c78914-1"></a>for (i = 0; i &lt; 258; i = i+1 ) begin
-<a name="rest_code_aa206d47c2f742c9b13e691221c78914-2"></a>    #5 data_ck = 1'b0;
-<a name="rest_code_aa206d47c2f742c9b13e691221c78914-3"></a>    wait(cts) @(posedge fast_ck) begin
-<a name="rest_code_aa206d47c2f742c9b13e691221c78914-4"></a>         #1 din = 8'h77;
-<a name="rest_code_aa206d47c2f742c9b13e691221c78914-5"></a>        #5 data_ck = 1'b1;
-<a name="rest_code_aa206d47c2f742c9b13e691221c78914-6"></a>        end
-<a name="rest_code_aa206d47c2f742c9b13e691221c78914-7"></a>    end
+<pre class="code text"><a name="rest_code_857e11a952b24920bf4a53e72e475e20-1"></a>for (i = 0; i &lt; 258; i = i+1 ) begin
+<a name="rest_code_857e11a952b24920bf4a53e72e475e20-2"></a>    #5 data_ck = 1'b0;
+<a name="rest_code_857e11a952b24920bf4a53e72e475e20-3"></a>    wait(cts) @(posedge fast_ck) begin
+<a name="rest_code_857e11a952b24920bf4a53e72e475e20-4"></a>         #1 din = 8'h77;
+<a name="rest_code_857e11a952b24920bf4a53e72e475e20-5"></a>        #5 data_ck = 1'b1;
+<a name="rest_code_857e11a952b24920bf4a53e72e475e20-6"></a>        end
+<a name="rest_code_857e11a952b24920bf4a53e72e475e20-7"></a>    end
 </pre>
 <div class="figure">
 <img alt="../../images/hardware/case4.png" src="../../images/hardware/case4.png"><p class="caption">Fig2: 258 bytes breaks out with 254 bytes</p>
@@ -188,7 +188,7 @@ can do so in hardware. To me, this is the added benefit.</p>
         <!--End of body content-->
 
         <footer id="footer">
-            Contents © 2018         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            Contents © 2021         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
             
         </footer>
 </div>

@@ -1,7 +1,8 @@
 .. title: Simple Cyclic Hamming (15,11,3) FEC
 .. slug: cyclic_1_x_x4_hw
 .. date: 2016-12-22 00:17:42 UTC
-.. tags: hardware, mathjax, latex
+.. tags: hardware, latex
+.. has_math: true
 .. category: FPGA
 .. link: 
 .. description: 

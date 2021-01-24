@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="description" content="Demo site">
@@ -8,7 +8,7 @@
 <link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
 <meta name="theme-color" content="#5670d4">
 <meta name="generator" content="Nikola (getnikola.com)">
-<link rel="alternate" type="application/rss+xml" title="RSS" href="../rss.xml">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../rss.xml">
 <link rel="canonical" href="http://souktha.github.io/blog/index-2.html">
 <link rel="prev" href="." type="text/html">
 <link rel="next" href="index-1.html" type="text/html">
@@ -78,13 +78,57 @@
             
 
     
+
+
+    
 <div class="postindex">
-    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../hardware/zybo-spi-slave/" class="u-url">Zynq Zybo SPI slave via EMIO</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../software/zynq_spi_stepper_sw/" class="u-url">Zynq SPI slave stepper motor driver</a></h1>
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 Soukthavy
             </span></p>
-            <p class="dateline"><a href="../hardware/zybo-spi-slave/" rel="bookmark"><time class="published dt-published" datetime="2016-07-17T18:10:54Z" title="2016-07-17 18:10">2016-07-17 18:10</time></a></p>
+            <p class="dateline">
+            <a href="../software/zynq_spi_stepper_sw/" rel="bookmark">
+            <time class="published dt-published" datetime="2016-11-17T00:40:47Z" itemprop="datePublished" title="2016-11-17 00:40">2016-11-17 00:40</time></a>
+            </p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<p>The Linux SPI slave device driver is to enable user access to SPI slave stepper motor FPGA design in my other post
+<a class="reference external" href="http://souktha.github.io/hardware/zybo-spi-stepper">http://souktha.github.io/hardware/zybo-spi-stepper</a> . This is the software part of that implementation on the Zybo Zynq7000.
+I reuse the original SPI slave I wrote earlier and expand its functionality a little bit more so that I can send
+the step count to the stepper motor.</p>
+<p class="more"><a href="../software/zynq_spi_stepper_sw/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../hardware/zybo-spi-stepper/" class="u-url">SPI slave stepper motor with Zybo</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                Soukthavy
+            </span></p>
+            <p class="dateline">
+            <a href="../hardware/zybo-spi-stepper/" rel="bookmark">
+            <time class="published dt-published" datetime="2016-11-12T15:38:09Z" itemprop="datePublished" title="2016-11-12 15:38">2016-11-12 15:38</time></a>
+            </p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<p>My previous blog was to create the SPI slave device on Programmable Logic (PL) side of the Zynq7000 where it
+can be interconnected and can be accessible by the Processing System (PS) side of this SoC and I achieved the
+result I expected. Since that blog was only for validating my SPI slave design to be coherent with the rest of the
+system without doing much useful work, I would like to extend it so that I can make it do a bit more useful work.</p>
+<p class="more"><a href="../hardware/zybo-spi-stepper/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../hardware/zybo-spi-slave/" class="u-url">Zynq Zybo SPI slave via EMIO</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                Soukthavy
+            </span></p>
+            <p class="dateline">
+            <a href="../hardware/zybo-spi-slave/" rel="bookmark">
+            <time class="published dt-published" datetime="2016-07-17T18:10:54Z" itemprop="datePublished" title="2016-07-17 18:10">2016-07-17 18:10</time></a>
+            </p>
         </div>
     </header><div class="p-summary entry-summary">
     <div>
@@ -95,12 +139,15 @@ is to create a SPI slave device (PL) that will interconnect to the SPI master of
 <p class="more"><a href="../hardware/zybo-spi-slave/">Read more…</a></p>
 </div>
     </div>
-    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../software/dm814x_pcie/" class="u-url">Adding PCIe support and bring up the boot splash screen to DM814x U-Boot</a></h1>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../software/dm814x_pcie/" class="u-url">Adding PCIe support and bring up the boot splash screen to DM814x U-Boot </a></h1>
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 Soukthavy
             </span></p>
-            <p class="dateline"><a href="../software/dm814x_pcie/" rel="bookmark"><time class="published dt-published" datetime="2016-06-11T22:18:26Z" title="2016-06-11 22:18">2016-06-11 22:18</time></a></p>
+            <p class="dateline">
+            <a href="../software/dm814x_pcie/" rel="bookmark">
+            <time class="published dt-published" datetime="2016-06-11T22:18:26Z" itemprop="datePublished" title="2016-06-11 22:18">2016-06-11 22:18</time></a>
+            </p>
         </div>
     </header><div class="p-summary entry-summary">
     <div>
@@ -114,12 +161,15 @@ putting the boot splash screen during boot process.</p>
 <p class="more"><a href="../software/dm814x_pcie/">Read more…</a></p>
 </div>
     </div>
-    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../software/dm814x_sata/" class="u-url">Adding SATA HD boot support to DM814x U-Boot</a></h1>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../software/dm814x_sata/" class="u-url">Adding SATA HD boot support to DM814x U-Boot</a></h1>
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 Soukthavy
             </span></p>
-            <p class="dateline"><a href="../software/dm814x_sata/" rel="bookmark"><time class="published dt-published" datetime="2016-05-09T20:13:36Z" title="2016-05-09 20:13">2016-05-09 20:13</time></a></p>
+            <p class="dateline">
+            <a href="../software/dm814x_sata/" rel="bookmark">
+            <time class="published dt-published" datetime="2016-05-09T20:13:36Z" itemprop="datePublished" title="2016-05-09 20:13">2016-05-09 20:13</time></a>
+            </p>
         </div>
     </header><div class="p-summary entry-summary">
     <div>
@@ -133,12 +183,15 @@ Linux kernel image from HDD instead of loading it from NAND device.</p>
 <p class="more"><a href="../software/dm814x_sata/">Read more…</a></p>
 </div>
     </div>
-    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../software/zybo-quickstart/" class="u-url">Decoupling Xilinx Zynq PS and PL on Linux for Digilent Zybo</a></h1>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../software/zybo-quickstart/" class="u-url">Decoupling Xilinx Zynq PS and PL on Linux for Digilent Zybo</a></h1>
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 Soukthavy
             </span></p>
-            <p class="dateline"><a href="../software/zybo-quickstart/" rel="bookmark"><time class="published dt-published" datetime="2016-04-23T19:08:20Z" title="2016-04-23 19:08">2016-04-23 19:08</time></a></p>
+            <p class="dateline">
+            <a href="../software/zybo-quickstart/" rel="bookmark">
+            <time class="published dt-published" datetime="2016-04-23T19:08:20Z" itemprop="datePublished" title="2016-04-23 19:08">2016-04-23 19:08</time></a>
+            </p>
         </div>
     </header><div class="p-summary entry-summary">
     <div>
@@ -164,7 +217,7 @@ to decouple PS and PL components.</p>
         <!--End of body content-->
 
         <footer id="footer">
-            Contents © 2018         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            Contents © 2021         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
             
         </footer>
 </div>

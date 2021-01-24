@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="description" content="BCH code based on g(x)=1+x**2+x**5">
@@ -8,10 +8,11 @@
 <link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
 <meta name="theme-color" content="#5670d4">
 <meta name="generator" content="Nikola (getnikola.com)">
-<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../../rss.xml">
 <link rel="canonical" href="http://souktha.github.io/misc/bch31_16_7/">
 <!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Soukthavy">
-<meta name="robots" content="noindex">
+<link rel="prev" href="../create-ap-linuxpc/" title="Create Wireless AP on Linux PC in 10 minutes" type="text/html">
+<link rel="next" href="../bch15_7_5/" title="Binary BCH (15,7,5) work out " type="text/html">
 <meta property="og:site_name" content="Soukthavy Sopha">
 <meta property="og:title" content="Binary BCH (31,16,7) linear cyclic code work out">
 <meta property="og:url" content="http://souktha.github.io/misc/bch31_16_7/">
@@ -19,7 +20,6 @@
 <meta property="og:type" content="article">
 <meta property="article:published_time" content="2017-01-16T23:39:17Z">
 <meta property="article:tag" content="latex">
-<meta property="article:tag" content="mathjax">
 <meta property="article:tag" content="misc">
 </head>
 <body>
@@ -133,196 +133,212 @@ will have the generator polynomial, <span class="math">\(g(x) = m_{\alpha^1}(x)\
 will have the generator polynomial, <span class="math">\(g(x) =  m_\alpha(x)m_{\alpha^3}(x)\)</span>.</p>
 <p>I can generate the elements of <span class="math">\(GF(2^5)\)</span> based on <span class="math">\(p(x)=x^5+x^2+1\)</span> as
 the primitive polynomial numerically using <em>deconv</em> of MATHLAB/Octave,</p>
-<table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_e48e97cda9604182a5d17cd81a0207de-1">1</a>
-<a href="#rest_code_e48e97cda9604182a5d17cd81a0207de-2">2</a>
-<a href="#rest_code_e48e97cda9604182a5d17cd81a0207de-3">3</a>
-<a href="#rest_code_e48e97cda9604182a5d17cd81a0207de-4">4</a>
-<a href="#rest_code_e48e97cda9604182a5d17cd81a0207de-5">5</a>
-<a href="#rest_code_e48e97cda9604182a5d17cd81a0207de-6">6</a></pre></div></td>
-<td class="code"><pre class="code text"><a name="rest_code_e48e97cda9604182a5d17cd81a0207de-1"></a>     &gt;&gt; n=31;
-<a name="rest_code_e48e97cda9604182a5d17cd81a0207de-2"></a>     &gt;&gt; I=eye(n);
-<a name="rest_code_e48e97cda9604182a5d17cd81a0207de-3"></a>     &gt;&gt; gx=[1 0 0 1 0 1];
-<a name="rest_code_e48e97cda9604182a5d17cd81a0207de-4"></a>     &gt;&gt; I=I(n:-1:1,:);
-<a name="rest_code_e48e97cda9604182a5d17cd81a0207de-5"></a>     &gt;&gt; for i=1:n [a,r(i,:)]=deconv(I(i,:),gx);end
-<a name="rest_code_e48e97cda9604182a5d17cd81a0207de-6"></a>     &gt;&gt; r=mod(r(:,27:31),2);
-</pre></td>
-</tr></table>
+<div class="code"><table class="codetable">
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_a352670f58ba48d38d29236211161168-1"><code data-line-number="1"></code></a></td>
+<td class="code"><code><a name="rest_code_a352670f58ba48d38d29236211161168-1"></a>     &gt;&gt; n=31;
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_a352670f58ba48d38d29236211161168-2"><code data-line-number="2"></code></a></td>
+<td class="code"><code><a name="rest_code_a352670f58ba48d38d29236211161168-2"></a>     &gt;&gt; I=eye(n);
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_a352670f58ba48d38d29236211161168-3"><code data-line-number="3"></code></a></td>
+<td class="code"><code><a name="rest_code_a352670f58ba48d38d29236211161168-3"></a>     &gt;&gt; gx=[1 0 0 1 0 1];
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_a352670f58ba48d38d29236211161168-4"><code data-line-number="4"></code></a></td>
+<td class="code"><code><a name="rest_code_a352670f58ba48d38d29236211161168-4"></a>     &gt;&gt; I=I(n:-1:1,:);
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_a352670f58ba48d38d29236211161168-5"><code data-line-number="5"></code></a></td>
+<td class="code"><code><a name="rest_code_a352670f58ba48d38d29236211161168-5"></a>     &gt;&gt; for i=1:n [a,r(i,:)]=deconv(I(i,:),gx);end
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_a352670f58ba48d38d29236211161168-6"><code data-line-number="6"></code></a></td>
+<td class="code"><code><a name="rest_code_a352670f58ba48d38d29236211161168-6"></a>     &gt;&gt; r=mod(r(:,27:31),2);
+</code></td>
+</tr>
+</table></div>
 <p>then tabulate the result,</p>
-<table border="1" class="docutils">
+<table>
 <colgroup>
-<col width="9%">
-<col width="49%">
-<col width="42%">
+<col style="width: 9%">
+<col style="width: 49%">
+<col style="width: 42%">
 </colgroup>
-<tbody valign="top">
+<tbody>
 <tr>
-<td>word</td>
-<td><span class="math">\(x^i mod(x^5+x^2+1)\)</span></td>
-<td>Power of <span class="math">\(\alpha\)</span>
-</td>
+<td><p>word</p></td>
+<td><p><span class="math">\(x^i mod(x^5+x^2+1)\)</span></p></td>
+<td><p>Power of <span class="math">\(\alpha\)</span></p></td>
 </tr>
 <tr>
-<td>00000</td>
-<td><ul class="first last simple"><li>
+<td><p>00000</p></td>
+<td><ul class="simple"><li>
 </li></ul></td>
-<td><ul class="first last simple"><li>
+<td><ul class="simple"><li>
 </li></ul></td>
 </tr>
 <tr>
-<td>00001</td>
-<td>1</td>
-<td><span class="math">\(\alpha^0\)</span></td>
+<td><p>00001</p></td>
+<td><p>1</p></td>
+<td><p><span class="math">\(\alpha^0\)</span></p></td>
 </tr>
 <tr>
-<td>00010</td>
-<td><span class="math">\(x\)</span></td>
-<td><span class="math">\(\alpha^1\)</span></td>
+<td><p>00010</p></td>
+<td><p><span class="math">\(x\)</span></p></td>
+<td><p><span class="math">\(\alpha^1\)</span></p></td>
 </tr>
 <tr>
-<td>00100</td>
-<td><span class="math">\(x^2\)</span></td>
-<td><span class="math">\(\alpha^2\)</span></td>
+<td><p>00100</p></td>
+<td><p><span class="math">\(x^2\)</span></p></td>
+<td><p><span class="math">\(\alpha^2\)</span></p></td>
 </tr>
 <tr>
-<td>01000</td>
-<td><span class="math">\(x^3\)</span></td>
-<td><span class="math">\(\alpha^3\)</span></td>
+<td><p>01000</p></td>
+<td><p><span class="math">\(x^3\)</span></p></td>
+<td><p><span class="math">\(\alpha^3\)</span></p></td>
 </tr>
 <tr>
-<td>10000</td>
-<td><span class="math">\(x^4\)</span></td>
-<td><span class="math">\(\alpha^4\)</span></td>
+<td><p>10000</p></td>
+<td><p><span class="math">\(x^4\)</span></p></td>
+<td><p><span class="math">\(\alpha^4\)</span></p></td>
 </tr>
 <tr>
-<td>00101</td>
-<td><span class="math">\(x^2+1\)</span></td>
-<td><span class="math">\(\alpha^5\)</span></td>
+<td><p>00101</p></td>
+<td><p><span class="math">\(x^2+1\)</span></p></td>
+<td><p><span class="math">\(\alpha^5\)</span></p></td>
 </tr>
 <tr>
-<td>01010</td>
-<td><span class="math">\(x^3+x\)</span></td>
-<td><span class="math">\(\alpha^6\)</span></td>
+<td><p>01010</p></td>
+<td><p><span class="math">\(x^3+x\)</span></p></td>
+<td><p><span class="math">\(\alpha^6\)</span></p></td>
 </tr>
 <tr>
-<td>10100</td>
-<td><span class="math">\(x^4+x^2\)</span></td>
-<td><span class="math">\(\alpha^7\)</span></td>
+<td><p>10100</p></td>
+<td><p><span class="math">\(x^4+x^2\)</span></p></td>
+<td><p><span class="math">\(\alpha^7\)</span></p></td>
 </tr>
 <tr>
-<td>01101</td>
-<td><span class="math">\(x^3+x^2+1\)</span></td>
-<td><span class="math">\(\alpha^8\)</span></td>
+<td><p>01101</p></td>
+<td><p><span class="math">\(x^3+x^2+1\)</span></p></td>
+<td><p><span class="math">\(\alpha^8\)</span></p></td>
 </tr>
 <tr>
-<td>11010</td>
-<td><span class="math">\(x^4+x^3+x\)</span></td>
-<td><span class="math">\(\alpha^9\)</span></td>
+<td><p>11010</p></td>
+<td><p><span class="math">\(x^4+x^3+x\)</span></p></td>
+<td><p><span class="math">\(\alpha^9\)</span></p></td>
 </tr>
 <tr>
-<td>10001</td>
-<td><span class="math">\(x^4+1\)</span></td>
-<td><span class="math">\(\alpha^{10}\)</span></td>
+<td><p>10001</p></td>
+<td><p><span class="math">\(x^4+1\)</span></p></td>
+<td><p><span class="math">\(\alpha^{10}\)</span></p></td>
 </tr>
 <tr>
-<td>00111</td>
-<td><span class="math">\(x^2+x+1\)</span></td>
-<td><span class="math">\(\alpha^{11}\)</span></td>
+<td><p>00111</p></td>
+<td><p><span class="math">\(x^2+x+1\)</span></p></td>
+<td><p><span class="math">\(\alpha^{11}\)</span></p></td>
 </tr>
 <tr>
-<td>01110</td>
-<td><span class="math">\(x^3+x^2+x\)</span></td>
-<td><span class="math">\(\alpha^{12}\)</span></td>
+<td><p>01110</p></td>
+<td><p><span class="math">\(x^3+x^2+x\)</span></p></td>
+<td><p><span class="math">\(\alpha^{12}\)</span></p></td>
 </tr>
 <tr>
-<td>11100</td>
-<td><span class="math">\(x^4+x^3+x^2\)</span></td>
-<td><span class="math">\(\alpha^{13}\)</span></td>
+<td><p>11100</p></td>
+<td><p><span class="math">\(x^4+x^3+x^2\)</span></p></td>
+<td><p><span class="math">\(\alpha^{13}\)</span></p></td>
 </tr>
 <tr>
-<td>11101</td>
-<td><span class="math">\(x^4+x^3+x^2+1\)</span></td>
-<td><span class="math">\(\alpha^{14}\)</span></td>
+<td><p>11101</p></td>
+<td><p><span class="math">\(x^4+x^3+x^2+1\)</span></p></td>
+<td><p><span class="math">\(\alpha^{14}\)</span></p></td>
 </tr>
 <tr>
-<td>11111</td>
-<td><span class="math">\(x^4+x^3+x^2+x+1\)</span></td>
-<td><span class="math">\(\alpha^{15}\)</span></td>
+<td><p>11111</p></td>
+<td><p><span class="math">\(x^4+x^3+x^2+x+1\)</span></p></td>
+<td><p><span class="math">\(\alpha^{15}\)</span></p></td>
 </tr>
 <tr>
-<td>11011</td>
-<td><span class="math">\(x^4+x^3+x+1\)</span></td>
-<td><span class="math">\(\alpha^{16}\)</span></td>
+<td><p>11011</p></td>
+<td><p><span class="math">\(x^4+x^3+x+1\)</span></p></td>
+<td><p><span class="math">\(\alpha^{16}\)</span></p></td>
 </tr>
 <tr>
-<td>10011</td>
-<td><span class="math">\(x^4+x+1\)</span></td>
-<td><span class="math">\(\alpha^{17}\)</span></td>
+<td><p>10011</p></td>
+<td><p><span class="math">\(x^4+x+1\)</span></p></td>
+<td><p><span class="math">\(\alpha^{17}\)</span></p></td>
 </tr>
 <tr>
-<td>00011</td>
-<td><span class="math">\(x+1\)</span></td>
-<td><span class="math">\(\alpha^{18}\)</span></td>
+<td><p>00011</p></td>
+<td><p><span class="math">\(x+1\)</span></p></td>
+<td><p><span class="math">\(\alpha^{18}\)</span></p></td>
 </tr>
 <tr>
-<td>00110</td>
-<td><span class="math">\(x^2+x\)</span></td>
-<td><span class="math">\(\alpha^{19}\)</span></td>
+<td><p>00110</p></td>
+<td><p><span class="math">\(x^2+x\)</span></p></td>
+<td><p><span class="math">\(\alpha^{19}\)</span></p></td>
 </tr>
 <tr>
-<td>01100</td>
-<td><span class="math">\(x^3+x^2\)</span></td>
-<td><span class="math">\(\alpha^{20}\)</span></td>
+<td><p>01100</p></td>
+<td><p><span class="math">\(x^3+x^2\)</span></p></td>
+<td><p><span class="math">\(\alpha^{20}\)</span></p></td>
 </tr>
 <tr>
-<td>11000</td>
-<td><span class="math">\(x^4+x^3\)</span></td>
-<td><span class="math">\(\alpha^{21}\)</span></td>
+<td><p>11000</p></td>
+<td><p><span class="math">\(x^4+x^3\)</span></p></td>
+<td><p><span class="math">\(\alpha^{21}\)</span></p></td>
 </tr>
 <tr>
-<td>10101</td>
-<td><span class="math">\(x^4+x^2+1\)</span></td>
-<td><span class="math">\(\alpha^{22}\)</span></td>
+<td><p>10101</p></td>
+<td><p><span class="math">\(x^4+x^2+1\)</span></p></td>
+<td><p><span class="math">\(\alpha^{22}\)</span></p></td>
 </tr>
 <tr>
-<td>01111</td>
-<td><span class="math">\(x^3+x^2+x+1\)</span></td>
-<td><span class="math">\(\alpha^{23}\)</span></td>
+<td><p>01111</p></td>
+<td><p><span class="math">\(x^3+x^2+x+1\)</span></p></td>
+<td><p><span class="math">\(\alpha^{23}\)</span></p></td>
 </tr>
 <tr>
-<td>11110</td>
-<td><span class="math">\(x^4+x^3+x^2+x\)</span></td>
-<td><span class="math">\(\alpha^{24}\)</span></td>
+<td><p>11110</p></td>
+<td><p><span class="math">\(x^4+x^3+x^2+x\)</span></p></td>
+<td><p><span class="math">\(\alpha^{24}\)</span></p></td>
 </tr>
 <tr>
-<td>11001</td>
-<td><span class="math">\(x^4+x^3+1\)</span></td>
-<td><span class="math">\(\alpha^{25}\)</span></td>
+<td><p>11001</p></td>
+<td><p><span class="math">\(x^4+x^3+1\)</span></p></td>
+<td><p><span class="math">\(\alpha^{25}\)</span></p></td>
 </tr>
 <tr>
-<td>10111</td>
-<td><span class="math">\(x^4+x^2+x+1\)</span></td>
-<td><span class="math">\(\alpha^{26}\)</span></td>
+<td><p>10111</p></td>
+<td><p><span class="math">\(x^4+x^2+x+1\)</span></p></td>
+<td><p><span class="math">\(\alpha^{26}\)</span></p></td>
 </tr>
 <tr>
-<td>01011</td>
-<td><span class="math">\(x^3+x+1\)</span></td>
-<td><span class="math">\(\alpha^{27}\)</span></td>
+<td><p>01011</p></td>
+<td><p><span class="math">\(x^3+x+1\)</span></p></td>
+<td><p><span class="math">\(\alpha^{27}\)</span></p></td>
 </tr>
 <tr>
-<td>10110</td>
-<td><span class="math">\(x^4+x^2+x\)</span></td>
-<td><span class="math">\(\alpha^{28}\)</span></td>
+<td><p>10110</p></td>
+<td><p><span class="math">\(x^4+x^2+x\)</span></p></td>
+<td><p><span class="math">\(\alpha^{28}\)</span></p></td>
 </tr>
 <tr>
-<td>01001</td>
-<td><span class="math">\(x^3+1\)</span></td>
-<td><span class="math">\(\alpha^{29}\)</span></td>
+<td><p>01001</p></td>
+<td><p><span class="math">\(x^3+1\)</span></p></td>
+<td><p><span class="math">\(\alpha^{29}\)</span></p></td>
 </tr>
 <tr>
-<td>10010</td>
-<td><span class="math">\(x^4+x\)</span></td>
-<td><span class="math">\(\alpha^{30}\)</span></td>
+<td><p>10010</p></td>
+<td><p><span class="math">\(x^4+x\)</span></p></td>
+<td><p><span class="math">\(\alpha^{30}\)</span></p></td>
 </tr>
 </tbody>
 </table>
@@ -475,47 +491,103 @@ The matrix below has the highest power of <span class="math">\(\alpha\)</span> a
 \end{equation*}
 </div>
 <p>MATLAB/Octave is used to generate the power of <span class="math">\(\alpha\)</span> above,</p>
-<table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_da12abfa945d4d51ac68bdc5f8afa294-1"> 1</a>
-<a href="#rest_code_da12abfa945d4d51ac68bdc5f8afa294-2"> 2</a>
-<a href="#rest_code_da12abfa945d4d51ac68bdc5f8afa294-3"> 3</a>
-<a href="#rest_code_da12abfa945d4d51ac68bdc5f8afa294-4"> 4</a>
-<a href="#rest_code_da12abfa945d4d51ac68bdc5f8afa294-5"> 5</a>
-<a href="#rest_code_da12abfa945d4d51ac68bdc5f8afa294-6"> 6</a>
-<a href="#rest_code_da12abfa945d4d51ac68bdc5f8afa294-7"> 7</a>
-<a href="#rest_code_da12abfa945d4d51ac68bdc5f8afa294-8"> 8</a>
-<a href="#rest_code_da12abfa945d4d51ac68bdc5f8afa294-9"> 9</a>
-<a href="#rest_code_da12abfa945d4d51ac68bdc5f8afa294-10">10</a>
-<a href="#rest_code_da12abfa945d4d51ac68bdc5f8afa294-11">11</a>
-<a href="#rest_code_da12abfa945d4d51ac68bdc5f8afa294-12">12</a>
-<a href="#rest_code_da12abfa945d4d51ac68bdc5f8afa294-13">13</a>
-<a href="#rest_code_da12abfa945d4d51ac68bdc5f8afa294-14">14</a>
-<a href="#rest_code_da12abfa945d4d51ac68bdc5f8afa294-15">15</a>
-<a href="#rest_code_da12abfa945d4d51ac68bdc5f8afa294-16">16</a>
-<a href="#rest_code_da12abfa945d4d51ac68bdc5f8afa294-17">17</a>
-<a href="#rest_code_da12abfa945d4d51ac68bdc5f8afa294-18">18</a>
-<a href="#rest_code_da12abfa945d4d51ac68bdc5f8afa294-19">19</a></pre></div></td>
-<td class="code"><pre class="code text"><a name="rest_code_da12abfa945d4d51ac68bdc5f8afa294-1"></a>     % minimum polynomials
-<a name="rest_code_da12abfa945d4d51ac68bdc5f8afa294-2"></a>     m1=[1 0 0 1 0 1];
-<a name="rest_code_da12abfa945d4d51ac68bdc5f8afa294-3"></a>     m3=[1 1 1 1 0 1];
-<a name="rest_code_da12abfa945d4d51ac68bdc5f8afa294-4"></a>     m5=[1 1 0 1 1 1];
-<a name="rest_code_da12abfa945d4d51ac68bdc5f8afa294-5"></a>     % generator poly
-<a name="rest_code_da12abfa945d4d51ac68bdc5f8afa294-6"></a>     gx=mod(conv(conv(m1,m3),m5),2);
-<a name="rest_code_da12abfa945d4d51ac68bdc5f8afa294-7"></a>     % will produce gx=[1 0 0 0 1 1 1 1 1 0 1 0 1 1 1 1];
-<a name="rest_code_da12abfa945d4d51ac68bdc5f8afa294-8"></a>     for i=1:n
-<a name="rest_code_da12abfa945d4d51ac68bdc5f8afa294-9"></a>              j=mod(3*i,31);
-<a name="rest_code_da12abfa945d4d51ac68bdc5f8afa294-10"></a>              l=mod(5*i,31);
-<a name="rest_code_da12abfa945d4d51ac68bdc5f8afa294-11"></a>              if j==0
-<a name="rest_code_da12abfa945d4d51ac68bdc5f8afa294-12"></a>                     j=31;
-<a name="rest_code_da12abfa945d4d51ac68bdc5f8afa294-13"></a>              end
-<a name="rest_code_da12abfa945d4d51ac68bdc5f8afa294-14"></a>              if l == 0
-<a name="rest_code_da12abfa945d4d51ac68bdc5f8afa294-15"></a>                     l=31;
-<a name="rest_code_da12abfa945d4d51ac68bdc5f8afa294-16"></a>              end
-<a name="rest_code_da12abfa945d4d51ac68bdc5f8afa294-17"></a>              R3(i,:)=r1(j,:);
-<a name="rest_code_da12abfa945d4d51ac68bdc5f8afa294-18"></a>              R5(i,:)=r1(l,:);
-<a name="rest_code_da12abfa945d4d51ac68bdc5f8afa294-19"></a>     end
-</pre></td>
-</tr></table>
+<div class="code"><table class="codetable">
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-1"></a>     % minimum polynomials
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-2"></a>     m1=[1 0 0 1 0 1];
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-3"></a>     m3=[1 1 1 1 0 1];
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-4"></a>     m5=[1 1 0 1 1 1];
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-5"></a>     % generator poly
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-6"></a>     gx=mod(conv(conv(m1,m3),m5),2);
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-7"></a>     % will produce gx=[1 0 0 0 1 1 1 1 1 0 1 0 1 1 1 1];
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-8"></a>     for i=1:n
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-9"></a>              j=mod(3*i,31);
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-10"></a>              l=mod(5*i,31);
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-11"></a>              if j==0
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-12"></a>                     j=31;
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-13"><code data-line-number="13"></code></a></td>
+<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-13"></a>              end
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-14"><code data-line-number="14"></code></a></td>
+<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-14"></a>              if l == 0
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-15"><code data-line-number="15"></code></a></td>
+<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-15"></a>                     l=31;
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-16"><code data-line-number="16"></code></a></td>
+<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-16"></a>              end
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-17"><code data-line-number="17"></code></a></td>
+<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-17"></a>              R3(i,:)=r1(j,:);
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-18"><code data-line-number="18"></code></a></td>
+<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-18"></a>              R5(i,:)=r1(l,:);
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-19"><code data-line-number="19"></code></a></td>
+<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-19"></a>     end
+</code></td>
+</tr>
+</table></div>
 <p>The parity check is not in systematic form.</p>
 <!-- .. math:: -->
 <!-- H = -->
@@ -577,12 +649,12 @@ I_{k} &amp;  P_{k,n-k}
 <p>since <span class="math">\(G \perp H\)</span>, <span class="math">\(GH^t = 0\)</span>. The parity check matrix
 obtained this way can be easily implemented in hardware using the
 shift registers for error detection.</p>
-<pre class="code text"><a name="rest_code_50bfee4467fc4dcf803d6c1f6cc55656-1"></a>for i=1:n [a,r(i,:)]= deconv(I(i,:),gx);end
-<a name="rest_code_50bfee4467fc4dcf803d6c1f6cc55656-2"></a>r=r(:,17:31);r=mod(r,2);
-<a name="rest_code_50bfee4467fc4dcf803d6c1f6cc55656-3"></a>p=r(1:16,:); %partity bits
-<a name="rest_code_50bfee4467fc4dcf803d6c1f6cc55656-4"></a>% generator matrix
-<a name="rest_code_50bfee4467fc4dcf803d6c1f6cc55656-5"></a>G=[eye(16) p];
-<a name="rest_code_50bfee4467fc4dcf803d6c1f6cc55656-6"></a>mod(G*h,2) %  zeros
+<pre class="code text"><a name="rest_code_e7eb953c857c46d0b714d8287bcaaf03-1"></a>for i=1:n [a,r(i,:)]= deconv(I(i,:),gx);end
+<a name="rest_code_e7eb953c857c46d0b714d8287bcaaf03-2"></a>r=r(:,17:31);r=mod(r,2);
+<a name="rest_code_e7eb953c857c46d0b714d8287bcaaf03-3"></a>p=r(1:16,:); %partity bits
+<a name="rest_code_e7eb953c857c46d0b714d8287bcaaf03-4"></a>% generator matrix
+<a name="rest_code_e7eb953c857c46d0b714d8287bcaaf03-5"></a>G=[eye(16) p];
+<a name="rest_code_e7eb953c857c46d0b714d8287bcaaf03-6"></a>mod(G*h,2) %  zeros
 </pre>
 <div class="section" id="decoder-and-errors-locator">
 <h3>Decoder and errors locator</h3>
@@ -611,33 +683,33 @@ becomes <span class="math">\([\psi_1,\psi_3,\psi_5]=[(\alpha)^i+\alpha^j,(\alpha
 Eventually it will lead to system of equations to be solved for a polynomial <span class="math">\(x(\psi_i)\)</span>. It is
 called the error-locator polynomial. This polynomial is dependent on error bit positions.</p>
 <p>To test the error correction capability of this exercise,</p>
-<pre class="code text"><a name="rest_code_447b1d9259f842219ba284cd4b2638a6-1"></a>v=dec2bin(0:2^16-1)-'0'; % input code word
-<a name="rest_code_447b1d9259f842219ba284cd4b2638a6-2"></a>u=mod(v*G,2); % BCH coded word
-<a name="rest_code_447b1d9259f842219ba284cd4b2638a6-3"></a>
-<a name="rest_code_447b1d9259f842219ba284cd4b2638a6-4"></a>&gt;&gt; mod(u(1000,:)*h,2)
-<a name="rest_code_447b1d9259f842219ba284cd4b2638a6-5"></a>
-<a name="rest_code_447b1d9259f842219ba284cd4b2638a6-6"></a>ans =
-<a name="rest_code_447b1d9259f842219ba284cd4b2638a6-7"></a>
-<a name="rest_code_447b1d9259f842219ba284cd4b2638a6-8"></a> 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+<pre class="code text"><a name="rest_code_e80bf70cb3a64458bc685f794e4ff6f7-1"></a>v=dec2bin(0:2^16-1)-'0'; % input code word
+<a name="rest_code_e80bf70cb3a64458bc685f794e4ff6f7-2"></a>u=mod(v*G,2); % BCH coded word
+<a name="rest_code_e80bf70cb3a64458bc685f794e4ff6f7-3"></a>
+<a name="rest_code_e80bf70cb3a64458bc685f794e4ff6f7-4"></a>&gt;&gt; mod(u(1000,:)*h,2)
+<a name="rest_code_e80bf70cb3a64458bc685f794e4ff6f7-5"></a>
+<a name="rest_code_e80bf70cb3a64458bc685f794e4ff6f7-6"></a>ans =
+<a name="rest_code_e80bf70cb3a64458bc685f794e4ff6f7-7"></a>
+<a name="rest_code_e80bf70cb3a64458bc685f794e4ff6f7-8"></a> 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 </pre>
 <p>Suppose that a received coded word, <span class="math">\(w\)</span> has one bit error, say bit 14,</p>
-<pre class="code text"><a name="rest_code_c63f34ea8dea40368206183231783bed-1"></a>w=u(1000,:); % a coded word
-<a name="rest_code_c63f34ea8dea40368206183231783bed-2"></a>w(14)=0; %was 1, set to 0 to simulate error
-<a name="rest_code_c63f34ea8dea40368206183231783bed-3"></a>
-<a name="rest_code_c63f34ea8dea40368206183231783bed-4"></a>&gt;&gt; mod(w*h,2)
-<a name="rest_code_c63f34ea8dea40368206183231783bed-5"></a>ans =
-<a name="rest_code_c63f34ea8dea40368206183231783bed-6"></a>   1 0 0 1 1 0 1 1 0 0 0 1 1 1 1
+<pre class="code text"><a name="rest_code_cc919d61100542c7b2feae091f49b851-1"></a>w=u(1000,:); % a coded word
+<a name="rest_code_cc919d61100542c7b2feae091f49b851-2"></a>w(14)=0; %was 1, set to 0 to simulate error
+<a name="rest_code_cc919d61100542c7b2feae091f49b851-3"></a>
+<a name="rest_code_cc919d61100542c7b2feae091f49b851-4"></a>&gt;&gt; mod(w*h,2)
+<a name="rest_code_cc919d61100542c7b2feae091f49b851-5"></a>ans =
+<a name="rest_code_cc919d61100542c7b2feae091f49b851-6"></a>   1 0 0 1 1 0 1 1 0 0 0 1 1 1 1
 </pre>
 <p>The output from <span class="math">\(wH^t\)</span> produces the syndrome identical to row 14 of <span class="math">\(H^t\)</span>. The corrected
 code word is then <span class="math">\(w+I(14)\)</span>, where <span class="math">\(I(14)\)</span> is the 14th row of the identity matrix.
 Now what happens if two bit errors, say another bit at bit 0,</p>
-<pre class="code text"><a name="rest_code_a2d27807ff7d44eb8a80cddb8a318761-1"></a>w(1)=1; % was 0, set to 1 as error. Now we have bit0,14 as error bits
-<a name="rest_code_a2d27807ff7d44eb8a80cddb8a318761-2"></a>&gt;&gt; mod(w*h,2)
-<a name="rest_code_a2d27807ff7d44eb8a80cddb8a318761-3"></a>ans =
-<a name="rest_code_a2d27807ff7d44eb8a80cddb8a318761-4"></a>   0 0 0 0 1 1 1 0 1 0 1 1 0 0 0
-<a name="rest_code_a2d27807ff7d44eb8a80cddb8a318761-5"></a>&gt;&gt; mod(h(1,:)+h(14,:),2)
-<a name="rest_code_a2d27807ff7d44eb8a80cddb8a318761-6"></a>ans =
-<a name="rest_code_a2d27807ff7d44eb8a80cddb8a318761-7"></a>   0 0 0 0 1 1 1 0 1 0 1 1 0 0 0
+<pre class="code text"><a name="rest_code_b5acd70dc6f049e78e20b08404405c24-1"></a>w(1)=1; % was 0, set to 1 as error. Now we have bit0,14 as error bits
+<a name="rest_code_b5acd70dc6f049e78e20b08404405c24-2"></a>&gt;&gt; mod(w*h,2)
+<a name="rest_code_b5acd70dc6f049e78e20b08404405c24-3"></a>ans =
+<a name="rest_code_b5acd70dc6f049e78e20b08404405c24-4"></a>   0 0 0 0 1 1 1 0 1 0 1 1 0 0 0
+<a name="rest_code_b5acd70dc6f049e78e20b08404405c24-5"></a>&gt;&gt; mod(h(1,:)+h(14,:),2)
+<a name="rest_code_b5acd70dc6f049e78e20b08404405c24-6"></a>ans =
+<a name="rest_code_b5acd70dc6f049e78e20b08404405c24-7"></a>   0 0 0 0 1 1 1 0 1 0 1 1 0 0 0
 </pre>
 <p>Evidently the syndrome is the same as <span class="math">\(H^t(14)+H^t(1)\)</span>, sum of first and 14th row. The
 corrected bits are then <span class="math">\(I(14)+I(1)\)</span>, 1st and 14th row of <span class="math">\(I\)</span> matrix.
@@ -690,14 +762,15 @@ s_1(x) = xs(x) mod g(x) =
 </div>
     </div>
     
-            <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> </script><script type="text/x-mathjax-config">
-            MathJax.Hub.Config({tex2jax: {inlineMath: [['$latex ','$'], ['\\(','\\)']]}});
-            </script></article>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML" integrity="sha384-3lJUsx1TJHt7BA4udB5KPnDrlkO8T6J6v/op7ui0BbCjvZ9WqV4Xm6DTP6kQ/iBH" crossorigin="anonymous"></script><script type="text/x-mathjax-config">
+        MathJax.Hub.Config({tex2jax: {inlineMath: [['$latex ','$'], ['\\(','\\)']]}});
+        </script></article>
 </div>
         <!--End of body content-->
 
         <footer id="footer">
-            Contents © 2018         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            Contents © 2021         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
             
         </footer>
 </div>

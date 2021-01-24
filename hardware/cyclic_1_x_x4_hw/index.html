@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,7 +7,7 @@
 <link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
 <meta name="theme-color" content="#5670d4">
 <meta name="generator" content="Nikola (getnikola.com)">
-<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../../rss.xml">
 <link rel="canonical" href="http://souktha.github.io/hardware/cyclic_1_x_x4_hw/">
 <!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Soukthavy">
 <link rel="prev" href="../../misc/cyclic_1_x_x4/" title="Simple Cyclic Hamming codes" type="text/html">
@@ -22,7 +22,6 @@ it for fun since I think">
 <meta property="article:published_time" content="2016-12-22T00:17:42Z">
 <meta property="article:tag" content="hardware">
 <meta property="article:tag" content="latex">
-<meta property="article:tag" content="mathjax">
 </head>
 <body>
 <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
@@ -115,147 +114,353 @@ everything else. Simple and elegant way is not always paid off. This is what I a
 systematic form. The input bit is clocked in bit-by-bit to the encoder whenever <em>enc_enable</em>
 is asserted. On the completion of the encoding process, the <em>rdy</em> is asserted as an output
 ready indicator so that the 15-bit encoded message can be read.</p>
-<table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_4070f397407449b080a1cb489d92fa0a-1"> 1</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-2"> 2</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-3"> 3</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-4"> 4</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-5"> 5</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-6"> 6</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-7"> 7</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-8"> 8</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-9"> 9</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-10">10</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-11">11</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-12">12</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-13">13</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-14">14</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-15">15</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-16">16</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-17">17</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-18">18</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-19">19</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-20">20</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-21">21</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-22">22</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-23">23</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-24">24</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-25">25</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-26">26</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-27">27</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-28">28</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-29">29</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-30">30</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-31">31</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-32">32</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-33">33</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-34">34</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-35">35</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-36">36</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-37">37</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-38">38</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-39">39</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-40">40</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-41">41</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-42">42</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-43">43</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-44">44</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-45">45</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-46">46</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-47">47</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-48">48</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-49">49</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-50">50</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-51">51</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-52">52</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-53">53</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-54">54</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-55">55</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-56">56</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-57">57</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-58">58</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-59">59</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-60">60</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-61">61</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-62">62</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-63">63</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-64">64</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-65">65</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-66">66</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-67">67</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-68">68</a>
-<a href="#rest_code_4070f397407449b080a1cb489d92fa0a-69">69</a></pre></div></td>
-<td class="code"><pre class="code verilog"><a name="rest_code_4070f397407449b080a1cb489d92fa0a-1"></a>     <span class="cm">/*(n,k,d) = (15,11,3)</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-2"></a><span class="cm">     input is serialized 11 bits, output is 15 bits*/</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-3"></a>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-4"></a>     <span class="k">module</span> <span class="n">cyclic_1_x_x4_encode</span> <span class="p">#(</span><span class="k">parameter</span> <span class="no">IWIDTH</span><span class="o">=</span><span class="mh">11</span><span class="p">,</span> <span class="no">OWIDTH</span><span class="o">=</span><span class="mh">15</span><span class="p">)</span> <span class="p">(</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-5"></a>         <span class="k">input</span> <span class="n">clk</span><span class="p">,</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-6"></a>         <span class="k">input</span> <span class="n">enc_enable</span><span class="p">,</span> <span class="c1">//enable encoder</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-7"></a>         <span class="k">output</span> <span class="n">bsy</span><span class="p">,</span> <span class="c1">// state of encoder</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-8"></a>         <span class="k">output</span> <span class="n">rdy</span><span class="p">,</span> <span class="c1">// 1 when decoded data is ready for reading.</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-9"></a>         <span class="k">input</span>  <span class="n">ibit</span><span class="p">,</span> <span class="c1">//serialize input bit input code word</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-10"></a>         <span class="k">output</span> <span class="p">[</span><span class="no">OWIDTH</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">codeword</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-11"></a>         <span class="p">);</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-12"></a>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-13"></a>         <span class="p">..</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-14"></a>         <span class="p">..</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-15"></a>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-16"></a>         <span class="k">assign</span> <span class="n">fbypass</span> <span class="o">=</span> <span class="p">(</span><span class="n">count</span> <span class="o">&lt;=</span> <span class="no">`KBITS</span><span class="p">);</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-17"></a>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-18"></a>         <span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span> <span class="p">)</span> <span class="k">begin</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-19"></a>             <span class="k">if</span> <span class="p">(</span> <span class="n">enc_enable</span> <span class="p">)</span> <span class="k">begin</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-20"></a>                 <span class="k">if</span> <span class="p">(</span> <span class="n">count</span> <span class="o">==</span> <span class="mh">5'h0</span>  <span class="p">)</span> <span class="k">begin</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-21"></a>                     <span class="n">busy</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-22"></a>                     <span class="n">ready</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-23"></a>                 <span class="k">end</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-24"></a>                 <span class="k">else</span> <span class="k">begin</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-25"></a>                     <span class="k">if</span> <span class="p">(</span> <span class="n">fbypass</span>  <span class="p">)</span> <span class="k">begin</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-26"></a>                        <span class="cm">/*pass through k bits of message*/</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-27"></a>                         <span class="n">busy</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="mh">1</span><span class="mb">'b1</span><span class="p">;</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-28"></a>                         <span class="n">ready</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-29"></a>                         <span class="n">cw</span> <span class="o">&lt;=</span> <span class="p">{</span><span class="n">cw</span><span class="p">[</span><span class="no">OWIDTH</span><span class="o">-</span><span class="mh">2</span><span class="o">:</span><span class="mh">0</span><span class="p">],</span><span class="n">ibit</span><span class="p">};</span> <span class="c1">//left shift to MSB begin with 1st bit</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-30"></a>                         <span class="k">end</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-31"></a>                     <span class="k">else</span> <span class="k">begin</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-32"></a>                         <span class="n">cw</span> <span class="o">&lt;=</span> <span class="p">{</span><span class="n">cw</span><span class="p">[</span><span class="no">OWIDTH</span><span class="o">-</span><span class="mh">2</span><span class="o">:</span><span class="mh">0</span><span class="p">],</span><span class="n">q</span><span class="p">[</span><span class="mh">3</span><span class="p">]};</span> <span class="c1">//concat parity bits to form coded word</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-33"></a>                         <span class="k">if</span> <span class="p">(</span><span class="n">count</span> <span class="o">&gt;=</span> <span class="no">`NBITS</span><span class="p">)</span> <span class="k">begin</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-34"></a>                          <span class="n">busy</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-35"></a>                          <span class="n">ready</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="mh">1</span><span class="mb">'b1</span><span class="p">;</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-36"></a>                         <span class="k">end</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-37"></a>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-38"></a>                         <span class="k">end</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-39"></a>                 <span class="k">end</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-40"></a>             <span class="k">end</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-41"></a>             <span class="k">else</span> <span class="k">begin</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-42"></a>                 <span class="n">cw</span> <span class="o">&lt;=</span> <span class="mh">15'h0</span><span class="p">;</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-43"></a>                 <span class="n">busy</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-44"></a>                 <span class="n">ready</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-45"></a>                 <span class="k">end</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-46"></a>         <span class="k">end</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-47"></a>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-48"></a>         <span class="cm">/*encoder for generator g(x) = 1 + x + x**4*/</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-49"></a>         <span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">)</span> <span class="k">begin</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-50"></a>             <span class="k">if</span> <span class="p">(</span><span class="n">enc_enable</span><span class="p">)</span> <span class="k">begin</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-51"></a>                 <span class="n">q</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">&lt;=</span>  <span class="n">q</span><span class="p">[</span><span class="mh">2</span><span class="p">];</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-52"></a>                 <span class="n">q</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">&lt;=</span>  <span class="n">q</span><span class="p">[</span><span class="mh">1</span><span class="p">];</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-53"></a>                 <span class="k">if</span> <span class="p">(</span> <span class="n">fbypass</span> <span class="p">)</span>  <span class="k">begin</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-54"></a>                     <span class="n">q</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span> <span class="o">&lt;=</span>  <span class="n">q</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">^</span> <span class="n">q</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span> <span class="o">^</span> <span class="n">ibit</span><span class="p">;</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-55"></a>                     <span class="n">q</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span> <span class="o">&lt;=</span>  <span class="n">ibit</span> <span class="o">^</span> <span class="n">q</span><span class="p">[</span><span class="mh">3</span><span class="p">];</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-56"></a>                 <span class="k">end</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-57"></a>                 <span class="k">else</span> <span class="k">begin</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-58"></a>                     <span class="n">q</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">q</span><span class="p">[</span><span class="mh">0</span><span class="p">];</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-59"></a>                     <span class="n">q</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-60"></a>                     <span class="k">end</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-61"></a>                 <span class="k">if</span> <span class="p">(</span> <span class="n">count</span> <span class="o">==</span> <span class="mh">5'h0</span> <span class="p">)</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-62"></a>                     <span class="n">q</span> <span class="o">&lt;=</span> <span class="mh">4</span><span class="mb">'b0000</span><span class="p">;</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-63"></a>             <span class="k">end</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-64"></a>             <span class="k">else</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-65"></a>                 <span class="n">q</span> <span class="o">&lt;=</span> <span class="mh">4</span><span class="mb">'b0000</span><span class="p">;</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-66"></a>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-67"></a>         <span class="k">end</span>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-68"></a>
-<a name="rest_code_4070f397407449b080a1cb489d92fa0a-69"></a>     <span class="k">endmodule</span>
-</pre></td>
-</tr></table>
+<div class="code"><table class="codetable">
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-1"></a>     <span class="cm">/*(n,k,d) = (15,11,3)</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-2"></a><span class="cm">     input is serialized 11 bits, output is 15 bits*/</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-3"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-4"></a>     <span class="k">module</span> <span class="n">cyclic_1_x_x4_encode</span> <span class="p">#(</span><span class="k">parameter</span> <span class="n">IWIDTH</span><span class="o">=</span><span class="mh">11</span><span class="p">,</span> <span class="n">OWIDTH</span><span class="o">=</span><span class="mh">15</span><span class="p">)</span> <span class="p">(</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-5"></a>         <span class="k">input</span> <span class="n">clk</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-6"></a>         <span class="k">input</span> <span class="n">enc_enable</span><span class="p">,</span> <span class="c1">//enable encoder</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-7"></a>         <span class="k">output</span> <span class="n">bsy</span><span class="p">,</span> <span class="c1">// state of encoder</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-8"></a>         <span class="k">output</span> <span class="n">rdy</span><span class="p">,</span> <span class="c1">// 1 when decoded data is ready for reading.</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-9"></a>         <span class="k">input</span>  <span class="n">ibit</span><span class="p">,</span> <span class="c1">//serialize input bit input code word</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-10"></a>         <span class="k">output</span> <span class="p">[</span><span class="n">OWIDTH</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">codeword</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-11"></a>         <span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-12"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-13"><code data-line-number="13"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-13"></a>         <span class="p">..</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-14"><code data-line-number="14"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-14"></a>         <span class="p">..</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-15"><code data-line-number="15"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-15"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-16"><code data-line-number="16"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-16"></a>         <span class="k">assign</span> <span class="n">fbypass</span> <span class="o">=</span> <span class="p">(</span><span class="n">count</span> <span class="o">&lt;=</span> <span class="no">`KBITS</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-17"><code data-line-number="17"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-17"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-18"><code data-line-number="18"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-18"></a>         <span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span> <span class="p">)</span> <span class="k">begin</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-19"><code data-line-number="19"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-19"></a>             <span class="k">if</span> <span class="p">(</span> <span class="n">enc_enable</span> <span class="p">)</span> <span class="k">begin</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-20"><code data-line-number="20"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-20"></a>                 <span class="k">if</span> <span class="p">(</span> <span class="n">count</span> <span class="o">==</span> <span class="mh">5'h0</span>  <span class="p">)</span> <span class="k">begin</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-21"><code data-line-number="21"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-21"></a>                     <span class="n">busy</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-22"><code data-line-number="22"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-22"></a>                     <span class="n">ready</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-23"><code data-line-number="23"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-23"></a>                 <span class="k">end</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-24"><code data-line-number="24"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-24"></a>                 <span class="k">else</span> <span class="k">begin</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-25"><code data-line-number="25"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-25"></a>                     <span class="k">if</span> <span class="p">(</span> <span class="n">fbypass</span>  <span class="p">)</span> <span class="k">begin</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-26"><code data-line-number="26"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-26"></a>                        <span class="cm">/*pass through k bits of message*/</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-27"><code data-line-number="27"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-27"></a>                         <span class="n">busy</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="mh">1</span><span class="mb">'b1</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-28"><code data-line-number="28"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-28"></a>                         <span class="n">ready</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-29"><code data-line-number="29"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-29"></a>                         <span class="n">cw</span> <span class="o">&lt;=</span> <span class="p">{</span><span class="n">cw</span><span class="p">[</span><span class="n">OWIDTH</span><span class="o">-</span><span class="mh">2</span><span class="o">:</span><span class="mh">0</span><span class="p">],</span><span class="n">ibit</span><span class="p">};</span> <span class="c1">//left shift to MSB begin with 1st bit</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-30"><code data-line-number="30"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-30"></a>                         <span class="k">end</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-31"><code data-line-number="31"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-31"></a>                     <span class="k">else</span> <span class="k">begin</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-32"><code data-line-number="32"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-32"></a>                         <span class="n">cw</span> <span class="o">&lt;=</span> <span class="p">{</span><span class="n">cw</span><span class="p">[</span><span class="n">OWIDTH</span><span class="o">-</span><span class="mh">2</span><span class="o">:</span><span class="mh">0</span><span class="p">],</span><span class="n">q</span><span class="p">[</span><span class="mh">3</span><span class="p">]};</span> <span class="c1">//concat parity bits to form coded word</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-33"><code data-line-number="33"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-33"></a>                         <span class="k">if</span> <span class="p">(</span><span class="n">count</span> <span class="o">&gt;=</span> <span class="no">`NBITS</span><span class="p">)</span> <span class="k">begin</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-34"><code data-line-number="34"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-34"></a>                          <span class="n">busy</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-35"><code data-line-number="35"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-35"></a>                          <span class="n">ready</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="mh">1</span><span class="mb">'b1</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-36"><code data-line-number="36"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-36"></a>                         <span class="k">end</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-37"><code data-line-number="37"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-37"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-38"><code data-line-number="38"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-38"></a>                         <span class="k">end</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-39"><code data-line-number="39"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-39"></a>                 <span class="k">end</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-40"><code data-line-number="40"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-40"></a>             <span class="k">end</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-41"><code data-line-number="41"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-41"></a>             <span class="k">else</span> <span class="k">begin</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-42"><code data-line-number="42"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-42"></a>                 <span class="n">cw</span> <span class="o">&lt;=</span> <span class="mh">15'h0</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-43"><code data-line-number="43"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-43"></a>                 <span class="n">busy</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-44"><code data-line-number="44"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-44"></a>                 <span class="n">ready</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-45"><code data-line-number="45"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-45"></a>                 <span class="k">end</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-46"><code data-line-number="46"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-46"></a>         <span class="k">end</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-47"><code data-line-number="47"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-47"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-48"><code data-line-number="48"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-48"></a>         <span class="cm">/*encoder for generator g(x) = 1 + x + x**4*/</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-49"><code data-line-number="49"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-49"></a>         <span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">)</span> <span class="k">begin</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-50"><code data-line-number="50"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-50"></a>             <span class="k">if</span> <span class="p">(</span><span class="n">enc_enable</span><span class="p">)</span> <span class="k">begin</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-51"><code data-line-number="51"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-51"></a>                 <span class="n">q</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">&lt;=</span>  <span class="n">q</span><span class="p">[</span><span class="mh">2</span><span class="p">];</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-52"><code data-line-number="52"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-52"></a>                 <span class="n">q</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">&lt;=</span>  <span class="n">q</span><span class="p">[</span><span class="mh">1</span><span class="p">];</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-53"><code data-line-number="53"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-53"></a>                 <span class="k">if</span> <span class="p">(</span> <span class="n">fbypass</span> <span class="p">)</span>  <span class="k">begin</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-54"><code data-line-number="54"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-54"></a>                     <span class="n">q</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span> <span class="o">&lt;=</span>  <span class="n">q</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">^</span> <span class="n">q</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span> <span class="o">^</span> <span class="n">ibit</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-55"><code data-line-number="55"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-55"></a>                     <span class="n">q</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span> <span class="o">&lt;=</span>  <span class="n">ibit</span> <span class="o">^</span> <span class="n">q</span><span class="p">[</span><span class="mh">3</span><span class="p">];</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-56"><code data-line-number="56"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-56"></a>                 <span class="k">end</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-57"><code data-line-number="57"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-57"></a>                 <span class="k">else</span> <span class="k">begin</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-58"><code data-line-number="58"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-58"></a>                     <span class="n">q</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">q</span><span class="p">[</span><span class="mh">0</span><span class="p">];</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-59"><code data-line-number="59"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-59"></a>                     <span class="n">q</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-60"><code data-line-number="60"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-60"></a>                     <span class="k">end</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-61"><code data-line-number="61"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-61"></a>                 <span class="k">if</span> <span class="p">(</span> <span class="n">count</span> <span class="o">==</span> <span class="mh">5'h0</span> <span class="p">)</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-62"><code data-line-number="62"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-62"></a>                     <span class="n">q</span> <span class="o">&lt;=</span> <span class="mh">4</span><span class="mb">'b0000</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-63"><code data-line-number="63"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-63"></a>             <span class="k">end</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-64"><code data-line-number="64"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-64"></a>             <span class="k">else</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-65"><code data-line-number="65"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-65"></a>                 <span class="n">q</span> <span class="o">&lt;=</span> <span class="mh">4</span><span class="mb">'b0000</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-66"><code data-line-number="66"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-66"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-67"><code data-line-number="67"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-67"></a>         <span class="k">end</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-68"><code data-line-number="68"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-68"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_92966f2b4f60498d8a7570fd5889b2f7-69"><code data-line-number="69"></code></a></td>
+<td class="code"><code><a name="rest_code_92966f2b4f60498d8a7570fd5889b2f7-69"></a>     <span class="k">endmodule</span>
+</code></td>
+</tr>
+</table></div>
 <p>Th encoder part of this module is between line 16-46. The divider circuit that forms the <span class="math">\(P_i\)</span> bits is between line 49-67.
 The lines that forms the output coded word are at line 29 and 32. The sample simulation below shows one of the encoded message.
 Any <span class="math">\(2^{11}\)</span> input message words can be encoded by this circuit and matches with the multiplication of the
@@ -269,232 +474,551 @@ Any <span class="math">\(2^{11}\)</span> input message words can be encoded by t
 <p>The FEC decoder is the reverse of the encoder where it takes in the serial 15-bit code word, computes
 the syndrome and if any 1-bit error is detected, the instantiated lookup bit correction will return
 the correctable bit position. This completed the FEC process.</p>
-<table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_16721578a3c24509b35e9996e48661f4-1"> 1</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-2"> 2</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-3"> 3</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-4"> 4</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-5"> 5</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-6"> 6</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-7"> 7</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-8"> 8</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-9"> 9</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-10">10</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-11">11</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-12">12</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-13">13</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-14">14</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-15">15</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-16">16</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-17">17</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-18">18</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-19">19</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-20">20</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-21">21</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-22">22</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-23">23</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-24">24</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-25">25</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-26">26</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-27">27</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-28">28</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-29">29</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-30">30</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-31">31</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-32">32</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-33">33</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-34">34</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-35">35</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-36">36</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-37">37</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-38">38</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-39">39</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-40">40</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-41">41</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-42">42</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-43">43</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-44">44</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-45">45</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-46">46</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-47">47</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-48">48</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-49">49</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-50">50</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-51">51</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-52">52</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-53">53</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-54">54</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-55">55</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-56">56</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-57">57</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-58">58</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-59">59</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-60">60</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-61">61</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-62">62</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-63">63</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-64">64</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-65">65</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-66">66</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-67">67</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-68">68</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-69">69</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-70">70</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-71">71</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-72">72</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-73">73</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-74">74</a>
-<a href="#rest_code_16721578a3c24509b35e9996e48661f4-75">75</a></pre></div></td>
-<td class="code"><pre class="code verilog"><a name="rest_code_16721578a3c24509b35e9996e48661f4-1"></a>     <span class="k">module</span> <span class="n">cyclic_1_x_x4_decode</span> <span class="p">#(</span><span class="k">parameter</span> <span class="no">IWIDTH</span><span class="o">=</span><span class="mh">15</span><span class="p">,</span> <span class="no">OWIDTH</span><span class="o">=</span><span class="mh">11</span><span class="p">)</span> <span class="p">(</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-2"></a>         <span class="k">input</span> <span class="n">clk</span><span class="p">,</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-3"></a>         <span class="k">input</span> <span class="n">dec_enable</span><span class="p">,</span> <span class="c1">//enable decoder</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-4"></a>         <span class="k">input</span>  <span class="n">ibit</span><span class="p">,</span> <span class="c1">//serialize input bit input code word</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-5"></a>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-6"></a>         <span class="k">output</span> <span class="n">bsy</span><span class="p">,</span> <span class="c1">// state of decoder</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-7"></a>         <span class="k">output</span> <span class="n">rdy</span><span class="p">,</span> <span class="c1">// 1 when decoded data is ready for reading.</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-8"></a>             <span class="k">output</span> <span class="n">err</span><span class="p">,</span> <span class="c1">// error if undecodable</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-9"></a>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-10"></a>         <span class="k">output</span> <span class="p">[</span><span class="no">OWIDTH</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">outw</span> <span class="c1">//11 bit output decoded word</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-11"></a>     <span class="p">);</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-12"></a>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-13"></a>     <span class="p">..</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-14"></a>     <span class="p">..</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-15"></a>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-16"></a>     <span class="k">assign</span> <span class="n">outw</span> <span class="o">=</span> <span class="n">cw</span><span class="p">[</span><span class="no">IWIDTH</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="no">`PBITS</span><span class="p">]</span> <span class="o">^</span> <span class="n">bit_correction</span><span class="p">[</span><span class="no">IWIDTH</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="no">`PBITS</span><span class="p">];</span> <span class="c1">//bit 4 to 14 for this case</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-17"></a>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-18"></a>     <span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span> <span class="p">)</span> <span class="k">begin</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-19"></a>             <span class="k">if</span> <span class="p">(</span><span class="n">dec_enable</span> <span class="p">)</span> <span class="k">begin</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-20"></a>                     <span class="k">if</span> <span class="p">(</span> <span class="n">count</span> <span class="o">==</span> <span class="mh">5'h0</span> <span class="p">)</span> <span class="k">begin</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-21"></a>                             <span class="n">busy</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-22"></a>                             <span class="n">ready</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-23"></a>                     <span class="k">end</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-24"></a>                     <span class="k">else</span> <span class="k">begin</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-25"></a>                             <span class="k">if</span> <span class="p">(</span><span class="n">count</span> <span class="o">&lt;</span> <span class="no">`NBITS</span><span class="p">)</span> <span class="k">begin</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-26"></a>                                     <span class="cm">/*This is to output data long enough to be read.*/</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-27"></a>                                     <span class="n">busy</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="mh">1</span><span class="mb">'b1</span><span class="p">;</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-28"></a>                                     <span class="n">ready</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-29"></a>                                     <span class="k">end</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-30"></a>                             <span class="k">else</span> <span class="k">begin</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-31"></a>                                     <span class="n">busy</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-32"></a>                                     <span class="n">ready</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="mh">1</span><span class="mb">'b1</span><span class="p">;</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-33"></a>                                     <span class="k">end</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-34"></a>                             <span class="n">quotient</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="p">{</span><span class="n">quotient</span><span class="p">[</span><span class="no">IWIDTH</span><span class="o">-</span><span class="mh">2</span><span class="o">:</span><span class="mh">0</span><span class="p">],</span><span class="n">r</span><span class="p">[</span><span class="mh">3</span><span class="p">]};</span> <span class="c1">//shift in MSB</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-35"></a>                     <span class="k">end</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-36"></a>             <span class="k">end</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-37"></a>             <span class="k">else</span> <span class="k">begin</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-38"></a>                 <span class="n">busy</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-39"></a>                 <span class="n">ready</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-40"></a>             <span class="k">end</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-41"></a>         <span class="k">end</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-42"></a>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-43"></a> <span class="cm">/*dvivider for g(x) = 1 + x + x**4*/</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-44"></a> <span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">)</span> <span class="k">begin</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-45"></a>     <span class="k">if</span> <span class="p">(</span><span class="n">dec_enable</span> <span class="p">)</span> <span class="k">begin</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-46"></a>             <span class="k">if</span> <span class="p">(</span> <span class="n">count</span> <span class="o">==</span> <span class="mh">5'h0</span> <span class="p">)</span> <span class="k">begin</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-47"></a>                 <span class="n">r</span> <span class="o">&lt;=</span> <span class="mh">4</span><span class="mb">'b0000</span><span class="p">;</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-48"></a>                 <span class="n">ierr</span> <span class="o">&lt;=</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-49"></a>             <span class="k">end</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-50"></a>             <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="n">count</span> <span class="o">&lt;=</span> <span class="no">`NBITS</span> <span class="p">)</span> <span class="k">begin</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-51"></a>                     <span class="n">r</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">r</span><span class="p">[</span><span class="mh">2</span><span class="p">];</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-52"></a>                     <span class="n">r</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">r</span><span class="p">[</span><span class="mh">1</span><span class="p">];</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-53"></a>                     <span class="n">r</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">r</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">^</span> <span class="n">r</span><span class="p">[</span><span class="mh">0</span><span class="p">];</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-54"></a>                     <span class="n">r</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">ibit</span> <span class="o">^</span> <span class="n">r</span><span class="p">[</span><span class="mh">3</span><span class="p">];</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-55"></a>                     <span class="n">cw</span> <span class="o">&lt;=</span> <span class="p">{</span><span class="n">cw</span><span class="p">[</span><span class="no">IWIDTH</span><span class="o">-</span><span class="mh">2</span><span class="o">:</span><span class="mh">0</span><span class="p">],</span><span class="n">ibit</span><span class="p">};</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-56"></a>                     <span class="k">if</span> <span class="p">(</span><span class="n">r</span> <span class="o">!=</span> <span class="mh">4'h0</span> <span class="p">)</span> <span class="k">begin</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-57"></a>                             <span class="n">ierr</span> <span class="o">&lt;=</span> <span class="mh">1</span><span class="mb">'b1</span><span class="p">;</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-58"></a>                     <span class="k">end</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-59"></a>             <span class="k">end</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-60"></a>             <span class="k">end</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-61"></a>             <span class="k">else</span> <span class="k">begin</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-62"></a>                 <span class="n">r</span> <span class="o">&lt;=</span> <span class="mh">4'h0</span><span class="p">;</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-63"></a>                 <span class="n">ierr</span> <span class="o">&lt;=</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-64"></a>             <span class="k">end</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-65"></a> <span class="k">end</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-66"></a>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-67"></a> <span class="k">assign</span> <span class="n">lookup_en</span> <span class="o">=</span> <span class="n">ierr</span><span class="p">;</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-68"></a>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-69"></a> <span class="n">lookup11</span> <span class="n">correct</span><span class="p">(</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-70"></a>     <span class="p">.</span><span class="n">en</span><span class="p">(</span><span class="n">lookup_en</span><span class="p">),</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-71"></a>     <span class="p">.</span><span class="n">syndrome</span><span class="p">(</span><span class="n">r</span><span class="p">),</span> <span class="c1">//the remainder of division</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-72"></a>     <span class="p">.</span><span class="n">errbits</span><span class="p">(</span><span class="n">bit_correction</span><span class="p">)</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-73"></a>     <span class="p">);</span>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-74"></a>
-<a name="rest_code_16721578a3c24509b35e9996e48661f4-75"></a> <span class="k">endmodule</span>
-</pre></td>
-</tr></table>
+<div class="code"><table class="codetable">
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-1"></a>     <span class="k">module</span> <span class="n">cyclic_1_x_x4_decode</span> <span class="p">#(</span><span class="k">parameter</span> <span class="n">IWIDTH</span><span class="o">=</span><span class="mh">15</span><span class="p">,</span> <span class="n">OWIDTH</span><span class="o">=</span><span class="mh">11</span><span class="p">)</span> <span class="p">(</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-2"></a>         <span class="k">input</span> <span class="n">clk</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-3"></a>         <span class="k">input</span> <span class="n">dec_enable</span><span class="p">,</span> <span class="c1">//enable decoder</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-4"></a>         <span class="k">input</span>  <span class="n">ibit</span><span class="p">,</span> <span class="c1">//serialize input bit input code word</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-5"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-6"></a>         <span class="k">output</span> <span class="n">bsy</span><span class="p">,</span> <span class="c1">// state of decoder</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-7"></a>         <span class="k">output</span> <span class="n">rdy</span><span class="p">,</span> <span class="c1">// 1 when decoded data is ready for reading.</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-8"></a>             <span class="k">output</span> <span class="n">err</span><span class="p">,</span> <span class="c1">// error if undecodable</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-9"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-10"></a>         <span class="k">output</span> <span class="p">[</span><span class="n">OWIDTH</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">outw</span> <span class="c1">//11 bit output decoded word</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-11"></a>     <span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-12"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-13"><code data-line-number="13"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-13"></a>     <span class="p">..</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-14"><code data-line-number="14"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-14"></a>     <span class="p">..</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-15"><code data-line-number="15"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-15"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-16"><code data-line-number="16"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-16"></a>     <span class="k">assign</span> <span class="n">outw</span> <span class="o">=</span> <span class="n">cw</span><span class="p">[</span><span class="n">IWIDTH</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="no">`PBITS</span><span class="p">]</span> <span class="o">^</span> <span class="n">bit_correction</span><span class="p">[</span><span class="n">IWIDTH</span><span class="o">-</span><span class="mh">1</span><span class="o">:</span><span class="no">`PBITS</span><span class="p">];</span> <span class="c1">//bit 4 to 14 for this case</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-17"><code data-line-number="17"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-17"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-18"><code data-line-number="18"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-18"></a>     <span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span> <span class="p">)</span> <span class="k">begin</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-19"><code data-line-number="19"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-19"></a>             <span class="k">if</span> <span class="p">(</span><span class="n">dec_enable</span> <span class="p">)</span> <span class="k">begin</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-20"><code data-line-number="20"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-20"></a>                     <span class="k">if</span> <span class="p">(</span> <span class="n">count</span> <span class="o">==</span> <span class="mh">5'h0</span> <span class="p">)</span> <span class="k">begin</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-21"><code data-line-number="21"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-21"></a>                             <span class="n">busy</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-22"><code data-line-number="22"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-22"></a>                             <span class="n">ready</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-23"><code data-line-number="23"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-23"></a>                     <span class="k">end</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-24"><code data-line-number="24"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-24"></a>                     <span class="k">else</span> <span class="k">begin</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-25"><code data-line-number="25"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-25"></a>                             <span class="k">if</span> <span class="p">(</span><span class="n">count</span> <span class="o">&lt;</span> <span class="no">`NBITS</span><span class="p">)</span> <span class="k">begin</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-26"><code data-line-number="26"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-26"></a>                                     <span class="cm">/*This is to output data long enough to be read.*/</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-27"><code data-line-number="27"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-27"></a>                                     <span class="n">busy</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="mh">1</span><span class="mb">'b1</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-28"><code data-line-number="28"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-28"></a>                                     <span class="n">ready</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-29"><code data-line-number="29"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-29"></a>                                     <span class="k">end</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-30"><code data-line-number="30"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-30"></a>                             <span class="k">else</span> <span class="k">begin</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-31"><code data-line-number="31"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-31"></a>                                     <span class="n">busy</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-32"><code data-line-number="32"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-32"></a>                                     <span class="n">ready</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="mh">1</span><span class="mb">'b1</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-33"><code data-line-number="33"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-33"></a>                                     <span class="k">end</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-34"><code data-line-number="34"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-34"></a>                             <span class="n">quotient</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="p">{</span><span class="n">quotient</span><span class="p">[</span><span class="n">IWIDTH</span><span class="o">-</span><span class="mh">2</span><span class="o">:</span><span class="mh">0</span><span class="p">],</span><span class="n">r</span><span class="p">[</span><span class="mh">3</span><span class="p">]};</span> <span class="c1">//shift in MSB</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-35"><code data-line-number="35"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-35"></a>                     <span class="k">end</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-36"><code data-line-number="36"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-36"></a>             <span class="k">end</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-37"><code data-line-number="37"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-37"></a>             <span class="k">else</span> <span class="k">begin</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-38"><code data-line-number="38"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-38"></a>                 <span class="n">busy</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-39"><code data-line-number="39"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-39"></a>                 <span class="n">ready</span> <span class="o">&lt;=</span> <span class="p">#</span><span class="mh">1</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-40"><code data-line-number="40"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-40"></a>             <span class="k">end</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-41"><code data-line-number="41"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-41"></a>         <span class="k">end</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-42"><code data-line-number="42"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-42"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-43"><code data-line-number="43"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-43"></a> <span class="cm">/*dvivider for g(x) = 1 + x + x**4*/</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-44"><code data-line-number="44"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-44"></a> <span class="k">always</span><span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">)</span> <span class="k">begin</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-45"><code data-line-number="45"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-45"></a>     <span class="k">if</span> <span class="p">(</span><span class="n">dec_enable</span> <span class="p">)</span> <span class="k">begin</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-46"><code data-line-number="46"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-46"></a>             <span class="k">if</span> <span class="p">(</span> <span class="n">count</span> <span class="o">==</span> <span class="mh">5'h0</span> <span class="p">)</span> <span class="k">begin</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-47"><code data-line-number="47"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-47"></a>                 <span class="n">r</span> <span class="o">&lt;=</span> <span class="mh">4</span><span class="mb">'b0000</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-48"><code data-line-number="48"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-48"></a>                 <span class="n">ierr</span> <span class="o">&lt;=</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-49"><code data-line-number="49"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-49"></a>             <span class="k">end</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-50"><code data-line-number="50"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-50"></a>             <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="n">count</span> <span class="o">&lt;=</span> <span class="no">`NBITS</span> <span class="p">)</span> <span class="k">begin</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-51"><code data-line-number="51"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-51"></a>                     <span class="n">r</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">r</span><span class="p">[</span><span class="mh">2</span><span class="p">];</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-52"><code data-line-number="52"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-52"></a>                     <span class="n">r</span><span class="p">[</span><span class="mh">2</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">r</span><span class="p">[</span><span class="mh">1</span><span class="p">];</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-53"><code data-line-number="53"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-53"></a>                     <span class="n">r</span><span class="p">[</span><span class="mh">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">r</span><span class="p">[</span><span class="mh">3</span><span class="p">]</span> <span class="o">^</span> <span class="n">r</span><span class="p">[</span><span class="mh">0</span><span class="p">];</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-54"><code data-line-number="54"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-54"></a>                     <span class="n">r</span><span class="p">[</span><span class="mh">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">ibit</span> <span class="o">^</span> <span class="n">r</span><span class="p">[</span><span class="mh">3</span><span class="p">];</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-55"><code data-line-number="55"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-55"></a>                     <span class="n">cw</span> <span class="o">&lt;=</span> <span class="p">{</span><span class="n">cw</span><span class="p">[</span><span class="n">IWIDTH</span><span class="o">-</span><span class="mh">2</span><span class="o">:</span><span class="mh">0</span><span class="p">],</span><span class="n">ibit</span><span class="p">};</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-56"><code data-line-number="56"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-56"></a>                     <span class="k">if</span> <span class="p">(</span><span class="n">r</span> <span class="o">!=</span> <span class="mh">4'h0</span> <span class="p">)</span> <span class="k">begin</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-57"><code data-line-number="57"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-57"></a>                             <span class="n">ierr</span> <span class="o">&lt;=</span> <span class="mh">1</span><span class="mb">'b1</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-58"><code data-line-number="58"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-58"></a>                     <span class="k">end</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-59"><code data-line-number="59"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-59"></a>             <span class="k">end</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-60"><code data-line-number="60"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-60"></a>             <span class="k">end</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-61"><code data-line-number="61"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-61"></a>             <span class="k">else</span> <span class="k">begin</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-62"><code data-line-number="62"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-62"></a>                 <span class="n">r</span> <span class="o">&lt;=</span> <span class="mh">4'h0</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-63"><code data-line-number="63"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-63"></a>                 <span class="n">ierr</span> <span class="o">&lt;=</span> <span class="mh">1</span><span class="mb">'b0</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-64"><code data-line-number="64"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-64"></a>             <span class="k">end</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-65"><code data-line-number="65"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-65"></a> <span class="k">end</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-66"><code data-line-number="66"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-66"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-67"><code data-line-number="67"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-67"></a> <span class="k">assign</span> <span class="n">lookup_en</span> <span class="o">=</span> <span class="n">ierr</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-68"><code data-line-number="68"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-68"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-69"><code data-line-number="69"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-69"></a> <span class="n">lookup11</span> <span class="n">correct</span><span class="p">(</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-70"><code data-line-number="70"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-70"></a>     <span class="p">.</span><span class="n">en</span><span class="p">(</span><span class="n">lookup_en</span><span class="p">),</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-71"><code data-line-number="71"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-71"></a>     <span class="p">.</span><span class="n">syndrome</span><span class="p">(</span><span class="n">r</span><span class="p">),</span> <span class="c1">//the remainder of division</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-72"><code data-line-number="72"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-72"></a>     <span class="p">.</span><span class="n">errbits</span><span class="p">(</span><span class="n">bit_correction</span><span class="p">)</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-73"><code data-line-number="73"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-73"></a>     <span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-74"><code data-line-number="74"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-74"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_895230f3538b4ca4bc6a6d247a3ef265-75"><code data-line-number="75"></code></a></td>
+<td class="code"><code><a name="rest_code_895230f3538b4ca4bc6a6d247a3ef265-75"></a> <span class="k">endmodule</span>
+</code></td>
+</tr>
+</table></div>
 <p>The divider circuit (line 44-65) for the decoder is similar to that of the encoder, but it performs syndrome computation
 by taking all the input bits having the remainder shifted into the decoded output word. If the remainder is non-zero,
 it set <em>ierr</em> bit as an enabler for <em>lookup11</em> module (line 67-73). The table lookup module returns the corresponding bit
 error, <em>bit_correction</em>, where it does the modulo-2 sum to the decoded word (line 16). This is the FEC.</p>
 <p>The lookup module is a simple ROM type lookup table using the 4-bit syndrome as the index to the correction bit. It
 returns non-zeros for <em>errbits</em> on any error, zeros otherwise. It covers both message bits and parity bits.</p>
-<table class="codetable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><a href="#rest_code_482cf290b25c4fc6b0d3d1597735f7fa-1"> 1</a>
-<a href="#rest_code_482cf290b25c4fc6b0d3d1597735f7fa-2"> 2</a>
-<a href="#rest_code_482cf290b25c4fc6b0d3d1597735f7fa-3"> 3</a>
-<a href="#rest_code_482cf290b25c4fc6b0d3d1597735f7fa-4"> 4</a>
-<a href="#rest_code_482cf290b25c4fc6b0d3d1597735f7fa-5"> 5</a>
-<a href="#rest_code_482cf290b25c4fc6b0d3d1597735f7fa-6"> 6</a>
-<a href="#rest_code_482cf290b25c4fc6b0d3d1597735f7fa-7"> 7</a>
-<a href="#rest_code_482cf290b25c4fc6b0d3d1597735f7fa-8"> 8</a>
-<a href="#rest_code_482cf290b25c4fc6b0d3d1597735f7fa-9"> 9</a>
-<a href="#rest_code_482cf290b25c4fc6b0d3d1597735f7fa-10">10</a>
-<a href="#rest_code_482cf290b25c4fc6b0d3d1597735f7fa-11">11</a>
-<a href="#rest_code_482cf290b25c4fc6b0d3d1597735f7fa-12">12</a>
-<a href="#rest_code_482cf290b25c4fc6b0d3d1597735f7fa-13">13</a>
-<a href="#rest_code_482cf290b25c4fc6b0d3d1597735f7fa-14">14</a>
-<a href="#rest_code_482cf290b25c4fc6b0d3d1597735f7fa-15">15</a>
-<a href="#rest_code_482cf290b25c4fc6b0d3d1597735f7fa-16">16</a>
-<a href="#rest_code_482cf290b25c4fc6b0d3d1597735f7fa-17">17</a>
-<a href="#rest_code_482cf290b25c4fc6b0d3d1597735f7fa-18">18</a>
-<a href="#rest_code_482cf290b25c4fc6b0d3d1597735f7fa-19">19</a>
-<a href="#rest_code_482cf290b25c4fc6b0d3d1597735f7fa-20">20</a>
-<a href="#rest_code_482cf290b25c4fc6b0d3d1597735f7fa-21">21</a>
-<a href="#rest_code_482cf290b25c4fc6b0d3d1597735f7fa-22">22</a>
-<a href="#rest_code_482cf290b25c4fc6b0d3d1597735f7fa-23">23</a>
-<a href="#rest_code_482cf290b25c4fc6b0d3d1597735f7fa-24">24</a>
-<a href="#rest_code_482cf290b25c4fc6b0d3d1597735f7fa-25">25</a>
-<a href="#rest_code_482cf290b25c4fc6b0d3d1597735f7fa-26">26</a>
-<a href="#rest_code_482cf290b25c4fc6b0d3d1597735f7fa-27">27</a>
-<a href="#rest_code_482cf290b25c4fc6b0d3d1597735f7fa-28">28</a>
-<a href="#rest_code_482cf290b25c4fc6b0d3d1597735f7fa-29">29</a>
-<a href="#rest_code_482cf290b25c4fc6b0d3d1597735f7fa-30">30</a>
-<a href="#rest_code_482cf290b25c4fc6b0d3d1597735f7fa-31">31</a>
-<a href="#rest_code_482cf290b25c4fc6b0d3d1597735f7fa-32">32</a></pre></div></td>
-<td class="code"><pre class="code text"><a name="rest_code_482cf290b25c4fc6b0d3d1597735f7fa-1"></a>     module lookup11 #(parameter WIDTH=15) (
-<a name="rest_code_482cf290b25c4fc6b0d3d1597735f7fa-2"></a>         input en,
-<a name="rest_code_482cf290b25c4fc6b0d3d1597735f7fa-3"></a>         input [3:0] syndrome,
-<a name="rest_code_482cf290b25c4fc6b0d3d1597735f7fa-4"></a>         output [WIDTH-1:0] errbits
-<a name="rest_code_482cf290b25c4fc6b0d3d1597735f7fa-5"></a>         );
-<a name="rest_code_482cf290b25c4fc6b0d3d1597735f7fa-6"></a>         reg [WIDTH-1:0] bitpos;
-<a name="rest_code_482cf290b25c4fc6b0d3d1597735f7fa-7"></a>
-<a name="rest_code_482cf290b25c4fc6b0d3d1597735f7fa-8"></a>         assign errbits = bitpos;
-<a name="rest_code_482cf290b25c4fc6b0d3d1597735f7fa-9"></a>
-<a name="rest_code_482cf290b25c4fc6b0d3d1597735f7fa-10"></a>         always@(*) begin
-<a name="rest_code_482cf290b25c4fc6b0d3d1597735f7fa-11"></a>             if (!en) bitpos = 15'h0;
-<a name="rest_code_482cf290b25c4fc6b0d3d1597735f7fa-12"></a>         else
-<a name="rest_code_482cf290b25c4fc6b0d3d1597735f7fa-13"></a>         case (syndrome)
-<a name="rest_code_482cf290b25c4fc6b0d3d1597735f7fa-14"></a>             4'h0: bitpos = 15'h0;
-<a name="rest_code_482cf290b25c4fc6b0d3d1597735f7fa-15"></a>             4'h1: bitpos = 15'h1;
-<a name="rest_code_482cf290b25c4fc6b0d3d1597735f7fa-16"></a>             4'h2: bitpos = 15'h2;
-<a name="rest_code_482cf290b25c4fc6b0d3d1597735f7fa-17"></a>             4'h4: bitpos = 15'h4;
-<a name="rest_code_482cf290b25c4fc6b0d3d1597735f7fa-18"></a>             4'h8: bitpos = 15'h8;
-<a name="rest_code_482cf290b25c4fc6b0d3d1597735f7fa-19"></a>             4'h3: bitpos = 15'h10;
-<a name="rest_code_482cf290b25c4fc6b0d3d1597735f7fa-20"></a>             4'h6: bitpos = 15'h20;
-<a name="rest_code_482cf290b25c4fc6b0d3d1597735f7fa-21"></a>             4'hc: bitpos = 15'h40;
-<a name="rest_code_482cf290b25c4fc6b0d3d1597735f7fa-22"></a>             4'hb: bitpos = 15'h80;
-<a name="rest_code_482cf290b25c4fc6b0d3d1597735f7fa-23"></a>             4'h5: bitpos = 15'h100;
-<a name="rest_code_482cf290b25c4fc6b0d3d1597735f7fa-24"></a>             4'ha: bitpos = 15'h200;
-<a name="rest_code_482cf290b25c4fc6b0d3d1597735f7fa-25"></a>             4'h7: bitpos = 15'h400;
-<a name="rest_code_482cf290b25c4fc6b0d3d1597735f7fa-26"></a>             4'he: bitpos = 15'h800;
-<a name="rest_code_482cf290b25c4fc6b0d3d1597735f7fa-27"></a>             4'hf: bitpos = 15'h1000;
-<a name="rest_code_482cf290b25c4fc6b0d3d1597735f7fa-28"></a>             4'hd: bitpos = 15'h2000;
-<a name="rest_code_482cf290b25c4fc6b0d3d1597735f7fa-29"></a>             4'h9: bitpos = 15'h4000;
-<a name="rest_code_482cf290b25c4fc6b0d3d1597735f7fa-30"></a>         endcase
-<a name="rest_code_482cf290b25c4fc6b0d3d1597735f7fa-31"></a>         end
-<a name="rest_code_482cf290b25c4fc6b0d3d1597735f7fa-32"></a>     endmodule
-</pre></td>
-</tr></table>
+<div class="code"><table class="codetable">
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_976675581e4f4406ae6b2e5cb0328542-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_976675581e4f4406ae6b2e5cb0328542-1"></a>     module lookup11 #(parameter WIDTH=15) (
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_976675581e4f4406ae6b2e5cb0328542-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_976675581e4f4406ae6b2e5cb0328542-2"></a>         input en,
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_976675581e4f4406ae6b2e5cb0328542-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_976675581e4f4406ae6b2e5cb0328542-3"></a>         input [3:0] syndrome,
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_976675581e4f4406ae6b2e5cb0328542-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_976675581e4f4406ae6b2e5cb0328542-4"></a>         output [WIDTH-1:0] errbits
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_976675581e4f4406ae6b2e5cb0328542-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_976675581e4f4406ae6b2e5cb0328542-5"></a>         );
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_976675581e4f4406ae6b2e5cb0328542-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_976675581e4f4406ae6b2e5cb0328542-6"></a>         reg [WIDTH-1:0] bitpos;
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_976675581e4f4406ae6b2e5cb0328542-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_976675581e4f4406ae6b2e5cb0328542-7"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_976675581e4f4406ae6b2e5cb0328542-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_976675581e4f4406ae6b2e5cb0328542-8"></a>         assign errbits = bitpos;
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_976675581e4f4406ae6b2e5cb0328542-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_976675581e4f4406ae6b2e5cb0328542-9"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_976675581e4f4406ae6b2e5cb0328542-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_976675581e4f4406ae6b2e5cb0328542-10"></a>         always@(*) begin
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_976675581e4f4406ae6b2e5cb0328542-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_976675581e4f4406ae6b2e5cb0328542-11"></a>             if (!en) bitpos = 15'h0;
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_976675581e4f4406ae6b2e5cb0328542-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_976675581e4f4406ae6b2e5cb0328542-12"></a>         else
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_976675581e4f4406ae6b2e5cb0328542-13"><code data-line-number="13"></code></a></td>
+<td class="code"><code><a name="rest_code_976675581e4f4406ae6b2e5cb0328542-13"></a>         case (syndrome)
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_976675581e4f4406ae6b2e5cb0328542-14"><code data-line-number="14"></code></a></td>
+<td class="code"><code><a name="rest_code_976675581e4f4406ae6b2e5cb0328542-14"></a>             4'h0: bitpos = 15'h0;
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_976675581e4f4406ae6b2e5cb0328542-15"><code data-line-number="15"></code></a></td>
+<td class="code"><code><a name="rest_code_976675581e4f4406ae6b2e5cb0328542-15"></a>             4'h1: bitpos = 15'h1;
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_976675581e4f4406ae6b2e5cb0328542-16"><code data-line-number="16"></code></a></td>
+<td class="code"><code><a name="rest_code_976675581e4f4406ae6b2e5cb0328542-16"></a>             4'h2: bitpos = 15'h2;
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_976675581e4f4406ae6b2e5cb0328542-17"><code data-line-number="17"></code></a></td>
+<td class="code"><code><a name="rest_code_976675581e4f4406ae6b2e5cb0328542-17"></a>             4'h4: bitpos = 15'h4;
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_976675581e4f4406ae6b2e5cb0328542-18"><code data-line-number="18"></code></a></td>
+<td class="code"><code><a name="rest_code_976675581e4f4406ae6b2e5cb0328542-18"></a>             4'h8: bitpos = 15'h8;
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_976675581e4f4406ae6b2e5cb0328542-19"><code data-line-number="19"></code></a></td>
+<td class="code"><code><a name="rest_code_976675581e4f4406ae6b2e5cb0328542-19"></a>             4'h3: bitpos = 15'h10;
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_976675581e4f4406ae6b2e5cb0328542-20"><code data-line-number="20"></code></a></td>
+<td class="code"><code><a name="rest_code_976675581e4f4406ae6b2e5cb0328542-20"></a>             4'h6: bitpos = 15'h20;
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_976675581e4f4406ae6b2e5cb0328542-21"><code data-line-number="21"></code></a></td>
+<td class="code"><code><a name="rest_code_976675581e4f4406ae6b2e5cb0328542-21"></a>             4'hc: bitpos = 15'h40;
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_976675581e4f4406ae6b2e5cb0328542-22"><code data-line-number="22"></code></a></td>
+<td class="code"><code><a name="rest_code_976675581e4f4406ae6b2e5cb0328542-22"></a>             4'hb: bitpos = 15'h80;
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_976675581e4f4406ae6b2e5cb0328542-23"><code data-line-number="23"></code></a></td>
+<td class="code"><code><a name="rest_code_976675581e4f4406ae6b2e5cb0328542-23"></a>             4'h5: bitpos = 15'h100;
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_976675581e4f4406ae6b2e5cb0328542-24"><code data-line-number="24"></code></a></td>
+<td class="code"><code><a name="rest_code_976675581e4f4406ae6b2e5cb0328542-24"></a>             4'ha: bitpos = 15'h200;
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_976675581e4f4406ae6b2e5cb0328542-25"><code data-line-number="25"></code></a></td>
+<td class="code"><code><a name="rest_code_976675581e4f4406ae6b2e5cb0328542-25"></a>             4'h7: bitpos = 15'h400;
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_976675581e4f4406ae6b2e5cb0328542-26"><code data-line-number="26"></code></a></td>
+<td class="code"><code><a name="rest_code_976675581e4f4406ae6b2e5cb0328542-26"></a>             4'he: bitpos = 15'h800;
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_976675581e4f4406ae6b2e5cb0328542-27"><code data-line-number="27"></code></a></td>
+<td class="code"><code><a name="rest_code_976675581e4f4406ae6b2e5cb0328542-27"></a>             4'hf: bitpos = 15'h1000;
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_976675581e4f4406ae6b2e5cb0328542-28"><code data-line-number="28"></code></a></td>
+<td class="code"><code><a name="rest_code_976675581e4f4406ae6b2e5cb0328542-28"></a>             4'hd: bitpos = 15'h2000;
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_976675581e4f4406ae6b2e5cb0328542-29"><code data-line-number="29"></code></a></td>
+<td class="code"><code><a name="rest_code_976675581e4f4406ae6b2e5cb0328542-29"></a>             4'h9: bitpos = 15'h4000;
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_976675581e4f4406ae6b2e5cb0328542-30"><code data-line-number="30"></code></a></td>
+<td class="code"><code><a name="rest_code_976675581e4f4406ae6b2e5cb0328542-30"></a>         endcase
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_976675581e4f4406ae6b2e5cb0328542-31"><code data-line-number="31"></code></a></td>
+<td class="code"><code><a name="rest_code_976675581e4f4406ae6b2e5cb0328542-31"></a>         end
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_976675581e4f4406ae6b2e5cb0328542-32"><code data-line-number="32"></code></a></td>
+<td class="code"><code><a name="rest_code_976675581e4f4406ae6b2e5cb0328542-32"></a>     endmodule
+</code></td>
+</tr>
+</table></div>
 <div class="figure">
 <img alt="../../images/hardware/decode_73d.jpg" src="../../images/hardware/decode_73d.jpg"><p class="caption">Fig1: decoded non-error message 0x73d for 0x73</p>
 </div>
@@ -524,14 +1048,15 @@ implemented with minimal gates then it would be practical.</p>
 </div>
     </div>
     
-            <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> </script><script type="text/x-mathjax-config">
-            MathJax.Hub.Config({tex2jax: {inlineMath: [['$latex ','$'], ['\\(','\\)']]}});
-            </script></article>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML" integrity="sha384-3lJUsx1TJHt7BA4udB5KPnDrlkO8T6J6v/op7ui0BbCjvZ9WqV4Xm6DTP6kQ/iBH" crossorigin="anonymous"></script><script type="text/x-mathjax-config">
+        MathJax.Hub.Config({tex2jax: {inlineMath: [['$latex ','$'], ['\\(','\\)']]}});
+        </script></article>
 </div>
         <!--End of body content-->
 
         <footer id="footer">
-            Contents © 2018         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            Contents © 2021         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
             
         </footer>
 </div>
