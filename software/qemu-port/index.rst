@@ -38,8 +38,9 @@ I choose the latest release version *qemu-5.2.0* of early 2021 since I find it t
 easier than the earlier version for adding new target. I have actually done this with version *qemu-5.1.0* and found that
 the latest version is easier to port. 
 
-The host PC is for building and running the QEMU to virtualize the h/w platform. For my case I use Linux x64 Slackware with kernel built 
-to support virtualization. The PC BIOS should have virtualization enable as well. 
+The host PC is for building and running the QEMU to virtualize/emulate the h/w platform. For my case I use Linux x64 Slackware 
+with kernel built to support virtualization. The PC BIOS should have virtualization enable as well. They may not be the
+requirements of the host platform for QEMU.
 
 QEMU
 -----
@@ -541,14 +542,14 @@ At this stage, QEMU is waiting for GDB connection. To connect, open another shel
         Reading symbols from build/freertos-nga...
         (gdb) target remote :1234
         Remote debugging using :1234
-        _freertos_vector_table () at /home/ssop/NGA/freertos-nga/platform/FreeRTOS_asm_vectors.S:82
+        _freertos_vector_table () at /home/user/NGA/freertos-nga/platform/FreeRTOS_asm_vectors.S:82
         82              B         _boot
         (gdb) b main
-        Breakpoint 1 at 0xd8c: file /home/ssop/NGA/freertos-nga/app/main.c, line 246.
+        Breakpoint 1 at 0xd8c: file /home/user/NGA/freertos-nga/app/main.c, line 246.
         (gdb) c
         Continuing.
 
-        Breakpoint 1, main () at /home/ssop/NGA/freertos-nga/app/main.c:246
+        Breakpoint 1, main () at /home/user/NGA/freertos-nga/app/main.c:246
         246             xQueue = xQueueCreate( mainQUEUE_LENGTH, sizeof( uint32_t ) );
         (gdb) 
 
