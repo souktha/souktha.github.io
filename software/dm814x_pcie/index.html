@@ -117,13 +117,13 @@ was using it. Since I will be using it, this function need to be enable to confi
 (section 3 and 19.2.1 of [<a class="reference internal" href="#id1">1</a>]). The registers to be configured are PLLCFG0 to PLLCFG4 of the PCIe control
 module (base offset is 4814_0000). I made some minor change for the board I am using, enabling MEAS
 and enabling latch (50%).</p>
-<pre class="code c"><a name="rest_code_5f47335883f746be9dd28e7423d6e854-1"></a><span class="k">static</span> <span class="kt">void</span> <span class="n">pcie_pll_config</span><span class="p">()</span>
-<a name="rest_code_5f47335883f746be9dd28e7423d6e854-2"></a><span class="p">{</span>
-<a name="rest_code_5f47335883f746be9dd28e7423d6e854-3"></a>        <span class="p">..</span>
-<a name="rest_code_5f47335883f746be9dd28e7423d6e854-4"></a>        <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x70007017</span><span class="p">,</span> <span class="n">PCIE_PLLCFG0</span><span class="p">);</span> <span class="c1">//per 19.3.1.1.1 sprugz8b.pdf manual.</span>
-<a name="rest_code_5f47335883f746be9dd28e7423d6e854-5"></a>        <span class="cm">/*wait for ADPLL lock*/</span>
-<a name="rest_code_5f47335883f746be9dd28e7423d6e854-6"></a>        <span class="p">..</span>
-<a name="rest_code_5f47335883f746be9dd28e7423d6e854-7"></a><span class="p">}</span>
+<pre class="code c"><a name="rest_code_7898ed8070144d338661a92b34bea867-1"></a><span class="k">static</span> <span class="kt">void</span> <span class="n">pcie_pll_config</span><span class="p">()</span>
+<a name="rest_code_7898ed8070144d338661a92b34bea867-2"></a><span class="p">{</span>
+<a name="rest_code_7898ed8070144d338661a92b34bea867-3"></a>        <span class="p">..</span>
+<a name="rest_code_7898ed8070144d338661a92b34bea867-4"></a>        <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x70007017</span><span class="p">,</span> <span class="n">PCIE_PLLCFG0</span><span class="p">);</span> <span class="c1">//per 19.3.1.1.1 sprugz8b.pdf manual.</span>
+<a name="rest_code_7898ed8070144d338661a92b34bea867-5"></a>        <span class="cm">/*wait for ADPLL lock*/</span>
+<a name="rest_code_7898ed8070144d338661a92b34bea867-6"></a>        <span class="p">..</span>
+<a name="rest_code_7898ed8070144d338661a92b34bea867-7"></a><span class="p">}</span>
 </pre>
 <p>at the end of <em>pcie_pll_config()</em>, wait for PLL to phase-lock by polling PLLSTATUS bit 1. Also a call to the function should
 be made in <em>prcm_init()</em>. This portion of code is only to
@@ -143,718 +143,718 @@ is initiated. When link training is completed, the PCIe is configured as bridge 
 set for base address 2000_0000 (refers to 2.12.1 of [<a class="reference internal" href="#id4">4</a>]). Some part of the code,</p>
 <div class="code"><table class="codetable">
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-1"><code data-line-number="  1"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-1"></a>       <span class="cm">/*Various regions in PCIESS address space, sprugz8d document section 19.2.4.1, fig 19.2*/</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-1"><code data-line-number="  1"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-1"></a>       <span class="cm">/*Various regions in PCIESS address space, sprugz8d document section 19.2.4.1, fig 19.2*/</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-2"><code data-line-number="  2"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-2"></a>       <span class="p">..</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-2"><code data-line-number="  2"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-2"></a>       <span class="p">..</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-3"><code data-line-number="  3"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-3"></a>       <span class="cp">#define SPACE0_LOCAL_CFG_OFFSET         0x1000  </span><span class="cm">/*local config space*/</span><span class="cp"></span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-3"><code data-line-number="  3"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-3"></a>       <span class="cp">#define SPACE0_LOCAL_CFG_OFFSET         0x1000  </span><span class="cm">/*local config space*/</span><span class="cp"></span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-4"><code data-line-number="  4"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-4"></a>       <span class="cp">#define SPACE0_REMOTE_CFG_OFFSET        0x2000  </span><span class="cm">/*remote config space*/</span><span class="cp"></span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-4"><code data-line-number="  4"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-4"></a>       <span class="cp">#define SPACE0_REMOTE_CFG_OFFSET        0x2000  </span><span class="cm">/*remote config space*/</span><span class="cp"></span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-5"><code data-line-number="  5"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-5"></a>       <span class="cp">#define SPACE0_IO_OFFSET                0x3000  </span><span class="cm">/*remote device IO space*/</span><span class="cp"></span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-5"><code data-line-number="  5"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-5"></a>       <span class="cp">#define SPACE0_IO_OFFSET                0x3000  </span><span class="cm">/*remote device IO space*/</span><span class="cp"></span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-6"><code data-line-number="  6"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-6"></a>       <span class="cp">#define PCIE_CONFIG_BASE                0x51000000</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-6"><code data-line-number="  6"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-6"></a>       <span class="cp">#define PCIE_CONFIG_BASE                0x51000000</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-7"><code data-line-number="  7"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-7"></a>       <span class="p">..</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-7"><code data-line-number="  7"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-7"></a>       <span class="p">..</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-8"><code data-line-number="  8"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-8"></a>       <span class="p">..</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-8"><code data-line-number="  8"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-8"></a>       <span class="p">..</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-9"><code data-line-number="  9"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-9"></a>       <span class="k">static</span> <span class="kt">void</span> <span class="n">set_outbound_trans</span><span class="p">(</span><span class="n">u32</span> <span class="n">start</span><span class="p">,</span> <span class="n">u32</span> <span class="n">end</span><span class="p">)</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-9"><code data-line-number="  9"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-9"></a>       <span class="k">static</span> <span class="kt">void</span> <span class="n">set_outbound_trans</span><span class="p">(</span><span class="n">u32</span> <span class="n">start</span><span class="p">,</span> <span class="n">u32</span> <span class="n">end</span><span class="p">)</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-10"><code data-line-number=" 10"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-10"></a>       <span class="p">{</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-10"><code data-line-number=" 10"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-10"></a>       <span class="p">{</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-11"><code data-line-number=" 11"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-11"></a>       <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">tr_size</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-11"><code data-line-number=" 11"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-11"></a>       <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">tr_size</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-12"><code data-line-number=" 12"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-12"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-12"><code data-line-number=" 12"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-12"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-13"><code data-line-number=" 13"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-13"></a>       <span class="cm">/*Set outbound translation size per window division*/</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-13"><code data-line-number=" 13"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-13"></a>       <span class="cm">/*Set outbound translation size per window division*/</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-14"><code data-line-number=" 14"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-14"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">CFG_PCIM_WIN_SZ_IDX</span> <span class="o">&amp;</span> <span class="mh">0x7</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">OB_SIZE</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-14"><code data-line-number=" 14"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-14"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">CFG_PCIM_WIN_SZ_IDX</span> <span class="o">&amp;</span> <span class="mh">0x7</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">OB_SIZE</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-15"><code data-line-number=" 15"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-15"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-15"><code data-line-number=" 15"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-15"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-16"><code data-line-number=" 16"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-16"></a>       <span class="n">tr_size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">CFG_PCIM_WIN_SZ_IDX</span> <span class="o">&amp;</span> <span class="mh">0x7</span><span class="p">))</span> <span class="o">*</span> <span class="n">SZ_1M</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-16"><code data-line-number=" 16"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-16"></a>       <span class="n">tr_size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">CFG_PCIM_WIN_SZ_IDX</span> <span class="o">&amp;</span> <span class="mh">0x7</span><span class="p">))</span> <span class="o">*</span> <span class="n">SZ_1M</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-17"><code data-line-number=" 17"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-17"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-17"><code data-line-number=" 17"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-17"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-18"><code data-line-number=" 18"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-18"></a>       <span class="cm">/*Direct 1:1 mapping of RC &lt;-&gt; PCI memory space*/</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-18"><code data-line-number=" 18"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-18"></a>       <span class="cm">/*Direct 1:1 mapping of RC &lt;-&gt; PCI memory space*/</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-19"><code data-line-number=" 19"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-19"></a>       <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">CFG_PCIM_WIN_CNT</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">start</span> <span class="o">&lt;</span> <span class="n">end</span><span class="p">);</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-19"><code data-line-number=" 19"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-19"></a>       <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">CFG_PCIM_WIN_CNT</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">start</span> <span class="o">&lt;</span> <span class="n">end</span><span class="p">);</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-20"><code data-line-number=" 20"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-20"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="n">start</span> <span class="o">|</span> <span class="mi">1</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">OB_OFFSET_INDEX</span><span class="p">(</span><span class="n">i</span><span class="p">));</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-20"><code data-line-number=" 20"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-20"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="n">start</span> <span class="o">|</span> <span class="mi">1</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">OB_OFFSET_INDEX</span><span class="p">(</span><span class="n">i</span><span class="p">));</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-21"><code data-line-number=" 21"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-21"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">OB_OFFSET_HI</span><span class="p">(</span><span class="n">i</span><span class="p">));</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-21"><code data-line-number=" 21"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-21"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">OB_OFFSET_HI</span><span class="p">(</span><span class="n">i</span><span class="p">));</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-22"><code data-line-number=" 22"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-22"></a>               <span class="n">start</span> <span class="o">+=</span> <span class="n">tr_size</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-22"><code data-line-number=" 22"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-22"></a>               <span class="n">start</span> <span class="o">+=</span> <span class="n">tr_size</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-23"><code data-line-number=" 23"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-23"></a>       <span class="p">}</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-23"><code data-line-number=" 23"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-23"></a>       <span class="p">}</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-24"><code data-line-number=" 24"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-24"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-24"><code data-line-number=" 24"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-24"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-25"><code data-line-number=" 25"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-25"></a>       <span class="cm">/*Enable OB translation*/</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-25"><code data-line-number=" 25"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-25"></a>       <span class="cm">/*Enable OB translation*/</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-26"><code data-line-number=" 26"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-26"></a>        <span class="n">__raw_writel</span><span class="p">(</span><span class="n">OB_XLAT_EN_VAL</span> <span class="o">|</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">CMD_STATUS</span><span class="p">),</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-26"><code data-line-number=" 26"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-26"></a>        <span class="n">__raw_writel</span><span class="p">(</span><span class="n">OB_XLAT_EN_VAL</span> <span class="o">|</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">CMD_STATUS</span><span class="p">),</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-27"><code data-line-number=" 27"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-27"></a>                        <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">CMD_STATUS</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-27"><code data-line-number=" 27"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-27"></a>                        <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">CMD_STATUS</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-28"><code data-line-number=" 28"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-28"></a>       <span class="p">}</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-28"><code data-line-number=" 28"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-28"></a>       <span class="p">}</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-29"><code data-line-number=" 29"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-29"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-29"><code data-line-number=" 29"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-29"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-30"><code data-line-number=" 30"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-30"></a>       <span class="p">..</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-30"><code data-line-number=" 30"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-30"></a>       <span class="p">..</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-31"><code data-line-number=" 31"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-31"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-31"><code data-line-number=" 31"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-31"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-32"><code data-line-number=" 32"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-32"></a>       <span class="k">static</span> <span class="kt">void</span> <span class="n">set_inbound_trans</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-32"><code data-line-number=" 32"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-32"></a>       <span class="k">static</span> <span class="kt">void</span> <span class="n">set_inbound_trans</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-33"><code data-line-number=" 33"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-33"></a>       <span class="p">{</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-33"><code data-line-number=" 33"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-33"></a>       <span class="p">{</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-34"><code data-line-number=" 34"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-34"></a>       <span class="cm">/*Configure and set up BAR0*/</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-34"><code data-line-number=" 34"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-34"></a>       <span class="cm">/*Configure and set up BAR0*/</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-35"><code data-line-number=" 35"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-35"></a>       <span class="n">set_dbi_mode</span><span class="p">();</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-35"><code data-line-number=" 35"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-35"></a>       <span class="n">set_dbi_mode</span><span class="p">();</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-36"><code data-line-number=" 36"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-36"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-36"><code data-line-number=" 36"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-36"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-37"><code data-line-number=" 37"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-37"></a>       <span class="cm">/*Enable BAR0*/</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-37"><code data-line-number=" 37"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-37"></a>       <span class="cm">/*Enable BAR0*/</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-38"><code data-line-number=" 38"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-38"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-38"><code data-line-number=" 38"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-38"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-39"><code data-line-number=" 39"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-39"></a>                       <span class="n">PCI_BASE_ADDRESS_0</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-39"><code data-line-number=" 39"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-39"></a>                       <span class="n">PCI_BASE_ADDRESS_0</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-40"><code data-line-number=" 40"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-40"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-40"><code data-line-number=" 40"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-40"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-41"><code data-line-number=" 41"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-41"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">SZ_4K</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-41"><code data-line-number=" 41"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-41"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">SZ_4K</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-42"><code data-line-number=" 42"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-42"></a>                       <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_BASE_ADDRESS_0</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-42"><code data-line-number=" 42"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-42"></a>                       <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_BASE_ADDRESS_0</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-43"><code data-line-number=" 43"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-43"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-43"><code data-line-number=" 43"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-43"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-44"><code data-line-number=" 44"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-44"></a>       <span class="n">clear_dbi_mode</span><span class="p">();</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-44"><code data-line-number=" 44"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-44"></a>       <span class="n">clear_dbi_mode</span><span class="p">();</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-45"><code data-line-number=" 45"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-45"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-45"><code data-line-number=" 45"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-45"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-46"><code data-line-number=" 46"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-46"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">reg_phys</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-46"><code data-line-number=" 46"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-46"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">reg_phys</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-47"><code data-line-number=" 47"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-47"></a>                               <span class="o">+</span> <span class="n">PCI_BASE_ADDRESS_0</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-47"><code data-line-number=" 47"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-47"></a>                               <span class="o">+</span> <span class="n">PCI_BASE_ADDRESS_0</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-48"><code data-line-number=" 48"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-48"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-48"><code data-line-number=" 48"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-48"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-49"><code data-line-number=" 49"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-49"></a>       <span class="cm">/*Configure BAR1 only if inbound window is specified*/</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-49"><code data-line-number=" 49"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-49"></a>       <span class="cm">/*Configure BAR1 only if inbound window is specified*/</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-50"><code data-line-number=" 50"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-50"></a>       <span class="k">if</span> <span class="p">(</span><span class="n">ram_base</span> <span class="o">!=</span> <span class="n">ram_end</span><span class="p">)</span> <span class="p">{</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-50"><code data-line-number=" 50"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-50"></a>       <span class="k">if</span> <span class="p">(</span><span class="n">ram_base</span> <span class="o">!=</span> <span class="n">ram_end</span><span class="p">)</span> <span class="p">{</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-51"><code data-line-number=" 51"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-51"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="n">ram_base</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">IB_START0_LO</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-51"><code data-line-number=" 51"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-51"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="n">ram_base</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">IB_START0_LO</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-52"><code data-line-number=" 52"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-52"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">IB_START0_HI</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-52"><code data-line-number=" 52"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-52"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">IB_START0_HI</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-53"><code data-line-number=" 53"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-53"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">IB_BAR0</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-53"><code data-line-number=" 53"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-53"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">IB_BAR0</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-54"><code data-line-number=" 54"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-54"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="n">ram_base</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">IB_OFFSET0</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-54"><code data-line-number=" 54"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-54"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="n">ram_base</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">IB_OFFSET0</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-55"><code data-line-number=" 55"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-55"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-55"><code data-line-number=" 55"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-55"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-56"><code data-line-number=" 56"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-56"></a>               <span class="n">set_dbi_mode</span><span class="p">();</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-56"><code data-line-number=" 56"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-56"></a>               <span class="n">set_dbi_mode</span><span class="p">();</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-57"><code data-line-number=" 57"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-57"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-57"><code data-line-number=" 57"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-57"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-58"><code data-line-number=" 58"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-58"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-58"><code data-line-number=" 58"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-58"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-59"><code data-line-number=" 59"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-59"></a>                               <span class="n">PCI_BASE_ADDRESS_1</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-59"><code data-line-number=" 59"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-59"></a>                               <span class="n">PCI_BASE_ADDRESS_1</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-60"><code data-line-number=" 60"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-60"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-60"><code data-line-number=" 60"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-60"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-61"><code data-line-number=" 61"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-61"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="n">ram_end</span> <span class="o">-</span> <span class="n">ram_base</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-61"><code data-line-number=" 61"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-61"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="n">ram_end</span> <span class="o">-</span> <span class="n">ram_base</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-62"><code data-line-number=" 62"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-62"></a>                       <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_BASE_ADDRESS_1</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-62"><code data-line-number=" 62"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-62"></a>                       <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_BASE_ADDRESS_1</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-63"><code data-line-number=" 63"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-63"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-63"><code data-line-number=" 63"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-63"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-64"><code data-line-number=" 64"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-64"></a>               <span class="n">clear_dbi_mode</span><span class="p">();</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-64"><code data-line-number=" 64"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-64"></a>               <span class="n">clear_dbi_mode</span><span class="p">();</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-65"><code data-line-number=" 65"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-65"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-65"><code data-line-number=" 65"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-65"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-66"><code data-line-number=" 66"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-66"></a>               <span class="cm">/*Set BAR1 attributes and value in config space*/</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-66"><code data-line-number=" 66"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-66"></a>               <span class="cm">/*Set BAR1 attributes and value in config space*/</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-67"><code data-line-number=" 67"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-67"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="n">ram_base</span> <span class="o">|</span> <span class="n">PCI_BASE_ADDRESS_MEM_PREFETCH</span><span class="p">,</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-67"><code data-line-number=" 67"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-67"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="n">ram_base</span> <span class="o">|</span> <span class="n">PCI_BASE_ADDRESS_MEM_PREFETCH</span><span class="p">,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-68"><code data-line-number=" 68"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-68"></a>                               <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-68"><code data-line-number=" 68"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-68"></a>                               <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-69"><code data-line-number=" 69"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-69"></a>                               <span class="o">+</span> <span class="n">PCI_BASE_ADDRESS_1</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-69"><code data-line-number=" 69"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-69"></a>                               <span class="o">+</span> <span class="n">PCI_BASE_ADDRESS_1</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-70"><code data-line-number=" 70"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-70"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-70"><code data-line-number=" 70"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-70"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-71"><code data-line-number=" 71"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-71"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="n">IB_XLAT_EN_VAL</span> <span class="o">|</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-71"><code data-line-number=" 71"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-71"></a>               <span class="n">__raw_writel</span><span class="p">(</span><span class="n">IB_XLAT_EN_VAL</span> <span class="o">|</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-72"><code data-line-number=" 72"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-72"></a>                                       <span class="n">CMD_STATUS</span><span class="p">),</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">CMD_STATUS</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-72"><code data-line-number=" 72"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-72"></a>                                       <span class="n">CMD_STATUS</span><span class="p">),</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">CMD_STATUS</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-73"><code data-line-number=" 73"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-73"></a>               <span class="p">}</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-73"><code data-line-number=" 73"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-73"></a>               <span class="p">}</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-74"><code data-line-number=" 74"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-74"></a>       <span class="p">}</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-74"><code data-line-number=" 74"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-74"></a>       <span class="p">}</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-75"><code data-line-number=" 75"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-75"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-75"><code data-line-number=" 75"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-75"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-76"><code data-line-number=" 76"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-76"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-76"><code data-line-number=" 76"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-76"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-77"><code data-line-number=" 77"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-77"></a>       <span class="k">static</span> <span class="kt">void</span> <span class="n">omap_pcie_setup</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-77"><code data-line-number=" 77"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-77"></a>       <span class="k">static</span> <span class="kt">void</span> <span class="n">omap_pcie_setup</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-78"><code data-line-number=" 78"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-78"></a>       <span class="p">{</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-78"><code data-line-number=" 78"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-78"></a>       <span class="p">{</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-79"><code data-line-number=" 79"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-79"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-79"><code data-line-number=" 79"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-79"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-80"><code data-line-number=" 80"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-80"></a>         <span class="n">u32</span> <span class="n">val</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-80"><code data-line-number=" 80"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-80"></a>         <span class="n">u32</span> <span class="n">val</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-81"><code data-line-number=" 81"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-81"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-81"><code data-line-number=" 81"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-81"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-82"><code data-line-number=" 82"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-82"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">CTRL_BASE</span> <span class="o">+</span> <span class="mh">0x480</span><span class="p">);</span> <span class="cm">/*RC mode*/</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-82"><code data-line-number=" 82"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-82"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">CTRL_BASE</span> <span class="o">+</span> <span class="mh">0x480</span><span class="p">);</span> <span class="cm">/*RC mode*/</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-83"><code data-line-number=" 83"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-83"></a>       <span class="cm">/*bring PCIE out of reset sequence (PRM_DEFAULT)*/</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-83"><code data-line-number=" 83"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-83"></a>       <span class="cm">/*bring PCIE out of reset sequence (PRM_DEFAULT)*/</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-84"><code data-line-number=" 84"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-84"></a>       <span class="n">__raw_writel</span><span class="p">(</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0xb10</span><span class="p">)</span> <span class="o">|</span> <span class="mh">0x80</span><span class="p">,</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0xb10</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-84"><code data-line-number=" 84"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-84"></a>       <span class="n">__raw_writel</span><span class="p">(</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0xb10</span><span class="p">)</span> <span class="o">|</span> <span class="mh">0x80</span><span class="p">,</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0xb10</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-85"><code data-line-number=" 85"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-85"></a>       <span class="n">udelay</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-85"><code data-line-number=" 85"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-85"></a>       <span class="n">udelay</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-86"><code data-line-number=" 86"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-86"></a>       <span class="n">__raw_writel</span><span class="p">(</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0xb10</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">~</span><span class="mh">0x80</span><span class="p">,</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0xb10</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-86"><code data-line-number=" 86"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-86"></a>       <span class="n">__raw_writel</span><span class="p">(</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0xb10</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">~</span><span class="mh">0x80</span><span class="p">,</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0xb10</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-87"><code data-line-number=" 87"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-87"></a>       <span class="n">delay</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-87"><code data-line-number=" 87"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-87"></a>       <span class="n">delay</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-88"><code data-line-number=" 88"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-88"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">__raw_readl</span><span class="p">(</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0xb14</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x80</span><span class="p">,</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0xb14</span><span class="p">);</span> <span class="c1">//clear this bit</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-88"><code data-line-number=" 88"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-88"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">__raw_readl</span><span class="p">(</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0xb14</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x80</span><span class="p">,</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0xb14</span><span class="p">);</span> <span class="c1">//clear this bit</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-89"><code data-line-number=" 89"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-89"></a>       <span class="n">delay</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-89"><code data-line-number=" 89"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-89"></a>       <span class="n">delay</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-90"><code data-line-number=" 90"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-90"></a>       <span class="cm">/*enable PCIE clock (CM_DEFAULT)*/</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-90"><code data-line-number=" 90"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-90"></a>       <span class="cm">/*enable PCIE clock (CM_DEFAULT)*/</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-91"><code data-line-number=" 91"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-91"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0x578</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-91"><code data-line-number=" 91"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-91"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0x578</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-92"><code data-line-number=" 92"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-92"></a>       <span class="n">udelay</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-92"><code data-line-number=" 92"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-92"></a>       <span class="n">udelay</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-93"><code data-line-number=" 93"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-93"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-93"><code data-line-number=" 93"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-93"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-94"><code data-line-number=" 94"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-94"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0x510</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-94"><code data-line-number=" 94"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-94"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0x510</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-95"><code data-line-number=" 95"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-95"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0x578</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-95"><code data-line-number=" 95"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-95"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0x578</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-96"><code data-line-number=" 96"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-96"></a>       <span class="k">while</span> <span class="p">(</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0x578</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x70000</span> <span class="p">)</span><span class="n">delay</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-96"><code data-line-number=" 96"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-96"></a>       <span class="k">while</span> <span class="p">(</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">PRCM_BASE</span><span class="o">+</span><span class="mh">0x578</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x70000</span> <span class="p">)</span><span class="n">delay</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-97"><code data-line-number=" 97"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-97"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">DIR_SPD</span> <span class="o">|</span> <span class="n">__raw_readl</span><span class="p">(</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-97"><code data-line-number=" 97"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-97"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">DIR_SPD</span> <span class="o">|</span> <span class="n">__raw_readl</span><span class="p">(</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-98"><code data-line-number=" 98"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-98"></a>                               <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PL_GEN2</span><span class="p">),</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-98"><code data-line-number=" 98"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-98"></a>                               <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PL_GEN2</span><span class="p">),</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-99"><code data-line-number=" 99"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-99"></a>                       <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PL_GEN2</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-99"><code data-line-number=" 99"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-99"></a>                       <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PL_GEN2</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-100"><code data-line-number="100"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-100"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-100"><code data-line-number="100"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-100"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-101"><code data-line-number="101"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-101"></a>       <span class="cm">/*set x1*/</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-101"><code data-line-number="101"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-101"></a>       <span class="cm">/*set x1*/</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-102"><code data-line-number="102"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-102"></a>       <span class="n">val</span> <span class="o">=</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-102"><code data-line-number="102"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-102"></a>       <span class="n">val</span> <span class="o">=</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-103"><code data-line-number="103"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-103"></a>                       <span class="n">LINK_CAP</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-103"><code data-line-number="103"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-103"></a>                       <span class="n">LINK_CAP</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-104"><code data-line-number="104"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-104"></a>       <span class="n">val</span> <span class="o">=</span> <span class="p">(</span><span class="n">val</span> <span class="o">&amp;</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x3f</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-104"><code data-line-number="104"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-104"></a>       <span class="n">val</span> <span class="o">=</span> <span class="p">(</span><span class="n">val</span> <span class="o">&amp;</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x3f</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-105"><code data-line-number="105"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-105"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-105"><code data-line-number="105"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-105"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-106"><code data-line-number="106"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-106"></a>                       <span class="n">LINK_CAP</span><span class="p">);</span> <span class="cm">/*not to confuse, this is PCIESS local config reg, not PCIe config reg which is RO*/</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-106"><code data-line-number="106"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-106"></a>                       <span class="n">LINK_CAP</span><span class="p">);</span> <span class="cm">/*not to confuse, this is PCIESS local config reg, not PCIe config reg which is RO*/</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-107"><code data-line-number="107"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-107"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-107"><code data-line-number="107"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-107"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-108"><code data-line-number="108"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-108"></a>       <span class="n">val</span> <span class="o">=</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PL_GEN2</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-108"><code data-line-number="108"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-108"></a>       <span class="n">val</span> <span class="o">=</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PL_GEN2</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-109"><code data-line-number="109"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-109"></a>       <span class="n">val</span> <span class="o">=</span> <span class="p">(</span><span class="n">val</span> <span class="o">&amp;</span> <span class="o">~</span><span class="p">(</span><span class="mh">0xff</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-109"><code data-line-number="109"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-109"></a>       <span class="n">val</span> <span class="o">=</span> <span class="p">(</span><span class="n">val</span> <span class="o">&amp;</span> <span class="o">~</span><span class="p">(</span><span class="mh">0xff</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-110"><code data-line-number="110"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-110"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PL_GEN2</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-110"><code data-line-number="110"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-110"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PL_GEN2</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-111"><code data-line-number="111"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-111"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-111"><code data-line-number="111"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-111"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-112"><code data-line-number="112"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-112"></a>       <span class="n">val</span> <span class="o">=</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-112"><code data-line-number="112"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-112"></a>       <span class="n">val</span> <span class="o">=</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-113"><code data-line-number="113"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-113"></a>                       <span class="n">PL_LINK_CTRL</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-113"><code data-line-number="113"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-113"></a>                       <span class="n">PL_LINK_CTRL</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-114"><code data-line-number="114"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-114"></a>       <span class="n">val</span> <span class="o">=</span> <span class="p">(</span><span class="n">val</span> <span class="o">&amp;</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x3F</span> <span class="o">&lt;&lt;</span> <span class="mi">16</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">16</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-114"><code data-line-number="114"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-114"></a>       <span class="n">val</span> <span class="o">=</span> <span class="p">(</span><span class="n">val</span> <span class="o">&amp;</span> <span class="o">~</span><span class="p">(</span><span class="mh">0x3F</span> <span class="o">&lt;&lt;</span> <span class="mi">16</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">16</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-115"><code data-line-number="115"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-115"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-115"><code data-line-number="115"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-115"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-116"><code data-line-number="116"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-116"></a>                               <span class="n">PL_LINK_CTRL</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-116"><code data-line-number="116"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-116"></a>                               <span class="n">PL_LINK_CTRL</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-117"><code data-line-number="117"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-117"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-117"><code data-line-number="117"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-117"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-118"><code data-line-number="118"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-118"></a>       <span class="cm">/*Initiate Link Trainin*/</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-118"><code data-line-number="118"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-118"></a>       <span class="cm">/*Initiate Link Trainin*/</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-119"><code data-line-number="119"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-119"></a>        <span class="n">__raw_writel</span><span class="p">(</span><span class="n">LTSSM_EN_VAL</span> <span class="o">|</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">CMD_STATUS</span><span class="p">),</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-119"><code data-line-number="119"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-119"></a>        <span class="n">__raw_writel</span><span class="p">(</span><span class="n">LTSSM_EN_VAL</span> <span class="o">|</span> <span class="n">__raw_readl</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">CMD_STATUS</span><span class="p">),</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-120"><code data-line-number="120"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-120"></a>                        <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">CMD_STATUS</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-120"><code data-line-number="120"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-120"></a>                        <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">CMD_STATUS</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-121"><code data-line-number="121"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-121"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-121"><code data-line-number="121"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-121"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-122"><code data-line-number="122"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-122"></a>       <span class="n">udelay</span><span class="p">(</span><span class="mi">100000</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-122"><code data-line-number="122"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-122"></a>       <span class="n">udelay</span><span class="p">(</span><span class="mi">100000</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-123"><code data-line-number="123"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-123"></a>       <span class="cm">/*set up as bridge*/</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-123"><code data-line-number="123"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-123"></a>       <span class="cm">/*set up as bridge*/</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-124"><code data-line-number="124"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-124"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-124"><code data-line-number="124"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-124"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-125"><code data-line-number="125"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-125"></a>       <span class="n">__raw_writew</span><span class="p">(</span><span class="n">PCI_CLASS_BRIDGE_PCI</span><span class="p">,</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-125"><code data-line-number="125"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-125"></a>       <span class="n">__raw_writew</span><span class="p">(</span><span class="n">PCI_CLASS_BRIDGE_PCI</span><span class="p">,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-126"><code data-line-number="126"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-126"></a>                       <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_CLASS_DEVICE</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-126"><code data-line-number="126"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-126"></a>                       <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_CLASS_DEVICE</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-127"><code data-line-number="127"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-127"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-127"><code data-line-number="127"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-127"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-128"><code data-line-number="128"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-128"></a>       <span class="n">disable_bars</span><span class="p">();</span> <span class="c1">//for now</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-128"><code data-line-number="128"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-128"></a>       <span class="n">disable_bars</span><span class="p">();</span> <span class="c1">//for now</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-129"><code data-line-number="129"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-129"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-129"><code data-line-number="129"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-129"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-130"><code data-line-number="130"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-130"></a>       <span class="n">set_outbound_trans</span><span class="p">(</span><span class="mh">0x20000000</span><span class="p">,</span> <span class="mh">0x30000000</span><span class="mi">-1</span><span class="p">);</span> <span class="c1">//non-prefetch mem area</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-130"><code data-line-number="130"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-130"></a>       <span class="n">set_outbound_trans</span><span class="p">(</span><span class="mh">0x20000000</span><span class="p">,</span> <span class="mh">0x30000000</span><span class="mi">-1</span><span class="p">);</span> <span class="c1">//non-prefetch mem area</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-131"><code data-line-number="131"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-131"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-131"><code data-line-number="131"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-131"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-132"><code data-line-number="132"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-132"></a>       <span class="cm">/*Enable 32-bit IO addressing support*/</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-132"><code data-line-number="132"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-132"></a>       <span class="cm">/*Enable 32-bit IO addressing support*/</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-133"><code data-line-number="133"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-133"></a>       <span class="n">__raw_writew</span><span class="p">(</span><span class="n">PCI_IO_RANGE_TYPE_32</span> <span class="o">|</span> <span class="p">(</span><span class="n">PCI_IO_RANGE_TYPE_32</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">),</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-133"><code data-line-number="133"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-133"></a>       <span class="n">__raw_writew</span><span class="p">(</span><span class="n">PCI_IO_RANGE_TYPE_32</span> <span class="o">|</span> <span class="p">(</span><span class="n">PCI_IO_RANGE_TYPE_32</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">),</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-134"><code data-line-number="134"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-134"></a>                       <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_IO_BASE</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-134"><code data-line-number="134"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-134"></a>                       <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_IO_BASE</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-135"><code data-line-number="135"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-135"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-135"><code data-line-number="135"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-135"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-136"><code data-line-number="136"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-136"></a>       <span class="cm">/*not plan to use interrupt*/</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-136"><code data-line-number="136"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-136"></a>       <span class="cm">/*not plan to use interrupt*/</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-137"><code data-line-number="137"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-137"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0xf</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">IRQ_ENABLE_CLR</span><span class="p">);</span> <span class="c1">//not enable irq</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-137"><code data-line-number="137"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-137"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0xf</span><span class="p">,</span> <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">IRQ_ENABLE_CLR</span><span class="p">);</span> <span class="c1">//not enable irq</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-138"><code data-line-number="138"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-138"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-138"><code data-line-number="138"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-138"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-139"><code data-line-number="139"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-139"></a>       <span class="cm">/*skip MSI interrupt chain setup*/</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-139"><code data-line-number="139"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-139"></a>       <span class="cm">/*skip MSI interrupt chain setup*/</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-140"><code data-line-number="140"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-140"></a>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-140"><code data-line-number="140"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-140"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-141"><code data-line-number="141"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-141"></a>       <span class="n">get_and_clear_err</span><span class="p">();</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-141"><code data-line-number="141"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-141"></a>       <span class="n">get_and_clear_err</span><span class="p">();</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-142"><code data-line-number="142"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-142"></a>       <span class="p">}</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-142"><code data-line-number="142"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-142"></a>       <span class="p">}</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6554672839004fe2aa5e73d98df4490f-143"><code data-line-number="143"></code></a></td>
-<td class="code"><code><a name="rest_code_6554672839004fe2aa5e73d98df4490f-143"></a>       <span class="p">..</span>
+<td class="linenos linenodiv"><a href="#rest_code_f4297150d62b461cbf7eec62991aaf21-143"><code data-line-number="143"></code></a></td>
+<td class="code"><code><a name="rest_code_f4297150d62b461cbf7eec62991aaf21-143"></a>       <span class="p">..</span>
 </code></td>
 </tr>
 </table></div>
@@ -865,451 +865,451 @@ includes registering PCI device, its respective read/write configuration space h
 Post enumeration is to set up the inbound transaction address space which is the local system memory space of the system.</p>
 <div class="code"><table class="codetable">
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-1"><code data-line-number=" 1"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-1"></a>       <span class="k">static</span> <span class="k">struct</span> <span class="nc">pci_config_table</span> <span class="n">pci_redray_config_table</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-1"></a>       <span class="k">static</span> <span class="k">struct</span> <span class="nc">pci_config_table</span> <span class="n">pci_redray_config_table</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-2"><code data-line-number=" 2"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-2"></a>       <span class="cm">/*104c,8888 - TI host bridge*/</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-2"></a>       <span class="cm">/*104c,8888 - TI host bridge*/</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-3"><code data-line-number=" 3"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-3"></a>               <span class="p">{</span><span class="mh">0x104c</span><span class="p">,</span> <span class="mh">0x8888</span><span class="p">,</span> <span class="n">PCI_CLASS_BRIDGE_HOST</span><span class="p">,</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-3"></a>               <span class="p">{</span><span class="mh">0x104c</span><span class="p">,</span> <span class="mh">0x8888</span><span class="p">,</span> <span class="n">PCI_CLASS_BRIDGE_HOST</span><span class="p">,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-4"><code data-line-number=" 4"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-4"></a>                <span class="n">PCI_ANY_ID</span><span class="p">,</span> <span class="n">PCI_ANY_ID</span><span class="p">,</span> <span class="n">PCI_ANY_ID</span><span class="p">,</span> <span class="n">pci_setup_ti_bridge</span><span class="p">},</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-4"></a>                <span class="n">PCI_ANY_ID</span><span class="p">,</span> <span class="n">PCI_ANY_ID</span><span class="p">,</span> <span class="n">PCI_ANY_ID</span><span class="p">,</span> <span class="n">pci_setup_ti_bridge</span><span class="p">},</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-5"><code data-line-number=" 5"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-5"></a>               <span class="p">{</span><span class="mi">0</span><span class="n">x</span><span class="p">...,</span> <span class="mi">0</span><span class="n">x</span><span class="p">...,</span> <span class="mh">0x11</span><span class="p">,</span> <span class="cm">/*note: omit proprieatary info here*/</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-5"></a>               <span class="p">{</span><span class="mi">0</span><span class="n">x</span><span class="p">...,</span> <span class="mi">0</span><span class="n">x</span><span class="p">...,</span> <span class="mh">0x11</span><span class="p">,</span> <span class="cm">/*note: omit proprieatary info here*/</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-6"><code data-line-number=" 6"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-6"></a>                <span class="n">PCI_ANY_ID</span><span class="p">,</span> <span class="n">PCI_ANY_ID</span><span class="p">,</span> <span class="n">PCI_ANY_ID</span><span class="p">,</span> <span class="n">pci_setup_vp</span><span class="p">},</span> <span class="cm">/*pci_setup_vp is to set up this proprietary video processor chip*/</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-6"></a>                <span class="n">PCI_ANY_ID</span><span class="p">,</span> <span class="n">PCI_ANY_ID</span><span class="p">,</span> <span class="n">PCI_ANY_ID</span><span class="p">,</span> <span class="n">pci_setup_vp</span><span class="p">},</span> <span class="cm">/*pci_setup_vp is to set up this proprietary video processor chip*/</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-7"><code data-line-number=" 7"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-7"></a>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-7"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-8"><code data-line-number=" 8"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-8"></a>       <span class="p">{</span> <span class="p">}</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-8"></a>       <span class="p">{</span> <span class="p">}</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-9"><code data-line-number=" 9"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-9"></a>       <span class="p">};</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-9"></a>       <span class="p">};</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-10"><code data-line-number="10"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-10"></a>       <span class="p">..</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-10"></a>       <span class="p">..</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-11"><code data-line-number="11"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-11"></a>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-11"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-12"><code data-line-number="12"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-12"></a>       <span class="k">struct</span> <span class="nc">pci_controller</span> <span class="n">hose</span> <span class="o">=</span> <span class="p">{</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-12"></a>       <span class="k">struct</span> <span class="nc">pci_controller</span> <span class="n">hose</span> <span class="o">=</span> <span class="p">{</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-13"><code data-line-number="13"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-13"></a>               <span class="nl">config_table</span><span class="p">:</span> <span class="n">pci_vp_config_table</span><span class="p">,</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-13"><code data-line-number="13"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-13"></a>               <span class="nl">config_table</span><span class="p">:</span> <span class="n">pci_vp_config_table</span><span class="p">,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-14"><code data-line-number="14"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-14"></a>       <span class="p">};</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-14"><code data-line-number="14"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-14"></a>       <span class="p">};</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-15"><code data-line-number="15"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-15"></a>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-15"><code data-line-number="15"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-15"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-16"><code data-line-number="16"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-16"></a>       <span class="p">..</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-16"><code data-line-number="16"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-16"></a>       <span class="p">..</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-17"><code data-line-number="17"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-17"></a>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-17"><code data-line-number="17"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-17"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-18"><code data-line-number="18"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-18"></a>       <span class="kt">void</span> <span class="n">omap_pci_init</span><span class="p">(</span><span class="k">struct</span> <span class="nc">pci_controller</span><span class="o">*</span> <span class="n">hose</span><span class="p">)</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-18"><code data-line-number="18"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-18"></a>       <span class="kt">void</span> <span class="n">omap_pci_init</span><span class="p">(</span><span class="k">struct</span> <span class="nc">pci_controller</span><span class="o">*</span> <span class="n">hose</span><span class="p">)</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-19"><code data-line-number="19"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-19"></a>       <span class="p">{</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-19"><code data-line-number="19"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-19"></a>       <span class="p">{</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-20"><code data-line-number="20"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-20"></a>       <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">val</span><span class="p">,</span><span class="n">offset</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-20"><code data-line-number="20"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-20"></a>       <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">val</span><span class="p">,</span><span class="n">offset</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-21"><code data-line-number="21"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-21"></a>       <span class="n">pci_dev_t</span> <span class="n">dev</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-21"><code data-line-number="21"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-21"></a>       <span class="n">pci_dev_t</span> <span class="n">dev</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-22"><code data-line-number="22"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-22"></a>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-22"><code data-line-number="22"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-22"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-23"><code data-line-number="23"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-23"></a>       <span class="n">omap_pcie_setup</span><span class="p">();</span><span class="c1">//as shown above</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-23"><code data-line-number="23"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-23"></a>       <span class="n">omap_pcie_setup</span><span class="p">();</span><span class="c1">//as shown above</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-24"><code data-line-number="24"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-24"></a>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-24"><code data-line-number="24"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-24"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-25"><code data-line-number="25"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-25"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">first_busno</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-25"><code data-line-number="25"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-25"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">first_busno</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-26"><code data-line-number="26"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-26"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">last_busno</span> <span class="o">=</span> <span class="mh">0x1f</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-26"><code data-line-number="26"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-26"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">last_busno</span> <span class="o">=</span> <span class="mh">0x1f</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-27"><code data-line-number="27"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-27"></a>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-27"><code data-line-number="27"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-27"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-28"><code data-line-number="28"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-28"></a>       <span class="cm">/*memory space*/</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-28"><code data-line-number="28"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-28"></a>       <span class="cm">/*memory space*/</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-29"><code data-line-number="29"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-29"></a>       <span class="n">pci_set_region</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">regions</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-29"><code data-line-number="29"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-29"></a>       <span class="n">pci_set_region</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">regions</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-30"><code data-line-number="30"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-30"></a>                       <span class="mh">0x20000000</span><span class="p">,</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-30"><code data-line-number="30"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-30"></a>                       <span class="mh">0x20000000</span><span class="p">,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-31"><code data-line-number="31"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-31"></a>                       <span class="mi">0</span><span class="p">,</span> <span class="mh">0x1900000</span><span class="p">,</span> <span class="n">PCI_REGION_MEM</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-31"><code data-line-number="31"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-31"></a>                       <span class="mi">0</span><span class="p">,</span> <span class="mh">0x1900000</span><span class="p">,</span> <span class="n">PCI_REGION_MEM</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-32"><code data-line-number="32"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-32"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">pci_mem</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">regions</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-32"><code data-line-number="32"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-32"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">pci_mem</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">regions</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-33"><code data-line-number="33"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-33"></a>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-33"><code data-line-number="33"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-33"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-34"><code data-line-number="34"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-34"></a>       <span class="cm">/*PCI memory space*/</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-34"><code data-line-number="34"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-34"></a>       <span class="cm">/*PCI memory space*/</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-35"><code data-line-number="35"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-35"></a>       <span class="n">pci_set_region</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">regions</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-35"><code data-line-number="35"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-35"></a>       <span class="n">pci_set_region</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">regions</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-36"><code data-line-number="36"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-36"></a>                       <span class="mh">0x20b00000</span><span class="p">,</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-36"><code data-line-number="36"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-36"></a>                       <span class="mh">0x20b00000</span><span class="p">,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-37"><code data-line-number="37"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-37"></a>                       <span class="mi">0</span><span class="p">,</span> <span class="mh">0x100000</span><span class="p">,</span> <span class="n">PCI_REGION_PREFETCH</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-37"><code data-line-number="37"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-37"></a>                       <span class="mi">0</span><span class="p">,</span> <span class="mh">0x100000</span><span class="p">,</span> <span class="n">PCI_REGION_PREFETCH</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-38"><code data-line-number="38"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-38"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">pci_prefetch</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">regions</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-38"><code data-line-number="38"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-38"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">pci_prefetch</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">regions</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-39"><code data-line-number="39"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-39"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">pci_io</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-39"><code data-line-number="39"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-39"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">pci_io</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-40"><code data-line-number="40"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-40"></a>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-40"><code data-line-number="40"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-40"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-41"><code data-line-number="41"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-41"></a>       <span class="cm">/*PCI I/O space*/</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-41"><code data-line-number="41"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-41"></a>       <span class="cm">/*PCI I/O space*/</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-42"><code data-line-number="42"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-42"></a>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-42"><code data-line-number="42"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-42"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-43"><code data-line-number="43"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-43"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">region_count</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-43"><code data-line-number="43"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-43"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">region_count</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-44"><code data-line-number="44"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-44"></a>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-44"><code data-line-number="44"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-44"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-45"><code data-line-number="45"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-45"></a>       <span class="n">pci_register_hose</span> <span class="p">(</span><span class="n">hose</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-45"><code data-line-number="45"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-45"></a>       <span class="n">pci_register_hose</span> <span class="p">(</span><span class="n">hose</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-46"><code data-line-number="46"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-46"></a>       <span class="n">pci_set_ops</span><span class="p">(</span><span class="n">hose</span><span class="p">,</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-46"><code data-line-number="46"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-46"></a>       <span class="n">pci_set_ops</span><span class="p">(</span><span class="n">hose</span><span class="p">,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-47"><code data-line-number="47"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-47"></a>                   <span class="n">pci_hose_read_config_byte_via_dword</span><span class="p">,</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-47"><code data-line-number="47"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-47"></a>                   <span class="n">pci_hose_read_config_byte_via_dword</span><span class="p">,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-48"><code data-line-number="48"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-48"></a>                   <span class="n">pci_hose_read_config_word_via_dword</span><span class="p">,</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-48"><code data-line-number="48"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-48"></a>                   <span class="n">pci_hose_read_config_word_via_dword</span><span class="p">,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-49"><code data-line-number="49"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-49"></a>                   <span class="n">ti81xx_pci_read_config</span><span class="p">,</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-49"><code data-line-number="49"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-49"></a>                   <span class="n">ti81xx_pci_read_config</span><span class="p">,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-50"><code data-line-number="50"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-50"></a>                   <span class="n">pci_hose_write_config_byte_via_dword</span><span class="p">,</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-50"><code data-line-number="50"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-50"></a>                   <span class="n">pci_hose_write_config_byte_via_dword</span><span class="p">,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-51"><code data-line-number="51"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-51"></a>                   <span class="n">pci_hose_write_config_word_via_dword</span><span class="p">,</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-51"><code data-line-number="51"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-51"></a>                   <span class="n">pci_hose_write_config_word_via_dword</span><span class="p">,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-52"><code data-line-number="52"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-52"></a>                   <span class="n">ti81xx_pci_write_config</span> <span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-52"><code data-line-number="52"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-52"></a>                   <span class="n">ti81xx_pci_write_config</span> <span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-53"><code data-line-number="53"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-53"></a>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-53"><code data-line-number="53"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-53"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-54"><code data-line-number="54"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-54"></a>       <span class="n">pciauto_config_init</span><span class="p">(</span><span class="n">hose</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-54"><code data-line-number="54"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-54"></a>       <span class="n">pciauto_config_init</span><span class="p">(</span><span class="n">hose</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-55"><code data-line-number="55"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-55"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">current_busno</span> <span class="o">=</span> <span class="n">hose</span><span class="o">-&gt;</span><span class="n">first_busno</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-55"><code data-line-number="55"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-55"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">current_busno</span> <span class="o">=</span> <span class="n">hose</span><span class="o">-&gt;</span><span class="n">first_busno</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-56"><code data-line-number="56"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-56"></a>       <span class="n">dev</span> <span class="o">=</span> <span class="n">PCI_BDF</span><span class="p">(</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">first_busno</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-56"><code data-line-number="56"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-56"></a>       <span class="n">dev</span> <span class="o">=</span> <span class="n">PCI_BDF</span><span class="p">(</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">first_busno</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-57"><code data-line-number="57"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-57"></a>       <span class="n">pciauto_prescan_setup_bridge</span><span class="p">(</span><span class="n">hose</span><span class="p">,</span><span class="n">dev</span><span class="p">,</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">current_busno</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-57"><code data-line-number="57"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-57"></a>       <span class="n">pciauto_prescan_setup_bridge</span><span class="p">(</span><span class="n">hose</span><span class="p">,</span><span class="n">dev</span><span class="p">,</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">current_busno</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-58"><code data-line-number="58"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-58"></a>       <span class="n">pciauto_setup_device</span><span class="p">(</span><span class="n">hose</span><span class="p">,</span><span class="n">dev</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">pci_mem</span><span class="p">,</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">pci_prefetch</span><span class="p">,</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">pci_io</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-58"><code data-line-number="58"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-58"></a>       <span class="n">pciauto_setup_device</span><span class="p">(</span><span class="n">hose</span><span class="p">,</span><span class="n">dev</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">pci_mem</span><span class="p">,</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">pci_prefetch</span><span class="p">,</span><span class="n">hose</span><span class="o">-&gt;</span><span class="n">pci_io</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-59"><code data-line-number="59"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-59"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">last_busno</span> <span class="o">=</span> <span class="n">pci_hose_scan</span><span class="p">(</span><span class="n">hose</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-59"><code data-line-number="59"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-59"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">last_busno</span> <span class="o">=</span> <span class="n">pci_hose_scan</span><span class="p">(</span><span class="n">hose</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-60"><code data-line-number="60"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-60"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">last_busno</span> <span class="o">=</span> <span class="n">hose</span><span class="o">-&gt;</span><span class="n">current_busno</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-60"><code data-line-number="60"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-60"></a>       <span class="n">hose</span><span class="o">-&gt;</span><span class="n">last_busno</span> <span class="o">=</span> <span class="n">hose</span><span class="o">-&gt;</span><span class="n">current_busno</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-61"><code data-line-number="61"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-61"></a>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-61"><code data-line-number="61"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-61"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-62"><code data-line-number="62"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-62"></a>       <span class="cm">/*fix up*/</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-62"><code data-line-number="62"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-62"></a>       <span class="cm">/*fix up*/</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-63"><code data-line-number="63"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-63"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x20800000</span><span class="p">,</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_REMOTE_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_BASE_ADDRESS_0</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-63"><code data-line-number="63"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-63"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x20800000</span><span class="p">,</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_REMOTE_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_BASE_ADDRESS_0</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-64"><code data-line-number="64"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-64"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x20000000</span><span class="p">,</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_REMOTE_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_BASE_ADDRESS_1</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-64"><code data-line-number="64"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-64"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x20000000</span><span class="p">,</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_REMOTE_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_BASE_ADDRESS_1</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-65"><code data-line-number="65"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-65"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x010130</span><span class="p">,</span>  <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_REMOTE_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_INTERRUPT_LINE</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-65"><code data-line-number="65"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-65"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x010130</span><span class="p">,</span>  <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_REMOTE_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_INTERRUPT_LINE</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-66"><code data-line-number="66"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-66"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x100546</span><span class="p">,</span>  <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_REMOTE_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_COMMAND</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-66"><code data-line-number="66"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-66"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x100546</span><span class="p">,</span>  <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_REMOTE_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_COMMAND</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-67"><code data-line-number="67"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-67"></a>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-67"><code data-line-number="67"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-67"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-68"><code data-line-number="68"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-68"></a>       <span class="cm">/*fix up max read request*/</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-68"><code data-line-number="68"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-68"></a>       <span class="cm">/*fix up max read request*/</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-69"><code data-line-number="69"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-69"></a>       <span class="n">offset</span> <span class="o">=</span>  <span class="n">__raw_readl</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_REMOTE_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_CAPABILITY_LIST</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-69"><code data-line-number="69"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-69"></a>       <span class="n">offset</span> <span class="o">=</span>  <span class="n">__raw_readl</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_REMOTE_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_CAPABILITY_LIST</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-70"><code data-line-number="70"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-70"></a>       <span class="n">val</span> <span class="o">=</span>  <span class="n">__raw_readl</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_REMOTE_CFG_OFFSET</span> <span class="o">+</span> <span class="n">offset</span> <span class="o">+</span> <span class="mi">8</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-70"><code data-line-number="70"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-70"></a>       <span class="n">val</span> <span class="o">=</span>  <span class="n">__raw_readl</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_REMOTE_CFG_OFFSET</span> <span class="o">+</span> <span class="n">offset</span> <span class="o">+</span> <span class="mi">8</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-71"><code data-line-number="71"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-71"></a>       <span class="n">val</span> <span class="o">=</span> <span class="p">(</span><span class="n">val</span> <span class="o">&amp;</span> <span class="o">~</span><span class="p">(</span><span class="mi">3</span> <span class="o">&lt;&lt;</span> <span class="mi">12</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">12</span><span class="p">);</span> <span class="cm">/*max read requst mask is 256bytes/read*/</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-71"><code data-line-number="71"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-71"></a>       <span class="n">val</span> <span class="o">=</span> <span class="p">(</span><span class="n">val</span> <span class="o">&amp;</span> <span class="o">~</span><span class="p">(</span><span class="mi">3</span> <span class="o">&lt;&lt;</span> <span class="mi">12</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">12</span><span class="p">);</span> <span class="cm">/*max read requst mask is 256bytes/read*/</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-72"><code data-line-number="72"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-72"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">val</span><span class="p">,</span>  <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_REMOTE_CFG_OFFSET</span> <span class="o">+</span> <span class="n">offset</span> <span class="o">+</span> <span class="mi">8</span> <span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-72"><code data-line-number="72"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-72"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">val</span><span class="p">,</span>  <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_REMOTE_CFG_OFFSET</span> <span class="o">+</span> <span class="n">offset</span> <span class="o">+</span> <span class="mi">8</span> <span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-73"><code data-line-number="73"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-73"></a>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-73"><code data-line-number="73"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-73"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-74"><code data-line-number="74"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-74"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x100147</span><span class="p">,</span>  <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_REMOTE_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_COMMAND</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-74"><code data-line-number="74"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-74"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x100147</span><span class="p">,</span>  <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_REMOTE_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_COMMAND</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-75"><code data-line-number="75"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-75"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x100147</span><span class="p">,</span>  <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_COMMAND</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-75"><code data-line-number="75"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-75"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x100147</span><span class="p">,</span>  <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span> <span class="n">PCI_COMMAND</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-76"><code data-line-number="76"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-76"></a>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-76"><code data-line-number="76"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-76"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-77"><code data-line-number="77"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-77"></a>       <span class="n">ram_base</span> <span class="o">=</span> <span class="mh">0x80000000</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-77"><code data-line-number="77"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-77"></a>       <span class="n">ram_base</span> <span class="o">=</span> <span class="mh">0x80000000</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-78"><code data-line-number="78"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-78"></a>       <span class="n">ram_end</span> <span class="o">=</span> <span class="n">ram_base</span> <span class="o">+</span> <span class="mh">0x7fffffff</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-78"><code data-line-number="78"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-78"></a>       <span class="n">ram_end</span> <span class="o">=</span> <span class="n">ram_base</span> <span class="o">+</span> <span class="mh">0x7fffffff</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-79"><code data-line-number="79"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-79"></a>       <span class="cm">/*Post enumeration fixups*/</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-79"><code data-line-number="79"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-79"></a>       <span class="cm">/*Post enumeration fixups*/</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-80"><code data-line-number="80"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-80"></a>       <span class="n">set_inbound_trans</span><span class="p">();</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-80"><code data-line-number="80"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-80"></a>       <span class="n">set_inbound_trans</span><span class="p">();</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-81"><code data-line-number="81"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-81"></a>       <span class="n">__raw_writew</span><span class="p">(</span><span class="n">__raw_readw</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-81"><code data-line-number="81"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-81"></a>       <span class="n">__raw_writew</span><span class="p">(</span><span class="n">__raw_readw</span><span class="p">(</span><span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-82"><code data-line-number="82"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-82"></a>                               <span class="n">PCI_IO_BASE</span><span class="p">)</span> <span class="o">|</span> <span class="n">PCI_IO_RANGE_TYPE_32</span> <span class="o">|</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-82"><code data-line-number="82"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-82"></a>                               <span class="n">PCI_IO_BASE</span><span class="p">)</span> <span class="o">|</span> <span class="n">PCI_IO_RANGE_TYPE_32</span> <span class="o">|</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-83"><code data-line-number="83"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-83"></a>                               <span class="p">(</span><span class="n">PCI_IO_RANGE_TYPE_32</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">),</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-83"><code data-line-number="83"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-83"></a>                               <span class="p">(</span><span class="n">PCI_IO_RANGE_TYPE_32</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">),</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-84"><code data-line-number="84"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-84"></a>                               <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-84"><code data-line-number="84"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-84"></a>                               <span class="n">reg_virt</span> <span class="o">+</span> <span class="n">SPACE0_LOCAL_CFG_OFFSET</span> <span class="o">+</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-85"><code data-line-number="85"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-85"></a>                               <span class="n">PCI_IO_BASE</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-85"><code data-line-number="85"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-85"></a>                               <span class="n">PCI_IO_BASE</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-86"><code data-line-number="86"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-86"></a>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-86"><code data-line-number="86"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-86"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_d00b84b63f7b4f979a124e355424eb7f-87"><code data-line-number="87"></code></a></td>
-<td class="code"><code><a name="rest_code_d00b84b63f7b4f979a124e355424eb7f-87"></a>       <span class="p">}</span>
+<td class="linenos linenodiv"><a href="#rest_code_2e2e96c42ada4244b92c8c526d017600-87"><code data-line-number="87"></code></a></td>
+<td class="code"><code><a name="rest_code_2e2e96c42ada4244b92c8c526d017600-87"></a>       <span class="p">}</span>
 </code></td>
 </tr>
 </table></div>
 <p>When all is done with PCIe device configuration, the device's PCIe memory mapped address space can be dumped with
 u-boot's <em>md</em> command. Sample below is the content of the video processor control registers area.</p>
-<pre class="code console"><a name="rest_code_3fa375418aee42efa6997c0c439823c4-1"></a><span class="go">TI-MIN#md 20000000</span>
-<a name="rest_code_3fa375418aee42efa6997c0c439823c4-2"></a><span class="go">20000000: 00000000 00000000 00000000 00000000    ................</span>
-<a name="rest_code_3fa375418aee42efa6997c0c439823c4-3"></a><span class="go">20000010: 00000000 00000000 00000000 00000000    ................</span>
-<a name="rest_code_3fa375418aee42efa6997c0c439823c4-4"></a><span class="go">20000020: 00000000 00000000 00000000 00000000    ................</span>
-<a name="rest_code_3fa375418aee42efa6997c0c439823c4-5"></a><span class="go">20000030: 00000000 00000000 00000000 00000035    ............5...</span>
-<a name="rest_code_3fa375418aee42efa6997c0c439823c4-6"></a><span class="go">20000040: 000003e7 0000000e 0000000f 00000000    ................</span>
-<a name="rest_code_3fa375418aee42efa6997c0c439823c4-7"></a><span class="go">20000050: 00000000 00000011 00000035 000003e7    ........5.......</span>
-<a name="rest_code_3fa375418aee42efa6997c0c439823c4-8"></a><span class="go">20000060: 0000000e 0000000f 00000000 00000000    ................</span>
+<pre class="code console"><a name="rest_code_a7bcd05cf9ae414f9b2aa3e006329946-1"></a><span class="go">TI-MIN#md 20000000</span>
+<a name="rest_code_a7bcd05cf9ae414f9b2aa3e006329946-2"></a><span class="go">20000000: 00000000 00000000 00000000 00000000    ................</span>
+<a name="rest_code_a7bcd05cf9ae414f9b2aa3e006329946-3"></a><span class="go">20000010: 00000000 00000000 00000000 00000000    ................</span>
+<a name="rest_code_a7bcd05cf9ae414f9b2aa3e006329946-4"></a><span class="go">20000020: 00000000 00000000 00000000 00000000    ................</span>
+<a name="rest_code_a7bcd05cf9ae414f9b2aa3e006329946-5"></a><span class="go">20000030: 00000000 00000000 00000000 00000035    ............5...</span>
+<a name="rest_code_a7bcd05cf9ae414f9b2aa3e006329946-6"></a><span class="go">20000040: 000003e7 0000000e 0000000f 00000000    ................</span>
+<a name="rest_code_a7bcd05cf9ae414f9b2aa3e006329946-7"></a><span class="go">20000050: 00000000 00000011 00000035 000003e7    ........5.......</span>
+<a name="rest_code_a7bcd05cf9ae414f9b2aa3e006329946-8"></a><span class="go">20000060: 0000000e 0000000f 00000000 00000000    ................</span>
 </pre>
 <p>TI document section 19.3.1 [<a class="reference internal" href="#id1">1</a>] describes all the necessary steps needed to set up the RC mode for this module. Initialization of PCIESS for
 the boot code or the high level kernel OS takes the exact same steps. In fact, I ported part of the code from the linux kernel originally
@@ -1325,143 +1325,143 @@ display device (monitor/tv) so that it can setup the HDMI interface correctly. M
 LCD monitor.</p>
 <div class="code"><table class="codetable">
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06f87f2fc666414da8b051f08259f8aa-1"><code data-line-number=" 1"></code></a></td>
-<td class="code"><code><a name="rest_code_06f87f2fc666414da8b051f08259f8aa-1"></a><span class="go">       U-Boot 2010.06 (Jul 02 2016 - 17:35:59)</span>
+<td class="linenos linenodiv"><a href="#rest_code_5b483b81c19941e1ab49738a8f58f1c4-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_5b483b81c19941e1ab49738a8f58f1c4-1"></a><span class="go">       U-Boot 2010.06 (Jul 02 2016 - 17:35:59)</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06f87f2fc666414da8b051f08259f8aa-2"><code data-line-number=" 2"></code></a></td>
-<td class="code"><code><a name="rest_code_06f87f2fc666414da8b051f08259f8aa-2"></a>
+<td class="linenos linenodiv"><a href="#rest_code_5b483b81c19941e1ab49738a8f58f1c4-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_5b483b81c19941e1ab49738a8f58f1c4-2"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06f87f2fc666414da8b051f08259f8aa-3"><code data-line-number=" 3"></code></a></td>
-<td class="code"><code><a name="rest_code_06f87f2fc666414da8b051f08259f8aa-3"></a><span class="go">       TI8148-GP rev 2.1</span>
+<td class="linenos linenodiv"><a href="#rest_code_5b483b81c19941e1ab49738a8f58f1c4-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_5b483b81c19941e1ab49738a8f58f1c4-3"></a><span class="go">       TI8148-GP rev 2.1</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06f87f2fc666414da8b051f08259f8aa-4"><code data-line-number=" 4"></code></a></td>
-<td class="code"><code><a name="rest_code_06f87f2fc666414da8b051f08259f8aa-4"></a>
+<td class="linenos linenodiv"><a href="#rest_code_5b483b81c19941e1ab49738a8f58f1c4-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_5b483b81c19941e1ab49738a8f58f1c4-4"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06f87f2fc666414da8b051f08259f8aa-5"><code data-line-number=" 5"></code></a></td>
-<td class="code"><code><a name="rest_code_06f87f2fc666414da8b051f08259f8aa-5"></a><span class="go">       ARM clk: 720MHz</span>
+<td class="linenos linenodiv"><a href="#rest_code_5b483b81c19941e1ab49738a8f58f1c4-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_5b483b81c19941e1ab49738a8f58f1c4-5"></a><span class="go">       ARM clk: 720MHz</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06f87f2fc666414da8b051f08259f8aa-6"><code data-line-number=" 6"></code></a></td>
-<td class="code"><code><a name="rest_code_06f87f2fc666414da8b051f08259f8aa-6"></a><span class="go">       DDR clk: 533MHz</span>
+<td class="linenos linenodiv"><a href="#rest_code_5b483b81c19941e1ab49738a8f58f1c4-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_5b483b81c19941e1ab49738a8f58f1c4-6"></a><span class="go">       DDR clk: 533MHz</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06f87f2fc666414da8b051f08259f8aa-7"><code data-line-number=" 7"></code></a></td>
-<td class="code"><code><a name="rest_code_06f87f2fc666414da8b051f08259f8aa-7"></a>
+<td class="linenos linenodiv"><a href="#rest_code_5b483b81c19941e1ab49738a8f58f1c4-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_5b483b81c19941e1ab49738a8f58f1c4-7"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06f87f2fc666414da8b051f08259f8aa-8"><code data-line-number=" 8"></code></a></td>
-<td class="code"><code><a name="rest_code_06f87f2fc666414da8b051f08259f8aa-8"></a><span class="go">       I2C:   ready</span>
+<td class="linenos linenodiv"><a href="#rest_code_5b483b81c19941e1ab49738a8f58f1c4-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_5b483b81c19941e1ab49738a8f58f1c4-8"></a><span class="go">       I2C:   ready</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06f87f2fc666414da8b051f08259f8aa-9"><code data-line-number=" 9"></code></a></td>
-<td class="code"><code><a name="rest_code_06f87f2fc666414da8b051f08259f8aa-9"></a><span class="go">       DRAM:  2 GiB</span>
+<td class="linenos linenodiv"><a href="#rest_code_5b483b81c19941e1ab49738a8f58f1c4-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_5b483b81c19941e1ab49738a8f58f1c4-9"></a><span class="go">       DRAM:  2 GiB</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06f87f2fc666414da8b051f08259f8aa-10"><code data-line-number="10"></code></a></td>
-<td class="code"><code><a name="rest_code_06f87f2fc666414da8b051f08259f8aa-10"></a><span class="go">       NAND:  HW ECC BCH8 Selected</span>
+<td class="linenos linenodiv"><a href="#rest_code_5b483b81c19941e1ab49738a8f58f1c4-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_5b483b81c19941e1ab49738a8f58f1c4-10"></a><span class="go">       NAND:  HW ECC BCH8 Selected</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06f87f2fc666414da8b051f08259f8aa-11"><code data-line-number="11"></code></a></td>
-<td class="code"><code><a name="rest_code_06f87f2fc666414da8b051f08259f8aa-11"></a><span class="go">       256 MiB</span>
+<td class="linenos linenodiv"><a href="#rest_code_5b483b81c19941e1ab49738a8f58f1c4-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_5b483b81c19941e1ab49738a8f58f1c4-11"></a><span class="go">       256 MiB</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06f87f2fc666414da8b051f08259f8aa-12"><code data-line-number="12"></code></a></td>
-<td class="code"><code><a name="rest_code_06f87f2fc666414da8b051f08259f8aa-12"></a>
+<td class="linenos linenodiv"><a href="#rest_code_5b483b81c19941e1ab49738a8f58f1c4-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_5b483b81c19941e1ab49738a8f58f1c4-12"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06f87f2fc666414da8b051f08259f8aa-13"><code data-line-number="13"></code></a></td>
-<td class="code"><code><a name="rest_code_06f87f2fc666414da8b051f08259f8aa-13"></a><span class="go">       ..</span>
+<td class="linenos linenodiv"><a href="#rest_code_5b483b81c19941e1ab49738a8f58f1c4-13"><code data-line-number="13"></code></a></td>
+<td class="code"><code><a name="rest_code_5b483b81c19941e1ab49738a8f58f1c4-13"></a><span class="go">       ..</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06f87f2fc666414da8b051f08259f8aa-14"><code data-line-number="14"></code></a></td>
-<td class="code"><code><a name="rest_code_06f87f2fc666414da8b051f08259f8aa-14"></a>
+<td class="linenos linenodiv"><a href="#rest_code_5b483b81c19941e1ab49738a8f58f1c4-14"><code data-line-number="14"></code></a></td>
+<td class="code"><code><a name="rest_code_5b483b81c19941e1ab49738a8f58f1c4-14"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06f87f2fc666414da8b051f08259f8aa-15"><code data-line-number="15"></code></a></td>
-<td class="code"><code><a name="rest_code_06f87f2fc666414da8b051f08259f8aa-15"></a><span class="go">       DDR trained (0x80000fff).</span>
+<td class="linenos linenodiv"><a href="#rest_code_5b483b81c19941e1ab49738a8f58f1c4-15"><code data-line-number="15"></code></a></td>
+<td class="code"><code><a name="rest_code_5b483b81c19941e1ab49738a8f58f1c4-15"></a><span class="go">       DDR trained (0x80000fff).</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06f87f2fc666414da8b051f08259f8aa-16"><code data-line-number="16"></code></a></td>
-<td class="code"><code><a name="rest_code_06f87f2fc666414da8b051f08259f8aa-16"></a>
+<td class="linenos linenodiv"><a href="#rest_code_5b483b81c19941e1ab49738a8f58f1c4-16"><code data-line-number="16"></code></a></td>
+<td class="code"><code><a name="rest_code_5b483b81c19941e1ab49738a8f58f1c4-16"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06f87f2fc666414da8b051f08259f8aa-17"><code data-line-number="17"></code></a></td>
-<td class="code"><code><a name="rest_code_06f87f2fc666414da8b051f08259f8aa-17"></a><span class="go">       Pixel clocks  :148500 KHZ</span>
+<td class="linenos linenodiv"><a href="#rest_code_5b483b81c19941e1ab49738a8f58f1c4-17"><code data-line-number="17"></code></a></td>
+<td class="code"><code><a name="rest_code_5b483b81c19941e1ab49738a8f58f1c4-17"></a><span class="go">       Pixel clocks  :148500 KHZ</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06f87f2fc666414da8b051f08259f8aa-18"><code data-line-number="18"></code></a></td>
-<td class="code"><code><a name="rest_code_06f87f2fc666414da8b051f08259f8aa-18"></a><span class="go">       Horizontal pix:1920</span>
+<td class="linenos linenodiv"><a href="#rest_code_5b483b81c19941e1ab49738a8f58f1c4-18"><code data-line-number="18"></code></a></td>
+<td class="code"><code><a name="rest_code_5b483b81c19941e1ab49738a8f58f1c4-18"></a><span class="go">       Horizontal pix:1920</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06f87f2fc666414da8b051f08259f8aa-19"><code data-line-number="19"></code></a></td>
-<td class="code"><code><a name="rest_code_06f87f2fc666414da8b051f08259f8aa-19"></a><span class="go">       Vertical   pix:1080</span>
+<td class="linenos linenodiv"><a href="#rest_code_5b483b81c19941e1ab49738a8f58f1c4-19"><code data-line-number="19"></code></a></td>
+<td class="code"><code><a name="rest_code_5b483b81c19941e1ab49738a8f58f1c4-19"></a><span class="go">       Vertical   pix:1080</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06f87f2fc666414da8b051f08259f8aa-20"><code data-line-number="20"></code></a></td>
-<td class="code"><code><a name="rest_code_06f87f2fc666414da8b051f08259f8aa-20"></a><span class="go">       Display size H:598 mm</span>
+<td class="linenos linenodiv"><a href="#rest_code_5b483b81c19941e1ab49738a8f58f1c4-20"><code data-line-number="20"></code></a></td>
+<td class="code"><code><a name="rest_code_5b483b81c19941e1ab49738a8f58f1c4-20"></a><span class="go">       Display size H:598 mm</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06f87f2fc666414da8b051f08259f8aa-21"><code data-line-number="21"></code></a></td>
-<td class="code"><code><a name="rest_code_06f87f2fc666414da8b051f08259f8aa-21"></a><span class="go">       Display size V:592 mm</span>
+<td class="linenos linenodiv"><a href="#rest_code_5b483b81c19941e1ab49738a8f58f1c4-21"><code data-line-number="21"></code></a></td>
+<td class="code"><code><a name="rest_code_5b483b81c19941e1ab49738a8f58f1c4-21"></a><span class="go">       Display size V:592 mm</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06f87f2fc666414da8b051f08259f8aa-22"><code data-line-number="22"></code></a></td>
-<td class="code"><code><a name="rest_code_06f87f2fc666414da8b051f08259f8aa-22"></a><span class="go">       Display Name     : VS278</span>
+<td class="linenos linenodiv"><a href="#rest_code_5b483b81c19941e1ab49738a8f58f1c4-22"><code data-line-number="22"></code></a></td>
+<td class="code"><code><a name="rest_code_5b483b81c19941e1ab49738a8f58f1c4-22"></a><span class="go">       Display Name     : VS278</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06f87f2fc666414da8b051f08259f8aa-23"><code data-line-number="23"></code></a></td>
-<td class="code"><code><a name="rest_code_06f87f2fc666414da8b051f08259f8aa-23"></a><span class="go">       Display serial no: D1LMQS148212</span>
+<td class="linenos linenodiv"><a href="#rest_code_5b483b81c19941e1ab49738a8f58f1c4-23"><code data-line-number="23"></code></a></td>
+<td class="code"><code><a name="rest_code_5b483b81c19941e1ab49738a8f58f1c4-23"></a><span class="go">       Display serial no: D1LMQS148212</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06f87f2fc666414da8b051f08259f8aa-24"><code data-line-number="24"></code></a></td>
-<td class="code"><code><a name="rest_code_06f87f2fc666414da8b051f08259f8aa-24"></a>
+<td class="linenos linenodiv"><a href="#rest_code_5b483b81c19941e1ab49738a8f58f1c4-24"><code data-line-number="24"></code></a></td>
+<td class="code"><code><a name="rest_code_5b483b81c19941e1ab49738a8f58f1c4-24"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06f87f2fc666414da8b051f08259f8aa-25"><code data-line-number="25"></code></a></td>
-<td class="code"><code><a name="rest_code_06f87f2fc666414da8b051f08259f8aa-25"></a><span class="go">       MMC:   OMAP SD/MMC: 0</span>
+<td class="linenos linenodiv"><a href="#rest_code_5b483b81c19941e1ab49738a8f58f1c4-25"><code data-line-number="25"></code></a></td>
+<td class="code"><code><a name="rest_code_5b483b81c19941e1ab49738a8f58f1c4-25"></a><span class="go">       MMC:   OMAP SD/MMC: 0</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06f87f2fc666414da8b051f08259f8aa-26"><code data-line-number="26"></code></a></td>
-<td class="code"><code><a name="rest_code_06f87f2fc666414da8b051f08259f8aa-26"></a><span class="go">       Net:   Detected MACID:2c:b6:9d:d0:d1:d2</span>
+<td class="linenos linenodiv"><a href="#rest_code_5b483b81c19941e1ab49738a8f58f1c4-26"><code data-line-number="26"></code></a></td>
+<td class="code"><code><a name="rest_code_5b483b81c19941e1ab49738a8f58f1c4-26"></a><span class="go">       Net:   Detected MACID:2c:b6:9d:d0:d1:d2</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06f87f2fc666414da8b051f08259f8aa-27"><code data-line-number="27"></code></a></td>
-<td class="code"><code><a name="rest_code_06f87f2fc666414da8b051f08259f8aa-27"></a><span class="go">       cpsw</span>
+<td class="linenos linenodiv"><a href="#rest_code_5b483b81c19941e1ab49738a8f58f1c4-27"><code data-line-number="27"></code></a></td>
+<td class="code"><code><a name="rest_code_5b483b81c19941e1ab49738a8f58f1c4-27"></a><span class="go">       cpsw</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06f87f2fc666414da8b051f08259f8aa-28"><code data-line-number="28"></code></a></td>
-<td class="code"><code><a name="rest_code_06f87f2fc666414da8b051f08259f8aa-28"></a><span class="go">       Hit any key to stop autoboot:  1</span>
+<td class="linenos linenodiv"><a href="#rest_code_5b483b81c19941e1ab49738a8f58f1c4-28"><code data-line-number="28"></code></a></td>
+<td class="code"><code><a name="rest_code_5b483b81c19941e1ab49738a8f58f1c4-28"></a><span class="go">       Hit any key to stop autoboot:  1</span>
 </code></td>
 </tr>
 </table></div>

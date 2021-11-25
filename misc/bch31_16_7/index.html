@@ -135,33 +135,33 @@ will have the generator polynomial, <span class="math">\(g(x) =  m_\alpha(x)m_{\
 the primitive polynomial numerically using <em>deconv</em> of MATHLAB/Octave,</p>
 <div class="code"><table class="codetable">
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_a352670f58ba48d38d29236211161168-1"><code data-line-number="1"></code></a></td>
-<td class="code"><code><a name="rest_code_a352670f58ba48d38d29236211161168-1"></a>     &gt;&gt; n=31;
+<td class="linenos linenodiv"><a href="#rest_code_24469ac0167645798584634bd3e3b461-1"><code data-line-number="1"></code></a></td>
+<td class="code"><code><a name="rest_code_24469ac0167645798584634bd3e3b461-1"></a>     &gt;&gt; n=31;
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_a352670f58ba48d38d29236211161168-2"><code data-line-number="2"></code></a></td>
-<td class="code"><code><a name="rest_code_a352670f58ba48d38d29236211161168-2"></a>     &gt;&gt; I=eye(n);
+<td class="linenos linenodiv"><a href="#rest_code_24469ac0167645798584634bd3e3b461-2"><code data-line-number="2"></code></a></td>
+<td class="code"><code><a name="rest_code_24469ac0167645798584634bd3e3b461-2"></a>     &gt;&gt; I=eye(n);
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_a352670f58ba48d38d29236211161168-3"><code data-line-number="3"></code></a></td>
-<td class="code"><code><a name="rest_code_a352670f58ba48d38d29236211161168-3"></a>     &gt;&gt; gx=[1 0 0 1 0 1];
+<td class="linenos linenodiv"><a href="#rest_code_24469ac0167645798584634bd3e3b461-3"><code data-line-number="3"></code></a></td>
+<td class="code"><code><a name="rest_code_24469ac0167645798584634bd3e3b461-3"></a>     &gt;&gt; gx=[1 0 0 1 0 1];
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_a352670f58ba48d38d29236211161168-4"><code data-line-number="4"></code></a></td>
-<td class="code"><code><a name="rest_code_a352670f58ba48d38d29236211161168-4"></a>     &gt;&gt; I=I(n:-1:1,:);
+<td class="linenos linenodiv"><a href="#rest_code_24469ac0167645798584634bd3e3b461-4"><code data-line-number="4"></code></a></td>
+<td class="code"><code><a name="rest_code_24469ac0167645798584634bd3e3b461-4"></a>     &gt;&gt; I=I(n:-1:1,:);
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_a352670f58ba48d38d29236211161168-5"><code data-line-number="5"></code></a></td>
-<td class="code"><code><a name="rest_code_a352670f58ba48d38d29236211161168-5"></a>     &gt;&gt; for i=1:n [a,r(i,:)]=deconv(I(i,:),gx);end
+<td class="linenos linenodiv"><a href="#rest_code_24469ac0167645798584634bd3e3b461-5"><code data-line-number="5"></code></a></td>
+<td class="code"><code><a name="rest_code_24469ac0167645798584634bd3e3b461-5"></a>     &gt;&gt; for i=1:n [a,r(i,:)]=deconv(I(i,:),gx);end
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_a352670f58ba48d38d29236211161168-6"><code data-line-number="6"></code></a></td>
-<td class="code"><code><a name="rest_code_a352670f58ba48d38d29236211161168-6"></a>     &gt;&gt; r=mod(r(:,27:31),2);
+<td class="linenos linenodiv"><a href="#rest_code_24469ac0167645798584634bd3e3b461-6"><code data-line-number="6"></code></a></td>
+<td class="code"><code><a name="rest_code_24469ac0167645798584634bd3e3b461-6"></a>     &gt;&gt; r=mod(r(:,27:31),2);
 </code></td>
 </tr>
 </table></div>
@@ -493,98 +493,98 @@ The matrix below has the highest power of <span class="math">\(\alpha\)</span> a
 <p>MATLAB/Octave is used to generate the power of <span class="math">\(\alpha\)</span> above,</p>
 <div class="code"><table class="codetable">
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-1"><code data-line-number=" 1"></code></a></td>
-<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-1"></a>     % minimum polynomials
+<td class="linenos linenodiv"><a href="#rest_code_dc5def3e9635405b886eb09205156bfb-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_dc5def3e9635405b886eb09205156bfb-1"></a>     % minimum polynomials
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-2"><code data-line-number=" 2"></code></a></td>
-<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-2"></a>     m1=[1 0 0 1 0 1];
+<td class="linenos linenodiv"><a href="#rest_code_dc5def3e9635405b886eb09205156bfb-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_dc5def3e9635405b886eb09205156bfb-2"></a>     m1=[1 0 0 1 0 1];
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-3"><code data-line-number=" 3"></code></a></td>
-<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-3"></a>     m3=[1 1 1 1 0 1];
+<td class="linenos linenodiv"><a href="#rest_code_dc5def3e9635405b886eb09205156bfb-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_dc5def3e9635405b886eb09205156bfb-3"></a>     m3=[1 1 1 1 0 1];
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-4"><code data-line-number=" 4"></code></a></td>
-<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-4"></a>     m5=[1 1 0 1 1 1];
+<td class="linenos linenodiv"><a href="#rest_code_dc5def3e9635405b886eb09205156bfb-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_dc5def3e9635405b886eb09205156bfb-4"></a>     m5=[1 1 0 1 1 1];
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-5"><code data-line-number=" 5"></code></a></td>
-<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-5"></a>     % generator poly
+<td class="linenos linenodiv"><a href="#rest_code_dc5def3e9635405b886eb09205156bfb-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_dc5def3e9635405b886eb09205156bfb-5"></a>     % generator poly
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-6"><code data-line-number=" 6"></code></a></td>
-<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-6"></a>     gx=mod(conv(conv(m1,m3),m5),2);
+<td class="linenos linenodiv"><a href="#rest_code_dc5def3e9635405b886eb09205156bfb-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_dc5def3e9635405b886eb09205156bfb-6"></a>     gx=mod(conv(conv(m1,m3),m5),2);
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-7"><code data-line-number=" 7"></code></a></td>
-<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-7"></a>     % will produce gx=[1 0 0 0 1 1 1 1 1 0 1 0 1 1 1 1];
+<td class="linenos linenodiv"><a href="#rest_code_dc5def3e9635405b886eb09205156bfb-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_dc5def3e9635405b886eb09205156bfb-7"></a>     % will produce gx=[1 0 0 0 1 1 1 1 1 0 1 0 1 1 1 1];
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-8"><code data-line-number=" 8"></code></a></td>
-<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-8"></a>     for i=1:n
+<td class="linenos linenodiv"><a href="#rest_code_dc5def3e9635405b886eb09205156bfb-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_dc5def3e9635405b886eb09205156bfb-8"></a>     for i=1:n
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-9"><code data-line-number=" 9"></code></a></td>
-<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-9"></a>              j=mod(3*i,31);
+<td class="linenos linenodiv"><a href="#rest_code_dc5def3e9635405b886eb09205156bfb-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_dc5def3e9635405b886eb09205156bfb-9"></a>              j=mod(3*i,31);
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-10"><code data-line-number="10"></code></a></td>
-<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-10"></a>              l=mod(5*i,31);
+<td class="linenos linenodiv"><a href="#rest_code_dc5def3e9635405b886eb09205156bfb-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_dc5def3e9635405b886eb09205156bfb-10"></a>              l=mod(5*i,31);
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-11"><code data-line-number="11"></code></a></td>
-<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-11"></a>              if j==0
+<td class="linenos linenodiv"><a href="#rest_code_dc5def3e9635405b886eb09205156bfb-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_dc5def3e9635405b886eb09205156bfb-11"></a>              if j==0
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-12"><code data-line-number="12"></code></a></td>
-<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-12"></a>                     j=31;
+<td class="linenos linenodiv"><a href="#rest_code_dc5def3e9635405b886eb09205156bfb-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_dc5def3e9635405b886eb09205156bfb-12"></a>                     j=31;
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-13"><code data-line-number="13"></code></a></td>
-<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-13"></a>              end
+<td class="linenos linenodiv"><a href="#rest_code_dc5def3e9635405b886eb09205156bfb-13"><code data-line-number="13"></code></a></td>
+<td class="code"><code><a name="rest_code_dc5def3e9635405b886eb09205156bfb-13"></a>              end
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-14"><code data-line-number="14"></code></a></td>
-<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-14"></a>              if l == 0
+<td class="linenos linenodiv"><a href="#rest_code_dc5def3e9635405b886eb09205156bfb-14"><code data-line-number="14"></code></a></td>
+<td class="code"><code><a name="rest_code_dc5def3e9635405b886eb09205156bfb-14"></a>              if l == 0
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-15"><code data-line-number="15"></code></a></td>
-<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-15"></a>                     l=31;
+<td class="linenos linenodiv"><a href="#rest_code_dc5def3e9635405b886eb09205156bfb-15"><code data-line-number="15"></code></a></td>
+<td class="code"><code><a name="rest_code_dc5def3e9635405b886eb09205156bfb-15"></a>                     l=31;
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-16"><code data-line-number="16"></code></a></td>
-<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-16"></a>              end
+<td class="linenos linenodiv"><a href="#rest_code_dc5def3e9635405b886eb09205156bfb-16"><code data-line-number="16"></code></a></td>
+<td class="code"><code><a name="rest_code_dc5def3e9635405b886eb09205156bfb-16"></a>              end
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-17"><code data-line-number="17"></code></a></td>
-<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-17"></a>              R3(i,:)=r1(j,:);
+<td class="linenos linenodiv"><a href="#rest_code_dc5def3e9635405b886eb09205156bfb-17"><code data-line-number="17"></code></a></td>
+<td class="code"><code><a name="rest_code_dc5def3e9635405b886eb09205156bfb-17"></a>              R3(i,:)=r1(j,:);
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-18"><code data-line-number="18"></code></a></td>
-<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-18"></a>              R5(i,:)=r1(l,:);
+<td class="linenos linenodiv"><a href="#rest_code_dc5def3e9635405b886eb09205156bfb-18"><code data-line-number="18"></code></a></td>
+<td class="code"><code><a name="rest_code_dc5def3e9635405b886eb09205156bfb-18"></a>              R5(i,:)=r1(l,:);
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f77488ddf417485aa3a8b94a418bff7e-19"><code data-line-number="19"></code></a></td>
-<td class="code"><code><a name="rest_code_f77488ddf417485aa3a8b94a418bff7e-19"></a>     end
+<td class="linenos linenodiv"><a href="#rest_code_dc5def3e9635405b886eb09205156bfb-19"><code data-line-number="19"></code></a></td>
+<td class="code"><code><a name="rest_code_dc5def3e9635405b886eb09205156bfb-19"></a>     end
 </code></td>
 </tr>
 </table></div>
@@ -649,12 +649,12 @@ I_{k} &amp;  P_{k,n-k}
 <p>since <span class="math">\(G \perp H\)</span>, <span class="math">\(GH^t = 0\)</span>. The parity check matrix
 obtained this way can be easily implemented in hardware using the
 shift registers for error detection.</p>
-<pre class="code text"><a name="rest_code_e7eb953c857c46d0b714d8287bcaaf03-1"></a>for i=1:n [a,r(i,:)]= deconv(I(i,:),gx);end
-<a name="rest_code_e7eb953c857c46d0b714d8287bcaaf03-2"></a>r=r(:,17:31);r=mod(r,2);
-<a name="rest_code_e7eb953c857c46d0b714d8287bcaaf03-3"></a>p=r(1:16,:); %partity bits
-<a name="rest_code_e7eb953c857c46d0b714d8287bcaaf03-4"></a>% generator matrix
-<a name="rest_code_e7eb953c857c46d0b714d8287bcaaf03-5"></a>G=[eye(16) p];
-<a name="rest_code_e7eb953c857c46d0b714d8287bcaaf03-6"></a>mod(G*h,2) %  zeros
+<pre class="code text"><a name="rest_code_6a80aed9a91744109e6e1a915c9ce593-1"></a>for i=1:n [a,r(i,:)]= deconv(I(i,:),gx);end
+<a name="rest_code_6a80aed9a91744109e6e1a915c9ce593-2"></a>r=r(:,17:31);r=mod(r,2);
+<a name="rest_code_6a80aed9a91744109e6e1a915c9ce593-3"></a>p=r(1:16,:); %partity bits
+<a name="rest_code_6a80aed9a91744109e6e1a915c9ce593-4"></a>% generator matrix
+<a name="rest_code_6a80aed9a91744109e6e1a915c9ce593-5"></a>G=[eye(16) p];
+<a name="rest_code_6a80aed9a91744109e6e1a915c9ce593-6"></a>mod(G*h,2) %  zeros
 </pre>
 <div class="section" id="decoder-and-errors-locator">
 <h3>Decoder and errors locator</h3>
@@ -683,33 +683,33 @@ becomes <span class="math">\([\psi_1,\psi_3,\psi_5]=[(\alpha)^i+\alpha^j,(\alpha
 Eventually it will lead to system of equations to be solved for a polynomial <span class="math">\(x(\psi_i)\)</span>. It is
 called the error-locator polynomial. This polynomial is dependent on error bit positions.</p>
 <p>To test the error correction capability of this exercise,</p>
-<pre class="code text"><a name="rest_code_e80bf70cb3a64458bc685f794e4ff6f7-1"></a>v=dec2bin(0:2^16-1)-'0'; % input code word
-<a name="rest_code_e80bf70cb3a64458bc685f794e4ff6f7-2"></a>u=mod(v*G,2); % BCH coded word
-<a name="rest_code_e80bf70cb3a64458bc685f794e4ff6f7-3"></a>
-<a name="rest_code_e80bf70cb3a64458bc685f794e4ff6f7-4"></a>&gt;&gt; mod(u(1000,:)*h,2)
-<a name="rest_code_e80bf70cb3a64458bc685f794e4ff6f7-5"></a>
-<a name="rest_code_e80bf70cb3a64458bc685f794e4ff6f7-6"></a>ans =
-<a name="rest_code_e80bf70cb3a64458bc685f794e4ff6f7-7"></a>
-<a name="rest_code_e80bf70cb3a64458bc685f794e4ff6f7-8"></a> 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+<pre class="code text"><a name="rest_code_50744b41a5d345e3966f7db1ef6e8343-1"></a>v=dec2bin(0:2^16-1)-'0'; % input code word
+<a name="rest_code_50744b41a5d345e3966f7db1ef6e8343-2"></a>u=mod(v*G,2); % BCH coded word
+<a name="rest_code_50744b41a5d345e3966f7db1ef6e8343-3"></a>
+<a name="rest_code_50744b41a5d345e3966f7db1ef6e8343-4"></a>&gt;&gt; mod(u(1000,:)*h,2)
+<a name="rest_code_50744b41a5d345e3966f7db1ef6e8343-5"></a>
+<a name="rest_code_50744b41a5d345e3966f7db1ef6e8343-6"></a>ans =
+<a name="rest_code_50744b41a5d345e3966f7db1ef6e8343-7"></a>
+<a name="rest_code_50744b41a5d345e3966f7db1ef6e8343-8"></a> 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 </pre>
 <p>Suppose that a received coded word, <span class="math">\(w\)</span> has one bit error, say bit 14,</p>
-<pre class="code text"><a name="rest_code_cc919d61100542c7b2feae091f49b851-1"></a>w=u(1000,:); % a coded word
-<a name="rest_code_cc919d61100542c7b2feae091f49b851-2"></a>w(14)=0; %was 1, set to 0 to simulate error
-<a name="rest_code_cc919d61100542c7b2feae091f49b851-3"></a>
-<a name="rest_code_cc919d61100542c7b2feae091f49b851-4"></a>&gt;&gt; mod(w*h,2)
-<a name="rest_code_cc919d61100542c7b2feae091f49b851-5"></a>ans =
-<a name="rest_code_cc919d61100542c7b2feae091f49b851-6"></a>   1 0 0 1 1 0 1 1 0 0 0 1 1 1 1
+<pre class="code text"><a name="rest_code_f8923979f4a14c24b138324addf02117-1"></a>w=u(1000,:); % a coded word
+<a name="rest_code_f8923979f4a14c24b138324addf02117-2"></a>w(14)=0; %was 1, set to 0 to simulate error
+<a name="rest_code_f8923979f4a14c24b138324addf02117-3"></a>
+<a name="rest_code_f8923979f4a14c24b138324addf02117-4"></a>&gt;&gt; mod(w*h,2)
+<a name="rest_code_f8923979f4a14c24b138324addf02117-5"></a>ans =
+<a name="rest_code_f8923979f4a14c24b138324addf02117-6"></a>   1 0 0 1 1 0 1 1 0 0 0 1 1 1 1
 </pre>
 <p>The output from <span class="math">\(wH^t\)</span> produces the syndrome identical to row 14 of <span class="math">\(H^t\)</span>. The corrected
 code word is then <span class="math">\(w+I(14)\)</span>, where <span class="math">\(I(14)\)</span> is the 14th row of the identity matrix.
 Now what happens if two bit errors, say another bit at bit 0,</p>
-<pre class="code text"><a name="rest_code_b5acd70dc6f049e78e20b08404405c24-1"></a>w(1)=1; % was 0, set to 1 as error. Now we have bit0,14 as error bits
-<a name="rest_code_b5acd70dc6f049e78e20b08404405c24-2"></a>&gt;&gt; mod(w*h,2)
-<a name="rest_code_b5acd70dc6f049e78e20b08404405c24-3"></a>ans =
-<a name="rest_code_b5acd70dc6f049e78e20b08404405c24-4"></a>   0 0 0 0 1 1 1 0 1 0 1 1 0 0 0
-<a name="rest_code_b5acd70dc6f049e78e20b08404405c24-5"></a>&gt;&gt; mod(h(1,:)+h(14,:),2)
-<a name="rest_code_b5acd70dc6f049e78e20b08404405c24-6"></a>ans =
-<a name="rest_code_b5acd70dc6f049e78e20b08404405c24-7"></a>   0 0 0 0 1 1 1 0 1 0 1 1 0 0 0
+<pre class="code text"><a name="rest_code_5758533605cc4da0b4b9d7b781e0b0a8-1"></a>w(1)=1; % was 0, set to 1 as error. Now we have bit0,14 as error bits
+<a name="rest_code_5758533605cc4da0b4b9d7b781e0b0a8-2"></a>&gt;&gt; mod(w*h,2)
+<a name="rest_code_5758533605cc4da0b4b9d7b781e0b0a8-3"></a>ans =
+<a name="rest_code_5758533605cc4da0b4b9d7b781e0b0a8-4"></a>   0 0 0 0 1 1 1 0 1 0 1 1 0 0 0
+<a name="rest_code_5758533605cc4da0b4b9d7b781e0b0a8-5"></a>&gt;&gt; mod(h(1,:)+h(14,:),2)
+<a name="rest_code_5758533605cc4da0b4b9d7b781e0b0a8-6"></a>ans =
+<a name="rest_code_5758533605cc4da0b4b9d7b781e0b0a8-7"></a>   0 0 0 0 1 1 1 0 1 0 1 1 0 0 0
 </pre>
 <p>Evidently the syndrome is the same as <span class="math">\(H^t(14)+H^t(1)\)</span>, sum of first and 14th row. The
 corrected bits are then <span class="math">\(I(14)+I(1)\)</span>, 1st and 14th row of <span class="math">\(I\)</span> matrix.

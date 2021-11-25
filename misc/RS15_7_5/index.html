@@ -236,19 +236,19 @@ is again tabulated below,</p>
 </table>
 <p>Note that <span class="math">\(\alpha^{15} = \alpha^0 = 1\)</span>.
 As usual, the table above can be easily generated with Octave/MATLAB,</p>
-<pre class="code text"><a name="rest_code_4230cc4ce9ee4782b98f4c5a7ff98b5b-1"></a>&gt; I=eye(15);I=I(15:-1:1,:);
-<a name="rest_code_4230cc4ce9ee4782b98f4c5a7ff98b5b-2"></a>&gt;&gt; for i=1:15
-<a name="rest_code_4230cc4ce9ee4782b98f4c5a7ff98b5b-3"></a>[q,r(i,:)]=deconv(I(i,:),[1 0 0 1 1]);
-<a name="rest_code_4230cc4ce9ee4782b98f4c5a7ff98b5b-4"></a>end
-<a name="rest_code_4230cc4ce9ee4782b98f4c5a7ff98b5b-5"></a>&gt;&gt; r=mod(r(:,12:15),2)
-<a name="rest_code_4230cc4ce9ee4782b98f4c5a7ff98b5b-6"></a>r =
-<a name="rest_code_4230cc4ce9ee4782b98f4c5a7ff98b5b-7"></a>
-<a name="rest_code_4230cc4ce9ee4782b98f4c5a7ff98b5b-8"></a>   0   0   0   1
-<a name="rest_code_4230cc4ce9ee4782b98f4c5a7ff98b5b-9"></a>   0   0   1   0
-<a name="rest_code_4230cc4ce9ee4782b98f4c5a7ff98b5b-10"></a>   0   1   0   0
-<a name="rest_code_4230cc4ce9ee4782b98f4c5a7ff98b5b-11"></a>   1   0   0   0
-<a name="rest_code_4230cc4ce9ee4782b98f4c5a7ff98b5b-12"></a>   ..
-<a name="rest_code_4230cc4ce9ee4782b98f4c5a7ff98b5b-13"></a>   1   0   0   1
+<pre class="code text"><a name="rest_code_dc265c7b882b478cbd7c42b7971d0ce7-1"></a>&gt; I=eye(15);I=I(15:-1:1,:);
+<a name="rest_code_dc265c7b882b478cbd7c42b7971d0ce7-2"></a>&gt;&gt; for i=1:15
+<a name="rest_code_dc265c7b882b478cbd7c42b7971d0ce7-3"></a>[q,r(i,:)]=deconv(I(i,:),[1 0 0 1 1]);
+<a name="rest_code_dc265c7b882b478cbd7c42b7971d0ce7-4"></a>end
+<a name="rest_code_dc265c7b882b478cbd7c42b7971d0ce7-5"></a>&gt;&gt; r=mod(r(:,12:15),2)
+<a name="rest_code_dc265c7b882b478cbd7c42b7971d0ce7-6"></a>r =
+<a name="rest_code_dc265c7b882b478cbd7c42b7971d0ce7-7"></a>
+<a name="rest_code_dc265c7b882b478cbd7c42b7971d0ce7-8"></a>   0   0   0   1
+<a name="rest_code_dc265c7b882b478cbd7c42b7971d0ce7-9"></a>   0   0   1   0
+<a name="rest_code_dc265c7b882b478cbd7c42b7971d0ce7-10"></a>   0   1   0   0
+<a name="rest_code_dc265c7b882b478cbd7c42b7971d0ce7-11"></a>   1   0   0   0
+<a name="rest_code_dc265c7b882b478cbd7c42b7971d0ce7-12"></a>   ..
+<a name="rest_code_dc265c7b882b478cbd7c42b7971d0ce7-13"></a>   1   0   0   1
 </pre>
 <p>where the result row vectors <span class="math">\(r\)</span> are the remainders from the polynomial division.</p>
 <p>For <span class="math">\(RS(2^4,5)\)</span>,  the generator polynomial is,</p>

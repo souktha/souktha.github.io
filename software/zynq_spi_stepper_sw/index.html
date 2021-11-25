@@ -114,138 +114,138 @@ writing step counts and <em>/proc/stepper/status</em> for reading the status of 
 </ul>
 <div class="code"><table class="codetable">
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f5d0c7c526884ba581f40400bda1e0cf-1"><code data-line-number=" 1"></code></a></td>
-<td class="code"><code><a name="rest_code_f5d0c7c526884ba581f40400bda1e0cf-1"></a><span class="p">..</span>
+<td class="linenos linenodiv"><a href="#rest_code_1f9b6a9330d94047898c6f403723e96a-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_1f9b6a9330d94047898c6f403723e96a-1"></a><span class="p">..</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f5d0c7c526884ba581f40400bda1e0cf-2"><code data-line-number=" 2"></code></a></td>
-<td class="code"><code><a name="rest_code_f5d0c7c526884ba581f40400bda1e0cf-2"></a>
+<td class="linenos linenodiv"><a href="#rest_code_1f9b6a9330d94047898c6f403723e96a-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_1f9b6a9330d94047898c6f403723e96a-2"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f5d0c7c526884ba581f40400bda1e0cf-3"><code data-line-number=" 3"></code></a></td>
-<td class="code"><code><a name="rest_code_f5d0c7c526884ba581f40400bda1e0cf-3"></a><span class="c1">//adding proc directory and proc entries</span>
+<td class="linenos linenodiv"><a href="#rest_code_1f9b6a9330d94047898c6f403723e96a-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_1f9b6a9330d94047898c6f403723e96a-3"></a><span class="c1">//adding proc directory and proc entries</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f5d0c7c526884ba581f40400bda1e0cf-4"><code data-line-number=" 4"></code></a></td>
-<td class="code"><code><a name="rest_code_f5d0c7c526884ba581f40400bda1e0cf-4"></a>
+<td class="linenos linenodiv"><a href="#rest_code_1f9b6a9330d94047898c6f403723e96a-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_1f9b6a9330d94047898c6f403723e96a-4"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f5d0c7c526884ba581f40400bda1e0cf-5"><code data-line-number=" 5"></code></a></td>
-<td class="code"><code><a name="rest_code_f5d0c7c526884ba581f40400bda1e0cf-5"></a><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">stepper_procdir_entry</span> <span class="o">=</span> <span class="n">proc_mkdir</span><span class="p">(</span><span class="s">"stepper"</span><span class="p">,</span><span class="nb">NULL</span><span class="p">)))</span>
+<td class="linenos linenodiv"><a href="#rest_code_1f9b6a9330d94047898c6f403723e96a-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_1f9b6a9330d94047898c6f403723e96a-5"></a><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">stepper_procdir_entry</span> <span class="o">=</span> <span class="n">proc_mkdir</span><span class="p">(</span><span class="s">"stepper"</span><span class="p">,</span><span class="nb">NULL</span><span class="p">)))</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f5d0c7c526884ba581f40400bda1e0cf-6"><code data-line-number=" 6"></code></a></td>
-<td class="code"><code><a name="rest_code_f5d0c7c526884ba581f40400bda1e0cf-6"></a>        <span class="k">goto</span> <span class="n">exit_free_data</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_1f9b6a9330d94047898c6f403723e96a-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_1f9b6a9330d94047898c6f403723e96a-6"></a>        <span class="k">goto</span> <span class="n">exit_free_data</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f5d0c7c526884ba581f40400bda1e0cf-7"><code data-line-number=" 7"></code></a></td>
-<td class="code"><code><a name="rest_code_f5d0c7c526884ba581f40400bda1e0cf-7"></a>
+<td class="linenos linenodiv"><a href="#rest_code_1f9b6a9330d94047898c6f403723e96a-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_1f9b6a9330d94047898c6f403723e96a-7"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f5d0c7c526884ba581f40400bda1e0cf-8"><code data-line-number=" 8"></code></a></td>
-<td class="code"><code><a name="rest_code_f5d0c7c526884ba581f40400bda1e0cf-8"></a><span class="n">spi5a</span><span class="o">-&gt;</span><span class="n">proc_entry</span> <span class="o">=</span> <span class="n">stepper_procdir_entry</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_1f9b6a9330d94047898c6f403723e96a-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_1f9b6a9330d94047898c6f403723e96a-8"></a><span class="n">spi5a</span><span class="o">-&gt;</span><span class="n">proc_entry</span> <span class="o">=</span> <span class="n">stepper_procdir_entry</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f5d0c7c526884ba581f40400bda1e0cf-9"><code data-line-number=" 9"></code></a></td>
-<td class="code"><code><a name="rest_code_f5d0c7c526884ba581f40400bda1e0cf-9"></a><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">entry</span> <span class="o">=</span> <span class="n">proc_create_data</span><span class="p">(</span><span class="s">"steps"</span><span class="p">,</span>
+<td class="linenos linenodiv"><a href="#rest_code_1f9b6a9330d94047898c6f403723e96a-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_1f9b6a9330d94047898c6f403723e96a-9"></a><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">entry</span> <span class="o">=</span> <span class="n">proc_create_data</span><span class="p">(</span><span class="s">"steps"</span><span class="p">,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f5d0c7c526884ba581f40400bda1e0cf-10"><code data-line-number="10"></code></a></td>
-<td class="code"><code><a name="rest_code_f5d0c7c526884ba581f40400bda1e0cf-10"></a>                        <span class="n">S_IFREG</span> <span class="o">|</span> <span class="n">S_IRUGO</span> <span class="o">|</span> <span class="n">S_IWUSR</span><span class="p">,</span>
+<td class="linenos linenodiv"><a href="#rest_code_1f9b6a9330d94047898c6f403723e96a-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_1f9b6a9330d94047898c6f403723e96a-10"></a>                        <span class="n">S_IFREG</span> <span class="o">|</span> <span class="n">S_IRUGO</span> <span class="o">|</span> <span class="n">S_IWUSR</span><span class="p">,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f5d0c7c526884ba581f40400bda1e0cf-11"><code data-line-number="11"></code></a></td>
-<td class="code"><code><a name="rest_code_f5d0c7c526884ba581f40400bda1e0cf-11"></a>                        <span class="n">spi5a</span><span class="o">-&gt;</span><span class="n">proc_entry</span><span class="p">,</span>
+<td class="linenos linenodiv"><a href="#rest_code_1f9b6a9330d94047898c6f403723e96a-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_1f9b6a9330d94047898c6f403723e96a-11"></a>                        <span class="n">spi5a</span><span class="o">-&gt;</span><span class="n">proc_entry</span><span class="p">,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f5d0c7c526884ba581f40400bda1e0cf-12"><code data-line-number="12"></code></a></td>
-<td class="code"><code><a name="rest_code_f5d0c7c526884ba581f40400bda1e0cf-12"></a>                        <span class="o">&amp;</span><span class="n">proc_stepper_fops</span><span class="p">,</span>
+<td class="linenos linenodiv"><a href="#rest_code_1f9b6a9330d94047898c6f403723e96a-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_1f9b6a9330d94047898c6f403723e96a-12"></a>                        <span class="o">&amp;</span><span class="n">proc_stepper_fops</span><span class="p">,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f5d0c7c526884ba581f40400bda1e0cf-13"><code data-line-number="13"></code></a></td>
-<td class="code"><code><a name="rest_code_f5d0c7c526884ba581f40400bda1e0cf-13"></a>                        <span class="nb">NULL</span><span class="p">))</span> <span class="p">)</span> <span class="p">{</span>
+<td class="linenos linenodiv"><a href="#rest_code_1f9b6a9330d94047898c6f403723e96a-13"><code data-line-number="13"></code></a></td>
+<td class="code"><code><a name="rest_code_1f9b6a9330d94047898c6f403723e96a-13"></a>                        <span class="nb">NULL</span><span class="p">))</span> <span class="p">)</span> <span class="p">{</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f5d0c7c526884ba581f40400bda1e0cf-14"><code data-line-number="14"></code></a></td>
-<td class="code"><code><a name="rest_code_f5d0c7c526884ba581f40400bda1e0cf-14"></a>
+<td class="linenos linenodiv"><a href="#rest_code_1f9b6a9330d94047898c6f403723e96a-14"><code data-line-number="14"></code></a></td>
+<td class="code"><code><a name="rest_code_1f9b6a9330d94047898c6f403723e96a-14"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f5d0c7c526884ba581f40400bda1e0cf-15"><code data-line-number="15"></code></a></td>
-<td class="code"><code><a name="rest_code_f5d0c7c526884ba581f40400bda1e0cf-15"></a>        <span class="k">goto</span> <span class="n">exit_free_data</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_1f9b6a9330d94047898c6f403723e96a-15"><code data-line-number="15"></code></a></td>
+<td class="code"><code><a name="rest_code_1f9b6a9330d94047898c6f403723e96a-15"></a>        <span class="k">goto</span> <span class="n">exit_free_data</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f5d0c7c526884ba581f40400bda1e0cf-16"><code data-line-number="16"></code></a></td>
-<td class="code"><code><a name="rest_code_f5d0c7c526884ba581f40400bda1e0cf-16"></a><span class="p">}</span>
+<td class="linenos linenodiv"><a href="#rest_code_1f9b6a9330d94047898c6f403723e96a-16"><code data-line-number="16"></code></a></td>
+<td class="code"><code><a name="rest_code_1f9b6a9330d94047898c6f403723e96a-16"></a><span class="p">}</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f5d0c7c526884ba581f40400bda1e0cf-17"><code data-line-number="17"></code></a></td>
-<td class="code"><code><a name="rest_code_f5d0c7c526884ba581f40400bda1e0cf-17"></a><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">entry</span> <span class="o">=</span> <span class="n">proc_create_data</span><span class="p">(</span><span class="s">"status"</span><span class="p">,</span>
+<td class="linenos linenodiv"><a href="#rest_code_1f9b6a9330d94047898c6f403723e96a-17"><code data-line-number="17"></code></a></td>
+<td class="code"><code><a name="rest_code_1f9b6a9330d94047898c6f403723e96a-17"></a><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">entry</span> <span class="o">=</span> <span class="n">proc_create_data</span><span class="p">(</span><span class="s">"status"</span><span class="p">,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f5d0c7c526884ba581f40400bda1e0cf-18"><code data-line-number="18"></code></a></td>
-<td class="code"><code><a name="rest_code_f5d0c7c526884ba581f40400bda1e0cf-18"></a>                        <span class="n">S_IFREG</span> <span class="o">|</span> <span class="n">S_IRUGO</span> <span class="o">|</span> <span class="n">S_IWUSR</span><span class="p">,</span>
+<td class="linenos linenodiv"><a href="#rest_code_1f9b6a9330d94047898c6f403723e96a-18"><code data-line-number="18"></code></a></td>
+<td class="code"><code><a name="rest_code_1f9b6a9330d94047898c6f403723e96a-18"></a>                        <span class="n">S_IFREG</span> <span class="o">|</span> <span class="n">S_IRUGO</span> <span class="o">|</span> <span class="n">S_IWUSR</span><span class="p">,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f5d0c7c526884ba581f40400bda1e0cf-19"><code data-line-number="19"></code></a></td>
-<td class="code"><code><a name="rest_code_f5d0c7c526884ba581f40400bda1e0cf-19"></a>                        <span class="n">spi5a</span><span class="o">-&gt;</span><span class="n">proc_entry</span><span class="p">,</span>
+<td class="linenos linenodiv"><a href="#rest_code_1f9b6a9330d94047898c6f403723e96a-19"><code data-line-number="19"></code></a></td>
+<td class="code"><code><a name="rest_code_1f9b6a9330d94047898c6f403723e96a-19"></a>                        <span class="n">spi5a</span><span class="o">-&gt;</span><span class="n">proc_entry</span><span class="p">,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f5d0c7c526884ba581f40400bda1e0cf-20"><code data-line-number="20"></code></a></td>
-<td class="code"><code><a name="rest_code_f5d0c7c526884ba581f40400bda1e0cf-20"></a>                        <span class="o">&amp;</span><span class="n">proc_stepper_status_fops</span><span class="p">,</span>
+<td class="linenos linenodiv"><a href="#rest_code_1f9b6a9330d94047898c6f403723e96a-20"><code data-line-number="20"></code></a></td>
+<td class="code"><code><a name="rest_code_1f9b6a9330d94047898c6f403723e96a-20"></a>                        <span class="o">&amp;</span><span class="n">proc_stepper_status_fops</span><span class="p">,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f5d0c7c526884ba581f40400bda1e0cf-21"><code data-line-number="21"></code></a></td>
-<td class="code"><code><a name="rest_code_f5d0c7c526884ba581f40400bda1e0cf-21"></a>                        <span class="nb">NULL</span><span class="p">))</span> <span class="p">)</span> <span class="p">{</span>
+<td class="linenos linenodiv"><a href="#rest_code_1f9b6a9330d94047898c6f403723e96a-21"><code data-line-number="21"></code></a></td>
+<td class="code"><code><a name="rest_code_1f9b6a9330d94047898c6f403723e96a-21"></a>                        <span class="nb">NULL</span><span class="p">))</span> <span class="p">)</span> <span class="p">{</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f5d0c7c526884ba581f40400bda1e0cf-22"><code data-line-number="22"></code></a></td>
-<td class="code"><code><a name="rest_code_f5d0c7c526884ba581f40400bda1e0cf-22"></a>
+<td class="linenos linenodiv"><a href="#rest_code_1f9b6a9330d94047898c6f403723e96a-22"><code data-line-number="22"></code></a></td>
+<td class="code"><code><a name="rest_code_1f9b6a9330d94047898c6f403723e96a-22"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f5d0c7c526884ba581f40400bda1e0cf-23"><code data-line-number="23"></code></a></td>
-<td class="code"><code><a name="rest_code_f5d0c7c526884ba581f40400bda1e0cf-23"></a>        <span class="n">remove_proc_entry</span><span class="p">(</span><span class="s">"steps"</span><span class="p">,</span><span class="n">spi5a</span><span class="o">-&gt;</span><span class="n">proc_entry</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_1f9b6a9330d94047898c6f403723e96a-23"><code data-line-number="23"></code></a></td>
+<td class="code"><code><a name="rest_code_1f9b6a9330d94047898c6f403723e96a-23"></a>        <span class="n">remove_proc_entry</span><span class="p">(</span><span class="s">"steps"</span><span class="p">,</span><span class="n">spi5a</span><span class="o">-&gt;</span><span class="n">proc_entry</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f5d0c7c526884ba581f40400bda1e0cf-24"><code data-line-number="24"></code></a></td>
-<td class="code"><code><a name="rest_code_f5d0c7c526884ba581f40400bda1e0cf-24"></a>        <span class="k">goto</span> <span class="n">exit_free_data</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_1f9b6a9330d94047898c6f403723e96a-24"><code data-line-number="24"></code></a></td>
+<td class="code"><code><a name="rest_code_1f9b6a9330d94047898c6f403723e96a-24"></a>        <span class="k">goto</span> <span class="n">exit_free_data</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f5d0c7c526884ba581f40400bda1e0cf-25"><code data-line-number="25"></code></a></td>
-<td class="code"><code><a name="rest_code_f5d0c7c526884ba581f40400bda1e0cf-25"></a><span class="p">}</span>
+<td class="linenos linenodiv"><a href="#rest_code_1f9b6a9330d94047898c6f403723e96a-25"><code data-line-number="25"></code></a></td>
+<td class="code"><code><a name="rest_code_1f9b6a9330d94047898c6f403723e96a-25"></a><span class="p">}</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f5d0c7c526884ba581f40400bda1e0cf-26"><code data-line-number="26"></code></a></td>
-<td class="code"><code><a name="rest_code_f5d0c7c526884ba581f40400bda1e0cf-26"></a>
+<td class="linenos linenodiv"><a href="#rest_code_1f9b6a9330d94047898c6f403723e96a-26"><code data-line-number="26"></code></a></td>
+<td class="code"><code><a name="rest_code_1f9b6a9330d94047898c6f403723e96a-26"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f5d0c7c526884ba581f40400bda1e0cf-27"><code data-line-number="27"></code></a></td>
-<td class="code"><code><a name="rest_code_f5d0c7c526884ba581f40400bda1e0cf-27"></a><span class="p">..</span>
+<td class="linenos linenodiv"><a href="#rest_code_1f9b6a9330d94047898c6f403723e96a-27"><code data-line-number="27"></code></a></td>
+<td class="code"><code><a name="rest_code_1f9b6a9330d94047898c6f403723e96a-27"></a><span class="p">..</span>
 </code></td>
 </tr>
 </table></div>
@@ -253,93 +253,93 @@ writing step counts and <em>/proc/stepper/status</em> for reading the status of 
 and send it out to Zynq SPI master (PS) to the SPI slave stepper hardware (PL).</p>
 <div class="code"><table class="codetable">
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f3c9c6624b6b47abaffab15bfbef97c0-1"><code data-line-number=" 1"></code></a></td>
-<td class="code"><code><a name="rest_code_f3c9c6624b6b47abaffab15bfbef97c0-1"></a>     <span class="p">...</span>
+<td class="linenos linenodiv"><a href="#rest_code_996b9e4810c34604ae728f615a6fd0b6-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_996b9e4810c34604ae728f615a6fd0b6-1"></a>     <span class="p">...</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f3c9c6624b6b47abaffab15bfbef97c0-2"><code data-line-number=" 2"></code></a></td>
-<td class="code"><code><a name="rest_code_f3c9c6624b6b47abaffab15bfbef97c0-2"></a>     <span class="p">..</span>
+<td class="linenos linenodiv"><a href="#rest_code_996b9e4810c34604ae728f615a6fd0b6-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_996b9e4810c34604ae728f615a6fd0b6-2"></a>     <span class="p">..</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f3c9c6624b6b47abaffab15bfbef97c0-3"><code data-line-number=" 3"></code></a></td>
-<td class="code"><code><a name="rest_code_f3c9c6624b6b47abaffab15bfbef97c0-3"></a>     <span class="k">if</span> <span class="p">(</span> <span class="n">copy_from_user</span><span class="p">((</span><span class="kt">void</span> <span class="o">*</span> <span class="p">)</span><span class="o">&amp;</span><span class="n">sbuf</span><span class="p">,</span><span class="n">buf</span><span class="p">,</span><span class="n">cnt</span><span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+<td class="linenos linenodiv"><a href="#rest_code_996b9e4810c34604ae728f615a6fd0b6-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_996b9e4810c34604ae728f615a6fd0b6-3"></a>     <span class="k">if</span> <span class="p">(</span> <span class="n">copy_from_user</span><span class="p">((</span><span class="kt">void</span> <span class="o">*</span> <span class="p">)</span><span class="o">&amp;</span><span class="n">sbuf</span><span class="p">,</span><span class="n">buf</span><span class="p">,</span><span class="n">cnt</span><span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f3c9c6624b6b47abaffab15bfbef97c0-4"><code data-line-number=" 4"></code></a></td>
-<td class="code"><code><a name="rest_code_f3c9c6624b6b47abaffab15bfbef97c0-4"></a>             <span class="n">up</span><span class="p">(</span><span class="o">&amp;</span><span class="n">priv</span><span class="o">-&gt;</span><span class="n">sem</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_996b9e4810c34604ae728f615a6fd0b6-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_996b9e4810c34604ae728f615a6fd0b6-4"></a>             <span class="n">up</span><span class="p">(</span><span class="o">&amp;</span><span class="n">priv</span><span class="o">-&gt;</span><span class="n">sem</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f3c9c6624b6b47abaffab15bfbef97c0-5"><code data-line-number=" 5"></code></a></td>
-<td class="code"><code><a name="rest_code_f3c9c6624b6b47abaffab15bfbef97c0-5"></a>             <span class="k">return</span> <span class="o">-</span><span class="n">EFAULT</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_996b9e4810c34604ae728f615a6fd0b6-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_996b9e4810c34604ae728f615a6fd0b6-5"></a>             <span class="k">return</span> <span class="o">-</span><span class="n">EFAULT</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f3c9c6624b6b47abaffab15bfbef97c0-6"><code data-line-number=" 6"></code></a></td>
-<td class="code"><code><a name="rest_code_f3c9c6624b6b47abaffab15bfbef97c0-6"></a>     <span class="p">}</span>
+<td class="linenos linenodiv"><a href="#rest_code_996b9e4810c34604ae728f615a6fd0b6-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_996b9e4810c34604ae728f615a6fd0b6-6"></a>     <span class="p">}</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f3c9c6624b6b47abaffab15bfbef97c0-7"><code data-line-number=" 7"></code></a></td>
-<td class="code"><code><a name="rest_code_f3c9c6624b6b47abaffab15bfbef97c0-7"></a>     <span class="n">priv</span><span class="o">-&gt;</span><span class="n">spidev</span><span class="o">-&gt;</span><span class="n">bits_per_word</span> <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_996b9e4810c34604ae728f615a6fd0b6-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_996b9e4810c34604ae728f615a6fd0b6-7"></a>     <span class="n">priv</span><span class="o">-&gt;</span><span class="n">spidev</span><span class="o">-&gt;</span><span class="n">bits_per_word</span> <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f3c9c6624b6b47abaffab15bfbef97c0-8"><code data-line-number=" 8"></code></a></td>
-<td class="code"><code><a name="rest_code_f3c9c6624b6b47abaffab15bfbef97c0-8"></a>     <span class="n">priv</span><span class="o">-&gt;</span><span class="n">spidev</span><span class="o">-&gt;</span><span class="n">mode</span> <span class="o">=</span> <span class="n">SPI_MODE_0</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_996b9e4810c34604ae728f615a6fd0b6-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_996b9e4810c34604ae728f615a6fd0b6-8"></a>     <span class="n">priv</span><span class="o">-&gt;</span><span class="n">spidev</span><span class="o">-&gt;</span><span class="n">mode</span> <span class="o">=</span> <span class="n">SPI_MODE_0</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f3c9c6624b6b47abaffab15bfbef97c0-9"><code data-line-number=" 9"></code></a></td>
-<td class="code"><code><a name="rest_code_f3c9c6624b6b47abaffab15bfbef97c0-9"></a>     <span class="n">spi_setup</span><span class="p">(</span><span class="n">priv</span><span class="o">-&gt;</span><span class="n">spidev</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_996b9e4810c34604ae728f615a6fd0b6-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_996b9e4810c34604ae728f615a6fd0b6-9"></a>     <span class="n">spi_setup</span><span class="p">(</span><span class="n">priv</span><span class="o">-&gt;</span><span class="n">spidev</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f3c9c6624b6b47abaffab15bfbef97c0-10"><code data-line-number="10"></code></a></td>
-<td class="code"><code><a name="rest_code_f3c9c6624b6b47abaffab15bfbef97c0-10"></a>
+<td class="linenos linenodiv"><a href="#rest_code_996b9e4810c34604ae728f615a6fd0b6-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_996b9e4810c34604ae728f615a6fd0b6-10"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f3c9c6624b6b47abaffab15bfbef97c0-11"><code data-line-number="11"></code></a></td>
-<td class="code"><code><a name="rest_code_f3c9c6624b6b47abaffab15bfbef97c0-11"></a>     <span class="n">byte</span>  <span class="o">=</span>  <span class="p">(</span><span class="kt">char</span> <span class="p">)</span><span class="n">simple_strtol</span><span class="p">(</span><span class="n">sbuf</span><span class="p">,</span><span class="nb">NULL</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_996b9e4810c34604ae728f615a6fd0b6-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_996b9e4810c34604ae728f615a6fd0b6-11"></a>     <span class="n">byte</span>  <span class="o">=</span>  <span class="p">(</span><span class="kt">char</span> <span class="p">)</span><span class="n">simple_strtol</span><span class="p">(</span><span class="n">sbuf</span><span class="p">,</span><span class="nb">NULL</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f3c9c6624b6b47abaffab15bfbef97c0-12"><code data-line-number="12"></code></a></td>
-<td class="code"><code><a name="rest_code_f3c9c6624b6b47abaffab15bfbef97c0-12"></a>             <span class="n">sbuf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">STEPPER_WRITE_COUNT</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_996b9e4810c34604ae728f615a6fd0b6-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_996b9e4810c34604ae728f615a6fd0b6-12"></a>             <span class="n">sbuf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">STEPPER_WRITE_COUNT</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f3c9c6624b6b47abaffab15bfbef97c0-13"><code data-line-number="13"></code></a></td>
-<td class="code"><code><a name="rest_code_f3c9c6624b6b47abaffab15bfbef97c0-13"></a>             <span class="n">sbuf</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">byte</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_996b9e4810c34604ae728f615a6fd0b6-13"><code data-line-number="13"></code></a></td>
+<td class="code"><code><a name="rest_code_996b9e4810c34604ae728f615a6fd0b6-13"></a>             <span class="n">sbuf</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">byte</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f3c9c6624b6b47abaffab15bfbef97c0-14"><code data-line-number="14"></code></a></td>
-<td class="code"><code><a name="rest_code_f3c9c6624b6b47abaffab15bfbef97c0-14"></a>             <span class="n">ret</span> <span class="o">=</span> <span class="n">spi_write</span><span class="p">(</span><span class="n">priv</span><span class="o">-&gt;</span><span class="n">spidev</span><span class="p">,</span><span class="n">sbuf</span><span class="p">,</span><span class="mi">2</span><span class="p">);</span> <span class="c1">//send write command and data</span>
+<td class="linenos linenodiv"><a href="#rest_code_996b9e4810c34604ae728f615a6fd0b6-14"><code data-line-number="14"></code></a></td>
+<td class="code"><code><a name="rest_code_996b9e4810c34604ae728f615a6fd0b6-14"></a>             <span class="n">ret</span> <span class="o">=</span> <span class="n">spi_write</span><span class="p">(</span><span class="n">priv</span><span class="o">-&gt;</span><span class="n">spidev</span><span class="p">,</span><span class="n">sbuf</span><span class="p">,</span><span class="mi">2</span><span class="p">);</span> <span class="c1">//send write command and data</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f3c9c6624b6b47abaffab15bfbef97c0-15"><code data-line-number="15"></code></a></td>
-<td class="code"><code><a name="rest_code_f3c9c6624b6b47abaffab15bfbef97c0-15"></a>
+<td class="linenos linenodiv"><a href="#rest_code_996b9e4810c34604ae728f615a6fd0b6-15"><code data-line-number="15"></code></a></td>
+<td class="code"><code><a name="rest_code_996b9e4810c34604ae728f615a6fd0b6-15"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f3c9c6624b6b47abaffab15bfbef97c0-16"><code data-line-number="16"></code></a></td>
-<td class="code"><code><a name="rest_code_f3c9c6624b6b47abaffab15bfbef97c0-16"></a>
+<td class="linenos linenodiv"><a href="#rest_code_996b9e4810c34604ae728f615a6fd0b6-16"><code data-line-number="16"></code></a></td>
+<td class="code"><code><a name="rest_code_996b9e4810c34604ae728f615a6fd0b6-16"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f3c9c6624b6b47abaffab15bfbef97c0-17"><code data-line-number="17"></code></a></td>
-<td class="code"><code><a name="rest_code_f3c9c6624b6b47abaffab15bfbef97c0-17"></a>     <span class="k">return</span> <span class="n">cnt</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_996b9e4810c34604ae728f615a6fd0b6-17"><code data-line-number="17"></code></a></td>
+<td class="code"><code><a name="rest_code_996b9e4810c34604ae728f615a6fd0b6-17"></a>     <span class="k">return</span> <span class="n">cnt</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f3c9c6624b6b47abaffab15bfbef97c0-18"><code data-line-number="18"></code></a></td>
-<td class="code"><code><a name="rest_code_f3c9c6624b6b47abaffab15bfbef97c0-18"></a>     <span class="p">}</span>
+<td class="linenos linenodiv"><a href="#rest_code_996b9e4810c34604ae728f615a6fd0b6-18"><code data-line-number="18"></code></a></td>
+<td class="code"><code><a name="rest_code_996b9e4810c34604ae728f615a6fd0b6-18"></a>     <span class="p">}</span>
 </code></td>
 </tr>
 </table></div>
@@ -347,128 +347,128 @@ and send it out to Zynq SPI master (PS) to the SPI slave stepper hardware (PL).<
 capitalize on the existing <em>proc</em> file interface.</p>
 <div class="code"><table class="codetable">
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06afcb443bfd4ab7bafe589a143df26c-1"><code data-line-number=" 1"></code></a></td>
-<td class="code"><code><a name="rest_code_06afcb443bfd4ab7bafe589a143df26c-1"></a><span class="p">...</span>
+<td class="linenos linenodiv"><a href="#rest_code_4e3385b185134511bd77db2738e7aef6-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_4e3385b185134511bd77db2738e7aef6-1"></a><span class="p">...</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06afcb443bfd4ab7bafe589a143df26c-2"><code data-line-number=" 2"></code></a></td>
-<td class="code"><code><a name="rest_code_06afcb443bfd4ab7bafe589a143df26c-2"></a>
+<td class="linenos linenodiv"><a href="#rest_code_4e3385b185134511bd77db2738e7aef6-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_4e3385b185134511bd77db2738e7aef6-2"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06afcb443bfd4ab7bafe589a143df26c-3"><code data-line-number=" 3"></code></a></td>
-<td class="code"><code><a name="rest_code_06afcb443bfd4ab7bafe589a143df26c-3"></a><span class="k">static</span> <span class="kt">int</span> <span class="n">stepper_status_show</span><span class="p">(</span><span class="k">struct</span> <span class="nc">seq_file</span> <span class="o">*</span> <span class="n">seq_file</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span> <span class="n">arg</span><span class="p">)</span>
+<td class="linenos linenodiv"><a href="#rest_code_4e3385b185134511bd77db2738e7aef6-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_4e3385b185134511bd77db2738e7aef6-3"></a><span class="k">static</span> <span class="kt">int</span> <span class="n">stepper_status_show</span><span class="p">(</span><span class="k">struct</span> <span class="nc">seq_file</span> <span class="o">*</span> <span class="n">seq_file</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span> <span class="n">arg</span><span class="p">)</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06afcb443bfd4ab7bafe589a143df26c-4"><code data-line-number=" 4"></code></a></td>
-<td class="code"><code><a name="rest_code_06afcb443bfd4ab7bafe589a143df26c-4"></a><span class="p">{</span>
+<td class="linenos linenodiv"><a href="#rest_code_4e3385b185134511bd77db2738e7aef6-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_4e3385b185134511bd77db2738e7aef6-4"></a><span class="p">{</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06afcb443bfd4ab7bafe589a143df26c-5"><code data-line-number=" 5"></code></a></td>
-<td class="code"><code><a name="rest_code_06afcb443bfd4ab7bafe589a143df26c-5"></a>        <span class="n">u8</span> <span class="n">ret</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_4e3385b185134511bd77db2738e7aef6-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_4e3385b185134511bd77db2738e7aef6-5"></a>        <span class="n">u8</span> <span class="n">ret</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06afcb443bfd4ab7bafe589a143df26c-6"><code data-line-number=" 6"></code></a></td>
-<td class="code"><code><a name="rest_code_06afcb443bfd4ab7bafe589a143df26c-6"></a>        <span class="k">struct</span> <span class="nc">spi5a_dev</span> <span class="err">\</span><span class="o">*</span><span class="n">priv</span>  <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="nc">spi5a_dev</span> <span class="o">*</span> <span class="p">)</span><span class="n">seq_file</span><span class="o">-&gt;</span><span class="n">private</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_4e3385b185134511bd77db2738e7aef6-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_4e3385b185134511bd77db2738e7aef6-6"></a>        <span class="k">struct</span> <span class="nc">spi5a_dev</span> <span class="err">\</span><span class="o">*</span><span class="n">priv</span>  <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="nc">spi5a_dev</span> <span class="o">*</span> <span class="p">)</span><span class="n">seq_file</span><span class="o">-&gt;</span><span class="n">private</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06afcb443bfd4ab7bafe589a143df26c-7"><code data-line-number=" 7"></code></a></td>
-<td class="code"><code><a name="rest_code_06afcb443bfd4ab7bafe589a143df26c-7"></a>
+<td class="linenos linenodiv"><a href="#rest_code_4e3385b185134511bd77db2738e7aef6-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_4e3385b185134511bd77db2738e7aef6-7"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06afcb443bfd4ab7bafe589a143df26c-8"><code data-line-number=" 8"></code></a></td>
-<td class="code"><code><a name="rest_code_06afcb443bfd4ab7bafe589a143df26c-8"></a>        <span class="n">priv</span><span class="o">-&gt;</span><span class="n">spidev</span><span class="o">-&gt;</span><span class="n">bits_per_word</span> <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_4e3385b185134511bd77db2738e7aef6-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_4e3385b185134511bd77db2738e7aef6-8"></a>        <span class="n">priv</span><span class="o">-&gt;</span><span class="n">spidev</span><span class="o">-&gt;</span><span class="n">bits_per_word</span> <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06afcb443bfd4ab7bafe589a143df26c-9"><code data-line-number=" 9"></code></a></td>
-<td class="code"><code><a name="rest_code_06afcb443bfd4ab7bafe589a143df26c-9"></a>        <span class="n">priv</span><span class="o">-&gt;</span><span class="n">spidev</span><span class="o">-&gt;</span><span class="n">mode</span> <span class="o">=</span> <span class="n">SPI_MODE_0</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_4e3385b185134511bd77db2738e7aef6-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_4e3385b185134511bd77db2738e7aef6-9"></a>        <span class="n">priv</span><span class="o">-&gt;</span><span class="n">spidev</span><span class="o">-&gt;</span><span class="n">mode</span> <span class="o">=</span> <span class="n">SPI_MODE_0</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06afcb443bfd4ab7bafe589a143df26c-10"><code data-line-number="10"></code></a></td>
-<td class="code"><code><a name="rest_code_06afcb443bfd4ab7bafe589a143df26c-10"></a>        <span class="n">spi_setup</span><span class="p">(</span><span class="n">priv</span><span class="o">-&gt;</span><span class="n">spidev</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_4e3385b185134511bd77db2738e7aef6-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_4e3385b185134511bd77db2738e7aef6-10"></a>        <span class="n">spi_setup</span><span class="p">(</span><span class="n">priv</span><span class="o">-&gt;</span><span class="n">spidev</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06afcb443bfd4ab7bafe589a143df26c-11"><code data-line-number="11"></code></a></td>
-<td class="code"><code><a name="rest_code_06afcb443bfd4ab7bafe589a143df26c-11"></a>
+<td class="linenos linenodiv"><a href="#rest_code_4e3385b185134511bd77db2738e7aef6-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_4e3385b185134511bd77db2738e7aef6-11"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06afcb443bfd4ab7bafe589a143df26c-12"><code data-line-number="12"></code></a></td>
-<td class="code"><code><a name="rest_code_06afcb443bfd4ab7bafe589a143df26c-12"></a>        <span class="n">ret</span> <span class="o">=</span> <span class="n">spi_w8r8</span><span class="p">(</span><span class="n">priv</span><span class="o">-&gt;</span><span class="n">spidev</span><span class="p">,</span> <span class="n">STEPPER_READ_STAT</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_4e3385b185134511bd77db2738e7aef6-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_4e3385b185134511bd77db2738e7aef6-12"></a>        <span class="n">ret</span> <span class="o">=</span> <span class="n">spi_w8r8</span><span class="p">(</span><span class="n">priv</span><span class="o">-&gt;</span><span class="n">spidev</span><span class="p">,</span> <span class="n">STEPPER_READ_STAT</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06afcb443bfd4ab7bafe589a143df26c-13"><code data-line-number="13"></code></a></td>
-<td class="code"><code><a name="rest_code_06afcb443bfd4ab7bafe589a143df26c-13"></a>        <span class="n">seq_printf</span><span class="p">(</span><span class="n">seq_file</span><span class="p">,</span><span class="s">"0x%x</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">ret</span><span class="p">);</span> <span class="c1">//read</span>
+<td class="linenos linenodiv"><a href="#rest_code_4e3385b185134511bd77db2738e7aef6-13"><code data-line-number="13"></code></a></td>
+<td class="code"><code><a name="rest_code_4e3385b185134511bd77db2738e7aef6-13"></a>        <span class="n">seq_printf</span><span class="p">(</span><span class="n">seq_file</span><span class="p">,</span><span class="s">"0x%x</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">ret</span><span class="p">);</span> <span class="c1">//read</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06afcb443bfd4ab7bafe589a143df26c-14"><code data-line-number="14"></code></a></td>
-<td class="code"><code><a name="rest_code_06afcb443bfd4ab7bafe589a143df26c-14"></a>        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_4e3385b185134511bd77db2738e7aef6-14"><code data-line-number="14"></code></a></td>
+<td class="code"><code><a name="rest_code_4e3385b185134511bd77db2738e7aef6-14"></a>        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06afcb443bfd4ab7bafe589a143df26c-15"><code data-line-number="15"></code></a></td>
-<td class="code"><code><a name="rest_code_06afcb443bfd4ab7bafe589a143df26c-15"></a><span class="p">}</span>
+<td class="linenos linenodiv"><a href="#rest_code_4e3385b185134511bd77db2738e7aef6-15"><code data-line-number="15"></code></a></td>
+<td class="code"><code><a name="rest_code_4e3385b185134511bd77db2738e7aef6-15"></a><span class="p">}</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06afcb443bfd4ab7bafe589a143df26c-16"><code data-line-number="16"></code></a></td>
-<td class="code"><code><a name="rest_code_06afcb443bfd4ab7bafe589a143df26c-16"></a><span class="p">...</span>
+<td class="linenos linenodiv"><a href="#rest_code_4e3385b185134511bd77db2738e7aef6-16"><code data-line-number="16"></code></a></td>
+<td class="code"><code><a name="rest_code_4e3385b185134511bd77db2738e7aef6-16"></a><span class="p">...</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06afcb443bfd4ab7bafe589a143df26c-17"><code data-line-number="17"></code></a></td>
-<td class="code"><code><a name="rest_code_06afcb443bfd4ab7bafe589a143df26c-17"></a>
+<td class="linenos linenodiv"><a href="#rest_code_4e3385b185134511bd77db2738e7aef6-17"><code data-line-number="17"></code></a></td>
+<td class="code"><code><a name="rest_code_4e3385b185134511bd77db2738e7aef6-17"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06afcb443bfd4ab7bafe589a143df26c-18"><code data-line-number="18"></code></a></td>
-<td class="code"><code><a name="rest_code_06afcb443bfd4ab7bafe589a143df26c-18"></a>
+<td class="linenos linenodiv"><a href="#rest_code_4e3385b185134511bd77db2738e7aef6-18"><code data-line-number="18"></code></a></td>
+<td class="code"><code><a name="rest_code_4e3385b185134511bd77db2738e7aef6-18"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06afcb443bfd4ab7bafe589a143df26c-19"><code data-line-number="19"></code></a></td>
-<td class="code"><code><a name="rest_code_06afcb443bfd4ab7bafe589a143df26c-19"></a><span class="k">struct</span> <span class="nc">file_operations</span> <span class="n">proc_stepper_status_fops</span> <span class="o">=</span> <span class="p">{</span>
+<td class="linenos linenodiv"><a href="#rest_code_4e3385b185134511bd77db2738e7aef6-19"><code data-line-number="19"></code></a></td>
+<td class="code"><code><a name="rest_code_4e3385b185134511bd77db2738e7aef6-19"></a><span class="k">struct</span> <span class="nc">file_operations</span> <span class="n">proc_stepper_status_fops</span> <span class="o">=</span> <span class="p">{</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06afcb443bfd4ab7bafe589a143df26c-20"><code data-line-number="20"></code></a></td>
-<td class="code"><code><a name="rest_code_06afcb443bfd4ab7bafe589a143df26c-20"></a>        <span class="p">.</span><span class="n">owner</span> <span class="o">=</span> <span class="n">THIS_MODULE</span><span class="p">,</span>
+<td class="linenos linenodiv"><a href="#rest_code_4e3385b185134511bd77db2738e7aef6-20"><code data-line-number="20"></code></a></td>
+<td class="code"><code><a name="rest_code_4e3385b185134511bd77db2738e7aef6-20"></a>        <span class="p">.</span><span class="n">owner</span> <span class="o">=</span> <span class="n">THIS_MODULE</span><span class="p">,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06afcb443bfd4ab7bafe589a143df26c-21"><code data-line-number="21"></code></a></td>
-<td class="code"><code><a name="rest_code_06afcb443bfd4ab7bafe589a143df26c-21"></a>        <span class="p">.</span><span class="n">open</span> <span class="o">=</span> <span class="n">proc_stepper_status_open</span><span class="p">,</span>
+<td class="linenos linenodiv"><a href="#rest_code_4e3385b185134511bd77db2738e7aef6-21"><code data-line-number="21"></code></a></td>
+<td class="code"><code><a name="rest_code_4e3385b185134511bd77db2738e7aef6-21"></a>        <span class="p">.</span><span class="n">open</span> <span class="o">=</span> <span class="n">proc_stepper_status_open</span><span class="p">,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06afcb443bfd4ab7bafe589a143df26c-22"><code data-line-number="22"></code></a></td>
-<td class="code"><code><a name="rest_code_06afcb443bfd4ab7bafe589a143df26c-22"></a>        <span class="p">.</span><span class="n">read</span> <span class="o">=</span> <span class="n">seq_read</span><span class="p">,</span>
+<td class="linenos linenodiv"><a href="#rest_code_4e3385b185134511bd77db2738e7aef6-22"><code data-line-number="22"></code></a></td>
+<td class="code"><code><a name="rest_code_4e3385b185134511bd77db2738e7aef6-22"></a>        <span class="p">.</span><span class="n">read</span> <span class="o">=</span> <span class="n">seq_read</span><span class="p">,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06afcb443bfd4ab7bafe589a143df26c-23"><code data-line-number="23"></code></a></td>
-<td class="code"><code><a name="rest_code_06afcb443bfd4ab7bafe589a143df26c-23"></a>        <span class="p">.</span><span class="n">llseek</span> <span class="o">=</span> <span class="n">seq_lseek</span><span class="p">,</span>
+<td class="linenos linenodiv"><a href="#rest_code_4e3385b185134511bd77db2738e7aef6-23"><code data-line-number="23"></code></a></td>
+<td class="code"><code><a name="rest_code_4e3385b185134511bd77db2738e7aef6-23"></a>        <span class="p">.</span><span class="n">llseek</span> <span class="o">=</span> <span class="n">seq_lseek</span><span class="p">,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06afcb443bfd4ab7bafe589a143df26c-24"><code data-line-number="24"></code></a></td>
-<td class="code"><code><a name="rest_code_06afcb443bfd4ab7bafe589a143df26c-24"></a>        <span class="p">.</span><span class="n">release</span> <span class="o">=</span> <span class="n">single_release</span><span class="p">,</span>
+<td class="linenos linenodiv"><a href="#rest_code_4e3385b185134511bd77db2738e7aef6-24"><code data-line-number="24"></code></a></td>
+<td class="code"><code><a name="rest_code_4e3385b185134511bd77db2738e7aef6-24"></a>        <span class="p">.</span><span class="n">release</span> <span class="o">=</span> <span class="n">single_release</span><span class="p">,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_06afcb443bfd4ab7bafe589a143df26c-25"><code data-line-number="25"></code></a></td>
-<td class="code"><code><a name="rest_code_06afcb443bfd4ab7bafe589a143df26c-25"></a><span class="p">};</span>
+<td class="linenos linenodiv"><a href="#rest_code_4e3385b185134511bd77db2738e7aef6-25"><code data-line-number="25"></code></a></td>
+<td class="code"><code><a name="rest_code_4e3385b185134511bd77db2738e7aef6-25"></a><span class="p">};</span>
 </code></td>
 </tr>
 </table></div>
@@ -487,63 +487,63 @@ in the LSB of the <em>read status (0xea)</em> command.</p>
 <blockquote>
 <div class="code"><table class="codetable">
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_76e19b7df360447787d8bc1e4c431854-1"><code data-line-number=" 1"></code></a></td>
-<td class="code"><code><a name="rest_code_76e19b7df360447787d8bc1e4c431854-1"></a># cat design_3_wrapper.bit &gt;/dev/xdevcfg
+<td class="linenos linenodiv"><a href="#rest_code_ed24fd7831214938ae886004795645e6-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_ed24fd7831214938ae886004795645e6-1"></a># cat design_3_wrapper.bit &gt;/dev/xdevcfg
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_76e19b7df360447787d8bc1e4c431854-2"><code data-line-number=" 2"></code></a></td>
-<td class="code"><code><a name="rest_code_76e19b7df360447787d8bc1e4c431854-2"></a># insmod spi5a.ko
+<td class="linenos linenodiv"><a href="#rest_code_ed24fd7831214938ae886004795645e6-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_ed24fd7831214938ae886004795645e6-2"></a># insmod spi5a.ko
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_76e19b7df360447787d8bc1e4c431854-3"><code data-line-number=" 3"></code></a></td>
-<td class="code"><code><a name="rest_code_76e19b7df360447787d8bc1e4c431854-3"></a>spi max speed HZ: 1000000
+<td class="linenos linenodiv"><a href="#rest_code_ed24fd7831214938ae886004795645e6-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_ed24fd7831214938ae886004795645e6-3"></a>spi max speed HZ: 1000000
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_76e19b7df360447787d8bc1e4c431854-4"><code data-line-number=" 4"></code></a></td>
-<td class="code"><code><a name="rest_code_76e19b7df360447787d8bc1e4c431854-4"></a>spi read ID for cs 0, mode 0, bpw 8
+<td class="linenos linenodiv"><a href="#rest_code_ed24fd7831214938ae886004795645e6-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_ed24fd7831214938ae886004795645e6-4"></a>spi read ID for cs 0, mode 0, bpw 8
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_76e19b7df360447787d8bc1e4c431854-5"><code data-line-number=" 5"></code></a></td>
-<td class="code"><code><a name="rest_code_76e19b7df360447787d8bc1e4c431854-5"></a>Detected SPI Stepper ID 0x5a
+<td class="linenos linenodiv"><a href="#rest_code_ed24fd7831214938ae886004795645e6-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_ed24fd7831214938ae886004795645e6-5"></a>Detected SPI Stepper ID 0x5a
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_76e19b7df360447787d8bc1e4c431854-6"><code data-line-number=" 6"></code></a></td>
-<td class="code"><code><a name="rest_code_76e19b7df360447787d8bc1e4c431854-6"></a>spi5a_probe read(ea) returns 0xc4
+<td class="linenos linenodiv"><a href="#rest_code_ed24fd7831214938ae886004795645e6-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_ed24fd7831214938ae886004795645e6-6"></a>spi5a_probe read(ea) returns 0xc4
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_76e19b7df360447787d8bc1e4c431854-7"><code data-line-number=" 7"></code></a></td>
-<td class="code"><code><a name="rest_code_76e19b7df360447787d8bc1e4c431854-7"></a># cat /proc/stepper/status
+<td class="linenos linenodiv"><a href="#rest_code_ed24fd7831214938ae886004795645e6-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_ed24fd7831214938ae886004795645e6-7"></a># cat /proc/stepper/status
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_76e19b7df360447787d8bc1e4c431854-8"><code data-line-number=" 8"></code></a></td>
-<td class="code"><code><a name="rest_code_76e19b7df360447787d8bc1e4c431854-8"></a>0xc4
+<td class="linenos linenodiv"><a href="#rest_code_ed24fd7831214938ae886004795645e6-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_ed24fd7831214938ae886004795645e6-8"></a>0xc4
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_76e19b7df360447787d8bc1e4c431854-9"><code data-line-number=" 9"></code></a></td>
-<td class="code"><code><a name="rest_code_76e19b7df360447787d8bc1e4c431854-9"></a># echo '0x44'&gt;/proc/stepper/steps &amp;&amp; cat /proc/stepper/status
+<td class="linenos linenodiv"><a href="#rest_code_ed24fd7831214938ae886004795645e6-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_ed24fd7831214938ae886004795645e6-9"></a># echo '0x44'&gt;/proc/stepper/steps &amp;&amp; cat /proc/stepper/status
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_76e19b7df360447787d8bc1e4c431854-10"><code data-line-number="10"></code></a></td>
-<td class="code"><code><a name="rest_code_76e19b7df360447787d8bc1e4c431854-10"></a>proc_stepcount_write: sbuf dd9b5e50, wrote step count 0x44, status 0
+<td class="linenos linenodiv"><a href="#rest_code_ed24fd7831214938ae886004795645e6-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_ed24fd7831214938ae886004795645e6-10"></a>proc_stepcount_write: sbuf dd9b5e50, wrote step count 0x44, status 0
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_76e19b7df360447787d8bc1e4c431854-11"><code data-line-number="11"></code></a></td>
-<td class="code"><code><a name="rest_code_76e19b7df360447787d8bc1e4c431854-11"></a>0xc5
+<td class="linenos linenodiv"><a href="#rest_code_ed24fd7831214938ae886004795645e6-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_ed24fd7831214938ae886004795645e6-11"></a>0xc5
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_76e19b7df360447787d8bc1e4c431854-12"><code data-line-number="12"></code></a></td>
-<td class="code"><code><a name="rest_code_76e19b7df360447787d8bc1e4c431854-12"></a>#
+<td class="linenos linenodiv"><a href="#rest_code_ed24fd7831214938ae886004795645e6-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_ed24fd7831214938ae886004795645e6-12"></a>#
 </code></td>
 </tr>
 </table></div>

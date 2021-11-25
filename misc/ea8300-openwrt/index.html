@@ -157,13 +157,13 @@ later, but first thing first,</p>
 Also it has no root password. To connect to OpenWRT WiFi AP,</p>
 <p>1. Use your host PC to connect to one of its SSID. Suppose that your host is Linux PC, you can use <em>wpa_supplicant</em>
 to connect to it. This <em>wpa_supplicant.conf</em> would be sufficient for you (refer to <em>wpa_supplicant</em>),</p>
-<pre class="code text"><a name="rest_code_29cad6a0a41f4f20933886bb04a1f2bd-1"></a>ctrl_interface=/var/run/wpa_supplicant
-<a name="rest_code_29cad6a0a41f4f20933886bb04a1f2bd-2"></a>ctrl_interface_group=root
-<a name="rest_code_29cad6a0a41f4f20933886bb04a1f2bd-3"></a>network={
-<a name="rest_code_29cad6a0a41f4f20933886bb04a1f2bd-4"></a>ssid="OpenWrt_EA8300"
-<a name="rest_code_29cad6a0a41f4f20933886bb04a1f2bd-5"></a>scan_ssid=1
-<a name="rest_code_29cad6a0a41f4f20933886bb04a1f2bd-6"></a>key_mgmt=NONE
-<a name="rest_code_29cad6a0a41f4f20933886bb04a1f2bd-7"></a>}
+<pre class="code text"><a name="rest_code_4f2adf0b35314ab097b9e1037ee8c474-1"></a>ctrl_interface=/var/run/wpa_supplicant
+<a name="rest_code_4f2adf0b35314ab097b9e1037ee8c474-2"></a>ctrl_interface_group=root
+<a name="rest_code_4f2adf0b35314ab097b9e1037ee8c474-3"></a>network={
+<a name="rest_code_4f2adf0b35314ab097b9e1037ee8c474-4"></a>ssid="OpenWrt_EA8300"
+<a name="rest_code_4f2adf0b35314ab097b9e1037ee8c474-5"></a>scan_ssid=1
+<a name="rest_code_4f2adf0b35314ab097b9e1037ee8c474-6"></a>key_mgmt=NONE
+<a name="rest_code_4f2adf0b35314ab097b9e1037ee8c474-7"></a>}
 </pre>
 <p>2. Connect your host to it via WiFi access and use this access to configure the EA8300 openwrt (telnet/webUI). You may
 connect to the router via <em>dhcp</em> or by static IP. Since the default LAN IP address is <em>192.168.2.1</em> for this
@@ -185,7 +185,7 @@ minimum configurations that you need to do because what's in this image is gener
 configuring the network and its security. MAC addresses must be unique for your router so you <strong>must</strong> change them.</p></li>
 <li><p>Check to make sure that <em>/etc/fw_env.config</em> has the correct configuration for this platform. It should have only one line in it.</p></li>
 </ol>
-<pre class="code text"><a name="rest_code_d4f5e290ed2846999657e20c67d4cb03-1"></a>/dev/mtd7 0 0x40000 0x20000
+<pre class="code text"><a name="rest_code_e68867dfc03742c09af74e18e9eab75d-1"></a>/dev/mtd7 0 0x40000 0x20000
 </pre>
 <p>That is to say that mtd7 is the u-boot environment block. This is where you need to access in order to switch booting between the
 Linksys firmware and the OpenWRT firmware. This will be useful later. The command <em>fw_printenv</em> will list the u-boot settings
@@ -200,16 +200,16 @@ use <em>mtd11</em> as an example to get the Linksys factory radio calibration da
 example below shows how to attach MTD partition where Linksys rootfs is located, create temporary mount point
 and mount its UBIFS.</p></li>
 </ol>
-<pre class="code text"><a name="rest_code_cd0cd7edc21f47179031640b19a41beb-1"></a>ubiattach -m11
-<a name="rest_code_cd0cd7edc21f47179031640b19a41beb-2"></a>mkdir /mnt/ubi
-<a name="rest_code_cd0cd7edc21f47179031640b19a41beb-3"></a>mount -t ubifs /dev/ubi1_0 /mnt/ubi
+<pre class="code text"><a name="rest_code_a3ed700a3c4e46e7b362a4b7d07394ca-1"></a>ubiattach -m11
+<a name="rest_code_a3ed700a3c4e46e7b362a4b7d07394ca-2"></a>mkdir /mnt/ubi
+<a name="rest_code_a3ed700a3c4e46e7b362a4b7d07394ca-3"></a>mount -t ubifs /dev/ubi1_0 /mnt/ubi
 </pre>
 <ol class="arabic simple">
 <li><p>Copy factory's RF calibration data and regulatory domain data to OpenWRT. This will enable your router to
 operate optimally.</p></li>
 </ol>
-<pre class="code text"><a name="rest_code_a7a321033ce24f7fba49ca2503903a19-1"></a>cp /mnt/ubi/lib/firmware/IPQ4019/FCC/* /lib/firmware/IPQ4019/hw.1/
-<a name="rest_code_a7a321033ce24f7fba49ca2503903a19-2"></a>cp /mnt/ubi/lib/firmware/QCA9888/FCC/* /lib/firmware/QCA9888/hw.2/
+<pre class="code text"><a name="rest_code_cfe3da47f01640af9dcf2a800a1a28c8-1"></a>cp /mnt/ubi/lib/firmware/IPQ4019/FCC/* /lib/firmware/IPQ4019/hw.1/
+<a name="rest_code_cfe3da47f01640af9dcf2a800a1a28c8-2"></a>cp /mnt/ubi/lib/firmware/QCA9888/FCC/* /lib/firmware/QCA9888/hw.2/
 </pre>
 <p><em>FCC</em> is for U.S region. Replace it with your region, for example, EU for Europe, AU for Australia etc.</p>
 <p>Do not forget to set the root password. It will run ssh service once root password is set (after service restarted).
@@ -220,8 +220,8 @@ Reboot the box is recommended; however, <em>/etc/init.d/network reload</em> migh
 <p>There are two u-boot parameters use for switching the firmware boot between Linksys and OpenWRT. You can see them when login to the box
 and issuing <em>fw_printenv</em>. The variables <em>boot_part</em> is either 1 or 2, for example, if <em>boot_part=1</em> while running OpenWRT
 that's mean the Linksys f/w is on 2 so to switch it to 2,</p>
-<pre class="code text"><a name="rest_code_df6681a729344b2f93a628cb7aa0e526-1"></a>fw_setenv boot_part 2
-<a name="rest_code_df6681a729344b2f93a628cb7aa0e526-2"></a>fw_setenv boot_part_ready 2
+<pre class="code text"><a name="rest_code_1a201a678fed4e4986e189399bbdd304-1"></a>fw_setenv boot_part 2
+<a name="rest_code_1a201a678fed4e4986e189399bbdd304-2"></a>fw_setenv boot_part_ready 2
 </pre>
 <p>After reboot, the EA8300 will boot up with Linksys f/w.</p>
 </div>
@@ -237,13 +237,13 @@ second time !</p>
 <ol class="arabic simple">
 <li><p>Mount the Linksys rootfs partition (as shown above) to copy OpenWRT's <em>dropbear</em> into it.</p></li>
 </ol>
-<pre class="code text"><a name="rest_code_89558ba2452942758bec7d5da546641f-1"></a>cp /usr/sbin/dropbear /mnt/ubi/usr/sbin
+<pre class="code text"><a name="rest_code_454de805a6144a69a7f18c0cd2986d22-1"></a>cp /usr/sbin/dropbear /mnt/ubi/usr/sbin
 </pre>
 <ol class="arabic simple" start="2">
 <li><p>Create script to run <em>dropbear</em> on Linksys f/w when you switch later on.</p></li>
 </ol>
-<pre class="code text"><a name="rest_code_0f1be95203a042d0b2a7a6b056db9add-1"></a>echo "/usr/sbin/dropbear -d /etc/dropbear_dss_host_key -r /etc/dropbear_rsa_host_key"&gt;/mnt/ubi/etc/dropbear.sh
-<a name="rest_code_0f1be95203a042d0b2a7a6b056db9add-2"></a>chmod +x /mnt/ubi/etc/dropbear.sh
+<pre class="code text"><a name="rest_code_d50b6e91846542809d57ded43c7b4b25-1"></a>echo "/usr/sbin/dropbear -d /etc/dropbear_dss_host_key -r /etc/dropbear_rsa_host_key"&gt;/mnt/ubi/etc/dropbear.sh
+<a name="rest_code_d50b6e91846542809d57ded43c7b4b25-2"></a>chmod +x /mnt/ubi/etc/dropbear.sh
 </pre>
 <p>You can edit this file the way you like as long as you can assure that SSH will be running after you make the switch. The
 dropbear's keys existed in Linksys f/w. It just does not have the accompanied <em>dropbear</em> that uses it. Basically use
@@ -251,8 +251,8 @@ the existing Linksys's own keys and enable it.</p>
 <ol class="arabic simple" start="3">
 <li><p>Add to start-up list,</p></li>
 </ol>
-<pre class="code text"><a name="rest_code_0cfcc0462c724964ad5ec03e953f54d0-1"></a>cd /mnt/ubi/etc/registration.d
-<a name="rest_code_0cfcc0462c724964ad5ec03e953f54d0-2"></a>ln -s ../init.d/dropbear.sh 99_sshd
+<pre class="code text"><a name="rest_code_0e9c512e6b3244aca9b458dd8c72412e-1"></a>cd /mnt/ubi/etc/registration.d
+<a name="rest_code_0e9c512e6b3244aca9b458dd8c72412e-2"></a>ln -s ../init.d/dropbear.sh 99_sshd
 </pre>
 <p>Next time you router run its factory f/w, it will have ssh capability where you can login. The factory ssh login
 used to be <em>ssh root@&lt;your box ip&gt;</em>. Its password was <em>admin</em>. From this point onward you can safely
@@ -274,9 +274,9 @@ you should identify where the new firmware should be in particular partitions. F
 will be in either <em>mtd10</em> or <em>mtd13</em>, for example, if <em>boot_part=1</em>, you need to flash to 2nd set of partition
 that will overwrite the old Linksys f/w. To do this,</p></li>
 </ul>
-<pre class="code text"><a name="rest_code_a36a33e49efa48c78216065a62e61fcd-1"></a>#scp file from your host into /tmp directory (it should fit).
-<a name="rest_code_a36a33e49efa48c78216065a62e61fcd-2"></a>flash_erase /dev/mtd13 0 0  (if boot_part=1 )
-<a name="rest_code_a36a33e49efa48c78216065a62e61fcd-3"></a>nandwrite -p -q /dev/mtd13 /tmp/&lt;fw image&gt; (assume it is in /tmp)
+<pre class="code text"><a name="rest_code_ecc7a37bd03f42549abf7dbaed700aa5-1"></a>#scp file from your host into /tmp directory (it should fit).
+<a name="rest_code_ecc7a37bd03f42549abf7dbaed700aa5-2"></a>flash_erase /dev/mtd13 0 0  (if boot_part=1 )
+<a name="rest_code_ecc7a37bd03f42549abf7dbaed700aa5-3"></a>nandwrite -p -q /dev/mtd13 /tmp/&lt;fw image&gt; (assume it is in /tmp)
 </pre>
 <ul class="simple">
 <li><p>Change the <em>boot_partxx</em> parameters with <em>fw_setenv</em> to switch the firmware.</p></li>

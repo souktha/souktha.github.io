@@ -117,48 +117,48 @@ will make use of AHCI driver that is already in place with some modifcation need
 values that use to configure <em>SATA_PLLCFGx</em> as shown in TI document, section 21.3.1, base on the 100MHZ low-jitter clock.</p>
 <div class="code"><table class="codetable">
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f41e909ca9e9475eae5af184d342acb5-1"><code data-line-number="1"></code></a></td>
-<td class="code"><code><a name="rest_code_f41e909ca9e9475eae5af184d342acb5-1"></a>       <span class="cm">/*use 100MHZ low jitter clock feed*/</span>
+<td class="linenos linenodiv"><a href="#rest_code_e0e1c3ebe63947f7af40ca9a07411281-1"><code data-line-number="1"></code></a></td>
+<td class="code"><code><a name="rest_code_e0e1c3ebe63947f7af40ca9a07411281-1"></a>       <span class="cm">/*use 100MHZ low jitter clock feed*/</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f41e909ca9e9475eae5af184d342acb5-2"><code data-line-number="2"></code></a></td>
-<td class="code"><code><a name="rest_code_f41e909ca9e9475eae5af184d342acb5-2"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x00000004</span><span class="p">,</span> <span class="n">SATA_PLLCFG0</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_e0e1c3ebe63947f7af40ca9a07411281-2"><code data-line-number="2"></code></a></td>
+<td class="code"><code><a name="rest_code_e0e1c3ebe63947f7af40ca9a07411281-2"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x00000004</span><span class="p">,</span> <span class="n">SATA_PLLCFG0</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f41e909ca9e9475eae5af184d342acb5-3"><code data-line-number="3"></code></a></td>
-<td class="code"><code><a name="rest_code_f41e909ca9e9475eae5af184d342acb5-3"></a>       <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="n">delay</span><span class="p">(</span><span class="mh">0xFFFF</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_e0e1c3ebe63947f7af40ca9a07411281-3"><code data-line-number="3"></code></a></td>
+<td class="code"><code><a name="rest_code_e0e1c3ebe63947f7af40ca9a07411281-3"></a>       <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="n">delay</span><span class="p">(</span><span class="mh">0xFFFF</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f41e909ca9e9475eae5af184d342acb5-4"><code data-line-number="4"></code></a></td>
-<td class="code"><code><a name="rest_code_f41e909ca9e9475eae5af184d342acb5-4"></a>
+<td class="linenos linenodiv"><a href="#rest_code_e0e1c3ebe63947f7af40ca9a07411281-4"><code data-line-number="4"></code></a></td>
+<td class="code"><code><a name="rest_code_e0e1c3ebe63947f7af40ca9a07411281-4"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f41e909ca9e9475eae5af184d342acb5-5"><code data-line-number="5"></code></a></td>
-<td class="code"><code><a name="rest_code_f41e909ca9e9475eae5af184d342acb5-5"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x812C003C</span><span class="p">,</span> <span class="n">SATA_PLLCFG1</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_e0e1c3ebe63947f7af40ca9a07411281-5"><code data-line-number="5"></code></a></td>
+<td class="code"><code><a name="rest_code_e0e1c3ebe63947f7af40ca9a07411281-5"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="mh">0x812C003C</span><span class="p">,</span> <span class="n">SATA_PLLCFG1</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f41e909ca9e9475eae5af184d342acb5-6"><code data-line-number="6"></code></a></td>
-<td class="code"><code><a name="rest_code_f41e909ca9e9475eae5af184d342acb5-6"></a>       <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="n">delay</span><span class="p">(</span><span class="mh">0xFFFF</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_e0e1c3ebe63947f7af40ca9a07411281-6"><code data-line-number="6"></code></a></td>
+<td class="code"><code><a name="rest_code_e0e1c3ebe63947f7af40ca9a07411281-6"></a>       <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="n">delay</span><span class="p">(</span><span class="mh">0xFFFF</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f41e909ca9e9475eae5af184d342acb5-7"><code data-line-number="7"></code></a></td>
-<td class="code"><code><a name="rest_code_f41e909ca9e9475eae5af184d342acb5-7"></a>       <span class="p">....</span>
+<td class="linenos linenodiv"><a href="#rest_code_e0e1c3ebe63947f7af40ca9a07411281-7"><code data-line-number="7"></code></a></td>
+<td class="code"><code><a name="rest_code_e0e1c3ebe63947f7af40ca9a07411281-7"></a>       <span class="p">....</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f41e909ca9e9475eae5af184d342acb5-8"><code data-line-number="8"></code></a></td>
-<td class="code"><code><a name="rest_code_f41e909ca9e9475eae5af184d342acb5-8"></a>       <span class="p">....</span>
+<td class="linenos linenodiv"><a href="#rest_code_e0e1c3ebe63947f7af40ca9a07411281-8"><code data-line-number="8"></code></a></td>
+<td class="code"><code><a name="rest_code_e0e1c3ebe63947f7af40ca9a07411281-8"></a>       <span class="p">....</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_f41e909ca9e9475eae5af184d342acb5-9"><code data-line-number="9"></code></a></td>
-<td class="code"><code><a name="rest_code_f41e909ca9e9475eae5af184d342acb5-9"></a>       <span class="n">sata_phy_config</span><span class="p">();</span>
+<td class="linenos linenodiv"><a href="#rest_code_e0e1c3ebe63947f7af40ca9a07411281-9"><code data-line-number="9"></code></a></td>
+<td class="code"><code><a name="rest_code_e0e1c3ebe63947f7af40ca9a07411281-9"></a>       <span class="n">sata_phy_config</span><span class="p">();</span>
 </code></td>
 </tr>
 </table></div>
@@ -167,63 +167,63 @@ values that use to configure <em>SATA_PLLCFGx</em> as shown in TI document, sect
 </ol>
 <div class="code"><table class="codetable">
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6166ee9729c34d4e99b1aaf5d432326e-1"><code data-line-number=" 1"></code></a></td>
-<td class="code"><code><a name="rest_code_6166ee9729c34d4e99b1aaf5d432326e-1"></a>       <span class="k">static</span> <span class="kt">void</span> <span class="n">sata_phy_config</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<td class="linenos linenodiv"><a href="#rest_code_70a8de52818a48589309f74404edc841-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_70a8de52818a48589309f74404edc841-1"></a>       <span class="k">static</span> <span class="kt">void</span> <span class="n">sata_phy_config</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6166ee9729c34d4e99b1aaf5d432326e-2"><code data-line-number=" 2"></code></a></td>
-<td class="code"><code><a name="rest_code_6166ee9729c34d4e99b1aaf5d432326e-2"></a>       <span class="p">{</span>
+<td class="linenos linenodiv"><a href="#rest_code_70a8de52818a48589309f74404edc841-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_70a8de52818a48589309f74404edc841-2"></a>       <span class="p">{</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6166ee9729c34d4e99b1aaf5d432326e-3"><code data-line-number=" 3"></code></a></td>
-<td class="code"><code><a name="rest_code_6166ee9729c34d4e99b1aaf5d432326e-3"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">TI814X_SATA_PHY_CFGRX0_VAL</span><span class="p">,</span> <span class="n">SATA_PHY_CFGRX0</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_70a8de52818a48589309f74404edc841-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_70a8de52818a48589309f74404edc841-3"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">TI814X_SATA_PHY_CFGRX0_VAL</span><span class="p">,</span> <span class="n">SATA_PHY_CFGRX0</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6166ee9729c34d4e99b1aaf5d432326e-4"><code data-line-number=" 4"></code></a></td>
-<td class="code"><code><a name="rest_code_6166ee9729c34d4e99b1aaf5d432326e-4"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">TI814X_SATA_PHY_CFGRX1_VAL</span><span class="p">,</span> <span class="n">SATA_PHY_CFGRX1</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_70a8de52818a48589309f74404edc841-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_70a8de52818a48589309f74404edc841-4"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">TI814X_SATA_PHY_CFGRX1_VAL</span><span class="p">,</span> <span class="n">SATA_PHY_CFGRX1</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6166ee9729c34d4e99b1aaf5d432326e-5"><code data-line-number=" 5"></code></a></td>
-<td class="code"><code><a name="rest_code_6166ee9729c34d4e99b1aaf5d432326e-5"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">TI814X_SATA_PHY_CFGRX2_VAL</span><span class="p">,</span> <span class="n">SATA_PHY_CFGRX2</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_70a8de52818a48589309f74404edc841-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_70a8de52818a48589309f74404edc841-5"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">TI814X_SATA_PHY_CFGRX2_VAL</span><span class="p">,</span> <span class="n">SATA_PHY_CFGRX2</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6166ee9729c34d4e99b1aaf5d432326e-6"><code data-line-number=" 6"></code></a></td>
-<td class="code"><code><a name="rest_code_6166ee9729c34d4e99b1aaf5d432326e-6"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">TI814X_SATA_PHY_CFGRX3_VAL</span><span class="p">,</span> <span class="n">SATA_PHY_CFGRX3</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_70a8de52818a48589309f74404edc841-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_70a8de52818a48589309f74404edc841-6"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">TI814X_SATA_PHY_CFGRX3_VAL</span><span class="p">,</span> <span class="n">SATA_PHY_CFGRX3</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6166ee9729c34d4e99b1aaf5d432326e-7"><code data-line-number=" 7"></code></a></td>
-<td class="code"><code><a name="rest_code_6166ee9729c34d4e99b1aaf5d432326e-7"></a>
+<td class="linenos linenodiv"><a href="#rest_code_70a8de52818a48589309f74404edc841-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_70a8de52818a48589309f74404edc841-7"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6166ee9729c34d4e99b1aaf5d432326e-8"><code data-line-number=" 8"></code></a></td>
-<td class="code"><code><a name="rest_code_6166ee9729c34d4e99b1aaf5d432326e-8"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">TI814X_SATA_PHY_CFGTX0_VAL</span><span class="p">,</span> <span class="n">SATA_PHY_CFGTX0</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_70a8de52818a48589309f74404edc841-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_70a8de52818a48589309f74404edc841-8"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">TI814X_SATA_PHY_CFGTX0_VAL</span><span class="p">,</span> <span class="n">SATA_PHY_CFGTX0</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6166ee9729c34d4e99b1aaf5d432326e-9"><code data-line-number=" 9"></code></a></td>
-<td class="code"><code><a name="rest_code_6166ee9729c34d4e99b1aaf5d432326e-9"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">TI814X_SATA_PHY_CFGTX1_VAL</span><span class="p">,</span> <span class="n">SATA_PHY_CFGTX1</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_70a8de52818a48589309f74404edc841-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_70a8de52818a48589309f74404edc841-9"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">TI814X_SATA_PHY_CFGTX1_VAL</span><span class="p">,</span> <span class="n">SATA_PHY_CFGTX1</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6166ee9729c34d4e99b1aaf5d432326e-10"><code data-line-number="10"></code></a></td>
-<td class="code"><code><a name="rest_code_6166ee9729c34d4e99b1aaf5d432326e-10"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">TI814X_SATA_PHY_CFGTX2_VAL</span><span class="p">,</span> <span class="n">SATA_PHY_CFGTX2</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_70a8de52818a48589309f74404edc841-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_70a8de52818a48589309f74404edc841-10"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">TI814X_SATA_PHY_CFGTX2_VAL</span><span class="p">,</span> <span class="n">SATA_PHY_CFGTX2</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6166ee9729c34d4e99b1aaf5d432326e-11"><code data-line-number="11"></code></a></td>
-<td class="code"><code><a name="rest_code_6166ee9729c34d4e99b1aaf5d432326e-11"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">TI814X_SATA_PHY_CFGTX3_VAL</span><span class="p">,</span> <span class="n">SATA_PHY_CFGTX3</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_70a8de52818a48589309f74404edc841-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_70a8de52818a48589309f74404edc841-11"></a>       <span class="n">__raw_writel</span><span class="p">(</span><span class="n">TI814X_SATA_PHY_CFGTX3_VAL</span><span class="p">,</span> <span class="n">SATA_PHY_CFGTX3</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_6166ee9729c34d4e99b1aaf5d432326e-12"><code data-line-number="12"></code></a></td>
-<td class="code"><code><a name="rest_code_6166ee9729c34d4e99b1aaf5d432326e-12"></a>       <span class="p">}</span>
+<td class="linenos linenodiv"><a href="#rest_code_70a8de52818a48589309f74404edc841-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_70a8de52818a48589309f74404edc841-12"></a>       <span class="p">}</span>
 </code></td>
 </tr>
 </table></div>
@@ -231,25 +231,25 @@ values that use to configure <em>SATA_PLLCFGx</em> as shown in TI document, sect
 PCI bus which is not true for this EVM platform. Since the integrated SATA controller is memory mapped to the SoC
 physical address space, the modification is needed. I define <em>CONFIG_SCSI_AHCI_PLAT</em> to disable blocks of code
 that are PCI related, for example,</p>
-<pre class="code c"><a name="rest_code_8b3be7f8a5f44c9aa080564fb7f0312e-1"></a><span class="cp">#ifndef CONFIG_SCSI_AHCI_PLAT</span>
-<a name="rest_code_8b3be7f8a5f44c9aa080564fb7f0312e-2"></a><span class="n">pci_read_config_word</span><span class="p">(</span><span class="n">pdev</span><span class="p">,</span> <span class="n">PCI_VENDOR_ID</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">vendor</span><span class="p">);</span>
-<a name="rest_code_8b3be7f8a5f44c9aa080564fb7f0312e-3"></a><span class="p">...</span>
-<a name="rest_code_8b3be7f8a5f44c9aa080564fb7f0312e-4"></a><span class="cp">#endif</span>
+<pre class="code c"><a name="rest_code_5dc477b3460848bda0c1191f26e3dd76-1"></a><span class="cp">#ifndef CONFIG_SCSI_AHCI_PLAT</span>
+<a name="rest_code_5dc477b3460848bda0c1191f26e3dd76-2"></a><span class="n">pci_read_config_word</span><span class="p">(</span><span class="n">pdev</span><span class="p">,</span> <span class="n">PCI_VENDOR_ID</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">vendor</span><span class="p">);</span>
+<a name="rest_code_5dc477b3460848bda0c1191f26e3dd76-3"></a><span class="p">...</span>
+<a name="rest_code_5dc477b3460848bda0c1191f26e3dd76-4"></a><span class="cp">#endif</span>
 </pre>
 <p>and replace those blocks where memory mapped access is applicable. I also raise command timeout a little
 bit to ensure that it works for slower HDD.</p>
 <p>4) Add <em>CONFIG_SCSI_AHCI_PLAT</em> for AHCI driver and enable SCSI (AHCI) support in u-boot configuration file,
 <em>include/configs/ti8148_evm.h</em> for one SCSI HDD, one SCSI LUN.</p>
-<pre class="code c"><a name="rest_code_3a9b798035e648fdaee23e57f5546207-1"></a><span class="cp"># define CONFIG_CMD_SCSI        1</span>
-<a name="rest_code_3a9b798035e648fdaee23e57f5546207-2"></a><span class="p">...</span>
-<a name="rest_code_3a9b798035e648fdaee23e57f5546207-3"></a>
-<a name="rest_code_3a9b798035e648fdaee23e57f5546207-4"></a><span class="cp">#ifdef CONFIG_CMD_SCSI</span>
-<a name="rest_code_3a9b798035e648fdaee23e57f5546207-5"></a>        <span class="cp">#define CONFIG_SCSI_AHCI</span>
-<a name="rest_code_3a9b798035e648fdaee23e57f5546207-6"></a>        <span class="cp">#define CONFIG_SCSI_AHCI_PLAT</span>
-<a name="rest_code_3a9b798035e648fdaee23e57f5546207-7"></a>        <span class="cp">#define CONFIG_SYS_SCSI_MAX_DEVICE 1</span>
-<a name="rest_code_3a9b798035e648fdaee23e57f5546207-8"></a>        <span class="cp">#define CONFIG_SYS_SCSI_MAX_SCSI_ID 1</span>
-<a name="rest_code_3a9b798035e648fdaee23e57f5546207-9"></a>        <span class="cp">#define CONFIG_SYS_SCSI_MAX_LUN  1</span>
-<a name="rest_code_3a9b798035e648fdaee23e57f5546207-10"></a><span class="cp">#endif</span>
+<pre class="code c"><a name="rest_code_2e68fa302c224eaaa79b88defd826571-1"></a><span class="cp"># define CONFIG_CMD_SCSI        1</span>
+<a name="rest_code_2e68fa302c224eaaa79b88defd826571-2"></a><span class="p">...</span>
+<a name="rest_code_2e68fa302c224eaaa79b88defd826571-3"></a>
+<a name="rest_code_2e68fa302c224eaaa79b88defd826571-4"></a><span class="cp">#ifdef CONFIG_CMD_SCSI</span>
+<a name="rest_code_2e68fa302c224eaaa79b88defd826571-5"></a>        <span class="cp">#define CONFIG_SCSI_AHCI</span>
+<a name="rest_code_2e68fa302c224eaaa79b88defd826571-6"></a>        <span class="cp">#define CONFIG_SCSI_AHCI_PLAT</span>
+<a name="rest_code_2e68fa302c224eaaa79b88defd826571-7"></a>        <span class="cp">#define CONFIG_SYS_SCSI_MAX_DEVICE 1</span>
+<a name="rest_code_2e68fa302c224eaaa79b88defd826571-8"></a>        <span class="cp">#define CONFIG_SYS_SCSI_MAX_SCSI_ID 1</span>
+<a name="rest_code_2e68fa302c224eaaa79b88defd826571-9"></a>        <span class="cp">#define CONFIG_SYS_SCSI_MAX_LUN  1</span>
+<a name="rest_code_2e68fa302c224eaaa79b88defd826571-10"></a><span class="cp">#endif</span>
 </pre>
 <p>The complete code change is available in my git repository in the form of patch file where it could be
 patched to the TI's u-boot release directly (<a class="reference external" href="https://github.com/souktha/dm814x-u-boot-psp04.04.01">https://github.com/souktha/dm814x-u-boot-psp04.04.01</a>).
@@ -263,8 +263,8 @@ The patch file will patch four files for this implementation,
 be used when building this platform's u-boot.</p>
 <div class="section" id="building">
 <h3>Building</h3>
-<pre class="code text"><a name="rest_code_eb40398a247048cc9ee895ef3482e786-1"></a>$make ARCH=arm ti8148_evm_config_nand
-<a name="rest_code_eb40398a247048cc9ee895ef3482e786-2"></a>$make ARCH=arm CROSS_COMPILE=arm-none-linux-gnueabi-
+<pre class="code text"><a name="rest_code_8264c97dc80442c8817291d3353c6d5f-1"></a>$make ARCH=arm ti8148_evm_config_nand
+<a name="rest_code_8264c97dc80442c8817291d3353c6d5f-2"></a>$make ARCH=arm CROSS_COMPILE=arm-none-linux-gnueabi-
 </pre>
 <p>are the command lines for configuring and building u-boot. After building is complete, <em>u-boot.bin</em> can be used for
 testing.</p>
@@ -273,303 +273,303 @@ testing.</p>
 <h3>Testing</h3>
 <p>The new u-boot can be tested before flashing to NAND partition. To do this, stop the boot during its
 first stage boot (TI-MIN), then load the code to test it (one HDD connected).</p>
-<pre class="code text"><a name="rest_code_cb41bfd931734046b25d11151268d495-1"></a>...
-<a name="rest_code_cb41bfd931734046b25d11151268d495-2"></a>The 2nd stage U-Boot will now be auto-loaded
-<a name="rest_code_cb41bfd931734046b25d11151268d495-3"></a>Please do not interrupt the countdown till ...
-<a name="rest_code_cb41bfd931734046b25d11151268d495-4"></a>Hit any key to stop autoboot:  1
-<a name="rest_code_cb41bfd931734046b25d11151268d495-5"></a>TI-MIN#
+<pre class="code text"><a name="rest_code_af5072ffe4e445e2bc0744305b2ce80f-1"></a>...
+<a name="rest_code_af5072ffe4e445e2bc0744305b2ce80f-2"></a>The 2nd stage U-Boot will now be auto-loaded
+<a name="rest_code_af5072ffe4e445e2bc0744305b2ce80f-3"></a>Please do not interrupt the countdown till ...
+<a name="rest_code_af5072ffe4e445e2bc0744305b2ce80f-4"></a>Hit any key to stop autoboot:  1
+<a name="rest_code_af5072ffe4e445e2bc0744305b2ce80f-5"></a>TI-MIN#
 </pre>
 <p>Use u-boot's <em>loady 0x80800000</em> to download code to memory via UART port using Y-modem protocol. Once downloading is
 completed, just <em>go &lt;load address&gt;</em>,</p>
 <div class="code"><table class="codetable">
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-1"><code data-line-number=" 1"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-1"></a><span class="go">       TI-MIN#loady 80800000</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-1"></a><span class="go">       TI-MIN#loady 80800000</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-2"><code data-line-number=" 2"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-2"></a><span class="gp">       #</span><span class="c1"># Ready for binary (ymodem) download to 0x80800000 at 115200 bps...</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-2"></a><span class="gp">       #</span><span class="c1"># Ready for binary (ymodem) download to 0x80800000 at 115200 bps...</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-3"><code data-line-number=" 3"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-3"></a><span class="go">       Cm - CRC mode, 1700(SOH)/0(STX)/0(CAN) packets, 8 retries</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-3"></a><span class="go">       Cm - CRC mode, 1700(SOH)/0(STX)/0(CAN) packets, 8 retries</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-4"><code data-line-number=" 4"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-4"></a><span class="gp">       #</span><span class="c1"># Total Size      = 0x000350dc = 217308 Bytes</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-4"></a><span class="gp">       #</span><span class="c1"># Total Size      = 0x000350dc = 217308 Bytes</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-5"><code data-line-number=" 5"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-5"></a><span class="go">       TI-MIN#go 80800000</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-5"></a><span class="go">       TI-MIN#go 80800000</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-6"><code data-line-number=" 6"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-6"></a><span class="gp">       #</span><span class="c1"># Starting application at 0x80800000 ...</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-6"></a><span class="gp">       #</span><span class="c1"># Starting application at 0x80800000 ...</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-7"><code data-line-number=" 7"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-7"></a>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-7"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-8"><code data-line-number=" 8"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-8"></a>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-8"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-9"><code data-line-number=" 9"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-9"></a><span class="go">       U-Boot 2010.06 (May 09 2016 - 20:09:26)</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-9"></a><span class="go">       U-Boot 2010.06 (May 09 2016 - 20:09:26)</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-10"><code data-line-number="10"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-10"></a>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-10"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-11"><code data-line-number="11"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-11"></a><span class="go">       TI8148-GP rev 2.1</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-11"></a><span class="go">       TI8148-GP rev 2.1</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-12"><code data-line-number="12"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-12"></a>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-12"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-13"><code data-line-number="13"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-13"></a><span class="go">       ARM clk: 600MHz</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-13"><code data-line-number="13"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-13"></a><span class="go">       ARM clk: 600MHz</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-14"><code data-line-number="14"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-14"></a><span class="go">       DDR clk: 400MHz</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-14"><code data-line-number="14"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-14"></a><span class="go">       DDR clk: 400MHz</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-15"><code data-line-number="15"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-15"></a>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-15"><code data-line-number="15"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-15"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-16"><code data-line-number="16"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-16"></a><span class="go">       I2C:   ready</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-16"><code data-line-number="16"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-16"></a><span class="go">       I2C:   ready</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-17"><code data-line-number="17"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-17"></a><span class="go">       DRAM:  2 GiB</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-17"><code data-line-number="17"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-17"></a><span class="go">       DRAM:  2 GiB</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-18"><code data-line-number="18"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-18"></a><span class="go">       NAND:  HW ECC BCH8 Selected</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-18"><code data-line-number="18"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-18"></a><span class="go">       NAND:  HW ECC BCH8 Selected</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-19"><code data-line-number="19"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-19"></a><span class="go">       256 MiB</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-19"><code data-line-number="19"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-19"></a><span class="go">       256 MiB</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-20"><code data-line-number="20"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-20"></a><span class="go">       MMC:   OMAP SD/MMC: 0</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-20"><code data-line-number="20"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-20"></a><span class="go">       MMC:   OMAP SD/MMC: 0</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-21"><code data-line-number="21"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-21"></a><span class="go">       *** Warning - bad CRC or NAND, using default environment</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-21"><code data-line-number="21"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-21"></a><span class="go">       *** Warning - bad CRC or NAND, using default environment</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-22"><code data-line-number="22"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-22"></a>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-22"><code data-line-number="22"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-22"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-23"><code data-line-number="23"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-23"></a><span class="go">                         .:;rrr;;.</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-23"><code data-line-number="23"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-23"></a><span class="go">                         .:;rrr;;.</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-24"><code data-line-number="24"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-24"></a><span class="go">                   ,5#@@@@#####@@@@@@#2,</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-24"><code data-line-number="24"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-24"></a><span class="go">                   ,5#@@@@#####@@@@@@#2,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-25"><code data-line-number="25"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-25"></a><span class="go">                ,A@@@hi;;;r5;;;;r;rrSG@@@A,</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-25"><code data-line-number="25"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-25"></a><span class="go">                ,A@@@hi;;;r5;;;;r;rrSG@@@A,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-26"><code data-line-number="26"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-26"></a><span class="go">              r@@#i;:;s222hG;rrsrrrrrr;ri#@@r</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-26"><code data-line-number="26"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-26"></a><span class="go">              r@@#i;:;s222hG;rrsrrrrrr;ri#@@r</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-27"><code data-line-number="27"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-27"></a><span class="go">            :@@hr:r;SG3ssrr2r;rrsrsrsrsrr;rh@@:</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-27"><code data-line-number="27"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-27"></a><span class="go">            :@@hr:r;SG3ssrr2r;rrsrsrsrsrr;rh@@:</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-28"><code data-line-number="28"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-28"></a><span class="go">           B@H;;rr;3Hs;rrr;sr;;rrsrsrsrsrsr;;H@B</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-28"><code data-line-number="28"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-28"></a><span class="go">           B@H;;rr;3Hs;rrr;sr;;rrsrsrsrsrsr;;H@B</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-29"><code data-line-number="29"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-29"></a><span class="go">          @@s:rrs;5#;;rrrr;r#@H:;;rrsrsrsrsrr:s@@</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-29"><code data-line-number="29"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-29"></a><span class="go">          @@s:rrs;5#;;rrrr;r#@H:;;rrsrsrsrsrr:s@@</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-30"><code data-line-number="30"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-30"></a><span class="go">         @@;;srs&amp;X#9;r;r;;,2@@@rrr:;;rrsrsrsrr;;@@</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-30"><code data-line-number="30"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-30"></a><span class="go">         @@;;srs&amp;X#9;r;r;;,2@@@rrr:;;rrsrsrsrr;;@@</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-31"><code data-line-number="31"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-31"></a><span class="go">        @@;;rrsrrs@MB#@@@@@###@@@@@@#rsrsrsrsrr;;@@</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-31"><code data-line-number="31"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-31"></a><span class="go">        @@;;rrsrrs@MB#@@@@@###@@@@@@#rsrsrsrsrr;;@@</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-32"><code data-line-number="32"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-32"></a><span class="go">       G@r;rrsrsr;#X;SX25Ss#@@#M@#9H9rrsrsrsrsrs;r@G</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-32"><code data-line-number="32"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-32"></a><span class="go">       G@r;rrsrsr;#X;SX25Ss#@@#M@#9H9rrsrsrsrsrs;r@G</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-33"><code data-line-number="33"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-33"></a><span class="go">       @9:srsrsrs;2@;:;;:.X@@@@@H::;rrsrsrsrsrsrr:3@</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-33"><code data-line-number="33"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-33"></a><span class="go">       @9:srsrsrs;2@;:;;:.X@@@@@H::;rrsrsrsrsrsrr:3@</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-34"><code data-line-number="34"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-34"></a><span class="go">      X@;rrsrsrsrr;XAi;;:&amp;@@#@Bs:rrsrsrsrsrsrsrsrr;@X</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-34"><code data-line-number="34"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-34"></a><span class="go">      X@;rrsrsrsrr;XAi;;:&amp;@@#@Bs:rrsrsrsrsrsrsrsrr;@X</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-35"><code data-line-number="35"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-35"></a><span class="go">      @#;rsrsrsrsrr;r2ir@@@###::rrsrsrsrsrsrsrsrsr:@@</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-35"><code data-line-number="35"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-35"></a><span class="go">      @#;rsrsrsrsrr;r2ir@@@###::rrsrsrsrsrsrsrsrsr:@@</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-36"><code data-line-number="36"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-36"></a><span class="go">      @A:rrsrsrsrr;:2@29@@M@@@;:;rrrrsrsrsrsrsrsrs;H@</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-36"><code data-line-number="36"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-36"></a><span class="go">      @A:rrsrsrsrr;:2@29@@M@@@;:;rrrrsrsrsrsrsrsrs;H@</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-37"><code data-line-number="37"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-37"></a><span class="go">      @&amp;;rsrsrsrr;A@@@@@@###@@@s::;:;;rrsrsrsrsrsr;G@</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-37"><code data-line-number="37"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-37"></a><span class="go">      @&amp;;rsrsrsrr;A@@@@@@###@@@s::;:;;rrsrsrsrsrsr;G@</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-38"><code data-line-number="38"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-38"></a><span class="go">      @#:rrsrsrsr;G@5Hr25@@@#@@@#9XG9s:rrrrsrsrsrs:#@</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-38"><code data-line-number="38"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-38"></a><span class="go">      @#:rrsrsrsr;G@5Hr25@@@#@@@#9XG9s:rrrrsrsrsrs:#@</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-39"><code data-line-number="39"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-39"></a><span class="go">      M@;rsrsrsrs;r@&amp;#;::S@@@@@@@M@@@@Grr:;rsrsrsr;@#</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-39"><code data-line-number="39"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-39"></a><span class="go">      M@;rsrsrsrs;r@&amp;#;::S@@@@@@@M@@@@Grr:;rsrsrsr;@#</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-40"><code data-line-number="40"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-40"></a><span class="go">      :@s;rsrsrsrr:M#Msrr;;&amp;#@@@@@@@@@@H@@5;rsrsr;s@,</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-40"><code data-line-number="40"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-40"></a><span class="go">      :@s;rsrsrsrr:M#Msrr;;&amp;#@@@@@@@@@@H@@5;rsrsr;s@,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-41"><code data-line-number="41"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-41"></a><span class="go">       @@:rrsrsrsr;S@rrrsr;:;r3MH@@#@M5,S@@irrsrr:@@</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-41"><code data-line-number="41"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-41"></a><span class="go">       @@:rrsrsrsr;S@rrrsr;:;r3MH@@#@M5,S@@irrsrr:@@</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-42"><code data-line-number="42"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-42"></a><span class="go">        @A:rrsrsrsrrrrrsrsrrr;::;@##@r:;rH@h;srr:H@</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-42"><code data-line-number="42"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-42"></a><span class="go">        @A:rrsrsrsrrrrrsrsrrr;::;@##@r:;rH@h;srr:H@</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-43"><code data-line-number="43"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-43"></a><span class="go">        ;@9:rrsrsrsrrrsrsrsrsr;,S@Hi@i:;s;MX;rr:h@;</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-43"><code data-line-number="43"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-43"></a><span class="go">        ;@9:rrsrsrsrrrsrsrsrsr;,S@Hi@i:;s;MX;rr:h@;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-44"><code data-line-number="44"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-44"></a><span class="go">         r@B:rrrrsrsrsrsrsrr;;sA@#i,i@h;r;S5;r:H@r</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-44"><code data-line-number="44"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-44"></a><span class="go">         r@B:rrrrsrsrsrsrsrr;;sA@#i,i@h;r;S5;r:H@r</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-45"><code data-line-number="45"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-45"></a><span class="go">          ,@@r;rrrsrsrsrsrr;2BM3r:;r:G@:rrr;;r@@,</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-45"><code data-line-number="45"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-45"></a><span class="go">          ,@@r;rrrsrsrsrsrr;2BM3r:;r:G@:rrr;;r@@,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-46"><code data-line-number="46"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-46"></a><span class="go">            B@Mr;rrrrsrsrsr@@S;;;rrr:5M;rr;rM@H</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-46"><code data-line-number="46"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-46"></a><span class="go">            B@Mr;rrrrsrsrsr@@S;;;rrr:5M;rr;rM@H</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-47"><code data-line-number="47"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-47"></a><span class="go">             .@@@i;;rrrrsrs2i;rrrrr;r@M:;i@@@.</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-47"><code data-line-number="47"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-47"></a><span class="go">             .@@@i;;rrrrsrs2i;rrrrr;r@M:;i@@@.</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-48"><code data-line-number="48"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-48"></a><span class="go">               .A@@#5r;;;r;;;rrr;r:r#AsM@@H.</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-48"><code data-line-number="48"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-48"></a><span class="go">               .A@@#5r;;;r;;;rrr;r:r#AsM@@H.</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-49"><code data-line-number="49"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-49"></a><span class="go">                  ;&amp;@@@@MhXS5i5SX9B@@@@G;</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-49"><code data-line-number="49"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-49"></a><span class="go">                  ;&amp;@@@@MhXS5i5SX9B@@@@G;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-50"><code data-line-number="50"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-50"></a><span class="go">                      :ihM#@@@@@##hs,</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-50"><code data-line-number="50"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-50"></a><span class="go">                      :ihM#@@@@@##hs,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-51"><code data-line-number="51"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-51"></a>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-51"><code data-line-number="51"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-51"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-52"><code data-line-number="52"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-52"></a><span class="go">       AHCI 0001.0300 32 slots 1 ports 3 Gbps 0x1 impl SATA mode</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-52"><code data-line-number="52"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-52"></a><span class="go">       AHCI 0001.0300 32 slots 1 ports 3 Gbps 0x1 impl SATA mode</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-53"><code data-line-number="53"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-53"></a><span class="go">       flags: ncq stag pm led clo only pmp pio slum part</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-53"><code data-line-number="53"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-53"></a><span class="go">       flags: ncq stag pm led clo only pmp pio slum part</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-54"><code data-line-number="54"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-54"></a><span class="go">       Net:   &lt;ethaddr&gt; not set. Reading from E-fuse</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-54"><code data-line-number="54"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-54"></a><span class="go">       Net:   &lt;ethaddr&gt; not set. Reading from E-fuse</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-55"><code data-line-number="55"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-55"></a><span class="go">       Detected MACID:0:18:32:39:b2:f2</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-55"><code data-line-number="55"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-55"></a><span class="go">       Detected MACID:0:18:32:39:b2:f2</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-56"><code data-line-number="56"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-56"></a><span class="go">       cpsw</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-56"><code data-line-number="56"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-56"></a><span class="go">       cpsw</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-57"><code data-line-number="57"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-57"></a><span class="go">       Hit any key to stop autoboot:  3</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-57"><code data-line-number="57"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-57"></a><span class="go">       Hit any key to stop autoboot:  3</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-58"><code data-line-number="58"></code></a></td>
-<td class="code"><code><a name="rest_code_fc9f6a4ac4fd43bdb82b62cfed85471e-58"></a><span class="go">       TI8148_EVM#</span>
+<td class="linenos linenodiv"><a href="#rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-58"><code data-line-number="58"></code></a></td>
+<td class="code"><code><a name="rest_code_c2cfe5d56ec44e59ad0e3a82a5fa4862-58"></a><span class="go">       TI8148_EVM#</span>
 </code></td>
 </tr>
 </table></div>
@@ -577,73 +577,73 @@ completed, just <em>go &lt;load address&gt;</em>,</p>
 <em>FAT</em> command can be used for the rest of the tests relating to SATA HDD access.</p>
 <div class="code"><table class="codetable">
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_e13189fe4b4d44efa43c57a6362a515b-1"><code data-line-number=" 1"></code></a></td>
-<td class="code"><code><a name="rest_code_e13189fe4b4d44efa43c57a6362a515b-1"></a><span class="go">       TI8148_EVM#scsi scan</span>
+<td class="linenos linenodiv"><a href="#rest_code_6f7062b45b414d909b4beaa528a5c778-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_6f7062b45b414d909b4beaa528a5c778-1"></a><span class="go">       TI8148_EVM#scsi scan</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_e13189fe4b4d44efa43c57a6362a515b-2"><code data-line-number=" 2"></code></a></td>
-<td class="code"><code><a name="rest_code_e13189fe4b4d44efa43c57a6362a515b-2"></a><span class="go">       scanning bus for devices...</span>
+<td class="linenos linenodiv"><a href="#rest_code_6f7062b45b414d909b4beaa528a5c778-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_6f7062b45b414d909b4beaa528a5c778-2"></a><span class="go">       scanning bus for devices...</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_e13189fe4b4d44efa43c57a6362a515b-3"><code data-line-number=" 3"></code></a></td>
-<td class="code"><code><a name="rest_code_e13189fe4b4d44efa43c57a6362a515b-3"></a><span class="go">         Device 0: (0:0) Vendor: ATA Prod.: Hitachi HTS54505 Rev: GG2O</span>
+<td class="linenos linenodiv"><a href="#rest_code_6f7062b45b414d909b4beaa528a5c778-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_6f7062b45b414d909b4beaa528a5c778-3"></a><span class="go">         Device 0: (0:0) Vendor: ATA Prod.: Hitachi HTS54505 Rev: GG2O</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_e13189fe4b4d44efa43c57a6362a515b-4"><code data-line-number=" 4"></code></a></td>
-<td class="code"><code><a name="rest_code_e13189fe4b4d44efa43c57a6362a515b-4"></a><span class="go">           Type: Hard Disk</span>
+<td class="linenos linenodiv"><a href="#rest_code_6f7062b45b414d909b4beaa528a5c778-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_6f7062b45b414d909b4beaa528a5c778-4"></a><span class="go">           Type: Hard Disk</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_e13189fe4b4d44efa43c57a6362a515b-5"><code data-line-number=" 5"></code></a></td>
-<td class="code"><code><a name="rest_code_e13189fe4b4d44efa43c57a6362a515b-5"></a><span class="go">           Capacity: 476940.0 MB = 465.7 GB (976773168 x 512)</span>
+<td class="linenos linenodiv"><a href="#rest_code_6f7062b45b414d909b4beaa528a5c778-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_6f7062b45b414d909b4beaa528a5c778-5"></a><span class="go">           Capacity: 476940.0 MB = 465.7 GB (976773168 x 512)</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_e13189fe4b4d44efa43c57a6362a515b-6"><code data-line-number=" 6"></code></a></td>
-<td class="code"><code><a name="rest_code_e13189fe4b4d44efa43c57a6362a515b-6"></a>
+<td class="linenos linenodiv"><a href="#rest_code_6f7062b45b414d909b4beaa528a5c778-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_6f7062b45b414d909b4beaa528a5c778-6"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_e13189fe4b4d44efa43c57a6362a515b-7"><code data-line-number=" 7"></code></a></td>
-<td class="code"><code><a name="rest_code_e13189fe4b4d44efa43c57a6362a515b-7"></a><span class="go">       TI8148_EVM#scsi part</span>
+<td class="linenos linenodiv"><a href="#rest_code_6f7062b45b414d909b4beaa528a5c778-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_6f7062b45b414d909b4beaa528a5c778-7"></a><span class="go">       TI8148_EVM#scsi part</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_e13189fe4b4d44efa43c57a6362a515b-8"><code data-line-number=" 8"></code></a></td>
-<td class="code"><code><a name="rest_code_e13189fe4b4d44efa43c57a6362a515b-8"></a>
+<td class="linenos linenodiv"><a href="#rest_code_6f7062b45b414d909b4beaa528a5c778-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_6f7062b45b414d909b4beaa528a5c778-8"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_e13189fe4b4d44efa43c57a6362a515b-9"><code data-line-number=" 9"></code></a></td>
-<td class="code"><code><a name="rest_code_e13189fe4b4d44efa43c57a6362a515b-9"></a><span class="go">       Partition Map for SCSI device 0  --   Partition Type: DOS</span>
+<td class="linenos linenodiv"><a href="#rest_code_6f7062b45b414d909b4beaa528a5c778-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_6f7062b45b414d909b4beaa528a5c778-9"></a><span class="go">       Partition Map for SCSI device 0  --   Partition Type: DOS</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_e13189fe4b4d44efa43c57a6362a515b-10"><code data-line-number="10"></code></a></td>
-<td class="code"><code><a name="rest_code_e13189fe4b4d44efa43c57a6362a515b-10"></a>
+<td class="linenos linenodiv"><a href="#rest_code_6f7062b45b414d909b4beaa528a5c778-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_6f7062b45b414d909b4beaa528a5c778-10"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_e13189fe4b4d44efa43c57a6362a515b-11"><code data-line-number="11"></code></a></td>
-<td class="code"><code><a name="rest_code_e13189fe4b4d44efa43c57a6362a515b-11"></a><span class="go">       Partition     Start Sector     Num Sectors     Type</span>
+<td class="linenos linenodiv"><a href="#rest_code_6f7062b45b414d909b4beaa528a5c778-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_6f7062b45b414d909b4beaa528a5c778-11"></a><span class="go">       Partition     Start Sector     Num Sectors     Type</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_e13189fe4b4d44efa43c57a6362a515b-12"><code data-line-number="12"></code></a></td>
-<td class="code"><code><a name="rest_code_e13189fe4b4d44efa43c57a6362a515b-12"></a><span class="go">           1                 2048        20971520       b</span>
+<td class="linenos linenodiv"><a href="#rest_code_6f7062b45b414d909b4beaa528a5c778-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_6f7062b45b414d909b4beaa528a5c778-12"></a><span class="go">           1                 2048        20971520       b</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_e13189fe4b4d44efa43c57a6362a515b-13"><code data-line-number="13"></code></a></td>
-<td class="code"><code><a name="rest_code_e13189fe4b4d44efa43c57a6362a515b-13"></a><span class="go">           2             20973568       955799600      83</span>
+<td class="linenos linenodiv"><a href="#rest_code_6f7062b45b414d909b4beaa528a5c778-13"><code data-line-number="13"></code></a></td>
+<td class="code"><code><a name="rest_code_6f7062b45b414d909b4beaa528a5c778-13"></a><span class="go">           2             20973568       955799600      83</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_e13189fe4b4d44efa43c57a6362a515b-14"><code data-line-number="14"></code></a></td>
-<td class="code"><code><a name="rest_code_e13189fe4b4d44efa43c57a6362a515b-14"></a><span class="go">       TI8148_EVM#</span>
+<td class="linenos linenodiv"><a href="#rest_code_6f7062b45b414d909b4beaa528a5c778-14"><code data-line-number="14"></code></a></td>
+<td class="code"><code><a name="rest_code_6f7062b45b414d909b4beaa528a5c778-14"></a><span class="go">       TI8148_EVM#</span>
 </code></td>
 </tr>
 </table></div>
@@ -651,128 +651,128 @@ completed, just <em>go &lt;load address&gt;</em>,</p>
 reading HDD partition information. <em>FAT</em> commands that list file on partition as well as loading file are:</p>
 <div class="code"><table class="codetable">
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7219fdb4ffcf4937960d111b0df0f51b-1"><code data-line-number=" 1"></code></a></td>
-<td class="code"><code><a name="rest_code_7219fdb4ffcf4937960d111b0df0f51b-1"></a><span class="go">       TI8148_EVM#fatls scsi 0</span>
+<td class="linenos linenodiv"><a href="#rest_code_fbb5b655b14248b98b00ba74b4a3b228-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_fbb5b655b14248b98b00ba74b4a3b228-1"></a><span class="go">       TI8148_EVM#fatls scsi 0</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7219fdb4ffcf4937960d111b0df0f51b-2"><code data-line-number=" 2"></code></a></td>
-<td class="code"><code><a name="rest_code_7219fdb4ffcf4937960d111b0df0f51b-2"></a><span class="go">         3522384   uimage</span>
+<td class="linenos linenodiv"><a href="#rest_code_fbb5b655b14248b98b00ba74b4a3b228-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_fbb5b655b14248b98b00ba74b4a3b228-2"></a><span class="go">         3522384   uimage</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7219fdb4ffcf4937960d111b0df0f51b-3"><code data-line-number=" 3"></code></a></td>
-<td class="code"><code><a name="rest_code_7219fdb4ffcf4937960d111b0df0f51b-3"></a><span class="go">        95158272   rootfs.ubi.img</span>
+<td class="linenos linenodiv"><a href="#rest_code_fbb5b655b14248b98b00ba74b4a3b228-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_fbb5b655b14248b98b00ba74b4a3b228-3"></a><span class="go">        95158272   rootfs.ubi.img</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7219fdb4ffcf4937960d111b0df0f51b-4"><code data-line-number=" 4"></code></a></td>
-<td class="code"><code><a name="rest_code_7219fdb4ffcf4937960d111b0df0f51b-4"></a><span class="go">        100925440   rootfs.ubi.img.624</span>
+<td class="linenos linenodiv"><a href="#rest_code_fbb5b655b14248b98b00ba74b4a3b228-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_fbb5b655b14248b98b00ba74b4a3b228-4"></a><span class="go">        100925440   rootfs.ubi.img.624</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7219fdb4ffcf4937960d111b0df0f51b-5"><code data-line-number=" 5"></code></a></td>
-<td class="code"><code><a name="rest_code_7219fdb4ffcf4937960d111b0df0f51b-5"></a>
+<td class="linenos linenodiv"><a href="#rest_code_fbb5b655b14248b98b00ba74b4a3b228-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_fbb5b655b14248b98b00ba74b4a3b228-5"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7219fdb4ffcf4937960d111b0df0f51b-6"><code data-line-number=" 6"></code></a></td>
-<td class="code"><code><a name="rest_code_7219fdb4ffcf4937960d111b0df0f51b-6"></a><span class="go">       3 file(s), 0 dir(s)</span>
+<td class="linenos linenodiv"><a href="#rest_code_fbb5b655b14248b98b00ba74b4a3b228-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_fbb5b655b14248b98b00ba74b4a3b228-6"></a><span class="go">       3 file(s), 0 dir(s)</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7219fdb4ffcf4937960d111b0df0f51b-7"><code data-line-number=" 7"></code></a></td>
-<td class="code"><code><a name="rest_code_7219fdb4ffcf4937960d111b0df0f51b-7"></a>
+<td class="linenos linenodiv"><a href="#rest_code_fbb5b655b14248b98b00ba74b4a3b228-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_fbb5b655b14248b98b00ba74b4a3b228-7"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7219fdb4ffcf4937960d111b0df0f51b-8"><code data-line-number=" 8"></code></a></td>
-<td class="code"><code><a name="rest_code_7219fdb4ffcf4937960d111b0df0f51b-8"></a><span class="go">       TI8148_EVM#fatload scsi 0 80800000 uimage</span>
+<td class="linenos linenodiv"><a href="#rest_code_fbb5b655b14248b98b00ba74b4a3b228-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_fbb5b655b14248b98b00ba74b4a3b228-8"></a><span class="go">       TI8148_EVM#fatload scsi 0 80800000 uimage</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7219fdb4ffcf4937960d111b0df0f51b-9"><code data-line-number=" 9"></code></a></td>
-<td class="code"><code><a name="rest_code_7219fdb4ffcf4937960d111b0df0f51b-9"></a><span class="go">       reading uimage</span>
+<td class="linenos linenodiv"><a href="#rest_code_fbb5b655b14248b98b00ba74b4a3b228-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_fbb5b655b14248b98b00ba74b4a3b228-9"></a><span class="go">       reading uimage</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7219fdb4ffcf4937960d111b0df0f51b-10"><code data-line-number="10"></code></a></td>
-<td class="code"><code><a name="rest_code_7219fdb4ffcf4937960d111b0df0f51b-10"></a>
+<td class="linenos linenodiv"><a href="#rest_code_fbb5b655b14248b98b00ba74b4a3b228-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_fbb5b655b14248b98b00ba74b4a3b228-10"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7219fdb4ffcf4937960d111b0df0f51b-11"><code data-line-number="11"></code></a></td>
-<td class="code"><code><a name="rest_code_7219fdb4ffcf4937960d111b0df0f51b-11"></a><span class="go">       3522384 bytes read</span>
+<td class="linenos linenodiv"><a href="#rest_code_fbb5b655b14248b98b00ba74b4a3b228-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_fbb5b655b14248b98b00ba74b4a3b228-11"></a><span class="go">       3522384 bytes read</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7219fdb4ffcf4937960d111b0df0f51b-12"><code data-line-number="12"></code></a></td>
-<td class="code"><code><a name="rest_code_7219fdb4ffcf4937960d111b0df0f51b-12"></a><span class="go">       TI8148_EVM#bootm 80800000</span>
+<td class="linenos linenodiv"><a href="#rest_code_fbb5b655b14248b98b00ba74b4a3b228-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_fbb5b655b14248b98b00ba74b4a3b228-12"></a><span class="go">       TI8148_EVM#bootm 80800000</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7219fdb4ffcf4937960d111b0df0f51b-13"><code data-line-number="13"></code></a></td>
-<td class="code"><code><a name="rest_code_7219fdb4ffcf4937960d111b0df0f51b-13"></a><span class="gp">       #</span><span class="c1"># Booting kernel from Legacy Image at 80800000 ...</span>
+<td class="linenos linenodiv"><a href="#rest_code_fbb5b655b14248b98b00ba74b4a3b228-13"><code data-line-number="13"></code></a></td>
+<td class="code"><code><a name="rest_code_fbb5b655b14248b98b00ba74b4a3b228-13"></a><span class="gp">       #</span><span class="c1"># Booting kernel from Legacy Image at 80800000 ...</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7219fdb4ffcf4937960d111b0df0f51b-14"><code data-line-number="14"></code></a></td>
-<td class="code"><code><a name="rest_code_7219fdb4ffcf4937960d111b0df0f51b-14"></a><span class="go">          Image Name:   Linux-2.6.37</span>
+<td class="linenos linenodiv"><a href="#rest_code_fbb5b655b14248b98b00ba74b4a3b228-14"><code data-line-number="14"></code></a></td>
+<td class="code"><code><a name="rest_code_fbb5b655b14248b98b00ba74b4a3b228-14"></a><span class="go">          Image Name:   Linux-2.6.37</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7219fdb4ffcf4937960d111b0df0f51b-15"><code data-line-number="15"></code></a></td>
-<td class="code"><code><a name="rest_code_7219fdb4ffcf4937960d111b0df0f51b-15"></a><span class="go">          Image Type:   ARM Linux Kernel Image (uncompressed)</span>
+<td class="linenos linenodiv"><a href="#rest_code_fbb5b655b14248b98b00ba74b4a3b228-15"><code data-line-number="15"></code></a></td>
+<td class="code"><code><a name="rest_code_fbb5b655b14248b98b00ba74b4a3b228-15"></a><span class="go">          Image Type:   ARM Linux Kernel Image (uncompressed)</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7219fdb4ffcf4937960d111b0df0f51b-16"><code data-line-number="16"></code></a></td>
-<td class="code"><code><a name="rest_code_7219fdb4ffcf4937960d111b0df0f51b-16"></a><span class="go">          Data Size:    3522320 Bytes = 3.4 MiB</span>
+<td class="linenos linenodiv"><a href="#rest_code_fbb5b655b14248b98b00ba74b4a3b228-16"><code data-line-number="16"></code></a></td>
+<td class="code"><code><a name="rest_code_fbb5b655b14248b98b00ba74b4a3b228-16"></a><span class="go">          Data Size:    3522320 Bytes = 3.4 MiB</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7219fdb4ffcf4937960d111b0df0f51b-17"><code data-line-number="17"></code></a></td>
-<td class="code"><code><a name="rest_code_7219fdb4ffcf4937960d111b0df0f51b-17"></a><span class="go">          Load Address: 80008000</span>
+<td class="linenos linenodiv"><a href="#rest_code_fbb5b655b14248b98b00ba74b4a3b228-17"><code data-line-number="17"></code></a></td>
+<td class="code"><code><a name="rest_code_fbb5b655b14248b98b00ba74b4a3b228-17"></a><span class="go">          Load Address: 80008000</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7219fdb4ffcf4937960d111b0df0f51b-18"><code data-line-number="18"></code></a></td>
-<td class="code"><code><a name="rest_code_7219fdb4ffcf4937960d111b0df0f51b-18"></a><span class="go">          Entry Point:  80008000</span>
+<td class="linenos linenodiv"><a href="#rest_code_fbb5b655b14248b98b00ba74b4a3b228-18"><code data-line-number="18"></code></a></td>
+<td class="code"><code><a name="rest_code_fbb5b655b14248b98b00ba74b4a3b228-18"></a><span class="go">          Entry Point:  80008000</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7219fdb4ffcf4937960d111b0df0f51b-19"><code data-line-number="19"></code></a></td>
-<td class="code"><code><a name="rest_code_7219fdb4ffcf4937960d111b0df0f51b-19"></a><span class="go">          Verifying Checksum ... OK</span>
+<td class="linenos linenodiv"><a href="#rest_code_fbb5b655b14248b98b00ba74b4a3b228-19"><code data-line-number="19"></code></a></td>
+<td class="code"><code><a name="rest_code_fbb5b655b14248b98b00ba74b4a3b228-19"></a><span class="go">          Verifying Checksum ... OK</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7219fdb4ffcf4937960d111b0df0f51b-20"><code data-line-number="20"></code></a></td>
-<td class="code"><code><a name="rest_code_7219fdb4ffcf4937960d111b0df0f51b-20"></a><span class="go">          Loading Kernel Image ... OK</span>
+<td class="linenos linenodiv"><a href="#rest_code_fbb5b655b14248b98b00ba74b4a3b228-20"><code data-line-number="20"></code></a></td>
+<td class="code"><code><a name="rest_code_fbb5b655b14248b98b00ba74b4a3b228-20"></a><span class="go">          Loading Kernel Image ... OK</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7219fdb4ffcf4937960d111b0df0f51b-21"><code data-line-number="21"></code></a></td>
-<td class="code"><code><a name="rest_code_7219fdb4ffcf4937960d111b0df0f51b-21"></a><span class="go">       OK</span>
+<td class="linenos linenodiv"><a href="#rest_code_fbb5b655b14248b98b00ba74b4a3b228-21"><code data-line-number="21"></code></a></td>
+<td class="code"><code><a name="rest_code_fbb5b655b14248b98b00ba74b4a3b228-21"></a><span class="go">       OK</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7219fdb4ffcf4937960d111b0df0f51b-22"><code data-line-number="22"></code></a></td>
-<td class="code"><code><a name="rest_code_7219fdb4ffcf4937960d111b0df0f51b-22"></a>
+<td class="linenos linenodiv"><a href="#rest_code_fbb5b655b14248b98b00ba74b4a3b228-22"><code data-line-number="22"></code></a></td>
+<td class="code"><code><a name="rest_code_fbb5b655b14248b98b00ba74b4a3b228-22"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7219fdb4ffcf4937960d111b0df0f51b-23"><code data-line-number="23"></code></a></td>
-<td class="code"><code><a name="rest_code_7219fdb4ffcf4937960d111b0df0f51b-23"></a><span class="go">       Starting kernel ...</span>
+<td class="linenos linenodiv"><a href="#rest_code_fbb5b655b14248b98b00ba74b4a3b228-23"><code data-line-number="23"></code></a></td>
+<td class="code"><code><a name="rest_code_fbb5b655b14248b98b00ba74b4a3b228-23"></a><span class="go">       Starting kernel ...</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7219fdb4ffcf4937960d111b0df0f51b-24"><code data-line-number="24"></code></a></td>
-<td class="code"><code><a name="rest_code_7219fdb4ffcf4937960d111b0df0f51b-24"></a>
+<td class="linenos linenodiv"><a href="#rest_code_fbb5b655b14248b98b00ba74b4a3b228-24"><code data-line-number="24"></code></a></td>
+<td class="code"><code><a name="rest_code_fbb5b655b14248b98b00ba74b4a3b228-24"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7219fdb4ffcf4937960d111b0df0f51b-25"><code data-line-number="25"></code></a></td>
-<td class="code"><code><a name="rest_code_7219fdb4ffcf4937960d111b0df0f51b-25"></a><span class="go">       Uncompressing Linux... done, booting the kernel.</span>
+<td class="linenos linenodiv"><a href="#rest_code_fbb5b655b14248b98b00ba74b4a3b228-25"><code data-line-number="25"></code></a></td>
+<td class="code"><code><a name="rest_code_fbb5b655b14248b98b00ba74b4a3b228-25"></a><span class="go">       Uncompressing Linux... done, booting the kernel.</span>
 </code></td>
 </tr>
 </table></div>
@@ -781,9 +781,9 @@ or SD card. To do this, set  <em>bootcmd='fatload scsi 0 $loadaddr uImage2 &amp;
 <p><em>u-boot.bin</em> that is tested above can be flashed to NAND partition. For my case, the partition offset
 is at <em>0x20000</em>, and the size of this u-boot is less than 256KB.</p>
 <p>After I satisfy with the result, I download and flash to NAND using the commands below.</p>
-<pre class="code text"><a name="rest_code_5918fc39fc5a48a58c353bd28b052401-1"></a>TI-MIN#nand erase 20000 40000
-<a name="rest_code_5918fc39fc5a48a58c353bd28b052401-2"></a>TI-MIN#nandecc hw 2
-<a name="rest_code_5918fc39fc5a48a58c353bd28b052401-3"></a>TI-MIN#nand write 80800000 20000 40000
+<pre class="code text"><a name="rest_code_d2041884d0114f4b82ec610fb9eb1858-1"></a>TI-MIN#nand erase 20000 40000
+<a name="rest_code_d2041884d0114f4b82ec610fb9eb1858-2"></a>TI-MIN#nandecc hw 2
+<a name="rest_code_d2041884d0114f4b82ec610fb9eb1858-3"></a>TI-MIN#nand write 80800000 20000 40000
 </pre>
 </div>
 </div>
