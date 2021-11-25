@@ -75,7 +75,7 @@ features that suit your hardware, for example, CPU clock frequency, tick rate, h
 
 So at this point, any headers that are FreeRTOS's are in *freertos-rtx/include/freertos* where I eventually 
 populated with more header files specific to my device drivers or task applications. All of the header files
-to be added can be at the top *include* directory so they wouldn't mixed up with FreeRTOS's native files. This 
+to be added can be at the top *include* directory so they wouldn't mix up with FreeRTOS's native files. This 
 would help future porting to the later version easier by knowing where all the files came from.
 
 Next was to bring in C source files of FreeRTOS into my *freertos-rtx*. I created *src* directory and copied all
@@ -83,7 +83,7 @@ of C files from *FreeRTOSv10.4.1/FreeRTOS/Source* into this directory. These are
 are common files to most of the ported platforms in the demo. There are three essential files to bring over as
 well. These are *port.c, portASM.S, and portmacro.h*. This set of files is in its *Source/portable* and
 I picked to best fit my need. For this port I picked the set in *portable/GCC/ARM_CA9*. Being portable implies
-that they may be modified as suitable for my need, but I did not modified them at all ! I put *portmacro.h* 
+that they may be modified as suitable for my need, but I did not modify them at all ! I put *portmacro.h* 
 into my *freertos-rtx/include/freertos* header files directory as you may have noticed.
 
 I also picked one file *heap_3.c* from its *Source/portable/MemMang*. You might as well pick any *heap_x.c* file
@@ -464,7 +464,7 @@ in some of the demo example and modify it to fit your port. Look for file ending
 *\*.ld* in the demo, for example, the Xilinx's demo example linker script. Modify it
 as needed to fit the sections of your code. It is what I did. Instead of writing
 *Makefile* to build, I used *cmake* so I wrote *CMakeLists.txt* from top directory
-to all of sub directories that need to be compiled or assembled to create the 
+to all of subdirectories that need to be compiled or assembled to create the 
 bootable code.
 
 
@@ -480,7 +480,7 @@ or Barebox among others. It will save you a lot of time by using the proven code
 modify as needed. Try to understand what it does and why it does so you will know 
 if you could make use of it for your port. The most time I spent on porting this
 FreeRTOS is on debugging the interrupt routing to GIC because of what I thought 
-I knew, I didn't. If there is no timer tick, the tasks would never get scheduled 
+I knew, but I didn't. If there is no timer tick, the tasks would never get scheduled 
 and switched. It would stuck in main and going no where. I eventually got it
 right. 
 
