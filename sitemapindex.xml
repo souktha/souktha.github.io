@@ -14,12 +14,16 @@
   <lastmod>2021-01-23T17:49:00Z</lastmod>
  </sitemap>
  <sitemap>
+  <loc>http://souktha.github.io/categories/cat_freertos.xml</loc>
+  <lastmod>2021-11-22T23:36:00Z</lastmod>
+ </sitemap>
+ <sitemap>
   <loc>http://souktha.github.io/categories/cat_hardware.xml</loc>
   <lastmod>2021-01-23T17:49:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/categories/cat_linux.xml</loc>
-  <lastmod>2021-01-23T17:49:00Z</lastmod>
+  <lastmod>2021-02-03T23:36:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/categories/cat_math.xml</loc>
@@ -32,6 +36,10 @@
  <sitemap>
   <loc>http://souktha.github.io/categories/cat_u-boot.xml</loc>
   <lastmod>2021-01-23T17:49:00Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>http://souktha.github.io/categories/cat_vxworks.xml</loc>
+  <lastmod>2021-02-25T23:08:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/categories/hardware.xml</loc>
@@ -51,7 +59,7 @@
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/categories/software.xml</loc>
-  <lastmod>2021-01-23T17:49:00Z</lastmod>
+  <lastmod>2021-11-22T23:36:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/galleries/rss.xml</loc>
@@ -67,11 +75,11 @@
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/rss.xml</loc>
-  <lastmod>2021-01-23T17:49:00Z</lastmod>
+  <lastmod>2021-11-22T23:36:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/sitemap.xml</loc>
-  <lastmod>2021-01-23T17:49:00Z</lastmod>
+  <lastmod>2021-11-22T23:36:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://souktha.github.io/software/categories/cat_fpga-linux.xml</loc>

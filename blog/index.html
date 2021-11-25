@@ -81,7 +81,26 @@
 
     
 <div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../software/qemu-port/" class="u-url">Adding a custom ARM platform to QEMU 5.2.0</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../software/freertos-port/" class="u-url">Custom FreeRTOS port for QEMU RTX</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                Soukthavy
+            </span></p>
+            <p class="dateline">
+            <a href="../software/freertos-port/" rel="bookmark">
+            <time class="published dt-published" datetime="2021-11-21T13:20:03Z" itemprop="datePublished" title="2021-11-21 13:20">2021-11-21 13:20</time></a>
+            </p>
+        </div>
+    </header><div class="p-summary entry-summary">
+    <div>
+<p>This is the second part that follows the porting QEMU for the Real-Time Experiment (RTX) ARM R5F core. This part addresses
+the porting of FreeRTOS to run on the ported QEMU that I blogged earlier. For porting, I picked the latest
+<em>FreeRTOS 10.4.1</em> at that time. It appears that the versioning of this RTOS has since changed since the later
+part of 2020; however this released version is still available for downloading from its hosting site.</p>
+<p class="more"><a href="../software/freertos-port/">Read more…</a></p>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../software/qemu-port/" class="u-url">Adding a custom ARM platform to QEMU 5.2.0</a></h1>
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 Soukthavy
@@ -251,25 +270,6 @@ where I did some math workout on this type of forward error-correction code (FEC
 it for fun since I think it is simple enough to implement it in FPGA. The generator
 for this exercise is <span class="math">\(g(x)=1+x+x4\)</span> for an <span class="math">\((n,k,d) \equiv (15,11,3)\)</span> code.</p>
 <p class="more"><a href="../hardware/cyclic_1_x_x4_hw/">Read more…</a></p>
-</div>
-    </div>
-    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../misc/cyclic_1_x_x4/" class="u-url">Simple Cyclic Hamming codes</a></h1>
-        <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
-                Soukthavy
-            </span></p>
-            <p class="dateline">
-            <a href="../misc/cyclic_1_x_x4/" rel="bookmark">
-            <time class="published dt-published" datetime="2016-12-10T22:46:19Z" itemprop="datePublished" title="2016-12-10 22:46">2016-12-10 22:46</time></a>
-            </p>
-        </div>
-    </header><div class="p-summary entry-summary">
-    <div>
-<p>This is a math workout problem that accompanied my FPGA implementation of forward error correction code (FEC). I choose to
-make a simple implementation of <span class="math">\((n,k,d)=(15,11,3)\)</span> code using the primitive polynomial <span class="math">\(h(x)=1+x+x^4\)</span>.
-This FEC will have be able to correct 1 bit error based on its minimum distance of 3. It is simple because it can be worked
-out by hand and it would not take too long to implement in hardware.</p>
-<p class="more"><a href="../misc/cyclic_1_x_x4/">Read more…</a></p>
 </div>
     </div>
     </article>

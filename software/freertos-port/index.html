@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Custom FreeRTOS port for QEMU RTX | Soukthavy Sopha</title>
+<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../../rss.xml">
+<link rel="canonical" href="http://souktha.github.io/software/freertos-port/">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Soukthavy">
+<link rel="prev" href="../qemu-port/" title="Adding a custom ARM platform to QEMU 5.2.0" type="text/html">
+<meta property="og:site_name" content="Soukthavy Sopha">
+<meta property="og:title" content="Custom FreeRTOS port for QEMU RTX">
+<meta property="og:url" content="http://souktha.github.io/software/freertos-port/">
+<meta property="og:description" content="This is the second part that follows the porting QEMU for the Real-Time Experiment (RTX) ARM R5F core. This part addresses
+the porting of FreeRTOS to run on the ported QEMU that I blogged earlier. For">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2021-11-21T13:20:03Z">
+<meta property="article:tag" content="software">
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-inverse navbar-static-top"><div class="container">
+<!-- This keeps the margins nice -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://souktha.github.io/">
+
+                <span id="blog-title">Soukthavy Sopha</span>
+            </a>
+        </div>
+<!-- /.navbar-header -->
+        <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
+            <ul class="nav navbar-nav">
+<li>
+<a href="../../archive.html">Archive</a>
+                </li>
+<li>
+<a href="../../categories/">Tags</a>
+                </li>
+<li>
+<a href="../../rss.xml">RSS feed</a>
+            </li>
+<li class="dropdown">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Blog <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+<li>
+<a href="../../software">Sofware</a>
+                    </li>
+<li>
+<a href="../../hardware">Hardware</a>
+                    </li>
+<li>
+<a href="../../misc">Misc</a>
+            </li>
+</ul>
+</li>
+<li>
+<a href="https://github.com/souktha">My Github</a>
+
+                
+            </li>
+</ul>
+<ul class="nav navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        <div class="row">
+            
+            
+<article class="post-text storypage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Custom FreeRTOS port for QEMU RTX</a></h1>
+
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>This is the second part that follows the porting QEMU for the Real-Time Experiment (RTX) ARM R5F core. This part addresses
+the porting of FreeRTOS to run on the ported QEMU that I blogged earlier. For porting, I picked the latest
+<em>FreeRTOS 10.4.1</em> at that time. It appears that the versioning of this RTOS has since changed since the later
+part of 2020; however this released version is still available for downloading from its hosting site.</p>
+<!-- TEASER_END -->
+<p>Regardless of version of FreeRTOS used in the porting, you might still find some information to be useful to carry on
+with your port into the latest version. The porting that I did was heavily inspired by the knowledge I learned while
+using Xilinx ZynqMP and informations that I gathered from its Wiki pages. While Xilinx work was far more in complexity
+because of their hardware, mine was to make it simple for simple hardware, a stand-alone ARM R5F single core.</p>
+<p>After I finished my porting of QEMU then I realized, now what ? Nothing to run and nothing to prove whether or not my
+porting of QEMU is working or not ! I just opened a can of worm that I needed to find the way to close it. This led me
+to finding the simplest, smallest RTOS to port. FreeRTOS appears to be very popular for being free and open source
+and several chip vendors are supporting this RTOS thus it became my primary candidate for porting so I downloaded
+and went through its code and see what I needed to do to get it going.</p>
+<div class="section" id="the-essential-freertos-files">
+<h2>The essential FreeRTOS files</h2>
+<p>If you look at FreeRTOS code you will find a lot of things all over the place to the point of not knowing of what
+to do with it. It happened to me. First I began examining its example of port for some platforms here and there to
+get some picture primarily the ports of the ARM based platforms. I builded some <em>Demo</em> examples on how they are
+built and what components they used for those ports. Since I used <em>GCC</em> toolchain that I already have installed from
+Xilinx SDK, I focused on the demo that used this toolchain.</p>
+<div class="section" id="populating-freertos-files">
+<h3>Populating FreeRTOS files</h3>
+<p>I started by creating an empty directory <em>freertos-rtx</em> and populated this directory with a set of header files, and
+from the demo examples, it appeared that all of the header files in the <em>Source/include</em> directory are needed. I
+populated my <em>freertos-rtx/include/freertos</em> by copying them over before making any modification. It looked like this,</p>
+<pre class="code text"><a name="rest_code_6bb49df08e31434b96d8649d094990d4-1"></a>freertos-rtx/
+<a name="rest_code_6bb49df08e31434b96d8649d094990d4-2"></a>├── include
+<a name="rest_code_6bb49df08e31434b96d8649d094990d4-3"></a>│   ├── freertos
+<a name="rest_code_6bb49df08e31434b96d8649d094990d4-4"></a>│   │   ├── FreeRTOS.h
+<a name="rest_code_6bb49df08e31434b96d8649d094990d4-5"></a>│   │   ├── FreeRTOSConfig.h
+<a name="rest_code_6bb49df08e31434b96d8649d094990d4-6"></a>│   │   ├── StackMacros.h
+<a name="rest_code_6bb49df08e31434b96d8649d094990d4-7"></a>│   │   ├── atomic.h
+<a name="rest_code_6bb49df08e31434b96d8649d094990d4-8"></a>│   │   ├── croutine.h
+<a name="rest_code_6bb49df08e31434b96d8649d094990d4-9"></a>│   │   ├── deprecated_definitions.h
+<a name="rest_code_6bb49df08e31434b96d8649d094990d4-10"></a>│   │   ├── event_groups.h
+<a name="rest_code_6bb49df08e31434b96d8649d094990d4-11"></a>│   │   ├── list.h
+<a name="rest_code_6bb49df08e31434b96d8649d094990d4-12"></a>│   │   ├── message_buffer.h
+<a name="rest_code_6bb49df08e31434b96d8649d094990d4-13"></a>│   │   ├── mpu_prototypes.h
+<a name="rest_code_6bb49df08e31434b96d8649d094990d4-14"></a>│   │   ├── mpu_wrappers.h
+<a name="rest_code_6bb49df08e31434b96d8649d094990d4-15"></a>│   │   ├── portable.h
+<a name="rest_code_6bb49df08e31434b96d8649d094990d4-16"></a>│   │   ├── portmacro.h
+<a name="rest_code_6bb49df08e31434b96d8649d094990d4-17"></a>│   │   ├── projdefs.h
+<a name="rest_code_6bb49df08e31434b96d8649d094990d4-18"></a>│   │   ├── queue.h
+<a name="rest_code_6bb49df08e31434b96d8649d094990d4-19"></a>│   │   ├── semphr.h
+<a name="rest_code_6bb49df08e31434b96d8649d094990d4-20"></a>│   │   ├── stack_macros.h
+<a name="rest_code_6bb49df08e31434b96d8649d094990d4-21"></a>│   │   ├── stdint.readme
+<a name="rest_code_6bb49df08e31434b96d8649d094990d4-22"></a>│   │   ├── stream_buffer.h
+<a name="rest_code_6bb49df08e31434b96d8649d094990d4-23"></a>│   │   ├── task.h
+<a name="rest_code_6bb49df08e31434b96d8649d094990d4-24"></a>│   │   └── timers.h
+</pre>
+<p>The only file that I modified to suit my virtual hardware is <em>FreeRTOSConfig.h</em>. This modification was commonly
+done to all of the OS port. It is the FreeRTOS configuration file where you could add, subtract, modify specific
+features that suit your hardware, for example, CPU clock frequency, tick rate, heap size, task features etc..</p>
+<p>So at this point, any headers that are FreeRTOS's are in <em>freertos-rtx/include/freertos</em> where I eventually
+populated with more header files specific to my device drivers or task applications. All of the header files
+to be added can be at the top <em>include</em> directory so they wouldn't mixed up with FreeRTOS's native files. This
+would help future porting to the later version easier by knowing where all the files came from.</p>
+<p>Next was to bring in C source files of FreeRTOS into my <em>freertos-rtx</em>. I created <em>src</em> directory and copied all
+of C files from <em>FreeRTOSv10.4.1/FreeRTOS/Source</em> into this directory. These are <em>timers.c, tasks.c etc..</em> which
+are common files to most of the ported platforms in the demo. There are three essential files to bring over as
+well. These are <em>port.c, portASM.S, and portmacro.h</em>. This set of files is in its <em>Source/portable</em> and
+I picked to best fit my need. For this port I picked the set in <em>portable/GCC/ARM_CA9</em>. Being portable implies
+that they may be modified as suitable for my need, but I did not modified them at all ! I put <em>portmacro.h</em>
+into my <em>freertos-rtx/include/freertos</em> header files directory as you may have noticed.</p>
+<p>I also picked one file <em>heap_3.c</em> from its <em>Source/portable/MemMang</em>. You might as well pick any <em>heap_x.c</em> file
+that would fit well to your model regarding memory heap management. Since my model is a simple model so it
+could just use a simple heap management code.</p>
+<p>In summary, so far I had</p>
+<ul class="simple">
+<li><p>Basic C header files (*.h) from <em>Source/include</em></p></li>
+<li><p>Basic C source files (*.c) from <em>Source</em></p></li>
+<li><p>Basic C source files from <em>Source/portable</em></p></li>
+</ul>
+<p>My <em>freertos-rtx/src</em> source directory looked like this,</p>
+<pre class="code text"><a name="rest_code_ec0a52cb752e4478878da500154c9e53-1"></a>freertos-rtx/
+<a name="rest_code_ec0a52cb752e4478878da500154c9e53-2"></a>├── src
+<a name="rest_code_ec0a52cb752e4478878da500154c9e53-3"></a>│   ├── ParTest.c
+<a name="rest_code_ec0a52cb752e4478878da500154c9e53-4"></a>│   ├── croutine.c
+<a name="rest_code_ec0a52cb752e4478878da500154c9e53-5"></a>│   ├── event_groups.c
+<a name="rest_code_ec0a52cb752e4478878da500154c9e53-6"></a>│   ├── heap_3.c
+<a name="rest_code_ec0a52cb752e4478878da500154c9e53-7"></a>│   ├── list.c
+<a name="rest_code_ec0a52cb752e4478878da500154c9e53-8"></a>│   ├── port.c
+<a name="rest_code_ec0a52cb752e4478878da500154c9e53-9"></a>│   ├── portASM.S
+<a name="rest_code_ec0a52cb752e4478878da500154c9e53-10"></a>│   ├── queue.c
+<a name="rest_code_ec0a52cb752e4478878da500154c9e53-11"></a>│   ├── stream_buffer.c
+<a name="rest_code_ec0a52cb752e4478878da500154c9e53-12"></a>│   ├── tasks.c
+<a name="rest_code_ec0a52cb752e4478878da500154c9e53-13"></a>│   └── timers.c
+</pre>
+</div>
+<div class="section" id="populating-platform-files">
+<h3>Populating platform files</h3>
+<p>From this point on it was getting more specific to platform so I created <em>freertos-rtx/platform</em> directory
+to house the specific components. When a processor goes to reset or power-on, it has to fetch and execute
+code from its boot vector table. A boot vector code from Xilinx Demo of its R5 core (RTOSDemo_R5) is the
+perfect code to use so I copied its <em>FreeRTOS_asm_vectors.S</em> to my <em>freertos-rtx/platform</em> directory where
+I modified the interrupt handlers for debugging. You could pretty much use this file as-is. This is the only
+file I made use from Xilinx R5 demo since my hardware model is different. The only similarity is the R5 core
+so its CPU boot vectors are identical. This should be true for most implementation of R5 core.</p>
+<div class="code"><table class="codetable">
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-1"></a>     <span class="p">...</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-2"></a>     <span class="p">.</span><span class="n">section</span> <span class="p">.</span><span class="n">freertos_vectors</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-3"></a>     <span class="nl">_freertos_vector_table</span><span class="p">:</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-4"></a>             <span class="n">B</span>         <span class="n">_boot</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-5"></a>             <span class="n">B</span>         <span class="n">FreeRTOS_Undefined</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-6"></a>             <span class="n">ldr</span>   <span class="n">pc</span><span class="p">,</span> <span class="n">_swi</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-7"></a>             <span class="n">B</span>         <span class="n">FreeRTOS_PrefetchAbortHandler</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-8"></a>             <span class="n">B</span>         <span class="n">FreeRTOS_DataAbortHandler</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-9"></a>             <span class="n">NOP</span>       <span class="cm">/* Placeholder for address exception vector*/</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-10"></a>             <span class="n">LDR</span>   <span class="n">PC</span><span class="p">,</span> <span class="n">_irq</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-11"></a>             <span class="n">B</span>         <span class="n">FreeRTOS_FIQHandler</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-12"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-13"><code data-line-number="13"></code></a></td>
+<td class="code"><code><a name="rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-13"></a>     <span class="nl">_irq</span><span class="p">:</span>   <span class="p">.</span><span class="n">word</span> <span class="n">FreeRTOS_IRQ_Handler</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-14"><code data-line-number="14"></code></a></td>
+<td class="code"><code><a name="rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-14"></a>     <span class="nl">_swi</span><span class="p">:</span>   <span class="p">.</span><span class="n">word</span> <span class="n">FreeRTOS_SWI_Handler</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-15"><code data-line-number="15"></code></a></td>
+<td class="code"><code><a name="rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-15"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-16"><code data-line-number="16"></code></a></td>
+<td class="code"><code><a name="rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-16"></a>     <span class="p">.</span><span class="n">align</span> <span class="mi">4</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-17"><code data-line-number="17"></code></a></td>
+<td class="code"><code><a name="rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-17"></a>     <span class="nl">FreeRTOS_FIQHandler</span><span class="p">:</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-18"><code data-line-number="18"></code></a></td>
+<td class="code"><code><a name="rest_code_0e2cc0e2cd6447ca9f8a2f68c85acb2b-18"></a>     <span class="p">...</span>
+</code></td>
+</tr>
+</table></div>
+<p>Since boot vector jump to <em>_boot</em> at reset/power-cycle, I need to have this function some where in the code so I cloned
+one of Xilinx R5 demo <em>boot.S</em> and simplified it to my simpler model to become my <em>Init.qemu.S</em>. The <em>_boot</em> (line 4 below)
+in this file was to set up stacks, initialized CPU mode, interrupt masks, invalidate caches, enable instruction cache,
+enable FPU (if present). Mostly it is done by call to <em>arm_cpu_lowlevel_init</em> (line 10) followed by enabling cycle
+counter, setting up data MMU and data cache, initializing GIC done by calling <em>_sysinit</em> (line 30) and finally jump to
+to start of c-runtime, <em>_os_start</em> (line 32) that eventuall jum to main task. A snippet of this file,</p>
+<div class="code"><table class="codetable">
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-1"></a><span class="p">...</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-2"></a><span class="p">.</span><span class="n">globl</span> <span class="n">_boot</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-3"></a><span class="nl">Reset_Handler</span> <span class="p">:</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-4"></a><span class="nl">_boot</span><span class="p">:</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-5"></a><span class="cp">#------------------------------------------------------------------</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-6"></a><span class="cp">#@ 1 Initialize Registers &amp; Vector Pointer</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-7"></a><span class="cp">#------------------------------------------------------------------</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-8"></a>        <span class="n">cpsid</span>   <span class="n">aif</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-9"></a>        <span class="n">ldr</span>     <span class="n">sp</span><span class="p">,</span> <span class="p">.</span><span class="n">Lstack</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-10"></a>        <span class="n">bl</span>      <span class="n">arm_cpu_lowlevel_init</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-11"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-12"></a><span class="cp">#------------------------------------------------------------------</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-13"><code data-line-number="13"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-13"></a><span class="cp">#@ 2 Initialize Stack Pointers</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-14"><code data-line-number="14"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-14"></a><span class="cp">#------------------------------------------------------------------</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-15"><code data-line-number="15"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-15"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-16"><code data-line-number="16"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-16"></a>    <span class="cp">#@  2.1 Initialize stack pointer registers</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-17"><code data-line-number="17"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-17"></a>    <span class="cp"># no stack for MODE_USR, MODE_MNT, MODE_HYP, MODE_SYS ?</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-18"><code data-line-number="18"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-18"></a>    <span class="n">cps</span>     <span class="n">MODE_FIQ</span>                 <span class="err">@</span> <span class="n">change</span> <span class="n">program</span> <span class="n">state</span> <span class="n">mode</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-19"><code data-line-number="19"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-19"></a>    <span class="n">ldr</span>     <span class="n">sp</span><span class="p">,</span>  <span class="o">=</span><span class="n">__fiq_stack</span>        <span class="err">@</span> <span class="n">set</span> <span class="n">the</span> <span class="n">stack</span> <span class="n">pointer</span> <span class="k">for</span> <span class="n">this</span> <span class="n">mode</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-20"><code data-line-number="20"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-20"></a>    <span class="n">mov</span>     <span class="n">lr</span><span class="p">,</span>  <span class="err">#</span><span class="mi">0</span>                  <span class="err">@</span> <span class="n">clear</span> <span class="n">the</span> <span class="n">link</span> <span class="k">register</span> <span class="k">for</span> <span class="n">this</span> <span class="n">mode</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-21"><code data-line-number="21"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-21"></a>    <span class="p">...</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-22"><code data-line-number="22"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-22"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-23"><code data-line-number="23"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-23"></a><span class="cm">/* Reset and start Cycle Counter */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-24"><code data-line-number="24"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-24"></a>        <span class="n">mov</span>     <span class="n">r2</span><span class="p">,</span> <span class="err">#</span><span class="mh">0x80000000</span>         <span class="cm">/* clear overflow */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-25"><code data-line-number="25"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-25"></a>        <span class="n">mcr</span>     <span class="n">p15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r2</span><span class="p">,</span> <span class="n">c9</span><span class="p">,</span> <span class="n">c12</span><span class="p">,</span> <span class="mi">3</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-26"><code data-line-number="26"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-26"></a>        <span class="n">mov</span>     <span class="n">r2</span><span class="p">,</span> <span class="err">#</span><span class="mh">0xd</span>                <span class="cm">/* D, C, E */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-27"><code data-line-number="27"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-27"></a>        <span class="n">mcr</span>     <span class="n">p15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r2</span><span class="p">,</span> <span class="n">c9</span><span class="p">,</span> <span class="n">c12</span><span class="p">,</span> <span class="mi">0</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-28"><code data-line-number="28"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-28"></a>        <span class="n">mov</span>     <span class="n">r2</span><span class="p">,</span> <span class="err">#</span><span class="mh">0x80000000</span>         <span class="cm">/* enable cycle counter */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-29"><code data-line-number="29"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-29"></a>        <span class="n">mcr</span>     <span class="n">p15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r2</span><span class="p">,</span> <span class="n">c9</span><span class="p">,</span> <span class="n">c12</span><span class="p">,</span> <span class="mi">1</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-30"><code data-line-number="30"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-30"></a>        <span class="n">bl</span>      <span class="n">_sysinit</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-31"><code data-line-number="31"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-31"></a>    <span class="n">cpsie</span>  <span class="n">aif</span>    <span class="err">@</span> <span class="n">Enable</span> <span class="n">asynchronous</span> <span class="n">aborts</span><span class="p">,</span> <span class="n">interrupts</span><span class="p">,</span> <span class="n">and</span> <span class="n">fast</span> <span class="n">interrupts</span><span class="p">.</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-32"><code data-line-number="32"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-32"></a>        <span class="n">b</span>       <span class="n">_os_start</span>                               <span class="cm">/* jump to C startup code */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_8456cadc7e1441839387282641382fd1-33"><code data-line-number="33"></code></a></td>
+<td class="code"><code><a name="rest_code_8456cadc7e1441839387282641382fd1-33"></a>        <span class="n">and</span>     <span class="n">r0</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">r0</span>                      <span class="cm">/* no op */</span>
+</code></td>
+</tr>
+</table></div>
+<p>The <em>_sys_init</em> set up two memory banks according to my h/w model starting at physical offset
+zero(0). Each bank is 2MB of on-chip embedded memory eDRAM/eSRAM type for cachable data memory.
+It also initialized timer <em>(sysctl_init)</em> needed for clock tick to support FreeRTOS and initialed (routed)
+the interrupt to the GIC <em>(gic_init)</em>. Routing the timer tick to GIC is important because it
+is used by task switching of FreeRTOS. For my h/w platform model, I have the integrated timer
+and UART (PL010) so I need the interrupts for both of these devices. FreeRTOS is counting on
+having proper timer tick interrupt for task switching among other things so it is essential
+that the timer works correctly. A snippet of code,</p>
+<div class="code"><table class="codetable">
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_d157078300784bd5b8eb70c6b4160aae-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_d157078300784bd5b8eb70c6b4160aae-1"></a> <span class="kt">int</span> <span class="nf">_sysinit</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_d157078300784bd5b8eb70c6b4160aae-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_d157078300784bd5b8eb70c6b4160aae-2"></a><span class="p">{</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_d157078300784bd5b8eb70c6b4160aae-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_d157078300784bd5b8eb70c6b4160aae-3"></a>        <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">uval</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_d157078300784bd5b8eb70c6b4160aae-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_d157078300784bd5b8eb70c6b4160aae-4"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_d157078300784bd5b8eb70c6b4160aae-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_d157078300784bd5b8eb70c6b4160aae-5"></a>        <span class="n">setup_mem_banks</span><span class="p">();</span> <span class="c1">//setup the two mem banks</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_d157078300784bd5b8eb70c6b4160aae-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_d157078300784bd5b8eb70c6b4160aae-6"></a>        <span class="n">__mmu_init</span><span class="p">(</span><span class="n">get_cr</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">CR_M</span><span class="p">);</span> <span class="c1">//set up MMU</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_d157078300784bd5b8eb70c6b4160aae-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_d157078300784bd5b8eb70c6b4160aae-7"></a>        <span class="n">uval</span> <span class="o">=</span> <span class="n">get_cpacr</span><span class="p">();</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_d157078300784bd5b8eb70c6b4160aae-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_d157078300784bd5b8eb70c6b4160aae-8"></a>        <span class="k">if</span> <span class="p">(</span> <span class="n">uval</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">31</span><span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_d157078300784bd5b8eb70c6b4160aae-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_d157078300784bd5b8eb70c6b4160aae-9"></a>                <span class="n">set_cpacr</span><span class="p">(</span><span class="n">uval</span> <span class="o">|</span> <span class="p">(</span><span class="mi">3</span> <span class="o">&lt;&lt;</span> <span class="mi">20</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">3</span> <span class="o">&lt;&lt;</span> <span class="mi">22</span><span class="p">));</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_d157078300784bd5b8eb70c6b4160aae-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_d157078300784bd5b8eb70c6b4160aae-10"></a>        <span class="p">}</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_d157078300784bd5b8eb70c6b4160aae-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_d157078300784bd5b8eb70c6b4160aae-11"></a>        <span class="c1">//memtests(); //optional test after mmu enable to verify</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_d157078300784bd5b8eb70c6b4160aae-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_d157078300784bd5b8eb70c6b4160aae-12"></a>        <span class="n">sysctl_init</span><span class="p">();</span> <span class="c1">//setup timer</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_d157078300784bd5b8eb70c6b4160aae-13"><code data-line-number="13"></code></a></td>
+<td class="code"><code><a name="rest_code_d157078300784bd5b8eb70c6b4160aae-13"></a>         <span class="n">gic_init</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_d157078300784bd5b8eb70c6b4160aae-14"><code data-line-number="14"></code></a></td>
+<td class="code"><code><a name="rest_code_d157078300784bd5b8eb70c6b4160aae-14"></a>                <span class="mi">29</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_d157078300784bd5b8eb70c6b4160aae-15"><code data-line-number="15"></code></a></td>
+<td class="code"><code><a name="rest_code_d157078300784bd5b8eb70c6b4160aae-15"></a>                <span class="n">IOMEM</span><span class="p">(</span><span class="mh">0x58201000</span><span class="p">),</span> <span class="c1">//IOMEM(get_gicd_base_address()),</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_d157078300784bd5b8eb70c6b4160aae-16"><code data-line-number="16"></code></a></td>
+<td class="code"><code><a name="rest_code_d157078300784bd5b8eb70c6b4160aae-16"></a>                <span class="n">IOMEM</span><span class="p">(</span><span class="mh">0x58202000</span><span class="p">)</span> <span class="c1">//either 2000 or 100 IOMEM(get_gicc_base_address())</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_d157078300784bd5b8eb70c6b4160aae-17"><code data-line-number="17"></code></a></td>
+<td class="code"><code><a name="rest_code_d157078300784bd5b8eb70c6b4160aae-17"></a>                 <span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_d157078300784bd5b8eb70c6b4160aae-18"><code data-line-number="18"></code></a></td>
+<td class="code"><code><a name="rest_code_d157078300784bd5b8eb70c6b4160aae-18"></a>        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_d157078300784bd5b8eb70c6b4160aae-19"><code data-line-number="19"></code></a></td>
+<td class="code"><code><a name="rest_code_d157078300784bd5b8eb70c6b4160aae-19"></a><span class="p">}</span>
+</code></td>
+</tr>
+</table></div>
+<p>I put the set of files that are specific to my platform in <em>freertos-rtx/platform</em>. Their are
+for initialization of the h/w platform components such as timer, MMU, GIC etc.. Here is what
+this tree looks like,</p>
+<pre class="code text"><a name="rest_code_cf5c1976376c471dac39171711e4b938-1"></a>freertos-rtx/platform/
+<a name="rest_code_cf5c1976376c471dac39171711e4b938-2"></a>├── FreeRTOS_asm_vectors.S
+<a name="rest_code_cf5c1976376c471dac39171711e4b938-3"></a>├── FreeRTOS_tick_config.c
+<a name="rest_code_cf5c1976376c471dac39171711e4b938-4"></a>├── Init.qemu.S
+<a name="rest_code_cf5c1976376c471dac39171711e4b938-5"></a>├── cache-armv7.S
+<a name="rest_code_cf5c1976376c471dac39171711e4b938-6"></a>├── cache.c
+<a name="rest_code_cf5c1976376c471dac39171711e4b938-7"></a>├── gic.c
+<a name="rest_code_cf5c1976376c471dac39171711e4b938-8"></a>├── lowlevel.S
+<a name="rest_code_cf5c1976376c471dac39171711e4b938-9"></a>├── mmu.c
+<a name="rest_code_cf5c1976376c471dac39171711e4b938-10"></a>├── reent_init.c
+<a name="rest_code_cf5c1976376c471dac39171711e4b938-11"></a>├── sysinit.c
+<a name="rest_code_cf5c1976376c471dac39171711e4b938-12"></a>└── vectors.c
+</pre>
+<p>The <em>_os_start</em> was to set up C-runtime code/data sections,stacks and heaps. It also initialized memory
+array for the data variables of the program, for example, "int one23 = 123;" in your c-code ? It set up
+this initialized memory location before it jump to <em>main()</em> so when your program read variable <em>one23</em>
+it actually is 123. Again, you can find and reuse the CRT code in the demo example and make the
+adjustment as needed to match the code and data sections of your port. Typically you would define them
+in your linker script. I will leave the linker script later. A snippet of CRT code,</p>
+<div class="code"><table class="codetable">
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-1"></a><span class="p">.</span><span class="nl">Lsbss_start</span><span class="p">:</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-2"></a>        <span class="p">.</span><span class="kt">long</span>   <span class="n">__sbss_start</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-3"></a>        <span class="p">...</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-4"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-5"></a><span class="p">.</span><span class="nl">Lstack</span><span class="p">:</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-6"></a>        <span class="p">.</span><span class="kt">long</span>   <span class="n">__stack</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-7"></a>        <span class="p">...</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-8"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-9"></a>        <span class="p">.</span><span class="n">weak</span>   <span class="n">_os_start</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-10"></a><span class="nl">_os_start</span><span class="p">:</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-11"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-12"></a><span class="cm">/* Clear cp15 regs with unknown reset values */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-13"><code data-line-number="13"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-13"></a>        <span class="n">mov</span>     <span class="n">r0</span><span class="p">,</span> <span class="err">#</span><span class="mh">0x0</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-14"><code data-line-number="14"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-14"></a>        <span class="n">mcr</span>     <span class="n">p15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">c5</span><span class="p">,</span> <span class="n">c0</span><span class="p">,</span> <span class="mi">0</span>   <span class="cm">/* DFSR */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-15"><code data-line-number="15"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-15"></a>        <span class="n">mcr</span>     <span class="n">p15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">c5</span><span class="p">,</span> <span class="n">c0</span><span class="p">,</span> <span class="mi">1</span>   <span class="cm">/* IFSR */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-16"><code data-line-number="16"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-16"></a>        <span class="n">mcr</span>     <span class="n">p15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">c6</span><span class="p">,</span> <span class="n">c0</span><span class="p">,</span> <span class="mi">0</span>   <span class="cm">/* DFAR */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-17"><code data-line-number="17"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-17"></a>        <span class="n">mcr</span>     <span class="n">p15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">c6</span><span class="p">,</span> <span class="n">c0</span><span class="p">,</span> <span class="mi">2</span>   <span class="cm">/* IFAR */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-18"><code data-line-number="18"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-18"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-19"><code data-line-number="19"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-19"></a>        <span class="p">...</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-20"><code data-line-number="20"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-20"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-21"><code data-line-number="21"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-21"></a><span class="p">.</span><span class="nl">Lloop_bss</span><span class="p">:</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-22"><code data-line-number="22"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-22"></a>        <span class="n">cmp</span>     <span class="n">r1</span><span class="p">,</span><span class="n">r2</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-23"><code data-line-number="23"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-23"></a>        <span class="n">bge</span>     <span class="p">.</span><span class="n">Lenclbss</span>               <span class="cm">/* If no BSS, no clearing required */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-24"><code data-line-number="24"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-24"></a>        <span class="n">str</span>     <span class="n">r0</span><span class="p">,</span> <span class="p">[</span><span class="n">r1</span><span class="p">],</span> <span class="err">#</span><span class="mi">4</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-25"><code data-line-number="25"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-25"></a>        <span class="n">b</span>       <span class="p">.</span><span class="n">Lloop_bss</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-26"><code data-line-number="26"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-26"></a>        <span class="p">....</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-27"><code data-line-number="27"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-27"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-28"><code data-line-number="28"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-28"></a><span class="p">.</span><span class="nl">Lenclbss</span><span class="p">:</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-29"><code data-line-number="29"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-29"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-30"><code data-line-number="30"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-30"></a>        <span class="cm">/* set stack pointer */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-31"><code data-line-number="31"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-31"></a>        <span class="n">ldr</span>     <span class="n">r13</span><span class="p">,.</span><span class="n">Lstack</span>             <span class="cm">/* stack address */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-32"><code data-line-number="32"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-32"></a>    <span class="cm">/* Reset and start Global Timer */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-33"><code data-line-number="33"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-33"></a>        <span class="n">mov</span>     <span class="n">r0</span><span class="p">,</span> <span class="err">#</span><span class="mh">0x0</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-34"><code data-line-number="34"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-34"></a>        <span class="n">mov</span>     <span class="n">r1</span><span class="p">,</span> <span class="err">#</span><span class="mh">0x0</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-35"><code data-line-number="35"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-35"></a>        <span class="n">bl</span> <span class="n">__libc_init_array</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-36"><code data-line-number="36"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-36"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-37"><code data-line-number="37"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-37"></a>        <span class="cm">/* make sure argc and argv are valid */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-38"><code data-line-number="38"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-38"></a>        <span class="n">mov</span>     <span class="n">r0</span><span class="p">,</span> <span class="err">#</span><span class="mi">0</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-39"><code data-line-number="39"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-39"></a>        <span class="n">mov</span>     <span class="n">r1</span><span class="p">,</span> <span class="err">#</span><span class="mi">0</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-40"><code data-line-number="40"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-40"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-41"><code data-line-number="41"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-41"></a>        <span class="cm">/* Let her rip */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_386863113623478c9e33d45012a8486f-42"><code data-line-number="42"></code></a></td>
+<td class="code"><code><a name="rest_code_386863113623478c9e33d45012a8486f-42"></a>        <span class="n">bl</span>      <span class="n">main</span> <span class="c1">//off we go</span>
+</code></td>
+</tr>
+</table></div>
+<p>At the bottom (line 42), it is where it branches to FreeRTOS's main task where it spawns more tasks. From this
+point forward anything you want to do can be done in FreeRTOS.</p>
+<p>For my port, I created <em>freertos-rtx/lib</em> and put the CRT code here along with C-runtime support functions such
+as <em>read.c, write.c, exit.c, errno.c, open.c, sbrk.c, isatty.c etc..</em>. They are typical set of files needed
+in most OS port. My <em>lib</em> files looks like this,</p>
+<pre class="code text"><a name="rest_code_23e14f82154e43af8a5c375860374726-1"></a>freertos-rtx/lib/
+<a name="rest_code_23e14f82154e43af8a5c375860374726-2"></a>├── CMakeLists.txt
+<a name="rest_code_23e14f82154e43af8a5c375860374726-3"></a>├── _exit.c
+<a name="rest_code_23e14f82154e43af8a5c375860374726-4"></a>├── _sbrk.c
+<a name="rest_code_23e14f82154e43af8a5c375860374726-5"></a>├── close.c
+<a name="rest_code_23e14f82154e43af8a5c375860374726-6"></a>├── crt0.S
+<a name="rest_code_23e14f82154e43af8a5c375860374726-7"></a>├── errno.c
+<a name="rest_code_23e14f82154e43af8a5c375860374726-8"></a>├── fstat.c
+<a name="rest_code_23e14f82154e43af8a5c375860374726-9"></a>├── isatty.c
+<a name="rest_code_23e14f82154e43af8a5c375860374726-10"></a>├── lseek.c
+<a name="rest_code_23e14f82154e43af8a5c375860374726-11"></a>├── open.c
+<a name="rest_code_23e14f82154e43af8a5c375860374726-12"></a>├── read.c
+<a name="rest_code_23e14f82154e43af8a5c375860374726-13"></a>├── usleep.c
+<a name="rest_code_23e14f82154e43af8a5c375860374726-14"></a>├── util.c
+<a name="rest_code_23e14f82154e43af8a5c375860374726-15"></a>└── write.c
+</pre>
+<p>These files are mostly 10-20 lines of code, for example, <em>isatty(..)</em> is simply returned true since the UART
+port is a TTY device and the <em>open(..)</em> is simply returned EOI since I do not have FS support. They are
+functions to make the linking process happy. They are just the filler set of files and most of the
+functions are defined with <em>weak</em> attribute in such as a way that they can be overrided.</p>
+</div>
+<div class="section" id="the-application-tasks">
+<h3>The application tasks</h3>
+<p>At this point it is almost done. The remaining would be application specific so I added <em>app</em> and <em>driver</em>
+as directories to house files for RTOS main task and UART device driver. UART device driver is the
+only device driver I have for this port. I needed it to support TTY console so I can used for debugging
+and command line interfacing with the RTOS. The <em>main()</em> is copied from demo example and modified for
+this port.</p>
+<div class="code"><table class="codetable">
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-1"></a><span class="kt">void</span> <span class="nf">main</span><span class="p">(</span> <span class="kt">void</span> <span class="p">)</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-2"></a><span class="p">{</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-3"></a>        <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">20</span><span class="p">];</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-4"></a>        <span class="kt">int</span> <span class="n">n</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-5"></a>        <span class="cm">/* Create the queue. */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-6"></a>        <span class="n">xQueue</span> <span class="o">=</span> <span class="n">xQueueCreate</span><span class="p">(</span> <span class="n">mainQUEUE_LENGTH</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span> <span class="kt">uint32_t</span> <span class="p">)</span> <span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-7"></a>        <span class="n">xQueue_mon</span> <span class="o">=</span> <span class="n">xQueueCreate</span><span class="p">(</span> <span class="n">mainQUEUE_LENGTH</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span> <span class="kt">uint32_t</span> <span class="p">)</span> <span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-8"></a>        <span class="n">xUARTQueue</span> <span class="o">=</span> <span class="n">xQueueCreate</span><span class="p">(</span> <span class="mi">1</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">)</span> <span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-9"></a>        <span class="n">serial_port_driver_install</span><span class="p">((</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="mh">0x58000000</span><span class="p">);</span> <span class="c1">//V2M_UART0);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-10"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-11"></a>        <span class="n">vPortInstallFreeRTOSVectorTable</span><span class="p">();</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-12"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-13"><code data-line-number="13"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-13"></a>        <span class="n">vfs_dev_uart_register</span><span class="p">();</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-14"><code data-line-number="14"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-14"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-15"><code data-line-number="15"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-15"></a>        <span class="n">timer_handle</span> <span class="o">=</span> <span class="n">xTimerCreateStatic</span><span class="p">(</span><span class="s">"timer"</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-16"><code data-line-number="16"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-16"></a>                        <span class="mi">300UL</span><span class="o">/</span><span class="n">portTICK_PERIOD_MS</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-17"><code data-line-number="17"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-17"></a>                        <span class="n">pdTRUE</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-18"><code data-line-number="18"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-18"></a>                        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="mi">0</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-19"><code data-line-number="19"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-19"></a>                        <span class="n">prvTimerCallback</span><span class="p">,</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-20"><code data-line-number="20"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-20"></a>                        <span class="o">&amp;</span><span class="n">xTimerBuffer</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-21"><code data-line-number="21"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-21"></a>                    <span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-22"><code data-line-number="22"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-22"></a>        <span class="k">if</span> <span class="p">(</span> <span class="n">timer_handle</span> <span class="p">)</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-23"><code data-line-number="23"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-23"></a>                <span class="n">xTimerStart</span><span class="p">(</span><span class="n">timer_handle</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span> <span class="c1">//don't block</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-24"><code data-line-number="24"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-24"></a>        <span class="k">if</span> <span class="p">(</span> <span class="n">init_console</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">0</span>  <span class="p">)</span> <span class="p">{</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-25"><code data-line-number="25"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-25"></a>             <span class="n">printf</span><span class="p">(</span><span class="s">"%s, aborted!</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">__FUNCTION__</span><span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-26"><code data-line-number="26"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-26"></a>             <span class="k">return</span><span class="p">;</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-27"><code data-line-number="27"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-27"></a>        <span class="p">}</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-28"><code data-line-number="28"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-28"></a>        <span class="k">if</span><span class="p">(</span> <span class="n">xQueue</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="p">)</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-29"><code data-line-number="29"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-29"></a>        <span class="p">{</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-30"><code data-line-number="30"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-30"></a>                <span class="n">xTaskCreate</span><span class="p">(</span> <span class="n">prvQueueReceiveTask</span><span class="p">,</span>       <span class="cm">/* The function that implements the task. */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-31"><code data-line-number="31"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-31"></a>                                        <span class="s">"Rx"</span><span class="p">,</span>           <span class="cm">/* The text name assigned to the task - for debug only as it is not used by the kernel. */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-32"><code data-line-number="32"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-32"></a>                                        <span class="n">configMINIMAL_STACK_SIZE</span><span class="p">,</span>       <span class="cm">/* The size of the stack to allocate to the task. */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-33"><code data-line-number="33"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-33"></a>                                        <span class="nb">NULL</span><span class="p">,</span>                           <span class="cm">/* The parameter passed to the task - not used in this case. */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-34"><code data-line-number="34"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-34"></a>                                        <span class="n">mainQUEUE_RECEIVE_TASK_PRIORITY</span><span class="p">,</span>        <span class="cm">/* The priority assigned to the task. */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-35"><code data-line-number="35"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-35"></a>                                        <span class="nb">NULL</span> <span class="p">);</span>                                 <span class="cm">/* The task handle is not required, so NULL is passed. */</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-36"><code data-line-number="36"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-36"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-37"><code data-line-number="37"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-37"></a>                <span class="n">xTaskCreate</span><span class="p">(</span> <span class="n">prvQueueSendTask</span><span class="p">,</span> <span class="s">"TX"</span><span class="p">,</span> <span class="n">configMINIMAL_STACK_SIZE</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">mainQUEUE_SEND_TASK_PRIORITY</span><span class="p">,</span> <span class="nb">NULL</span> <span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-38"><code data-line-number="38"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-38"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-39"><code data-line-number="39"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-39"></a>                <span class="n">xTaskCreate</span><span class="p">(</span> <span class="n">app_main</span><span class="p">,</span> <span class="s">"app_main"</span><span class="p">,</span> <span class="n">configMINIMAL_STACK_SIZE</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">appmainTASK_PRIORITY</span><span class="p">,</span> <span class="nb">NULL</span> <span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-40"><code data-line-number="40"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-40"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-41"><code data-line-number="41"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-41"></a>                <span class="k">if</span> <span class="p">(</span> <span class="n">xUARTQueue</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="p">)</span> <span class="p">{</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-42"><code data-line-number="42"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-42"></a>                        <span class="n">xTaskCreate</span><span class="p">(</span> <span class="n">prvUARTPollTask</span><span class="p">,</span> <span class="s">"uart_rx_poll"</span><span class="p">,</span> <span class="n">configMINIMAL_STACK_SIZE</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">UART_RXQUEUE_TASK_PRIORITY</span><span class="p">,</span> <span class="nb">NULL</span> <span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-43"><code data-line-number="43"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-43"></a>                <span class="p">}</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-44"><code data-line-number="44"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-44"></a>                <span class="k">if</span> <span class="p">(</span> <span class="n">xQueue_mon</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="p">)</span> <span class="p">{</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-45"><code data-line-number="45"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-45"></a>                        <span class="n">xTaskCreate</span><span class="p">(</span> <span class="n">state_mon_task</span><span class="p">,</span> <span class="s">"regi_state_mon"</span><span class="p">,</span> <span class="n">configMINIMAL_STACK_SIZE</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">mainQUEUE_SEND_TASK_PRIORITY</span><span class="p">,</span> <span class="nb">NULL</span> <span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-46"><code data-line-number="46"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-46"></a>                <span class="p">}</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-47"><code data-line-number="47"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-47"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-48"><code data-line-number="48"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-48"></a>                <span class="cm">/* Start the tasks and timer running.*/</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-49"><code data-line-number="49"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-49"></a>                <span class="n">vTaskStartScheduler</span><span class="p">();</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-50"><code data-line-number="50"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-50"></a>        <span class="p">}</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-51"><code data-line-number="51"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-51"></a>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-52"><code data-line-number="52"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-52"></a>        <span class="k">for</span><span class="p">(</span> <span class="p">;;</span> <span class="p">);</span>
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_f450317e787d4a07abfc3f2282a0fb8d-53"><code data-line-number="53"></code></a></td>
+<td class="code"><code><a name="rest_code_f450317e787d4a07abfc3f2282a0fb8d-53"></a><span class="p">}</span>
+</code></td>
+</tr>
+</table></div>
+<p>The main function is to install and set up UART driver, start RTOS timer, TX/RX UART tasks and console task and run RTOS scheduler. <em>app_main</em> is a
+TTY console task for command line interface as shown here, for example, when I typed <em>help</em> I would get the list of commands supported.
+If I typed <em>tasks</em> I would get the information about tasks registered.</p>
+<pre class="code text"><a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-1"></a>xxx@xxx:~/freertos-rtx$ ./run.sh
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-2"></a>machine cpu_type cortex-r5f-arm-cpu
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-3"></a>UART base 0x58000000 created for serial0.
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-4"></a>main: Entering main(265)
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-5"></a>init_console, line 222
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-6"></a>current state: standby, last_state initialize
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-7"></a>Entering app_main(89), 0.000000
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-8"></a>rtx&gt; tasks
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-9"></a>Task Name       Status  Prio    HWM     Task Number
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-10"></a>app_main        X       1       333     3
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-11"></a>IDLE            R       0       478     6
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-12"></a>Tmr Svc         B       4       451     7
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-13"></a>TX              B       2       472     2
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-14"></a>uart_rx_poll    B       1       471     4
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-15"></a>Rx              B       1       468     1
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-16"></a>regi_state_mon  B       2       339     5
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-17"></a>
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-18"></a>Timer ulCount   : 35
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-19"></a>rtx&gt; help
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-20"></a>help
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-21"></a>  Print the list of registered commands
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-22"></a>
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-23"></a>tasks
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-24"></a>  Get information about running tasks
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-25"></a>
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-26"></a>state
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-27"></a>  Get the current monitored state
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-28"></a>
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-29"></a>free
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-30"></a>  Get the total size of heap memory available
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-31"></a>
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-32"></a>read
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-33"></a>  read memory address
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-34"></a>
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-35"></a>next
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-36"></a>  read next memory address
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-37"></a>
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-38"></a>reboot
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-39"></a>  System reboot
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-40"></a>
+<a name="rest_code_9cd6a4b942574f3680796e91a1b49baf-41"></a>QEMU: Terminated
+</pre>
+<p>What I had in <em>app</em> and <em>drivers</em> are specific to the platform and OS usage. You would have what you need
+to get what you want it to do for your application.</p>
+<pre class="code text"><a name="rest_code_8ad561e27d1d4695a12e69bead794eab-1"></a>freertos-rtx/
+<a name="rest_code_8ad561e27d1d4695a12e69bead794eab-2"></a>├── app
+<a name="rest_code_8ad561e27d1d4695a12e69bead794eab-3"></a>│   ├── app_main.c
+<a name="rest_code_8ad561e27d1d4695a12e69bead794eab-4"></a>│   ├── command.c
+<a name="rest_code_8ad561e27d1d4695a12e69bead794eab-5"></a>│   ├── main.c
+<a name="rest_code_8ad561e27d1d4695a12e69bead794eab-6"></a>│   ├── partest.h
+<a name="rest_code_8ad561e27d1d4695a12e69bead794eab-7"></a>│   └── regi-state.c
+<a name="rest_code_8ad561e27d1d4695a12e69bead794eab-8"></a>├── drivers
+<a name="rest_code_8ad561e27d1d4695a12e69bead794eab-9"></a>│   ├── serial_pl010.c
+<a name="rest_code_8ad561e27d1d4695a12e69bead794eab-10"></a>│   └── serial_pl010.h
+</pre>
+<p>Don't forget about one important file, the linker script. Make sure you have the correct
+definition of code and data sections in it. You could as well use the linker script
+in some of the demo example and modify it to fit your port. Look for file ending with
+<em>*.ld</em> in the demo, for example, the Xilinx's demo example linker script. Modify it
+as needed to fit the sections of your code. It is what I did. Instead of writing
+<em>Makefile</em> to build, I used <em>cmake</em> so I wrote <em>CMakeLists.txt</em> from top directory
+to all of sub directories that need to be compiled or assembled to create the
+bootable code.</p>
+</div>
+</div>
+<div class="section" id="conclusion">
+<h2>Conclusion</h2>
+<p>Most work in this porting is primarily getting the code execution from reset vector
+to main program ie.. boot loader code. Little of it involved modifying FreeRTOS code
+other than its configuration file(s) that is specifically platform dependent.
+Find what you need in the demo examples and make use of it. The best place to look
+for the very low-level assembly code is to look in some boot code such as U-Boot
+or Barebox among others. It will save you a lot of time by using the proven code,
+modify as needed. Try to understand what it does and why it does so you will know
+if you could make use of it for your port. The most time I spent on porting this
+FreeRTOS is on debugging the interrupt routing to GIC because of what I thought
+I knew, I didn't. If there is no timer tick, the tasks would never get scheduled
+and switched. It would stuck in main and going no where. I eventually got it
+right.</p>
+<p>The majority of code I had for this port came from various sources
+and I modified to fit my need. I do not like to reinvent the wheel and you
+shouldn't too. Although I tested my port on QEMU, I have 99% confident that it
+too would run on real h/w. QEMU is quite powerful and very useful for this
+type of prototyping work.</p>
+</div>
+</div>
+    </div>
+    
+
+</article>
+</div>
+        <!--End of body content-->
+
+        <footer id="footer">
+            Contents © 2021         <a href="mailto:soukthavy@yahoo.com">Soukthavy</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+        </footer>
+</div>
+</div>
+
+
+            <script src="../../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+    moment.locale("en");
+    fancydates(0, "YYYY-MM-DD HH:mm");
+    </script><!-- end fancy dates -->
+</body>
+</html>

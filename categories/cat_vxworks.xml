@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Soukthavy Sopha (Posts about VxWorks)</title><link>http://souktha.github.io/</link><description></description><atom:link href="http://souktha.github.io/categories/cat_vxworks.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><lastBuildDate>Thu, 25 Feb 2021 23:08:32 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Carrier Card Source repository</title><link>http://souktha.github.io/software/readme/</link><dc:creator>Soukthavy</dc:creator><description>&lt;div&gt;&lt;p&gt;This is &lt;em&gt;VxWorks&lt;/em&gt; source code for carrier card software, an initial archive to the repository for
+on-going work on R-EGI project. This source code is targeted Xilinx ZCU102 ZynqMP Ultrascale+
+design reference platform.&lt;/p&gt;
+&lt;p&gt;The software produces VxWorks (ELF) and uVxWorks (U-Bootable) as well as its binary to run on
+ZCU102 board.&lt;/p&gt;
+&lt;div class="section" id="host-build-requirements"&gt;
+&lt;h2&gt;Host build requirements&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;WIN10 PC&lt;/p&gt;
+&lt;p&gt;Optional: VMWare for WIN10 running Linux guest OS to run QEMU. This is helpful if you don't have ZCU102 board.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;VxWorks 7 OS and toolchain, &lt;em&gt;vx_sr540&lt;/em&gt; for WIN10. Typically this is installed in &lt;em&gt;c:RTNwindriver&lt;/em&gt; directory.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;VxWorks board support package (BSP), &lt;em&gt;xlnx_zynqmp_1_0_4_0&lt;/em&gt;. This is included in the installation package that
+support ZCU102 board.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="section" id="build-environments"&gt;
+&lt;h3&gt;Build environments&lt;/h3&gt;
+&lt;p&gt;You need to have the following environment variables defined for VxWorks toolchain,&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;p&gt;WIND_HOME
+WIND_BASE
+WIND_WRTOOL_WORKSPACE
+WIND_LAYER_PATHS
+WIND_LICENS_FILE&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;When those variables are defined, you can build. These variable in be put into a batch file. An
+example, &lt;em&gt;myenv.bat&lt;/em&gt; is provided as an example. Edit it to match your settings then excute it so
+you can run VxWorks's &lt;em&gt;wrtool&lt;/em&gt; or the GUI &lt;em&gt;workbench&lt;/em&gt;. I use the command line &lt;em&gt;wrtool&lt;/em&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="contents"&gt;
+&lt;h2&gt;Contents&lt;/h2&gt;
+&lt;p&gt;Three main directories are:&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;&lt;p&gt;&lt;em&gt;regi&lt;/em&gt;, this is VxWorks Source Build directory (VSB).&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;em&gt;kernel&lt;/em&gt;, this is VxWorks Image Project directory (VIP).&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;em&gt;ntsf&lt;/em&gt;, this is RTX directory containing NTSF messaging code ported from Green Hills's OMEGA project.
+This directory is called outer layer of VxWorks. &lt;em&gt;WIND_LAYER_PATHS&lt;/em&gt; point to this directory. If you don'tdefine this path, the build will fail.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;div class="section" id="what-changes"&gt;
+&lt;h2&gt;What changes&lt;/h2&gt;
+&lt;p&gt;Currenly the code is bare bone. IS177 messages in &lt;em&gt;ntsf/msg&lt;/em&gt; compiled to object codes. No task is written to
+use it yet. So everything outside of &lt;em&gt;ntsf&lt;/em&gt; directory is pretty much VxWorks code.&lt;/p&gt;
+&lt;div class="section" id="kernel-usrappinit-c"&gt;
+&lt;h3&gt;kernel/usrAppInit.c&lt;/h3&gt;
+&lt;p&gt;A call to ntsfInitialize() is added to its initialization to start up two sample tasks using message queue. This
+function is in &lt;em&gt;ntsf/src&lt;/em&gt; directory.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="enable-uart1-of-zcu102-board"&gt;
+&lt;h3&gt;Enable UART1 of ZCU102 board&lt;/h3&gt;
+&lt;p&gt;In the VIP workspace,the ZCU102 device tree source file, &lt;em&gt;xlnx_zynqmp_1_0_4_0/xlnx-zcu102.dts&lt;/em&gt; is edited to
+enable UART1 port (alias serial1). This will show up on VxWorks as &lt;em&gt;/tyC0/1&lt;/em&gt; device. It is intended that
+this port is to be used for connecting to host for GPS messages processing. UART0 is used for VxWorks shell
+console.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="building-source-code-for-output-images"&gt;
+&lt;h2&gt;Building source code for output images&lt;/h2&gt;
+&lt;p&gt;You can use either GUI workbench or its command line, &lt;em&gt;wrtool&lt;/em&gt; to build the project. Please refer to VxWorks
+documents on how to its IDE tool. For command line, &lt;em&gt;wrtool&lt;/em&gt;, the step I used,&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;p&gt;Open command prompt shell on WIN10.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;In DOS command line prompt, cd to &lt;em&gt;c:RTNwindrivervx7_sr40&lt;/em&gt; then run &lt;em&gt;myenv.bat&lt;/em&gt;, the batch file that set my environment variables.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;run &lt;em&gt;wrtool&lt;/em&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;In &lt;em&gt;wrtool&lt;/em&gt; shell, cd to my workspace, for example, &lt;em&gt;cd c:/users/1234567/workspace/carrier-card-source&lt;/em&gt;,
+which is the base of the source code.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;cd to &lt;em&gt;regi&lt;/em&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;em&gt;prj build&lt;/em&gt; the VSB (regi).&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;cd to &lt;em&gt;../kernel&lt;/em&gt;, then &lt;em&gt;prj build&lt;/em&gt; to build bootable image.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="loading-and-running-vxworks-on-zcu102-board"&gt;
+&lt;h2&gt;Loading and running VxWorks on ZCU102 board&lt;/h2&gt;
+&lt;p&gt;Image file &lt;em&gt;vxWorks&lt;/em&gt; (ELF) or &lt;em&gt;uVxWorks&lt;/em&gt; built from this source can be copied to SD card of ZCU102. Using &lt;em&gt;uVxWorks&lt;/em&gt; for
+u-boot is recommened so copy it to SD card along with &lt;em&gt;xlnx-zcu102.dtb&lt;/em&gt; file. Do not use U-Boot or Linux DTB file for
+VxWorks. They don't work. Edit U-Boot boot script to automatically load and boot the VxWorks. This is U-Boot instructions
+and its related Xilinx instruction for ZCU102. I won't cover here.&lt;/p&gt;
+&lt;div class="section" id="booting-on-real-h-w-zcu102-board"&gt;
+&lt;h3&gt;Booting on real h/w ZCU102 board&lt;/h3&gt;
+&lt;p&gt;Set the boot switch options on ZCU102 board for SD card accordingly (see Xilinx doc). Alhough ZCU102 can boot from various devices,
+JTAG, SD card, Flash, ony SD card is mentioned here and it is considered standard default booting. Xilinx shipped their
+reference design board with this option.&lt;/p&gt;
+&lt;p&gt;It is easiest to edit the u-boot script to make it boot automaticall (see u-boot doc) on ZCU102, but if you do not want to you
+can always boot it manually.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="manually-boot-from-sd-card"&gt;
+&lt;h3&gt;Manually boot from SD card&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Stop at u-boot prompt and use u-boot MMC utilities to load uVxWorks and its dtb file, for example (assuming the VxWorks files needed are in SD card),&lt;/p&gt;
+&lt;pre class="code text"&gt;&lt;a name="rest_code_7a709fc00d094c809c44883347875a57-1"&gt;&lt;/a&gt;fatload mmc 0 2000000 uVxWorks
+&lt;a name="rest_code_7a709fc00d094c809c44883347875a57-2"&gt;&lt;/a&gt;fatload mmc 0 1000000 xlnx-zcu102.dtb
+&lt;a name="rest_code_7a709fc00d094c809c44883347875a57-3"&gt;&lt;/a&gt;bootm 2000000 - 1000000
+&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This should boot VxWorks. An automate boot script can be created and automatically performs the boot operation.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="loading-and-running-vxworks-on-qemu"&gt;
+&lt;h3&gt;Loading and running VxWorks on QEMU&lt;/h3&gt;
+&lt;p&gt;What happen if you don't have ZCU102 board ? QEMU is the solution. You need to build QEMU package on a Linux PC though.
+You can install VMWare and Linux guest OS on it for your own convenience. The instruction below apply to Linux host.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;p&gt;Requirements: git clone QEMU from Xilinx's repository and follow its instruction on configuration options, for example,&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;pre class="code text"&gt;&lt;a name="rest_code_a4f75f79eb3141cb8525114c46dff3de-1"&gt;&lt;/a&gt;./configure --target-list=aarch64-softmmu,aarch64-linux-user,arm-softmmu,arm-linux-user,microblazeel --prefix=/opt/qemu-xlnx
+&lt;a name="rest_code_a4f75f79eb3141cb8525114c46dff3de-2"&gt;&lt;/a&gt;make &amp;amp;&amp;amp; make install
+&lt;/pre&gt;&lt;/blockquote&gt;
+&lt;p&gt;note: QEMU from upstream will not work, use Xilinx's QEMU instead. If using Xilinx's  petalinux, it will be build along the image, but
+this package is too big and it is not necessary for VxWorks.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;p&gt;&lt;em&gt;uVxWorks&lt;/em&gt; uses its own &lt;em&gt;xlnx-zcu102.dtb&lt;/em&gt; file. Do not use Linux's or U-Boot DTB file.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Xilinx QEMU boot ZCU102 in multiple stages, one is to boot ARM ATF and its microblaze with PMU f/w. This is the 1st boot. It then wait to connect
+to 2nd boot with FSBL and U-Boot before let go of control.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="miscellaneous"&gt;
+&lt;h3&gt;Miscellaneous&lt;/h3&gt;
+&lt;p&gt;Some helper scripts are provided in &lt;em&gt;misc&lt;/em&gt; directory for buiding VxWorks and for running QEMU h/w emulation. These are,&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;p&gt;&lt;em&gt;myenv.bat&lt;/em&gt; - VxWorks build environment variables setting. Edit it to fit your host installation.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;em&gt;vx.sh&lt;/em&gt; bash shell script (QEMU booting scripts), &lt;em&gt;ublazepeta.sh&lt;/em&gt; its MicroBlaze companion invoked by &lt;em&gt;vx.sh&lt;/em&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;em&gt;vxboot.scr&lt;/em&gt; (u-boot script) that &lt;em&gt;vx.sh&lt;/em&gt; loads. &lt;em&gt;vxargs.txt&lt;/em&gt; is text file that create &lt;em&gt;vxboot.scr&lt;/em&gt; using u-boot's &lt;em&gt;mkimage&lt;/em&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Companions firmware files that can be used on both QEMU or real ZCU102 board. The provided boot scripts need these firmwware
+files to bring up the virtual core on QEMU. The ELF firmware files are identically used for
+real h/w except the DTBs where they are specific for QEMU. You cannot use QEMU DTBs on real h/w.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="console-capture-of-qemu-boot"&gt;
+&lt;h3&gt;Console capture of QEMU boot&lt;/h3&gt;
+&lt;pre class="code text"&gt;&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-1"&gt;&lt;/a&gt;PMU Firmware 2020.2     Feb 10 2021   15:27:10
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-2"&gt;&lt;/a&gt;PMU_ROM Version: xpbr-v8.1.0-0
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-3"&gt;&lt;/a&gt;NOTICE:  ATF running on XCZUUNKN/QEMU v4/RTL0.0 at 0xfffea000
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-4"&gt;&lt;/a&gt;NOTICE:  BL31: v2.2(release):xilinx_rebase_v2.2_2020.2
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-5"&gt;&lt;/a&gt;NOTICE:  BL31: Built : 15:26:48, Feb 10 2021
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-6"&gt;&lt;/a&gt;
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-7"&gt;&lt;/a&gt;
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-8"&gt;&lt;/a&gt;U-Boot 2020.01 (Feb 10 2021 - 15:38:17 +0000)
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-9"&gt;&lt;/a&gt;
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-10"&gt;&lt;/a&gt;Model: ZynqMP ZCU102 Rev1.0
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-11"&gt;&lt;/a&gt;Board: Xilinx ZynqMP
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-12"&gt;&lt;/a&gt;DRAM:  4 GiB
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-13"&gt;&lt;/a&gt;PMUFW:  v1.1
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-14"&gt;&lt;/a&gt;EL Level:       EL2
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-15"&gt;&lt;/a&gt;Chip ID:        unknown
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-16"&gt;&lt;/a&gt;NAND:  0 MiB
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-17"&gt;&lt;/a&gt;MMC:   mmc@ff170000: 0
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-18"&gt;&lt;/a&gt;In:    serial@ff000000
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-19"&gt;&lt;/a&gt;Out:   serial@ff000000
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-20"&gt;&lt;/a&gt;Err:   serial@ff000000
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-21"&gt;&lt;/a&gt;Bootmode: SD_MODE1
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-22"&gt;&lt;/a&gt;Reset reason:
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-23"&gt;&lt;/a&gt;Net:
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-24"&gt;&lt;/a&gt;ZYNQ GEM: ff0e0000, mdio bus ff0e0000, phyaddr 12, interface rgmii-id
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-25"&gt;&lt;/a&gt;
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-26"&gt;&lt;/a&gt;Warning: ethernet@ff0e0000 using MAC address from DT
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-27"&gt;&lt;/a&gt;eth0: ethernet@ff0e0000
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-28"&gt;&lt;/a&gt;Hit any key to stop autoboot:  0
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-29"&gt;&lt;/a&gt;MMC: no card present
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-30"&gt;&lt;/a&gt;JTAG: Trying to boot script at 0x20000000
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-31"&gt;&lt;/a&gt;## Executing script at 20000000
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-32"&gt;&lt;/a&gt;## Booting kernel from Legacy Image at 02000000 ...
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-33"&gt;&lt;/a&gt;   Image Name:   vxWorks
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-34"&gt;&lt;/a&gt;   Image Type:   AArch64 VxWorks Kernel Image (uncompressed)
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-35"&gt;&lt;/a&gt;   Data Size:    1386912 Bytes = 1.3 MiB
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-36"&gt;&lt;/a&gt;   Load Address: 00100000
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-37"&gt;&lt;/a&gt;   Entry Point:  00100000
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-38"&gt;&lt;/a&gt;   Verifying Checksum ... OK
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-39"&gt;&lt;/a&gt;## Flattened Device Tree blob at 01000000
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-40"&gt;&lt;/a&gt;   Booting using the fdt blob at 0x1000000
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-41"&gt;&lt;/a&gt;   Loading Kernel Image
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-42"&gt;&lt;/a&gt;   !!! WARNING !!! Using legacy DTB
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-43"&gt;&lt;/a&gt;   Loading Device Tree to 000000000fff8000, end 000000000ffff802 ... OK
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-44"&gt;&lt;/a&gt;## Starting vxWorks at 0x00100000, device tree at 0x0fff8000 ...
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-45"&gt;&lt;/a&gt;
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-46"&gt;&lt;/a&gt; _________            _________
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-47"&gt;&lt;/a&gt; \77777777\          /77777777/
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-48"&gt;&lt;/a&gt;  \77777777\        /77777777/
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-49"&gt;&lt;/a&gt;   \77777777\      /77777777/
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-50"&gt;&lt;/a&gt;    \77777777\    /77777777/
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-51"&gt;&lt;/a&gt;     \77777777\   \7777777/
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-52"&gt;&lt;/a&gt;      \77777777\   \77777/              VxWorks 7 SMP 64-bit
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-53"&gt;&lt;/a&gt;       \77777777\   \777/
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-54"&gt;&lt;/a&gt;        \77777777\   \7/     Core Kernel version: 1.2.7.0
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-55"&gt;&lt;/a&gt;         \77777777\   -      Build date: Feb 25 2021 10:38:40
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-56"&gt;&lt;/a&gt;          \77777777\
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-57"&gt;&lt;/a&gt;           \7777777/         Copyright Wind River Systems, Inc.
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-58"&gt;&lt;/a&gt;            \77777/   -                 1984-2021
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-59"&gt;&lt;/a&gt;             \777/   /7\
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-60"&gt;&lt;/a&gt;              \7/   /777\
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-61"&gt;&lt;/a&gt;               -   -------
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-62"&gt;&lt;/a&gt;
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-63"&gt;&lt;/a&gt;           Board: Xilinx ZCU102
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-64"&gt;&lt;/a&gt;       CPU Count: 4
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-65"&gt;&lt;/a&gt;  OS Memory Size: 4095MB
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-66"&gt;&lt;/a&gt;ED&amp;amp;R Policy Mode: Permanently Deployed
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-67"&gt;&lt;/a&gt;
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-68"&gt;&lt;/a&gt;
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-69"&gt;&lt;/a&gt; Adding 4412 symbols for standalone.
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-70"&gt;&lt;/a&gt;ntsfInitialize
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-71"&gt;&lt;/a&gt; entering
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-72"&gt;&lt;/a&gt;_ntsfTask entering
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-73"&gt;&lt;/a&gt;_IOTask entering, tps 60
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-74"&gt;&lt;/a&gt;code 1
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-75"&gt;&lt;/a&gt;.ntsfInitialize exiting, status
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-76"&gt;&lt;/a&gt;-&amp;gt; ....code 1
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-77"&gt;&lt;/a&gt;..d.ev.s
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-78"&gt;&lt;/a&gt;drv name
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-79"&gt;&lt;/a&gt;  0 /null
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-80"&gt;&lt;/a&gt;  1 /tyCo/0
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-81"&gt;&lt;/a&gt;  1 /tyCo/1
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-82"&gt;&lt;/a&gt;value = 25 = 0x19
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-83"&gt;&lt;/a&gt;-&amp;gt; .code 1
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-84"&gt;&lt;/a&gt;.....code 1
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-85"&gt;&lt;/a&gt;.....code 1
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-86"&gt;&lt;/a&gt;...w
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-87"&gt;&lt;/a&gt;  NAME             TID          STATUS     DELAY    OBJ_TYPE        OBJ_ID
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-88"&gt;&lt;/a&gt;---------- ------------------ ---------- --------- ---------- ------------------
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-89"&gt;&lt;/a&gt;tJobTask   0xffff800000044b80 PEND               0 SEM_B      0xffffffff8021cdd0
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-90"&gt;&lt;/a&gt;tExcTask   0xffffffff802665b0 PEND               0 SEM_B      0xffffffff8021cb80
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-91"&gt;&lt;/a&gt;tLogTask   0xffff80000004a670 PEND               0 MSG_Q(R)   0xffff800000049260
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-92"&gt;&lt;/a&gt;tShell0    0xffff80000005d490 READY              0                           0x0
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-93"&gt;&lt;/a&gt;tVxdbgTask 0xffff8000000514d0 PEND               0 SEM_B      0xffffffff8021a1d0
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-94"&gt;&lt;/a&gt;ntsfTask   0xffffffff80265a50 PEND               0 MSG_Q(R)   0xffffffff80264f00
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-95"&gt;&lt;/a&gt;IOTask     0xffffffff80260a20 DELAY             15                           0x0
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-96"&gt;&lt;/a&gt;miiBusMoni 0xffff800000070a00 DELAY             77                           0x0
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-97"&gt;&lt;/a&gt;tIdleTask0 0xffffffff8026f290 READY              0                           0x0
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-98"&gt;&lt;/a&gt;tIdleTask1 0xffffffff80274760 READY              0                           0x0
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-99"&gt;&lt;/a&gt;tIdleTask2 0xffffffff80279c30 READY              0                           0x0
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-100"&gt;&lt;/a&gt;tIdleTask3 0xffffffff8027f100 READY              0                           0x0
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-101"&gt;&lt;/a&gt;value = 0 = 0x0
+&lt;a name="rest_code_cd008114f1664fd2bf2efe76b84be669-102"&gt;&lt;/a&gt;-&amp;gt; ..code 1
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/div&gt;</description><category>software</category><guid>http://souktha.github.io/software/readme/</guid><pubDate>Thu, 25 Feb 2021 11:52:00 GMT</pubDate></item></channel></rss>
