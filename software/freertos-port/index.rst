@@ -465,8 +465,123 @@ in some of the demo example and modify it to fit your port. Look for file ending
 as needed to fit the sections of your code. It is what I did. Instead of writing
 *Makefile* to build, I used *cmake* so I wrote *CMakeLists.txt* from top directory
 to all of subdirectories that need to be compiled or assembled to create the 
-bootable code.
+bootable code. Here is the sample of my *CMakeLists.txt* file,
 
+.. code-block:: 
+        :linenos:
+
+        cmake_minimum_required(VERSION 3.1)
+        project(freertos-rtx)
+        enable_language(C ASM)
+        set(CMAKE_CROSSCOMPILING TRUE)
+        set(TARGET armr5-none-eabi)
+        set(TOOLCHAIN armr5-none-eabi)
+        set(CMAKE_SYSTEM_PROCESSOR arm)
+        set(CMAKE_C_COMPILER armr5-none-eabi-gcc)
+        set(CMAKE_C_FLAGS "-mcpu=cortex-r5 -mfloat-abi=hard -mfpu=vfpv3-d16 -DFPU_PRESENT -DCONFIG_GICV2 \
+        -DUART_BASE=0x58000000 -g " CACHE STRING "" FORCE)
+        set(NGA_BOARD rtx-r5 CACHE INTERNAL "")
+        set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/linker.ld")
+        set(ASM_OPTIONS "-x assembler-with-cpp")
+        set(CMAKE_ASM_COMPILER armr5-none-eabi-gcc)
+        set(CMAKE_ASM_FLAGS "${CFLAGS} ${CMAKE_C_FLAGS} ${ASM_OPTIONS}" CACHE INTERNAL "ASM Options")
+        #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -e 0x0 -Wl,-Map=freertos-rtx.map -nostdlib -T ${LINKER_SCRIPT}")
+        #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -e 0x0 -Wl,-Map=freertos-rtx.map -Wl,-rpath=${CMAKE_CURRENT_SOURCE_DIR}/lib -lextra -T ${LINKER_SCRIPT}")
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -e 0x0 -Wl,-Map=freertos-rtx.map -T ${LINKER_SCRIPT}")
+        Set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS)
+        set_target_properties(${TARGET_NAME} PROPERTIES LINK_DEPENDS ${LINKER_SCRIPT})
+        include_directories("include" "include/freertos/" "include/asm" 
+         "console/argtable3" "console/linenoise" "console" "vfs/include")
+        file(GLOB SOURCES  "app/*.c" )
+        add_subdirectory(drivers)
+        add_subdirectory(console)
+        add_subdirectory(lib)
+        add_subdirectory(src)
+        add_subdirectory(platform)
+        add_subdirectory(vfs)
+        #add_executable(freertos-rtx "app/main.c" ${SOURCES} ${COMPONENT_LIB_SRCS} ${COMPONENT_SRCS}) 
+        add_executable(freertos-rtx  ${SOURCES} ${PLATFORM_SRCS} ${RTOS_SRCS} ${COMPONENT_LIB_SRCS} ${CONSOLE_SRCS} ${DRIVER_SRCS} ${VFS_SRCS})
+        target_link_libraries(freertos-rtx 
+        	PRIVATE 
+        	"-Wl,--whole-archive"
+        	console
+        	platform
+        	rtos    
+        	extra	
+        	drivers
+        	vfs
+        	"-Wl,--no-whole-archive")
+
+There are other *CMakeLists.txt* files in nearly all of the subdirectories that contained C or S source files. *cmake* will create
+*Makefile* to build the ARM executable code. 
+
+.. code-block::
+
+        mkdir build
+        cd build
+        cmake .. && make
+
+is cmake building process. The binary executable, *freertos-rtx* and the compiled object files will
+be in *freertos-rtx/build* directory that's built using *armr5-none-eabi* Xilinx toolchain. 
+
+Debugging
+----------
+
+At the earliest stage of your port you are most likely need to debug some of your code so in terms
+of debugging with QEMU, it was pretty much the way I blogged in my previous post on QEMU porting. 
+You just start up QEMU in single step mode and single step it from reset vector all the
+way to main function. Start QEMU in debugging mode in one shell. This will be *FreeRTOS* shell,
+
+.. code-block::
+
+        qemu-system-aarch64 -M rtx-r5  -m 2m -no-reboot -nographic -s  -S -kernel build/freertos-rtx
+
+and open another shell to debug with *gdb* built for ARM version. I also used Xilinx's built
+version of ARM R5 GDB.
+
+.. code-block::
+
+        xx@xx:~/freertos-rtx/build$ armr5-none-eabi-gdb freertos-rtx  
+        GNU gdb (GDB) 8.3.1
+        Copyright (C) 2019 Free Software Foundation, Inc.
+        License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+        This is free software: you are free to change and redistribute it.
+        There is NO WARRANTY, to the extent permitted by law.
+        Type "show copying" and "show warranty" for details.
+        This GDB was configured as "--host=x86_64-oesdk-linux --target=arm-xilinx-eabi".
+        Type "show configuration" for configuration details.
+        For bug reporting instructions, please see:
+        <http://www.gnu.org/software/gdb/bugs/>.
+        Find the GDB manual and other documentation resources online at:
+            <http://www.gnu.org/software/gdb/documentation/>.
+
+        For help, type "help".
+        Type "apropos word" to search for commands related to "word"...
+        Reading symbols from freertos-rtx...
+        (gdb) target remote :1234
+        Remote debugging using :1234
+        _freertos_vector_table () at /home/ssop/freertos-rtx/platform/FreeRTOS_asm_vectors.S:82
+        82              B         _boot
+        (gdb) b _boot
+        Breakpoint 1 at 0x2f848: file /home/ssop/freertos-rtx/platform/Init.qemu.S, line 75.
+        (gdb) b _sysinit
+        Breakpoint 2 at 0xecbc: file /home/ssop/freertos-rtx/platform/sysinit.c, line 311.
+        (gdb) c
+        Continuing.
+
+        Breakpoint 1, _boot () at /home/ssop/freertos-rtx/platform/Init.qemu.S:75
+        75              cpsid   aif
+        (gdb) c
+        Continuing.
+
+        Breakpoint 2, _sysinit () at /home/ssop/freertos-rtx/platform/sysinit.c:311
+        311             setup_mem_banks();
+        (gdb) 
+
+       
+Here I set two break point, one at *_boot* reset vector and one at *_sysinit*. You can single
+step your code this way during your debugging. There are many GUI GDB front end debuggers that
+you could use as well if you prefer.
 
 Conclusion
 ===========

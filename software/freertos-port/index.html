@@ -114,30 +114,30 @@ Xilinx SDK, I focused on the demo that used this toolchain.</p>
 <p>I started by creating an empty directory <em>freertos-rtx</em> and populated this directory with a set of header files, and
 from the demo examples, it appeared that all of the header files in the <em>Source/include</em> directory are needed. I
 populated my <em>freertos-rtx/include/freertos</em> by copying them over before making any modification. It looked like this,</p>
-<pre class="code text"><a name="rest_code_de581742912d435bb2efd4e375dedad3-1"></a>freertos-rtx/
-<a name="rest_code_de581742912d435bb2efd4e375dedad3-2"></a>├── include
-<a name="rest_code_de581742912d435bb2efd4e375dedad3-3"></a>│   ├── freertos
-<a name="rest_code_de581742912d435bb2efd4e375dedad3-4"></a>│   │   ├── FreeRTOS.h
-<a name="rest_code_de581742912d435bb2efd4e375dedad3-5"></a>│   │   ├── FreeRTOSConfig.h
-<a name="rest_code_de581742912d435bb2efd4e375dedad3-6"></a>│   │   ├── StackMacros.h
-<a name="rest_code_de581742912d435bb2efd4e375dedad3-7"></a>│   │   ├── atomic.h
-<a name="rest_code_de581742912d435bb2efd4e375dedad3-8"></a>│   │   ├── croutine.h
-<a name="rest_code_de581742912d435bb2efd4e375dedad3-9"></a>│   │   ├── deprecated_definitions.h
-<a name="rest_code_de581742912d435bb2efd4e375dedad3-10"></a>│   │   ├── event_groups.h
-<a name="rest_code_de581742912d435bb2efd4e375dedad3-11"></a>│   │   ├── list.h
-<a name="rest_code_de581742912d435bb2efd4e375dedad3-12"></a>│   │   ├── message_buffer.h
-<a name="rest_code_de581742912d435bb2efd4e375dedad3-13"></a>│   │   ├── mpu_prototypes.h
-<a name="rest_code_de581742912d435bb2efd4e375dedad3-14"></a>│   │   ├── mpu_wrappers.h
-<a name="rest_code_de581742912d435bb2efd4e375dedad3-15"></a>│   │   ├── portable.h
-<a name="rest_code_de581742912d435bb2efd4e375dedad3-16"></a>│   │   ├── portmacro.h
-<a name="rest_code_de581742912d435bb2efd4e375dedad3-17"></a>│   │   ├── projdefs.h
-<a name="rest_code_de581742912d435bb2efd4e375dedad3-18"></a>│   │   ├── queue.h
-<a name="rest_code_de581742912d435bb2efd4e375dedad3-19"></a>│   │   ├── semphr.h
-<a name="rest_code_de581742912d435bb2efd4e375dedad3-20"></a>│   │   ├── stack_macros.h
-<a name="rest_code_de581742912d435bb2efd4e375dedad3-21"></a>│   │   ├── stdint.readme
-<a name="rest_code_de581742912d435bb2efd4e375dedad3-22"></a>│   │   ├── stream_buffer.h
-<a name="rest_code_de581742912d435bb2efd4e375dedad3-23"></a>│   │   ├── task.h
-<a name="rest_code_de581742912d435bb2efd4e375dedad3-24"></a>│   │   └── timers.h
+<pre class="code text"><a name="rest_code_6bc941288266412abc396f764c2dc096-1"></a>freertos-rtx/
+<a name="rest_code_6bc941288266412abc396f764c2dc096-2"></a>├── include
+<a name="rest_code_6bc941288266412abc396f764c2dc096-3"></a>│   ├── freertos
+<a name="rest_code_6bc941288266412abc396f764c2dc096-4"></a>│   │   ├── FreeRTOS.h
+<a name="rest_code_6bc941288266412abc396f764c2dc096-5"></a>│   │   ├── FreeRTOSConfig.h
+<a name="rest_code_6bc941288266412abc396f764c2dc096-6"></a>│   │   ├── StackMacros.h
+<a name="rest_code_6bc941288266412abc396f764c2dc096-7"></a>│   │   ├── atomic.h
+<a name="rest_code_6bc941288266412abc396f764c2dc096-8"></a>│   │   ├── croutine.h
+<a name="rest_code_6bc941288266412abc396f764c2dc096-9"></a>│   │   ├── deprecated_definitions.h
+<a name="rest_code_6bc941288266412abc396f764c2dc096-10"></a>│   │   ├── event_groups.h
+<a name="rest_code_6bc941288266412abc396f764c2dc096-11"></a>│   │   ├── list.h
+<a name="rest_code_6bc941288266412abc396f764c2dc096-12"></a>│   │   ├── message_buffer.h
+<a name="rest_code_6bc941288266412abc396f764c2dc096-13"></a>│   │   ├── mpu_prototypes.h
+<a name="rest_code_6bc941288266412abc396f764c2dc096-14"></a>│   │   ├── mpu_wrappers.h
+<a name="rest_code_6bc941288266412abc396f764c2dc096-15"></a>│   │   ├── portable.h
+<a name="rest_code_6bc941288266412abc396f764c2dc096-16"></a>│   │   ├── portmacro.h
+<a name="rest_code_6bc941288266412abc396f764c2dc096-17"></a>│   │   ├── projdefs.h
+<a name="rest_code_6bc941288266412abc396f764c2dc096-18"></a>│   │   ├── queue.h
+<a name="rest_code_6bc941288266412abc396f764c2dc096-19"></a>│   │   ├── semphr.h
+<a name="rest_code_6bc941288266412abc396f764c2dc096-20"></a>│   │   ├── stack_macros.h
+<a name="rest_code_6bc941288266412abc396f764c2dc096-21"></a>│   │   ├── stdint.readme
+<a name="rest_code_6bc941288266412abc396f764c2dc096-22"></a>│   │   ├── stream_buffer.h
+<a name="rest_code_6bc941288266412abc396f764c2dc096-23"></a>│   │   ├── task.h
+<a name="rest_code_6bc941288266412abc396f764c2dc096-24"></a>│   │   └── timers.h
 </pre>
 <p>The only file that I modified to suit my virtual hardware is <em>FreeRTOSConfig.h</em>. This modification was commonly
 done to all of the OS port. It is the FreeRTOS configuration file where you could add, subtract, modify specific
@@ -163,19 +163,19 @@ could just use a simple heap management code.</p>
 <li><p>Basic C source files from <em>Source/portable</em></p></li>
 </ul>
 <p>My <em>freertos-rtx/src</em> source directory looked like this,</p>
-<pre class="code text"><a name="rest_code_8c1646e0d4714d3f8866f8b923ba9d6a-1"></a>freertos-rtx/
-<a name="rest_code_8c1646e0d4714d3f8866f8b923ba9d6a-2"></a>├── src
-<a name="rest_code_8c1646e0d4714d3f8866f8b923ba9d6a-3"></a>│   ├── ParTest.c
-<a name="rest_code_8c1646e0d4714d3f8866f8b923ba9d6a-4"></a>│   ├── croutine.c
-<a name="rest_code_8c1646e0d4714d3f8866f8b923ba9d6a-5"></a>│   ├── event_groups.c
-<a name="rest_code_8c1646e0d4714d3f8866f8b923ba9d6a-6"></a>│   ├── heap_3.c
-<a name="rest_code_8c1646e0d4714d3f8866f8b923ba9d6a-7"></a>│   ├── list.c
-<a name="rest_code_8c1646e0d4714d3f8866f8b923ba9d6a-8"></a>│   ├── port.c
-<a name="rest_code_8c1646e0d4714d3f8866f8b923ba9d6a-9"></a>│   ├── portASM.S
-<a name="rest_code_8c1646e0d4714d3f8866f8b923ba9d6a-10"></a>│   ├── queue.c
-<a name="rest_code_8c1646e0d4714d3f8866f8b923ba9d6a-11"></a>│   ├── stream_buffer.c
-<a name="rest_code_8c1646e0d4714d3f8866f8b923ba9d6a-12"></a>│   ├── tasks.c
-<a name="rest_code_8c1646e0d4714d3f8866f8b923ba9d6a-13"></a>│   └── timers.c
+<pre class="code text"><a name="rest_code_e6e9e0f4e4b74e3bb91d39ed277a5713-1"></a>freertos-rtx/
+<a name="rest_code_e6e9e0f4e4b74e3bb91d39ed277a5713-2"></a>├── src
+<a name="rest_code_e6e9e0f4e4b74e3bb91d39ed277a5713-3"></a>│   ├── ParTest.c
+<a name="rest_code_e6e9e0f4e4b74e3bb91d39ed277a5713-4"></a>│   ├── croutine.c
+<a name="rest_code_e6e9e0f4e4b74e3bb91d39ed277a5713-5"></a>│   ├── event_groups.c
+<a name="rest_code_e6e9e0f4e4b74e3bb91d39ed277a5713-6"></a>│   ├── heap_3.c
+<a name="rest_code_e6e9e0f4e4b74e3bb91d39ed277a5713-7"></a>│   ├── list.c
+<a name="rest_code_e6e9e0f4e4b74e3bb91d39ed277a5713-8"></a>│   ├── port.c
+<a name="rest_code_e6e9e0f4e4b74e3bb91d39ed277a5713-9"></a>│   ├── portASM.S
+<a name="rest_code_e6e9e0f4e4b74e3bb91d39ed277a5713-10"></a>│   ├── queue.c
+<a name="rest_code_e6e9e0f4e4b74e3bb91d39ed277a5713-11"></a>│   ├── stream_buffer.c
+<a name="rest_code_e6e9e0f4e4b74e3bb91d39ed277a5713-12"></a>│   ├── tasks.c
+<a name="rest_code_e6e9e0f4e4b74e3bb91d39ed277a5713-13"></a>│   └── timers.c
 </pre>
 </div>
 <div class="section" id="populating-platform-files">
@@ -189,93 +189,93 @@ file I made use from Xilinx R5 demo since my hardware model is different. The on
 so its CPU boot vectors are identical. This should be true for most implementation of R5 core.</p>
 <div class="code"><table class="codetable">
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_641a579ca7f74eea88a7d2fb360c2d51-1"><code data-line-number=" 1"></code></a></td>
-<td class="code"><code><a name="rest_code_641a579ca7f74eea88a7d2fb360c2d51-1"></a>     <span class="p">...</span>
+<td class="linenos linenodiv"><a href="#rest_code_fcd248219ccb46fbb719e51acdd29cf0-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_fcd248219ccb46fbb719e51acdd29cf0-1"></a>     <span class="p">...</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_641a579ca7f74eea88a7d2fb360c2d51-2"><code data-line-number=" 2"></code></a></td>
-<td class="code"><code><a name="rest_code_641a579ca7f74eea88a7d2fb360c2d51-2"></a>     <span class="p">.</span><span class="n">section</span> <span class="p">.</span><span class="n">freertos_vectors</span>
+<td class="linenos linenodiv"><a href="#rest_code_fcd248219ccb46fbb719e51acdd29cf0-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_fcd248219ccb46fbb719e51acdd29cf0-2"></a>     <span class="p">.</span><span class="n">section</span> <span class="p">.</span><span class="n">freertos_vectors</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_641a579ca7f74eea88a7d2fb360c2d51-3"><code data-line-number=" 3"></code></a></td>
-<td class="code"><code><a name="rest_code_641a579ca7f74eea88a7d2fb360c2d51-3"></a>     <span class="nl">_freertos_vector_table</span><span class="p">:</span>
+<td class="linenos linenodiv"><a href="#rest_code_fcd248219ccb46fbb719e51acdd29cf0-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_fcd248219ccb46fbb719e51acdd29cf0-3"></a>     <span class="nl">_freertos_vector_table</span><span class="p">:</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_641a579ca7f74eea88a7d2fb360c2d51-4"><code data-line-number=" 4"></code></a></td>
-<td class="code"><code><a name="rest_code_641a579ca7f74eea88a7d2fb360c2d51-4"></a>             <span class="n">B</span>         <span class="n">_boot</span>
+<td class="linenos linenodiv"><a href="#rest_code_fcd248219ccb46fbb719e51acdd29cf0-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_fcd248219ccb46fbb719e51acdd29cf0-4"></a>             <span class="n">B</span>         <span class="n">_boot</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_641a579ca7f74eea88a7d2fb360c2d51-5"><code data-line-number=" 5"></code></a></td>
-<td class="code"><code><a name="rest_code_641a579ca7f74eea88a7d2fb360c2d51-5"></a>             <span class="n">B</span>         <span class="n">FreeRTOS_Undefined</span>
+<td class="linenos linenodiv"><a href="#rest_code_fcd248219ccb46fbb719e51acdd29cf0-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_fcd248219ccb46fbb719e51acdd29cf0-5"></a>             <span class="n">B</span>         <span class="n">FreeRTOS_Undefined</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_641a579ca7f74eea88a7d2fb360c2d51-6"><code data-line-number=" 6"></code></a></td>
-<td class="code"><code><a name="rest_code_641a579ca7f74eea88a7d2fb360c2d51-6"></a>             <span class="n">ldr</span>   <span class="n">pc</span><span class="p">,</span> <span class="n">_swi</span>
+<td class="linenos linenodiv"><a href="#rest_code_fcd248219ccb46fbb719e51acdd29cf0-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_fcd248219ccb46fbb719e51acdd29cf0-6"></a>             <span class="n">ldr</span>   <span class="n">pc</span><span class="p">,</span> <span class="n">_swi</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_641a579ca7f74eea88a7d2fb360c2d51-7"><code data-line-number=" 7"></code></a></td>
-<td class="code"><code><a name="rest_code_641a579ca7f74eea88a7d2fb360c2d51-7"></a>             <span class="n">B</span>         <span class="n">FreeRTOS_PrefetchAbortHandler</span>
+<td class="linenos linenodiv"><a href="#rest_code_fcd248219ccb46fbb719e51acdd29cf0-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_fcd248219ccb46fbb719e51acdd29cf0-7"></a>             <span class="n">B</span>         <span class="n">FreeRTOS_PrefetchAbortHandler</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_641a579ca7f74eea88a7d2fb360c2d51-8"><code data-line-number=" 8"></code></a></td>
-<td class="code"><code><a name="rest_code_641a579ca7f74eea88a7d2fb360c2d51-8"></a>             <span class="n">B</span>         <span class="n">FreeRTOS_DataAbortHandler</span>
+<td class="linenos linenodiv"><a href="#rest_code_fcd248219ccb46fbb719e51acdd29cf0-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_fcd248219ccb46fbb719e51acdd29cf0-8"></a>             <span class="n">B</span>         <span class="n">FreeRTOS_DataAbortHandler</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_641a579ca7f74eea88a7d2fb360c2d51-9"><code data-line-number=" 9"></code></a></td>
-<td class="code"><code><a name="rest_code_641a579ca7f74eea88a7d2fb360c2d51-9"></a>             <span class="n">NOP</span>       <span class="cm">/* Placeholder for address exception vector*/</span>
+<td class="linenos linenodiv"><a href="#rest_code_fcd248219ccb46fbb719e51acdd29cf0-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_fcd248219ccb46fbb719e51acdd29cf0-9"></a>             <span class="n">NOP</span>       <span class="cm">/* Placeholder for address exception vector*/</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_641a579ca7f74eea88a7d2fb360c2d51-10"><code data-line-number="10"></code></a></td>
-<td class="code"><code><a name="rest_code_641a579ca7f74eea88a7d2fb360c2d51-10"></a>             <span class="n">LDR</span>   <span class="n">PC</span><span class="p">,</span> <span class="n">_irq</span>
+<td class="linenos linenodiv"><a href="#rest_code_fcd248219ccb46fbb719e51acdd29cf0-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_fcd248219ccb46fbb719e51acdd29cf0-10"></a>             <span class="n">LDR</span>   <span class="n">PC</span><span class="p">,</span> <span class="n">_irq</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_641a579ca7f74eea88a7d2fb360c2d51-11"><code data-line-number="11"></code></a></td>
-<td class="code"><code><a name="rest_code_641a579ca7f74eea88a7d2fb360c2d51-11"></a>             <span class="n">B</span>         <span class="n">FreeRTOS_FIQHandler</span>
+<td class="linenos linenodiv"><a href="#rest_code_fcd248219ccb46fbb719e51acdd29cf0-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_fcd248219ccb46fbb719e51acdd29cf0-11"></a>             <span class="n">B</span>         <span class="n">FreeRTOS_FIQHandler</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_641a579ca7f74eea88a7d2fb360c2d51-12"><code data-line-number="12"></code></a></td>
-<td class="code"><code><a name="rest_code_641a579ca7f74eea88a7d2fb360c2d51-12"></a>
+<td class="linenos linenodiv"><a href="#rest_code_fcd248219ccb46fbb719e51acdd29cf0-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_fcd248219ccb46fbb719e51acdd29cf0-12"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_641a579ca7f74eea88a7d2fb360c2d51-13"><code data-line-number="13"></code></a></td>
-<td class="code"><code><a name="rest_code_641a579ca7f74eea88a7d2fb360c2d51-13"></a>     <span class="nl">_irq</span><span class="p">:</span>   <span class="p">.</span><span class="n">word</span> <span class="n">FreeRTOS_IRQ_Handler</span>
+<td class="linenos linenodiv"><a href="#rest_code_fcd248219ccb46fbb719e51acdd29cf0-13"><code data-line-number="13"></code></a></td>
+<td class="code"><code><a name="rest_code_fcd248219ccb46fbb719e51acdd29cf0-13"></a>     <span class="nl">_irq</span><span class="p">:</span>   <span class="p">.</span><span class="n">word</span> <span class="n">FreeRTOS_IRQ_Handler</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_641a579ca7f74eea88a7d2fb360c2d51-14"><code data-line-number="14"></code></a></td>
-<td class="code"><code><a name="rest_code_641a579ca7f74eea88a7d2fb360c2d51-14"></a>     <span class="nl">_swi</span><span class="p">:</span>   <span class="p">.</span><span class="n">word</span> <span class="n">FreeRTOS_SWI_Handler</span>
+<td class="linenos linenodiv"><a href="#rest_code_fcd248219ccb46fbb719e51acdd29cf0-14"><code data-line-number="14"></code></a></td>
+<td class="code"><code><a name="rest_code_fcd248219ccb46fbb719e51acdd29cf0-14"></a>     <span class="nl">_swi</span><span class="p">:</span>   <span class="p">.</span><span class="n">word</span> <span class="n">FreeRTOS_SWI_Handler</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_641a579ca7f74eea88a7d2fb360c2d51-15"><code data-line-number="15"></code></a></td>
-<td class="code"><code><a name="rest_code_641a579ca7f74eea88a7d2fb360c2d51-15"></a>
+<td class="linenos linenodiv"><a href="#rest_code_fcd248219ccb46fbb719e51acdd29cf0-15"><code data-line-number="15"></code></a></td>
+<td class="code"><code><a name="rest_code_fcd248219ccb46fbb719e51acdd29cf0-15"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_641a579ca7f74eea88a7d2fb360c2d51-16"><code data-line-number="16"></code></a></td>
-<td class="code"><code><a name="rest_code_641a579ca7f74eea88a7d2fb360c2d51-16"></a>     <span class="p">.</span><span class="n">align</span> <span class="mi">4</span>
+<td class="linenos linenodiv"><a href="#rest_code_fcd248219ccb46fbb719e51acdd29cf0-16"><code data-line-number="16"></code></a></td>
+<td class="code"><code><a name="rest_code_fcd248219ccb46fbb719e51acdd29cf0-16"></a>     <span class="p">.</span><span class="n">align</span> <span class="mi">4</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_641a579ca7f74eea88a7d2fb360c2d51-17"><code data-line-number="17"></code></a></td>
-<td class="code"><code><a name="rest_code_641a579ca7f74eea88a7d2fb360c2d51-17"></a>     <span class="nl">FreeRTOS_FIQHandler</span><span class="p">:</span>
+<td class="linenos linenodiv"><a href="#rest_code_fcd248219ccb46fbb719e51acdd29cf0-17"><code data-line-number="17"></code></a></td>
+<td class="code"><code><a name="rest_code_fcd248219ccb46fbb719e51acdd29cf0-17"></a>     <span class="nl">FreeRTOS_FIQHandler</span><span class="p">:</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_641a579ca7f74eea88a7d2fb360c2d51-18"><code data-line-number="18"></code></a></td>
-<td class="code"><code><a name="rest_code_641a579ca7f74eea88a7d2fb360c2d51-18"></a>     <span class="p">...</span>
+<td class="linenos linenodiv"><a href="#rest_code_fcd248219ccb46fbb719e51acdd29cf0-18"><code data-line-number="18"></code></a></td>
+<td class="code"><code><a name="rest_code_fcd248219ccb46fbb719e51acdd29cf0-18"></a>     <span class="p">...</span>
 </code></td>
 </tr>
 </table></div>
@@ -287,168 +287,168 @@ counter, setting up data MMU and data cache, initializing GIC done by calling <e
 to start of c-runtime, <em>_os_start</em> (line 32) that eventuall jum to main task. A snippet of this file,</p>
 <div class="code"><table class="codetable">
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-1"><code data-line-number=" 1"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-1"></a><span class="p">...</span>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-1"></a><span class="p">...</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-2"><code data-line-number=" 2"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-2"></a><span class="p">.</span><span class="n">globl</span> <span class="n">_boot</span>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-2"></a><span class="p">.</span><span class="n">globl</span> <span class="n">_boot</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-3"><code data-line-number=" 3"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-3"></a><span class="nl">Reset_Handler</span> <span class="p">:</span>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-3"></a><span class="nl">Reset_Handler</span> <span class="p">:</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-4"><code data-line-number=" 4"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-4"></a><span class="nl">_boot</span><span class="p">:</span>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-4"></a><span class="nl">_boot</span><span class="p">:</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-5"><code data-line-number=" 5"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-5"></a><span class="cp">#------------------------------------------------------------------</span>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-5"></a><span class="cp">#------------------------------------------------------------------</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-6"><code data-line-number=" 6"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-6"></a><span class="cp">#@ 1 Initialize Registers &amp; Vector Pointer</span>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-6"></a><span class="cp">#@ 1 Initialize Registers &amp; Vector Pointer</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-7"><code data-line-number=" 7"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-7"></a><span class="cp">#------------------------------------------------------------------</span>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-7"></a><span class="cp">#------------------------------------------------------------------</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-8"><code data-line-number=" 8"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-8"></a>        <span class="n">cpsid</span>   <span class="n">aif</span>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-8"></a>        <span class="n">cpsid</span>   <span class="n">aif</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-9"><code data-line-number=" 9"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-9"></a>        <span class="n">ldr</span>     <span class="n">sp</span><span class="p">,</span> <span class="p">.</span><span class="n">Lstack</span>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-9"></a>        <span class="n">ldr</span>     <span class="n">sp</span><span class="p">,</span> <span class="p">.</span><span class="n">Lstack</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-10"><code data-line-number="10"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-10"></a>        <span class="n">bl</span>      <span class="n">arm_cpu_lowlevel_init</span>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-10"></a>        <span class="n">bl</span>      <span class="n">arm_cpu_lowlevel_init</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-11"><code data-line-number="11"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-11"></a>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-11"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-12"><code data-line-number="12"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-12"></a><span class="cp">#------------------------------------------------------------------</span>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-12"></a><span class="cp">#------------------------------------------------------------------</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-13"><code data-line-number="13"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-13"></a><span class="cp">#@ 2 Initialize Stack Pointers</span>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-13"><code data-line-number="13"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-13"></a><span class="cp">#@ 2 Initialize Stack Pointers</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-14"><code data-line-number="14"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-14"></a><span class="cp">#------------------------------------------------------------------</span>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-14"><code data-line-number="14"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-14"></a><span class="cp">#------------------------------------------------------------------</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-15"><code data-line-number="15"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-15"></a>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-15"><code data-line-number="15"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-15"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-16"><code data-line-number="16"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-16"></a>    <span class="cp">#@  2.1 Initialize stack pointer registers</span>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-16"><code data-line-number="16"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-16"></a>    <span class="cp">#@  2.1 Initialize stack pointer registers</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-17"><code data-line-number="17"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-17"></a>    <span class="cp"># no stack for MODE_USR, MODE_MNT, MODE_HYP, MODE_SYS ?</span>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-17"><code data-line-number="17"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-17"></a>    <span class="cp"># no stack for MODE_USR, MODE_MNT, MODE_HYP, MODE_SYS ?</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-18"><code data-line-number="18"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-18"></a>    <span class="n">cps</span>     <span class="n">MODE_FIQ</span>                 <span class="err">@</span> <span class="n">change</span> <span class="n">program</span> <span class="n">state</span> <span class="n">mode</span>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-18"><code data-line-number="18"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-18"></a>    <span class="n">cps</span>     <span class="n">MODE_FIQ</span>                 <span class="err">@</span> <span class="n">change</span> <span class="n">program</span> <span class="n">state</span> <span class="n">mode</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-19"><code data-line-number="19"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-19"></a>    <span class="n">ldr</span>     <span class="n">sp</span><span class="p">,</span>  <span class="o">=</span><span class="n">__fiq_stack</span>        <span class="err">@</span> <span class="n">set</span> <span class="n">the</span> <span class="n">stack</span> <span class="n">pointer</span> <span class="k">for</span> <span class="n">this</span> <span class="n">mode</span>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-19"><code data-line-number="19"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-19"></a>    <span class="n">ldr</span>     <span class="n">sp</span><span class="p">,</span>  <span class="o">=</span><span class="n">__fiq_stack</span>        <span class="err">@</span> <span class="n">set</span> <span class="n">the</span> <span class="n">stack</span> <span class="n">pointer</span> <span class="k">for</span> <span class="n">this</span> <span class="n">mode</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-20"><code data-line-number="20"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-20"></a>    <span class="n">mov</span>     <span class="n">lr</span><span class="p">,</span>  <span class="err">#</span><span class="mi">0</span>                  <span class="err">@</span> <span class="n">clear</span> <span class="n">the</span> <span class="n">link</span> <span class="k">register</span> <span class="k">for</span> <span class="n">this</span> <span class="n">mode</span>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-20"><code data-line-number="20"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-20"></a>    <span class="n">mov</span>     <span class="n">lr</span><span class="p">,</span>  <span class="err">#</span><span class="mi">0</span>                  <span class="err">@</span> <span class="n">clear</span> <span class="n">the</span> <span class="n">link</span> <span class="k">register</span> <span class="k">for</span> <span class="n">this</span> <span class="n">mode</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-21"><code data-line-number="21"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-21"></a>    <span class="p">...</span>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-21"><code data-line-number="21"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-21"></a>    <span class="p">...</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-22"><code data-line-number="22"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-22"></a>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-22"><code data-line-number="22"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-22"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-23"><code data-line-number="23"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-23"></a><span class="cm">/* Reset and start Cycle Counter */</span>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-23"><code data-line-number="23"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-23"></a><span class="cm">/* Reset and start Cycle Counter */</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-24"><code data-line-number="24"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-24"></a>        <span class="n">mov</span>     <span class="n">r2</span><span class="p">,</span> <span class="err">#</span><span class="mh">0x80000000</span>         <span class="cm">/* clear overflow */</span>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-24"><code data-line-number="24"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-24"></a>        <span class="n">mov</span>     <span class="n">r2</span><span class="p">,</span> <span class="err">#</span><span class="mh">0x80000000</span>         <span class="cm">/* clear overflow */</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-25"><code data-line-number="25"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-25"></a>        <span class="n">mcr</span>     <span class="n">p15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r2</span><span class="p">,</span> <span class="n">c9</span><span class="p">,</span> <span class="n">c12</span><span class="p">,</span> <span class="mi">3</span>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-25"><code data-line-number="25"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-25"></a>        <span class="n">mcr</span>     <span class="n">p15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r2</span><span class="p">,</span> <span class="n">c9</span><span class="p">,</span> <span class="n">c12</span><span class="p">,</span> <span class="mi">3</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-26"><code data-line-number="26"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-26"></a>        <span class="n">mov</span>     <span class="n">r2</span><span class="p">,</span> <span class="err">#</span><span class="mh">0xd</span>                <span class="cm">/* D, C, E */</span>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-26"><code data-line-number="26"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-26"></a>        <span class="n">mov</span>     <span class="n">r2</span><span class="p">,</span> <span class="err">#</span><span class="mh">0xd</span>                <span class="cm">/* D, C, E */</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-27"><code data-line-number="27"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-27"></a>        <span class="n">mcr</span>     <span class="n">p15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r2</span><span class="p">,</span> <span class="n">c9</span><span class="p">,</span> <span class="n">c12</span><span class="p">,</span> <span class="mi">0</span>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-27"><code data-line-number="27"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-27"></a>        <span class="n">mcr</span>     <span class="n">p15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r2</span><span class="p">,</span> <span class="n">c9</span><span class="p">,</span> <span class="n">c12</span><span class="p">,</span> <span class="mi">0</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-28"><code data-line-number="28"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-28"></a>        <span class="n">mov</span>     <span class="n">r2</span><span class="p">,</span> <span class="err">#</span><span class="mh">0x80000000</span>         <span class="cm">/* enable cycle counter */</span>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-28"><code data-line-number="28"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-28"></a>        <span class="n">mov</span>     <span class="n">r2</span><span class="p">,</span> <span class="err">#</span><span class="mh">0x80000000</span>         <span class="cm">/* enable cycle counter */</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-29"><code data-line-number="29"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-29"></a>        <span class="n">mcr</span>     <span class="n">p15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r2</span><span class="p">,</span> <span class="n">c9</span><span class="p">,</span> <span class="n">c12</span><span class="p">,</span> <span class="mi">1</span>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-29"><code data-line-number="29"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-29"></a>        <span class="n">mcr</span>     <span class="n">p15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r2</span><span class="p">,</span> <span class="n">c9</span><span class="p">,</span> <span class="n">c12</span><span class="p">,</span> <span class="mi">1</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-30"><code data-line-number="30"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-30"></a>        <span class="n">bl</span>      <span class="n">_sysinit</span>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-30"><code data-line-number="30"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-30"></a>        <span class="n">bl</span>      <span class="n">_sysinit</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-31"><code data-line-number="31"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-31"></a>    <span class="n">cpsie</span>  <span class="n">aif</span>    <span class="err">@</span> <span class="n">Enable</span> <span class="n">asynchronous</span> <span class="n">aborts</span><span class="p">,</span> <span class="n">interrupts</span><span class="p">,</span> <span class="n">and</span> <span class="n">fast</span> <span class="n">interrupts</span><span class="p">.</span>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-31"><code data-line-number="31"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-31"></a>    <span class="n">cpsie</span>  <span class="n">aif</span>    <span class="err">@</span> <span class="n">Enable</span> <span class="n">asynchronous</span> <span class="n">aborts</span><span class="p">,</span> <span class="n">interrupts</span><span class="p">,</span> <span class="n">and</span> <span class="n">fast</span> <span class="n">interrupts</span><span class="p">.</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-32"><code data-line-number="32"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-32"></a>        <span class="n">b</span>       <span class="n">_os_start</span>                               <span class="cm">/* jump to C startup code */</span>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-32"><code data-line-number="32"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-32"></a>        <span class="n">b</span>       <span class="n">_os_start</span>                               <span class="cm">/* jump to C startup code */</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-33"><code data-line-number="33"></code></a></td>
-<td class="code"><code><a name="rest_code_5741f1b1a4544a0ea0eaf374a99e4edf-33"></a>        <span class="n">and</span>     <span class="n">r0</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">r0</span>                      <span class="cm">/* no op */</span>
+<td class="linenos linenodiv"><a href="#rest_code_8be952407d4344658c17b0f05ef70cae-33"><code data-line-number="33"></code></a></td>
+<td class="code"><code><a name="rest_code_8be952407d4344658c17b0f05ef70cae-33"></a>        <span class="n">and</span>     <span class="n">r0</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">r0</span>                      <span class="cm">/* no op */</span>
 </code></td>
 </tr>
 </table></div>
@@ -462,116 +462,116 @@ having proper timer tick interrupt for task switching among other things so it i
 that the timer works correctly. A snippet of code,</p>
 <div class="code"><table class="codetable">
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_0efd33204f684efaa92a0eb4917be950-1"><code data-line-number=" 1"></code></a></td>
-<td class="code"><code><a name="rest_code_0efd33204f684efaa92a0eb4917be950-1"></a> <span class="kt">int</span> <span class="nf">_sysinit</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<td class="linenos linenodiv"><a href="#rest_code_89e558cafdce4564955a7d907415c03f-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_89e558cafdce4564955a7d907415c03f-1"></a> <span class="kt">int</span> <span class="nf">_sysinit</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_0efd33204f684efaa92a0eb4917be950-2"><code data-line-number=" 2"></code></a></td>
-<td class="code"><code><a name="rest_code_0efd33204f684efaa92a0eb4917be950-2"></a><span class="p">{</span>
+<td class="linenos linenodiv"><a href="#rest_code_89e558cafdce4564955a7d907415c03f-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_89e558cafdce4564955a7d907415c03f-2"></a><span class="p">{</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_0efd33204f684efaa92a0eb4917be950-3"><code data-line-number=" 3"></code></a></td>
-<td class="code"><code><a name="rest_code_0efd33204f684efaa92a0eb4917be950-3"></a>        <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">uval</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_89e558cafdce4564955a7d907415c03f-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_89e558cafdce4564955a7d907415c03f-3"></a>        <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">uval</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_0efd33204f684efaa92a0eb4917be950-4"><code data-line-number=" 4"></code></a></td>
-<td class="code"><code><a name="rest_code_0efd33204f684efaa92a0eb4917be950-4"></a>
+<td class="linenos linenodiv"><a href="#rest_code_89e558cafdce4564955a7d907415c03f-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_89e558cafdce4564955a7d907415c03f-4"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_0efd33204f684efaa92a0eb4917be950-5"><code data-line-number=" 5"></code></a></td>
-<td class="code"><code><a name="rest_code_0efd33204f684efaa92a0eb4917be950-5"></a>        <span class="n">setup_mem_banks</span><span class="p">();</span> <span class="c1">//setup the two mem banks</span>
+<td class="linenos linenodiv"><a href="#rest_code_89e558cafdce4564955a7d907415c03f-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_89e558cafdce4564955a7d907415c03f-5"></a>        <span class="n">setup_mem_banks</span><span class="p">();</span> <span class="c1">//setup the two mem banks</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_0efd33204f684efaa92a0eb4917be950-6"><code data-line-number=" 6"></code></a></td>
-<td class="code"><code><a name="rest_code_0efd33204f684efaa92a0eb4917be950-6"></a>        <span class="n">__mmu_init</span><span class="p">(</span><span class="n">get_cr</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">CR_M</span><span class="p">);</span> <span class="c1">//set up MMU</span>
+<td class="linenos linenodiv"><a href="#rest_code_89e558cafdce4564955a7d907415c03f-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_89e558cafdce4564955a7d907415c03f-6"></a>        <span class="n">__mmu_init</span><span class="p">(</span><span class="n">get_cr</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">CR_M</span><span class="p">);</span> <span class="c1">//set up MMU</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_0efd33204f684efaa92a0eb4917be950-7"><code data-line-number=" 7"></code></a></td>
-<td class="code"><code><a name="rest_code_0efd33204f684efaa92a0eb4917be950-7"></a>        <span class="n">uval</span> <span class="o">=</span> <span class="n">get_cpacr</span><span class="p">();</span>
+<td class="linenos linenodiv"><a href="#rest_code_89e558cafdce4564955a7d907415c03f-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_89e558cafdce4564955a7d907415c03f-7"></a>        <span class="n">uval</span> <span class="o">=</span> <span class="n">get_cpacr</span><span class="p">();</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_0efd33204f684efaa92a0eb4917be950-8"><code data-line-number=" 8"></code></a></td>
-<td class="code"><code><a name="rest_code_0efd33204f684efaa92a0eb4917be950-8"></a>        <span class="k">if</span> <span class="p">(</span> <span class="n">uval</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">31</span><span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+<td class="linenos linenodiv"><a href="#rest_code_89e558cafdce4564955a7d907415c03f-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_89e558cafdce4564955a7d907415c03f-8"></a>        <span class="k">if</span> <span class="p">(</span> <span class="n">uval</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">31</span><span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_0efd33204f684efaa92a0eb4917be950-9"><code data-line-number=" 9"></code></a></td>
-<td class="code"><code><a name="rest_code_0efd33204f684efaa92a0eb4917be950-9"></a>                <span class="n">set_cpacr</span><span class="p">(</span><span class="n">uval</span> <span class="o">|</span> <span class="p">(</span><span class="mi">3</span> <span class="o">&lt;&lt;</span> <span class="mi">20</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">3</span> <span class="o">&lt;&lt;</span> <span class="mi">22</span><span class="p">));</span>
+<td class="linenos linenodiv"><a href="#rest_code_89e558cafdce4564955a7d907415c03f-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_89e558cafdce4564955a7d907415c03f-9"></a>                <span class="n">set_cpacr</span><span class="p">(</span><span class="n">uval</span> <span class="o">|</span> <span class="p">(</span><span class="mi">3</span> <span class="o">&lt;&lt;</span> <span class="mi">20</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">3</span> <span class="o">&lt;&lt;</span> <span class="mi">22</span><span class="p">));</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_0efd33204f684efaa92a0eb4917be950-10"><code data-line-number="10"></code></a></td>
-<td class="code"><code><a name="rest_code_0efd33204f684efaa92a0eb4917be950-10"></a>        <span class="p">}</span>
+<td class="linenos linenodiv"><a href="#rest_code_89e558cafdce4564955a7d907415c03f-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_89e558cafdce4564955a7d907415c03f-10"></a>        <span class="p">}</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_0efd33204f684efaa92a0eb4917be950-11"><code data-line-number="11"></code></a></td>
-<td class="code"><code><a name="rest_code_0efd33204f684efaa92a0eb4917be950-11"></a>        <span class="c1">//memtests(); //optional test after mmu enable to verify</span>
+<td class="linenos linenodiv"><a href="#rest_code_89e558cafdce4564955a7d907415c03f-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_89e558cafdce4564955a7d907415c03f-11"></a>        <span class="c1">//memtests(); //optional test after mmu enable to verify</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_0efd33204f684efaa92a0eb4917be950-12"><code data-line-number="12"></code></a></td>
-<td class="code"><code><a name="rest_code_0efd33204f684efaa92a0eb4917be950-12"></a>        <span class="n">sysctl_init</span><span class="p">();</span> <span class="c1">//setup timer</span>
+<td class="linenos linenodiv"><a href="#rest_code_89e558cafdce4564955a7d907415c03f-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_89e558cafdce4564955a7d907415c03f-12"></a>        <span class="n">sysctl_init</span><span class="p">();</span> <span class="c1">//setup timer</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_0efd33204f684efaa92a0eb4917be950-13"><code data-line-number="13"></code></a></td>
-<td class="code"><code><a name="rest_code_0efd33204f684efaa92a0eb4917be950-13"></a>         <span class="n">gic_init</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span>
+<td class="linenos linenodiv"><a href="#rest_code_89e558cafdce4564955a7d907415c03f-13"><code data-line-number="13"></code></a></td>
+<td class="code"><code><a name="rest_code_89e558cafdce4564955a7d907415c03f-13"></a>         <span class="n">gic_init</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_0efd33204f684efaa92a0eb4917be950-14"><code data-line-number="14"></code></a></td>
-<td class="code"><code><a name="rest_code_0efd33204f684efaa92a0eb4917be950-14"></a>                <span class="mi">29</span><span class="p">,</span>
+<td class="linenos linenodiv"><a href="#rest_code_89e558cafdce4564955a7d907415c03f-14"><code data-line-number="14"></code></a></td>
+<td class="code"><code><a name="rest_code_89e558cafdce4564955a7d907415c03f-14"></a>                <span class="mi">29</span><span class="p">,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_0efd33204f684efaa92a0eb4917be950-15"><code data-line-number="15"></code></a></td>
-<td class="code"><code><a name="rest_code_0efd33204f684efaa92a0eb4917be950-15"></a>                <span class="n">IOMEM</span><span class="p">(</span><span class="mh">0x58201000</span><span class="p">),</span> <span class="c1">//IOMEM(get_gicd_base_address()),</span>
+<td class="linenos linenodiv"><a href="#rest_code_89e558cafdce4564955a7d907415c03f-15"><code data-line-number="15"></code></a></td>
+<td class="code"><code><a name="rest_code_89e558cafdce4564955a7d907415c03f-15"></a>                <span class="n">IOMEM</span><span class="p">(</span><span class="mh">0x58201000</span><span class="p">),</span> <span class="c1">//IOMEM(get_gicd_base_address()),</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_0efd33204f684efaa92a0eb4917be950-16"><code data-line-number="16"></code></a></td>
-<td class="code"><code><a name="rest_code_0efd33204f684efaa92a0eb4917be950-16"></a>                <span class="n">IOMEM</span><span class="p">(</span><span class="mh">0x58202000</span><span class="p">)</span> <span class="c1">//either 2000 or 100 IOMEM(get_gicc_base_address())</span>
+<td class="linenos linenodiv"><a href="#rest_code_89e558cafdce4564955a7d907415c03f-16"><code data-line-number="16"></code></a></td>
+<td class="code"><code><a name="rest_code_89e558cafdce4564955a7d907415c03f-16"></a>                <span class="n">IOMEM</span><span class="p">(</span><span class="mh">0x58202000</span><span class="p">)</span> <span class="c1">//either 2000 or 100 IOMEM(get_gicc_base_address())</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_0efd33204f684efaa92a0eb4917be950-17"><code data-line-number="17"></code></a></td>
-<td class="code"><code><a name="rest_code_0efd33204f684efaa92a0eb4917be950-17"></a>                 <span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_89e558cafdce4564955a7d907415c03f-17"><code data-line-number="17"></code></a></td>
+<td class="code"><code><a name="rest_code_89e558cafdce4564955a7d907415c03f-17"></a>                 <span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_0efd33204f684efaa92a0eb4917be950-18"><code data-line-number="18"></code></a></td>
-<td class="code"><code><a name="rest_code_0efd33204f684efaa92a0eb4917be950-18"></a>        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_89e558cafdce4564955a7d907415c03f-18"><code data-line-number="18"></code></a></td>
+<td class="code"><code><a name="rest_code_89e558cafdce4564955a7d907415c03f-18"></a>        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_0efd33204f684efaa92a0eb4917be950-19"><code data-line-number="19"></code></a></td>
-<td class="code"><code><a name="rest_code_0efd33204f684efaa92a0eb4917be950-19"></a><span class="p">}</span>
+<td class="linenos linenodiv"><a href="#rest_code_89e558cafdce4564955a7d907415c03f-19"><code data-line-number="19"></code></a></td>
+<td class="code"><code><a name="rest_code_89e558cafdce4564955a7d907415c03f-19"></a><span class="p">}</span>
 </code></td>
 </tr>
 </table></div>
 <p>I put the set of files that are specific to my platform in <em>freertos-rtx/platform</em>. Their are
 for initialization of the h/w platform components such as timer, MMU, GIC etc.. Here is what
 this tree looks like,</p>
-<pre class="code text"><a name="rest_code_b725547bc8fd4f0c956eed9b3fd11259-1"></a>freertos-rtx/platform/
-<a name="rest_code_b725547bc8fd4f0c956eed9b3fd11259-2"></a>├── FreeRTOS_asm_vectors.S
-<a name="rest_code_b725547bc8fd4f0c956eed9b3fd11259-3"></a>├── FreeRTOS_tick_config.c
-<a name="rest_code_b725547bc8fd4f0c956eed9b3fd11259-4"></a>├── Init.qemu.S
-<a name="rest_code_b725547bc8fd4f0c956eed9b3fd11259-5"></a>├── cache-armv7.S
-<a name="rest_code_b725547bc8fd4f0c956eed9b3fd11259-6"></a>├── cache.c
-<a name="rest_code_b725547bc8fd4f0c956eed9b3fd11259-7"></a>├── gic.c
-<a name="rest_code_b725547bc8fd4f0c956eed9b3fd11259-8"></a>├── lowlevel.S
-<a name="rest_code_b725547bc8fd4f0c956eed9b3fd11259-9"></a>├── mmu.c
-<a name="rest_code_b725547bc8fd4f0c956eed9b3fd11259-10"></a>├── reent_init.c
-<a name="rest_code_b725547bc8fd4f0c956eed9b3fd11259-11"></a>├── sysinit.c
-<a name="rest_code_b725547bc8fd4f0c956eed9b3fd11259-12"></a>└── vectors.c
+<pre class="code text"><a name="rest_code_00cf139da6e545159e032230695cf1fe-1"></a>freertos-rtx/platform/
+<a name="rest_code_00cf139da6e545159e032230695cf1fe-2"></a>├── FreeRTOS_asm_vectors.S
+<a name="rest_code_00cf139da6e545159e032230695cf1fe-3"></a>├── FreeRTOS_tick_config.c
+<a name="rest_code_00cf139da6e545159e032230695cf1fe-4"></a>├── Init.qemu.S
+<a name="rest_code_00cf139da6e545159e032230695cf1fe-5"></a>├── cache-armv7.S
+<a name="rest_code_00cf139da6e545159e032230695cf1fe-6"></a>├── cache.c
+<a name="rest_code_00cf139da6e545159e032230695cf1fe-7"></a>├── gic.c
+<a name="rest_code_00cf139da6e545159e032230695cf1fe-8"></a>├── lowlevel.S
+<a name="rest_code_00cf139da6e545159e032230695cf1fe-9"></a>├── mmu.c
+<a name="rest_code_00cf139da6e545159e032230695cf1fe-10"></a>├── reent_init.c
+<a name="rest_code_00cf139da6e545159e032230695cf1fe-11"></a>├── sysinit.c
+<a name="rest_code_00cf139da6e545159e032230695cf1fe-12"></a>└── vectors.c
 </pre>
 <p>The <em>_os_start</em> was to set up C-runtime code/data sections,stacks and heaps. It also initialized memory
 array for the data variables of the program, for example, "int one23 = 123;" in your c-code ? It set up
@@ -581,213 +581,213 @@ adjustment as needed to match the code and data sections of your port. Typically
 in your linker script. I will leave the linker script later. A snippet of CRT code,</p>
 <div class="code"><table class="codetable">
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-1"><code data-line-number=" 1"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-1"></a><span class="p">.</span><span class="nl">Lsbss_start</span><span class="p">:</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-1"></a><span class="p">.</span><span class="nl">Lsbss_start</span><span class="p">:</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-2"><code data-line-number=" 2"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-2"></a>        <span class="p">.</span><span class="kt">long</span>   <span class="n">__sbss_start</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-2"></a>        <span class="p">.</span><span class="kt">long</span>   <span class="n">__sbss_start</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-3"><code data-line-number=" 3"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-3"></a>        <span class="p">...</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-3"></a>        <span class="p">...</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-4"><code data-line-number=" 4"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-4"></a>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-4"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-5"><code data-line-number=" 5"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-5"></a><span class="p">.</span><span class="nl">Lstack</span><span class="p">:</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-5"></a><span class="p">.</span><span class="nl">Lstack</span><span class="p">:</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-6"><code data-line-number=" 6"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-6"></a>        <span class="p">.</span><span class="kt">long</span>   <span class="n">__stack</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-6"></a>        <span class="p">.</span><span class="kt">long</span>   <span class="n">__stack</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-7"><code data-line-number=" 7"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-7"></a>        <span class="p">...</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-7"></a>        <span class="p">...</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-8"><code data-line-number=" 8"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-8"></a>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-8"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-9"><code data-line-number=" 9"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-9"></a>        <span class="p">.</span><span class="n">weak</span>   <span class="n">_os_start</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-9"></a>        <span class="p">.</span><span class="n">weak</span>   <span class="n">_os_start</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-10"><code data-line-number="10"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-10"></a><span class="nl">_os_start</span><span class="p">:</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-10"></a><span class="nl">_os_start</span><span class="p">:</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-11"><code data-line-number="11"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-11"></a>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-11"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-12"><code data-line-number="12"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-12"></a><span class="cm">/* Clear cp15 regs with unknown reset values */</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-12"></a><span class="cm">/* Clear cp15 regs with unknown reset values */</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-13"><code data-line-number="13"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-13"></a>        <span class="n">mov</span>     <span class="n">r0</span><span class="p">,</span> <span class="err">#</span><span class="mh">0x0</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-13"><code data-line-number="13"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-13"></a>        <span class="n">mov</span>     <span class="n">r0</span><span class="p">,</span> <span class="err">#</span><span class="mh">0x0</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-14"><code data-line-number="14"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-14"></a>        <span class="n">mcr</span>     <span class="n">p15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">c5</span><span class="p">,</span> <span class="n">c0</span><span class="p">,</span> <span class="mi">0</span>   <span class="cm">/* DFSR */</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-14"><code data-line-number="14"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-14"></a>        <span class="n">mcr</span>     <span class="n">p15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">c5</span><span class="p">,</span> <span class="n">c0</span><span class="p">,</span> <span class="mi">0</span>   <span class="cm">/* DFSR */</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-15"><code data-line-number="15"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-15"></a>        <span class="n">mcr</span>     <span class="n">p15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">c5</span><span class="p">,</span> <span class="n">c0</span><span class="p">,</span> <span class="mi">1</span>   <span class="cm">/* IFSR */</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-15"><code data-line-number="15"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-15"></a>        <span class="n">mcr</span>     <span class="n">p15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">c5</span><span class="p">,</span> <span class="n">c0</span><span class="p">,</span> <span class="mi">1</span>   <span class="cm">/* IFSR */</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-16"><code data-line-number="16"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-16"></a>        <span class="n">mcr</span>     <span class="n">p15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">c6</span><span class="p">,</span> <span class="n">c0</span><span class="p">,</span> <span class="mi">0</span>   <span class="cm">/* DFAR */</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-16"><code data-line-number="16"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-16"></a>        <span class="n">mcr</span>     <span class="n">p15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">c6</span><span class="p">,</span> <span class="n">c0</span><span class="p">,</span> <span class="mi">0</span>   <span class="cm">/* DFAR */</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-17"><code data-line-number="17"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-17"></a>        <span class="n">mcr</span>     <span class="n">p15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">c6</span><span class="p">,</span> <span class="n">c0</span><span class="p">,</span> <span class="mi">2</span>   <span class="cm">/* IFAR */</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-17"><code data-line-number="17"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-17"></a>        <span class="n">mcr</span>     <span class="n">p15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">c6</span><span class="p">,</span> <span class="n">c0</span><span class="p">,</span> <span class="mi">2</span>   <span class="cm">/* IFAR */</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-18"><code data-line-number="18"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-18"></a>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-18"><code data-line-number="18"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-18"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-19"><code data-line-number="19"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-19"></a>        <span class="p">...</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-19"><code data-line-number="19"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-19"></a>        <span class="p">...</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-20"><code data-line-number="20"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-20"></a>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-20"><code data-line-number="20"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-20"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-21"><code data-line-number="21"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-21"></a><span class="p">.</span><span class="nl">Lloop_bss</span><span class="p">:</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-21"><code data-line-number="21"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-21"></a><span class="p">.</span><span class="nl">Lloop_bss</span><span class="p">:</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-22"><code data-line-number="22"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-22"></a>        <span class="n">cmp</span>     <span class="n">r1</span><span class="p">,</span><span class="n">r2</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-22"><code data-line-number="22"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-22"></a>        <span class="n">cmp</span>     <span class="n">r1</span><span class="p">,</span><span class="n">r2</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-23"><code data-line-number="23"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-23"></a>        <span class="n">bge</span>     <span class="p">.</span><span class="n">Lenclbss</span>               <span class="cm">/* If no BSS, no clearing required */</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-23"><code data-line-number="23"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-23"></a>        <span class="n">bge</span>     <span class="p">.</span><span class="n">Lenclbss</span>               <span class="cm">/* If no BSS, no clearing required */</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-24"><code data-line-number="24"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-24"></a>        <span class="n">str</span>     <span class="n">r0</span><span class="p">,</span> <span class="p">[</span><span class="n">r1</span><span class="p">],</span> <span class="err">#</span><span class="mi">4</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-24"><code data-line-number="24"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-24"></a>        <span class="n">str</span>     <span class="n">r0</span><span class="p">,</span> <span class="p">[</span><span class="n">r1</span><span class="p">],</span> <span class="err">#</span><span class="mi">4</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-25"><code data-line-number="25"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-25"></a>        <span class="n">b</span>       <span class="p">.</span><span class="n">Lloop_bss</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-25"><code data-line-number="25"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-25"></a>        <span class="n">b</span>       <span class="p">.</span><span class="n">Lloop_bss</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-26"><code data-line-number="26"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-26"></a>        <span class="p">....</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-26"><code data-line-number="26"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-26"></a>        <span class="p">....</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-27"><code data-line-number="27"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-27"></a>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-27"><code data-line-number="27"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-27"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-28"><code data-line-number="28"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-28"></a><span class="p">.</span><span class="nl">Lenclbss</span><span class="p">:</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-28"><code data-line-number="28"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-28"></a><span class="p">.</span><span class="nl">Lenclbss</span><span class="p">:</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-29"><code data-line-number="29"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-29"></a>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-29"><code data-line-number="29"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-29"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-30"><code data-line-number="30"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-30"></a>        <span class="cm">/* set stack pointer */</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-30"><code data-line-number="30"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-30"></a>        <span class="cm">/* set stack pointer */</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-31"><code data-line-number="31"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-31"></a>        <span class="n">ldr</span>     <span class="n">r13</span><span class="p">,.</span><span class="n">Lstack</span>             <span class="cm">/* stack address */</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-31"><code data-line-number="31"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-31"></a>        <span class="n">ldr</span>     <span class="n">r13</span><span class="p">,.</span><span class="n">Lstack</span>             <span class="cm">/* stack address */</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-32"><code data-line-number="32"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-32"></a>    <span class="cm">/* Reset and start Global Timer */</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-32"><code data-line-number="32"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-32"></a>    <span class="cm">/* Reset and start Global Timer */</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-33"><code data-line-number="33"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-33"></a>        <span class="n">mov</span>     <span class="n">r0</span><span class="p">,</span> <span class="err">#</span><span class="mh">0x0</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-33"><code data-line-number="33"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-33"></a>        <span class="n">mov</span>     <span class="n">r0</span><span class="p">,</span> <span class="err">#</span><span class="mh">0x0</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-34"><code data-line-number="34"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-34"></a>        <span class="n">mov</span>     <span class="n">r1</span><span class="p">,</span> <span class="err">#</span><span class="mh">0x0</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-34"><code data-line-number="34"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-34"></a>        <span class="n">mov</span>     <span class="n">r1</span><span class="p">,</span> <span class="err">#</span><span class="mh">0x0</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-35"><code data-line-number="35"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-35"></a>        <span class="n">bl</span> <span class="n">__libc_init_array</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-35"><code data-line-number="35"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-35"></a>        <span class="n">bl</span> <span class="n">__libc_init_array</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-36"><code data-line-number="36"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-36"></a>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-36"><code data-line-number="36"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-36"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-37"><code data-line-number="37"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-37"></a>        <span class="cm">/* make sure argc and argv are valid */</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-37"><code data-line-number="37"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-37"></a>        <span class="cm">/* make sure argc and argv are valid */</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-38"><code data-line-number="38"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-38"></a>        <span class="n">mov</span>     <span class="n">r0</span><span class="p">,</span> <span class="err">#</span><span class="mi">0</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-38"><code data-line-number="38"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-38"></a>        <span class="n">mov</span>     <span class="n">r0</span><span class="p">,</span> <span class="err">#</span><span class="mi">0</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-39"><code data-line-number="39"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-39"></a>        <span class="n">mov</span>     <span class="n">r1</span><span class="p">,</span> <span class="err">#</span><span class="mi">0</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-39"><code data-line-number="39"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-39"></a>        <span class="n">mov</span>     <span class="n">r1</span><span class="p">,</span> <span class="err">#</span><span class="mi">0</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-40"><code data-line-number="40"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-40"></a>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-40"><code data-line-number="40"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-40"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-41"><code data-line-number="41"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-41"></a>        <span class="cm">/* Let her rip */</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-41"><code data-line-number="41"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-41"></a>        <span class="cm">/* Let her rip */</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_7f313f9cdaa14d609ed2f30806a2b193-42"><code data-line-number="42"></code></a></td>
-<td class="code"><code><a name="rest_code_7f313f9cdaa14d609ed2f30806a2b193-42"></a>        <span class="n">bl</span>      <span class="n">main</span> <span class="c1">//off we go</span>
+<td class="linenos linenodiv"><a href="#rest_code_a85c360e4c994aed91231654abdcfb28-42"><code data-line-number="42"></code></a></td>
+<td class="code"><code><a name="rest_code_a85c360e4c994aed91231654abdcfb28-42"></a>        <span class="n">bl</span>      <span class="n">main</span> <span class="c1">//off we go</span>
 </code></td>
 </tr>
 </table></div>
@@ -796,21 +796,21 @@ point forward anything you want to do can be done in FreeRTOS.</p>
 <p>For my port, I created <em>freertos-rtx/lib</em> and put the CRT code here along with C-runtime support functions such
 as <em>read.c, write.c, exit.c, errno.c, open.c, sbrk.c, isatty.c etc..</em>. They are typical set of files needed
 in most OS port. My <em>lib</em> files looks like this,</p>
-<pre class="code text"><a name="rest_code_28d2dc45058d4f77b93b47abfde7a804-1"></a>freertos-rtx/lib/
-<a name="rest_code_28d2dc45058d4f77b93b47abfde7a804-2"></a>├── CMakeLists.txt
-<a name="rest_code_28d2dc45058d4f77b93b47abfde7a804-3"></a>├── _exit.c
-<a name="rest_code_28d2dc45058d4f77b93b47abfde7a804-4"></a>├── _sbrk.c
-<a name="rest_code_28d2dc45058d4f77b93b47abfde7a804-5"></a>├── close.c
-<a name="rest_code_28d2dc45058d4f77b93b47abfde7a804-6"></a>├── crt0.S
-<a name="rest_code_28d2dc45058d4f77b93b47abfde7a804-7"></a>├── errno.c
-<a name="rest_code_28d2dc45058d4f77b93b47abfde7a804-8"></a>├── fstat.c
-<a name="rest_code_28d2dc45058d4f77b93b47abfde7a804-9"></a>├── isatty.c
-<a name="rest_code_28d2dc45058d4f77b93b47abfde7a804-10"></a>├── lseek.c
-<a name="rest_code_28d2dc45058d4f77b93b47abfde7a804-11"></a>├── open.c
-<a name="rest_code_28d2dc45058d4f77b93b47abfde7a804-12"></a>├── read.c
-<a name="rest_code_28d2dc45058d4f77b93b47abfde7a804-13"></a>├── usleep.c
-<a name="rest_code_28d2dc45058d4f77b93b47abfde7a804-14"></a>├── util.c
-<a name="rest_code_28d2dc45058d4f77b93b47abfde7a804-15"></a>└── write.c
+<pre class="code text"><a name="rest_code_ee3088f3a5fb4359bb3a7fecac9fefe0-1"></a>freertos-rtx/lib/
+<a name="rest_code_ee3088f3a5fb4359bb3a7fecac9fefe0-2"></a>├── CMakeLists.txt
+<a name="rest_code_ee3088f3a5fb4359bb3a7fecac9fefe0-3"></a>├── _exit.c
+<a name="rest_code_ee3088f3a5fb4359bb3a7fecac9fefe0-4"></a>├── _sbrk.c
+<a name="rest_code_ee3088f3a5fb4359bb3a7fecac9fefe0-5"></a>├── close.c
+<a name="rest_code_ee3088f3a5fb4359bb3a7fecac9fefe0-6"></a>├── crt0.S
+<a name="rest_code_ee3088f3a5fb4359bb3a7fecac9fefe0-7"></a>├── errno.c
+<a name="rest_code_ee3088f3a5fb4359bb3a7fecac9fefe0-8"></a>├── fstat.c
+<a name="rest_code_ee3088f3a5fb4359bb3a7fecac9fefe0-9"></a>├── isatty.c
+<a name="rest_code_ee3088f3a5fb4359bb3a7fecac9fefe0-10"></a>├── lseek.c
+<a name="rest_code_ee3088f3a5fb4359bb3a7fecac9fefe0-11"></a>├── open.c
+<a name="rest_code_ee3088f3a5fb4359bb3a7fecac9fefe0-12"></a>├── read.c
+<a name="rest_code_ee3088f3a5fb4359bb3a7fecac9fefe0-13"></a>├── usleep.c
+<a name="rest_code_ee3088f3a5fb4359bb3a7fecac9fefe0-14"></a>├── util.c
+<a name="rest_code_ee3088f3a5fb4359bb3a7fecac9fefe0-15"></a>└── write.c
 </pre>
 <p>These files are mostly 10-20 lines of code, for example, <em>isatty(..)</em> is simply returned true since the UART
 port is a TTY device and the <em>open(..)</em> is simply returned EOI since I do not have FS support. They are
@@ -826,328 +826,328 @@ and command line interfacing with the RTOS. The <em>main()</em> is copied from d
 this port.</p>
 <div class="code"><table class="codetable">
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-1"><code data-line-number=" 1"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-1"></a><span class="kt">void</span> <span class="nf">main</span><span class="p">(</span> <span class="kt">void</span> <span class="p">)</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-1"></a><span class="kt">void</span> <span class="nf">main</span><span class="p">(</span> <span class="kt">void</span> <span class="p">)</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-2"><code data-line-number=" 2"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-2"></a><span class="p">{</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-2"></a><span class="p">{</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-3"><code data-line-number=" 3"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-3"></a>        <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">20</span><span class="p">];</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-3"></a>        <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">20</span><span class="p">];</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-4"><code data-line-number=" 4"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-4"></a>        <span class="kt">int</span> <span class="n">n</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-4"></a>        <span class="kt">int</span> <span class="n">n</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-5"><code data-line-number=" 5"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-5"></a>        <span class="cm">/* Create the queue. */</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-5"></a>        <span class="cm">/* Create the queue. */</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-6"><code data-line-number=" 6"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-6"></a>        <span class="n">xQueue</span> <span class="o">=</span> <span class="n">xQueueCreate</span><span class="p">(</span> <span class="n">mainQUEUE_LENGTH</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span> <span class="kt">uint32_t</span> <span class="p">)</span> <span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-6"></a>        <span class="n">xQueue</span> <span class="o">=</span> <span class="n">xQueueCreate</span><span class="p">(</span> <span class="n">mainQUEUE_LENGTH</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span> <span class="kt">uint32_t</span> <span class="p">)</span> <span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-7"><code data-line-number=" 7"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-7"></a>        <span class="n">xQueue_mon</span> <span class="o">=</span> <span class="n">xQueueCreate</span><span class="p">(</span> <span class="n">mainQUEUE_LENGTH</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span> <span class="kt">uint32_t</span> <span class="p">)</span> <span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-7"></a>        <span class="n">xQueue_mon</span> <span class="o">=</span> <span class="n">xQueueCreate</span><span class="p">(</span> <span class="n">mainQUEUE_LENGTH</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span> <span class="kt">uint32_t</span> <span class="p">)</span> <span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-8"><code data-line-number=" 8"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-8"></a>        <span class="n">xUARTQueue</span> <span class="o">=</span> <span class="n">xQueueCreate</span><span class="p">(</span> <span class="mi">1</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">)</span> <span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-8"></a>        <span class="n">xUARTQueue</span> <span class="o">=</span> <span class="n">xQueueCreate</span><span class="p">(</span> <span class="mi">1</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">)</span> <span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-9"><code data-line-number=" 9"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-9"></a>        <span class="n">serial_port_driver_install</span><span class="p">((</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="mh">0x58000000</span><span class="p">);</span> <span class="c1">//V2M_UART0);</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-9"></a>        <span class="n">serial_port_driver_install</span><span class="p">((</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="mh">0x58000000</span><span class="p">);</span> <span class="c1">//V2M_UART0);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-10"><code data-line-number="10"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-10"></a>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-10"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-11"><code data-line-number="11"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-11"></a>        <span class="n">vPortInstallFreeRTOSVectorTable</span><span class="p">();</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-11"></a>        <span class="n">vPortInstallFreeRTOSVectorTable</span><span class="p">();</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-12"><code data-line-number="12"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-12"></a>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-12"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-13"><code data-line-number="13"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-13"></a>        <span class="n">vfs_dev_uart_register</span><span class="p">();</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-13"><code data-line-number="13"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-13"></a>        <span class="n">vfs_dev_uart_register</span><span class="p">();</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-14"><code data-line-number="14"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-14"></a>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-14"><code data-line-number="14"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-14"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-15"><code data-line-number="15"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-15"></a>        <span class="n">timer_handle</span> <span class="o">=</span> <span class="n">xTimerCreateStatic</span><span class="p">(</span><span class="s">"timer"</span><span class="p">,</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-15"><code data-line-number="15"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-15"></a>        <span class="n">timer_handle</span> <span class="o">=</span> <span class="n">xTimerCreateStatic</span><span class="p">(</span><span class="s">"timer"</span><span class="p">,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-16"><code data-line-number="16"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-16"></a>                        <span class="mi">300UL</span><span class="o">/</span><span class="n">portTICK_PERIOD_MS</span><span class="p">,</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-16"><code data-line-number="16"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-16"></a>                        <span class="mi">300UL</span><span class="o">/</span><span class="n">portTICK_PERIOD_MS</span><span class="p">,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-17"><code data-line-number="17"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-17"></a>                        <span class="n">pdTRUE</span><span class="p">,</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-17"><code data-line-number="17"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-17"></a>                        <span class="n">pdTRUE</span><span class="p">,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-18"><code data-line-number="18"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-18"></a>                        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="mi">0</span><span class="p">,</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-18"><code data-line-number="18"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-18"></a>                        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="mi">0</span><span class="p">,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-19"><code data-line-number="19"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-19"></a>                        <span class="n">prvTimerCallback</span><span class="p">,</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-19"><code data-line-number="19"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-19"></a>                        <span class="n">prvTimerCallback</span><span class="p">,</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-20"><code data-line-number="20"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-20"></a>                        <span class="o">&amp;</span><span class="n">xTimerBuffer</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-20"><code data-line-number="20"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-20"></a>                        <span class="o">&amp;</span><span class="n">xTimerBuffer</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-21"><code data-line-number="21"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-21"></a>                    <span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-21"><code data-line-number="21"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-21"></a>                    <span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-22"><code data-line-number="22"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-22"></a>        <span class="k">if</span> <span class="p">(</span> <span class="n">timer_handle</span> <span class="p">)</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-22"><code data-line-number="22"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-22"></a>        <span class="k">if</span> <span class="p">(</span> <span class="n">timer_handle</span> <span class="p">)</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-23"><code data-line-number="23"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-23"></a>                <span class="n">xTimerStart</span><span class="p">(</span><span class="n">timer_handle</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span> <span class="c1">//don't block</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-23"><code data-line-number="23"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-23"></a>                <span class="n">xTimerStart</span><span class="p">(</span><span class="n">timer_handle</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span> <span class="c1">//don't block</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-24"><code data-line-number="24"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-24"></a>        <span class="k">if</span> <span class="p">(</span> <span class="n">init_console</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">0</span>  <span class="p">)</span> <span class="p">{</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-24"><code data-line-number="24"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-24"></a>        <span class="k">if</span> <span class="p">(</span> <span class="n">init_console</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">0</span>  <span class="p">)</span> <span class="p">{</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-25"><code data-line-number="25"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-25"></a>             <span class="n">printf</span><span class="p">(</span><span class="s">"%s, aborted!</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">__FUNCTION__</span><span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-25"><code data-line-number="25"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-25"></a>             <span class="n">printf</span><span class="p">(</span><span class="s">"%s, aborted!</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">__FUNCTION__</span><span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-26"><code data-line-number="26"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-26"></a>             <span class="k">return</span><span class="p">;</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-26"><code data-line-number="26"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-26"></a>             <span class="k">return</span><span class="p">;</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-27"><code data-line-number="27"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-27"></a>        <span class="p">}</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-27"><code data-line-number="27"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-27"></a>        <span class="p">}</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-28"><code data-line-number="28"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-28"></a>        <span class="k">if</span><span class="p">(</span> <span class="n">xQueue</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="p">)</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-28"><code data-line-number="28"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-28"></a>        <span class="k">if</span><span class="p">(</span> <span class="n">xQueue</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="p">)</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-29"><code data-line-number="29"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-29"></a>        <span class="p">{</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-29"><code data-line-number="29"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-29"></a>        <span class="p">{</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-30"><code data-line-number="30"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-30"></a>                <span class="n">xTaskCreate</span><span class="p">(</span> <span class="n">prvQueueReceiveTask</span><span class="p">,</span>       <span class="cm">/* The function that implements the task. */</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-30"><code data-line-number="30"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-30"></a>                <span class="n">xTaskCreate</span><span class="p">(</span> <span class="n">prvQueueReceiveTask</span><span class="p">,</span>       <span class="cm">/* The function that implements the task. */</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-31"><code data-line-number="31"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-31"></a>                                        <span class="s">"Rx"</span><span class="p">,</span>           <span class="cm">/* The text name assigned to the task - for debug only as it is not used by the kernel. */</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-31"><code data-line-number="31"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-31"></a>                                        <span class="s">"Rx"</span><span class="p">,</span>           <span class="cm">/* The text name assigned to the task - for debug only as it is not used by the kernel. */</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-32"><code data-line-number="32"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-32"></a>                                        <span class="n">configMINIMAL_STACK_SIZE</span><span class="p">,</span>       <span class="cm">/* The size of the stack to allocate to the task. */</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-32"><code data-line-number="32"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-32"></a>                                        <span class="n">configMINIMAL_STACK_SIZE</span><span class="p">,</span>       <span class="cm">/* The size of the stack to allocate to the task. */</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-33"><code data-line-number="33"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-33"></a>                                        <span class="nb">NULL</span><span class="p">,</span>                           <span class="cm">/* The parameter passed to the task - not used in this case. */</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-33"><code data-line-number="33"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-33"></a>                                        <span class="nb">NULL</span><span class="p">,</span>                           <span class="cm">/* The parameter passed to the task - not used in this case. */</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-34"><code data-line-number="34"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-34"></a>                                        <span class="n">mainQUEUE_RECEIVE_TASK_PRIORITY</span><span class="p">,</span>        <span class="cm">/* The priority assigned to the task. */</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-34"><code data-line-number="34"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-34"></a>                                        <span class="n">mainQUEUE_RECEIVE_TASK_PRIORITY</span><span class="p">,</span>        <span class="cm">/* The priority assigned to the task. */</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-35"><code data-line-number="35"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-35"></a>                                        <span class="nb">NULL</span> <span class="p">);</span>                                 <span class="cm">/* The task handle is not required, so NULL is passed. */</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-35"><code data-line-number="35"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-35"></a>                                        <span class="nb">NULL</span> <span class="p">);</span>                                 <span class="cm">/* The task handle is not required, so NULL is passed. */</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-36"><code data-line-number="36"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-36"></a>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-36"><code data-line-number="36"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-36"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-37"><code data-line-number="37"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-37"></a>                <span class="n">xTaskCreate</span><span class="p">(</span> <span class="n">prvQueueSendTask</span><span class="p">,</span> <span class="s">"TX"</span><span class="p">,</span> <span class="n">configMINIMAL_STACK_SIZE</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">mainQUEUE_SEND_TASK_PRIORITY</span><span class="p">,</span> <span class="nb">NULL</span> <span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-37"><code data-line-number="37"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-37"></a>                <span class="n">xTaskCreate</span><span class="p">(</span> <span class="n">prvQueueSendTask</span><span class="p">,</span> <span class="s">"TX"</span><span class="p">,</span> <span class="n">configMINIMAL_STACK_SIZE</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">mainQUEUE_SEND_TASK_PRIORITY</span><span class="p">,</span> <span class="nb">NULL</span> <span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-38"><code data-line-number="38"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-38"></a>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-38"><code data-line-number="38"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-38"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-39"><code data-line-number="39"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-39"></a>                <span class="n">xTaskCreate</span><span class="p">(</span> <span class="n">app_main</span><span class="p">,</span> <span class="s">"app_main"</span><span class="p">,</span> <span class="n">configMINIMAL_STACK_SIZE</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">appmainTASK_PRIORITY</span><span class="p">,</span> <span class="nb">NULL</span> <span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-39"><code data-line-number="39"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-39"></a>                <span class="n">xTaskCreate</span><span class="p">(</span> <span class="n">app_main</span><span class="p">,</span> <span class="s">"app_main"</span><span class="p">,</span> <span class="n">configMINIMAL_STACK_SIZE</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">appmainTASK_PRIORITY</span><span class="p">,</span> <span class="nb">NULL</span> <span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-40"><code data-line-number="40"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-40"></a>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-40"><code data-line-number="40"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-40"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-41"><code data-line-number="41"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-41"></a>                <span class="k">if</span> <span class="p">(</span> <span class="n">xUARTQueue</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="p">)</span> <span class="p">{</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-41"><code data-line-number="41"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-41"></a>                <span class="k">if</span> <span class="p">(</span> <span class="n">xUARTQueue</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="p">)</span> <span class="p">{</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-42"><code data-line-number="42"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-42"></a>                        <span class="n">xTaskCreate</span><span class="p">(</span> <span class="n">prvUARTPollTask</span><span class="p">,</span> <span class="s">"uart_rx_poll"</span><span class="p">,</span> <span class="n">configMINIMAL_STACK_SIZE</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">UART_RXQUEUE_TASK_PRIORITY</span><span class="p">,</span> <span class="nb">NULL</span> <span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-42"><code data-line-number="42"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-42"></a>                        <span class="n">xTaskCreate</span><span class="p">(</span> <span class="n">prvUARTPollTask</span><span class="p">,</span> <span class="s">"uart_rx_poll"</span><span class="p">,</span> <span class="n">configMINIMAL_STACK_SIZE</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">UART_RXQUEUE_TASK_PRIORITY</span><span class="p">,</span> <span class="nb">NULL</span> <span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-43"><code data-line-number="43"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-43"></a>                <span class="p">}</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-43"><code data-line-number="43"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-43"></a>                <span class="p">}</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-44"><code data-line-number="44"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-44"></a>                <span class="k">if</span> <span class="p">(</span> <span class="n">xQueue_mon</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="p">)</span> <span class="p">{</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-44"><code data-line-number="44"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-44"></a>                <span class="k">if</span> <span class="p">(</span> <span class="n">xQueue_mon</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="p">)</span> <span class="p">{</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-45"><code data-line-number="45"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-45"></a>                        <span class="n">xTaskCreate</span><span class="p">(</span> <span class="n">state_mon_task</span><span class="p">,</span> <span class="s">"regi_state_mon"</span><span class="p">,</span> <span class="n">configMINIMAL_STACK_SIZE</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">mainQUEUE_SEND_TASK_PRIORITY</span><span class="p">,</span> <span class="nb">NULL</span> <span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-45"><code data-line-number="45"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-45"></a>                        <span class="n">xTaskCreate</span><span class="p">(</span> <span class="n">state_mon_task</span><span class="p">,</span> <span class="s">"regi_state_mon"</span><span class="p">,</span> <span class="n">configMINIMAL_STACK_SIZE</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">mainQUEUE_SEND_TASK_PRIORITY</span><span class="p">,</span> <span class="nb">NULL</span> <span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-46"><code data-line-number="46"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-46"></a>                <span class="p">}</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-46"><code data-line-number="46"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-46"></a>                <span class="p">}</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-47"><code data-line-number="47"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-47"></a>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-47"><code data-line-number="47"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-47"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-48"><code data-line-number="48"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-48"></a>                <span class="cm">/* Start the tasks and timer running.*/</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-48"><code data-line-number="48"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-48"></a>                <span class="cm">/* Start the tasks and timer running.*/</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-49"><code data-line-number="49"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-49"></a>                <span class="n">vTaskStartScheduler</span><span class="p">();</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-49"><code data-line-number="49"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-49"></a>                <span class="n">vTaskStartScheduler</span><span class="p">();</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-50"><code data-line-number="50"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-50"></a>        <span class="p">}</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-50"><code data-line-number="50"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-50"></a>        <span class="p">}</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-51"><code data-line-number="51"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-51"></a>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-51"><code data-line-number="51"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-51"></a>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-52"><code data-line-number="52"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-52"></a>        <span class="k">for</span><span class="p">(</span> <span class="p">;;</span> <span class="p">);</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-52"><code data-line-number="52"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-52"></a>        <span class="k">for</span><span class="p">(</span> <span class="p">;;</span> <span class="p">);</span>
 </code></td>
 </tr>
 <tr>
-<td class="linenos linenodiv"><a href="#rest_code_8c27401467114180a43f24f4d184446d-53"><code data-line-number="53"></code></a></td>
-<td class="code"><code><a name="rest_code_8c27401467114180a43f24f4d184446d-53"></a><span class="p">}</span>
+<td class="linenos linenodiv"><a href="#rest_code_94c4ed56e31d440d94d212302e105835-53"><code data-line-number="53"></code></a></td>
+<td class="code"><code><a name="rest_code_94c4ed56e31d440d94d212302e105835-53"></a><span class="p">}</span>
 </code></td>
 </tr>
 </table></div>
 <p>The main function is to install and set up UART driver, start RTOS timer, TX/RX UART tasks and console task and run RTOS scheduler. <em>app_main</em> is a
 TTY console task for command line interface as shown here, for example, when I typed <em>help</em> I would get the list of commands supported.
 If I typed <em>tasks</em> I would get the information about tasks registered.</p>
-<pre class="code text"><a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-1"></a>xxx@xxx:~/freertos-rtx$ ./run.sh
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-2"></a>machine cpu_type cortex-r5f-arm-cpu
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-3"></a>UART base 0x58000000 created for serial0.
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-4"></a>main: Entering main(265)
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-5"></a>init_console, line 222
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-6"></a>current state: standby, last_state initialize
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-7"></a>Entering app_main(89), 0.000000
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-8"></a>rtx&gt; tasks
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-9"></a>Task Name       Status  Prio    HWM     Task Number
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-10"></a>app_main        X       1       333     3
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-11"></a>IDLE            R       0       478     6
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-12"></a>Tmr Svc         B       4       451     7
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-13"></a>TX              B       2       472     2
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-14"></a>uart_rx_poll    B       1       471     4
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-15"></a>Rx              B       1       468     1
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-16"></a>regi_state_mon  B       2       339     5
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-17"></a>
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-18"></a>Timer ulCount   : 35
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-19"></a>rtx&gt; help
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-20"></a>help
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-21"></a>  Print the list of registered commands
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-22"></a>
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-23"></a>tasks
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-24"></a>  Get information about running tasks
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-25"></a>
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-26"></a>state
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-27"></a>  Get the current monitored state
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-28"></a>
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-29"></a>free
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-30"></a>  Get the total size of heap memory available
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-31"></a>
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-32"></a>read
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-33"></a>  read memory address
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-34"></a>
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-35"></a>next
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-36"></a>  read next memory address
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-37"></a>
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-38"></a>reboot
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-39"></a>  System reboot
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-40"></a>
-<a name="rest_code_41e0de8d2d78475c9a60c2d27e17164b-41"></a>QEMU: Terminated
+<pre class="code text"><a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-1"></a>xxx@xxx:~/freertos-rtx$ ./run.sh
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-2"></a>machine cpu_type cortex-r5f-arm-cpu
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-3"></a>UART base 0x58000000 created for serial0.
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-4"></a>main: Entering main(265)
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-5"></a>init_console, line 222
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-6"></a>current state: standby, last_state initialize
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-7"></a>Entering app_main(89), 0.000000
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-8"></a>rtx&gt; tasks
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-9"></a>Task Name       Status  Prio    HWM     Task Number
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-10"></a>app_main        X       1       333     3
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-11"></a>IDLE            R       0       478     6
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-12"></a>Tmr Svc         B       4       451     7
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-13"></a>TX              B       2       472     2
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-14"></a>uart_rx_poll    B       1       471     4
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-15"></a>Rx              B       1       468     1
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-16"></a>regi_state_mon  B       2       339     5
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-17"></a>
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-18"></a>Timer ulCount   : 35
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-19"></a>rtx&gt; help
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-20"></a>help
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-21"></a>  Print the list of registered commands
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-22"></a>
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-23"></a>tasks
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-24"></a>  Get information about running tasks
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-25"></a>
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-26"></a>state
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-27"></a>  Get the current monitored state
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-28"></a>
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-29"></a>free
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-30"></a>  Get the total size of heap memory available
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-31"></a>
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-32"></a>read
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-33"></a>  read memory address
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-34"></a>
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-35"></a>next
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-36"></a>  read next memory address
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-37"></a>
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-38"></a>reboot
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-39"></a>  System reboot
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-40"></a>
+<a name="rest_code_327dba6feaa04a11b0ff9c66874cbcd9-41"></a>QEMU: Terminated
 </pre>
 <p>What I had in <em>app</em> and <em>drivers</em> are specific to the platform and OS usage. You would have what you need
 to get what you want it to do for your application.</p>
-<pre class="code text"><a name="rest_code_f0bd3f298a3e40e98db3c4aa4122af08-1"></a>freertos-rtx/
-<a name="rest_code_f0bd3f298a3e40e98db3c4aa4122af08-2"></a>├── app
-<a name="rest_code_f0bd3f298a3e40e98db3c4aa4122af08-3"></a>│   ├── app_main.c
-<a name="rest_code_f0bd3f298a3e40e98db3c4aa4122af08-4"></a>│   ├── command.c
-<a name="rest_code_f0bd3f298a3e40e98db3c4aa4122af08-5"></a>│   ├── main.c
-<a name="rest_code_f0bd3f298a3e40e98db3c4aa4122af08-6"></a>│   ├── partest.h
-<a name="rest_code_f0bd3f298a3e40e98db3c4aa4122af08-7"></a>│   └── regi-state.c
-<a name="rest_code_f0bd3f298a3e40e98db3c4aa4122af08-8"></a>├── drivers
-<a name="rest_code_f0bd3f298a3e40e98db3c4aa4122af08-9"></a>│   ├── serial_pl010.c
-<a name="rest_code_f0bd3f298a3e40e98db3c4aa4122af08-10"></a>│   └── serial_pl010.h
+<pre class="code text"><a name="rest_code_110af6bd9ee8435995697668be4d2875-1"></a>freertos-rtx/
+<a name="rest_code_110af6bd9ee8435995697668be4d2875-2"></a>├── app
+<a name="rest_code_110af6bd9ee8435995697668be4d2875-3"></a>│   ├── app_main.c
+<a name="rest_code_110af6bd9ee8435995697668be4d2875-4"></a>│   ├── command.c
+<a name="rest_code_110af6bd9ee8435995697668be4d2875-5"></a>│   ├── main.c
+<a name="rest_code_110af6bd9ee8435995697668be4d2875-6"></a>│   ├── partest.h
+<a name="rest_code_110af6bd9ee8435995697668be4d2875-7"></a>│   └── regi-state.c
+<a name="rest_code_110af6bd9ee8435995697668be4d2875-8"></a>├── drivers
+<a name="rest_code_110af6bd9ee8435995697668be4d2875-9"></a>│   ├── serial_pl010.c
+<a name="rest_code_110af6bd9ee8435995697668be4d2875-10"></a>│   └── serial_pl010.h
 </pre>
 <p>Don't forget about one important file, the linker script. Make sure you have the correct
 definition of code and data sections in it. You could as well use the linker script
@@ -1156,7 +1156,273 @@ in some of the demo example and modify it to fit your port. Look for file ending
 as needed to fit the sections of your code. It is what I did. Instead of writing
 <em>Makefile</em> to build, I used <em>cmake</em> so I wrote <em>CMakeLists.txt</em> from top directory
 to all of subdirectories that need to be compiled or assembled to create the
-bootable code.</p>
+bootable code. Here is the sample of my <em>CMakeLists.txt</em> file,</p>
+<div class="code"><table class="codetable">
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-1"><code data-line-number=" 1"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-1"></a>cmake_minimum_required(VERSION 3.1)
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-2"><code data-line-number=" 2"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-2"></a>project(freertos-rtx)
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-3"><code data-line-number=" 3"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-3"></a>enable_language(C ASM)
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-4"><code data-line-number=" 4"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-4"></a>set(CMAKE_CROSSCOMPILING TRUE)
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-5"><code data-line-number=" 5"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-5"></a>set(TARGET armr5-none-eabi)
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-6"><code data-line-number=" 6"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-6"></a>set(TOOLCHAIN armr5-none-eabi)
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-7"><code data-line-number=" 7"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-7"></a>set(CMAKE_SYSTEM_PROCESSOR arm)
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-8"><code data-line-number=" 8"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-8"></a>set(CMAKE_C_COMPILER armr5-none-eabi-gcc)
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-9"><code data-line-number=" 9"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-9"></a>set(CMAKE_C_FLAGS "-mcpu=cortex-r5 -mfloat-abi=hard -mfpu=vfpv3-d16 -DFPU_PRESENT -DCONFIG_GICV2 \
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-10"><code data-line-number="10"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-10"></a>-DUART_BASE=0x58000000 -g " CACHE STRING "" FORCE)
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-11"><code data-line-number="11"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-11"></a>set(NGA_BOARD rtx-r5 CACHE INTERNAL "")
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-12"><code data-line-number="12"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-12"></a>set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/linker.ld")
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-13"><code data-line-number="13"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-13"></a>set(ASM_OPTIONS "-x assembler-with-cpp")
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-14"><code data-line-number="14"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-14"></a>set(CMAKE_ASM_COMPILER armr5-none-eabi-gcc)
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-15"><code data-line-number="15"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-15"></a>set(CMAKE_ASM_FLAGS "${CFLAGS} ${CMAKE_C_FLAGS} ${ASM_OPTIONS}" CACHE INTERNAL "ASM Options")
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-16"><code data-line-number="16"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-16"></a>#set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -e 0x0 -Wl,-Map=freertos-rtx.map -nostdlib -T ${LINKER_SCRIPT}")
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-17"><code data-line-number="17"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-17"></a>#set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -e 0x0 -Wl,-Map=freertos-rtx.map -Wl,-rpath=${CMAKE_CURRENT_SOURCE_DIR}/lib -lextra -T ${LINKER_SCRIPT}")
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-18"><code data-line-number="18"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-18"></a>set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -e 0x0 -Wl,-Map=freertos-rtx.map -T ${LINKER_SCRIPT}")
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-19"><code data-line-number="19"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-19"></a>Set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS)
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-20"><code data-line-number="20"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-20"></a>set_target_properties(${TARGET_NAME} PROPERTIES LINK_DEPENDS ${LINKER_SCRIPT})
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-21"><code data-line-number="21"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-21"></a>include_directories("include" "include/freertos/" "include/asm"
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-22"><code data-line-number="22"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-22"></a> "console/argtable3" "console/linenoise" "console" "vfs/include")
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-23"><code data-line-number="23"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-23"></a>file(GLOB SOURCES  "app/*.c" )
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-24"><code data-line-number="24"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-24"></a>add_subdirectory(drivers)
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-25"><code data-line-number="25"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-25"></a>add_subdirectory(console)
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-26"><code data-line-number="26"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-26"></a>add_subdirectory(lib)
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-27"><code data-line-number="27"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-27"></a>add_subdirectory(src)
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-28"><code data-line-number="28"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-28"></a>add_subdirectory(platform)
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-29"><code data-line-number="29"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-29"></a>add_subdirectory(vfs)
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-30"><code data-line-number="30"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-30"></a>#add_executable(freertos-rtx "app/main.c" ${SOURCES} ${COMPONENT_LIB_SRCS} ${COMPONENT_SRCS})
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-31"><code data-line-number="31"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-31"></a>add_executable(freertos-rtx  ${SOURCES} ${PLATFORM_SRCS} ${RTOS_SRCS} ${COMPONENT_LIB_SRCS} ${CONSOLE_SRCS} ${DRIVER_SRCS} ${VFS_SRCS})
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-32"><code data-line-number="32"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-32"></a>target_link_libraries(freertos-rtx
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-33"><code data-line-number="33"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-33"></a>        PRIVATE
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-34"><code data-line-number="34"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-34"></a>        "-Wl,--whole-archive"
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-35"><code data-line-number="35"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-35"></a>        console
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-36"><code data-line-number="36"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-36"></a>        platform
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-37"><code data-line-number="37"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-37"></a>        rtos
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-38"><code data-line-number="38"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-38"></a>        extra
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-39"><code data-line-number="39"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-39"></a>        drivers
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-40"><code data-line-number="40"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-40"></a>        vfs
+</code></td>
+</tr>
+<tr>
+<td class="linenos linenodiv"><a href="#rest_code_0313eca7bbf84608a35ca78a02bbc5ec-41"><code data-line-number="41"></code></a></td>
+<td class="code"><code><a name="rest_code_0313eca7bbf84608a35ca78a02bbc5ec-41"></a>        "-Wl,--no-whole-archive")
+</code></td>
+</tr>
+</table></div>
+<p>There are other <em>CMakeLists.txt</em> files in nearly all of the subdirectories that contained C or S source files. <em>cmake</em> will create
+<em>Makefile</em> to build the ARM executable code.</p>
+<pre class="code text"><a name="rest_code_f2af450703c04fe3ab86be710d801373-1"></a>mkdir build
+<a name="rest_code_f2af450703c04fe3ab86be710d801373-2"></a>cd build
+<a name="rest_code_f2af450703c04fe3ab86be710d801373-3"></a>cmake .. &amp;&amp; make
+</pre>
+<p>is cmake building process. The binary executable, <em>freertos-rtx</em> and the compiled object files will
+be in <em>freertos-rtx/build</em> directory that's built using <em>armr5-none-eabi</em> Xilinx toolchain.</p>
+</div>
+<div class="section" id="debugging">
+<h3>Debugging</h3>
+<p>At the earliest stage of your port you are most likely need to debug some of your code so in terms
+of debugging with QEMU, it was pretty much the way I blogged in my previous post on QEMU porting.
+You just start up QEMU in single step mode and single step it from reset vector all the
+way to main function. Start QEMU in debugging mode in one shell. This will be <em>FreeRTOS</em> shell,</p>
+<pre class="code text"><a name="rest_code_a2e4347f6816419581123f6bc21b7799-1"></a>qemu-system-aarch64 -M rtx-r5  -m 2m -no-reboot -nographic -s  -S -kernel build/freertos-rtx
+</pre>
+<p>and open another shell to debug with <em>gdb</em> built for ARM version. I also used Xilinx's built
+version of ARM R5 GDB.</p>
+<pre class="code text"><a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-1"></a>xx@xx:~/freertos-rtx/build$ armr5-none-eabi-gdb freertos-rtx
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-2"></a>GNU gdb (GDB) 8.3.1
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-3"></a>Copyright (C) 2019 Free Software Foundation, Inc.
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-4"></a>License GPLv3+: GNU GPL version 3 or later &lt;http://gnu.org/licenses/gpl.html&gt;
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-5"></a>This is free software: you are free to change and redistribute it.
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-6"></a>There is NO WARRANTY, to the extent permitted by law.
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-7"></a>Type "show copying" and "show warranty" for details.
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-8"></a>This GDB was configured as "--host=x86_64-oesdk-linux --target=arm-xilinx-eabi".
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-9"></a>Type "show configuration" for configuration details.
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-10"></a>For bug reporting instructions, please see:
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-11"></a>&lt;http://www.gnu.org/software/gdb/bugs/&gt;.
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-12"></a>Find the GDB manual and other documentation resources online at:
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-13"></a>    &lt;http://www.gnu.org/software/gdb/documentation/&gt;.
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-14"></a>
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-15"></a>For help, type "help".
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-16"></a>Type "apropos word" to search for commands related to "word"...
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-17"></a>Reading symbols from freertos-rtx...
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-18"></a>(gdb) target remote :1234
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-19"></a>Remote debugging using :1234
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-20"></a>_freertos_vector_table () at /home/ssop/freertos-rtx/platform/FreeRTOS_asm_vectors.S:82
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-21"></a>82              B         _boot
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-22"></a>(gdb) b _boot
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-23"></a>Breakpoint 1 at 0x2f848: file /home/ssop/freertos-rtx/platform/Init.qemu.S, line 75.
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-24"></a>(gdb) b _sysinit
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-25"></a>Breakpoint 2 at 0xecbc: file /home/ssop/freertos-rtx/platform/sysinit.c, line 311.
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-26"></a>(gdb) c
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-27"></a>Continuing.
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-28"></a>
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-29"></a>Breakpoint 1, _boot () at /home/ssop/freertos-rtx/platform/Init.qemu.S:75
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-30"></a>75              cpsid   aif
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-31"></a>(gdb) c
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-32"></a>Continuing.
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-33"></a>
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-34"></a>Breakpoint 2, _sysinit () at /home/ssop/freertos-rtx/platform/sysinit.c:311
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-35"></a>311             setup_mem_banks();
+<a name="rest_code_1803811c17e64516a7d8ffdf6a1c5f4b-36"></a>(gdb)
+</pre>
+<p>Here I set two break point, one at <em>_boot</em> reset vector and one at <em>_sysinit</em>. You can single
+step your code this way during your debugging. There are many GUI GDB front end debuggers that
+you could use as well if you prefer.</p>
 </div>
 </div>
 <div class="section" id="conclusion">
