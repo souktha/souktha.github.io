@@ -16,7 +16,7 @@ part of 2020; however this released version is still available for downloading f
 
 Regardless of version of FreeRTOS used in the porting, you might still find some information to be useful to carry on
 with your port into the latest version. The porting that I did was heavily inspired by the knowledge I learned while
-using Xilinx ZynqMP and informations that I gathered from its Wiki pages. While Xilinx work was far more in complexity 
+using Xilinx ZynqMP and information that I gathered from its Wiki pages. While Xilinx work was far more in complexity 
 because of their hardware, mine was to make it simple for simple hardware, a stand-alone ARM R5F single core. 
 
 After I finished my porting of QEMU then I realized, now what ? Nothing to run and nothing to prove whether or not my
@@ -30,7 +30,7 @@ The essential FreeRTOS files
 
 If you look at FreeRTOS code you will find a lot of things all over the place to the point of not knowing of what
 to do with it. It happened to me. First I began examining its example of port for some platforms here and there to
-get some picture primarily the ports of the ARM based platforms. I builded some *Demo* examples on how they are
+get some picture primarily the ports of the ARM based platforms. I built some *Demo* examples on how they are
 built and what components they used for those ports. Since I used *GCC* toolchain that I already have installed from
 Xilinx SDK, I focused on the demo that used this toolchain. 
 
@@ -153,7 +153,7 @@ one of Xilinx R5 demo *boot.S* and simplified it to my simpler model to become m
 in this file was to set up stacks, initialized CPU mode, interrupt masks, invalidate caches, enable instruction cache,
 enable FPU (if present). Mostly it is done by call to *arm_cpu_lowlevel_init* (line 10) followed by enabling cycle
 counter, setting up data MMU and data cache, initializing GIC done by calling *_sysinit* (line 30) and finally jump to
-to start of c-runtime, *_os_start* (line 32) that eventuall jum to main task. A snippet of this file, 
+to start of c-runtime, *_os_start* (line 32) that eventuall jump to main task. A snippet of this file, 
 
 .. code-block:: c
         :linenos:
@@ -324,7 +324,7 @@ in most OS port. My *lib* files looks like this,
 These files are mostly 10-20 lines of code, for example, *isatty(..)* is simply returned true since the UART
 port is a TTY device and the *open(..)* is simply returned EOI since I do not have FS support. They are
 functions to make the linking process happy. They are just the filler set of files and most of the 
-functions are defined with *weak* attribute in such as a way that they can be overrided.
+functions are defined with *weak* attribute in such as a way that they can be overridden.
 
 The application tasks
 ----------------------
@@ -560,21 +560,21 @@ version of ARM R5 GDB.
         Reading symbols from freertos-rtx...
         (gdb) target remote :1234
         Remote debugging using :1234
-        _freertos_vector_table () at /home/ssop/freertos-rtx/platform/FreeRTOS_asm_vectors.S:82
+        _freertos_vector_table () at /home/xxxxx/freertos-rtx/platform/FreeRTOS_asm_vectors.S:82
         82              B         _boot
         (gdb) b _boot
-        Breakpoint 1 at 0x2f848: file /home/ssop/freertos-rtx/platform/Init.qemu.S, line 75.
+        Breakpoint 1 at 0x2f848: file /home/xxxx/freertos-rtx/platform/Init.qemu.S, line 75.
         (gdb) b _sysinit
-        Breakpoint 2 at 0xecbc: file /home/ssop/freertos-rtx/platform/sysinit.c, line 311.
+        Breakpoint 2 at 0xecbc: file /home/xxxxx/freertos-rtx/platform/sysinit.c, line 311.
         (gdb) c
         Continuing.
 
-        Breakpoint 1, _boot () at /home/ssop/freertos-rtx/platform/Init.qemu.S:75
+        Breakpoint 1, _boot () at /home/xxxx/freertos-rtx/platform/Init.qemu.S:75
         75              cpsid   aif
         (gdb) c
         Continuing.
 
-        Breakpoint 2, _sysinit () at /home/ssop/freertos-rtx/platform/sysinit.c:311
+        Breakpoint 2, _sysinit () at /home/xxxxx/freertos-rtx/platform/sysinit.c:311
         311             setup_mem_banks();
         (gdb) 
 
